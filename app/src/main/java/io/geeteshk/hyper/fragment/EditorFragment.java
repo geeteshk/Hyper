@@ -1,0 +1,116 @@
+package io.geeteshk.hyper.fragment;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.util.ProjectUtil;
+
+/**
+ * Fragment used to edit files
+ */
+public class EditorFragment extends Fragment {
+
+    /**
+     * Strings representing project and filename
+     */
+    String mProject, mFilename;
+
+    /**
+     * Default empty constructor
+     */
+    public EditorFragment() {
+    }
+
+    /**
+     * Method used to inflate and setup view
+     *
+     * @param inflater           used to inflate layout
+     * @param container          parent view
+     * @param savedInstanceState restores state onResume
+     * @return fragment view that is created
+     */
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
+
+        final EditText editText = (EditText) rootView.findViewById(R.id.file_content);
+        editText.setText(getContents(mProject, mFilename));
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ProjectUtil.createFile(getActivity(), mProject, mFilename, s.toString());
+            }
+        });
+
+        return rootView;
+    }
+
+    /**
+     * Method used to get contents of files
+     *
+     * @param project  name of project
+     * @param filename name of file
+     * @return contents of file
+     */
+    private String getContents(String project, String filename) {
+        try {
+            InputStream inputStream = new FileInputStream(getActivity().getFilesDir().getAbsolutePath() + File.separator + project + File.separator + filename);
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuilder builder = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line).append('\n');
+            }
+
+            return builder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Sets the project name
+     *
+     * @param project name of project
+     */
+    public void setProject(String project) {
+        this.mProject = project;
+    }
+
+    /**
+     * Sets the filename
+     *
+     * @param filename name of file
+     */
+    public void setFilename(String filename) {
+        this.mFilename = filename;
+    }
+}

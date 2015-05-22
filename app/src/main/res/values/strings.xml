@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Hyper</string>
+    <string name="action_drawer_open">Open</string>
+    <string name="action_drawer_close">Close</string>
+    <string name="create">Create</string>
+    <string name="edit">Improve</string>
+    <string name="pilot">Pilot</string>
+    <string name="settings">Settings</string>
+    <string name="help"><![CDATA[Help & feedback]]></string>
+    <string name="contribute">Contribute</string>
+    <string name="donate">Donate</string>
+    <string name="hyper"><![CDATA[<hyper/>]]></string>
+
+    <string-array name="drawer_items">
+        <item>@string/create</item>
+        <item>@string/edit</item>
+        <item>@string/pilot</item>
+        <item>@string/contribute</item>
+        <item>@string/donate</item>
+        <item>@string/settings</item>
+        <item>@string/help</item>
+    </string-array>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="resources_images">IMAGES</string>
+    <string name="resources_fonts">FONTS</string>
+    <string name="resources_css">CSS</string>
+    <string name="resources_js">JS</string>
+    <string name="about_name">Name</string>
+    <string name="about_author">Author</string>
+    <string name="about_desc">Description</string>
+    <string name="about_keywords">Keywords</string>
+    <string name="feedback_title">Title</string>
+    <string name="feedback_content">Content</string>
+    <string name="hello_octocat">Hello Octocat!</string>
+    <string name="open_source">Hyper is Open Source!</string>
+    <string name="contribute_desc">You can contribute to Hyper by submitting Pull Requests or reporting Issues on the Github repo. By doing this you help yourself, the developer (me) and the community. Feel free to help out whenever you can. Thank you! :D</string>
+    <string name="inspiration">Have some inspiration? Make it a reality.</string>
+    <string name="create_keywords">Keywords (separated with commas)</string>
+    <string name="create_favicon">Favicon</string>
+    <string name="favicon_default">Default</string>
+    <string name="favicon_choose">Choose</string>
+    <string name="not_funny_joke">Woah! Trying to get my money!?</string>
+    <string name="cry_for_help">No no! That\'s not what I\'m trying to do. If you feel that my work should be rewarded then please feel free to donate some money. It really helps and motivates me to develop.</string>
+    <string name="faq_desc">This is a FAQ for Hyper. Any questions that you may have should be answered here. If they are not then feel free to add an issue to the repo.</string>
+    <string name="too_lazy">Help will be added soon!</string>
+    <string name="project_desc">All your projects are listed here. Tap one to work on it. Hold one for more information.</string>
+    <string name="pilot_desc">All your projects are listed here. Tap one to take it out for a test drive. Hold one for more information.</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="dark_theme_desc">Put a little less stress on your eyes.</string>
+    <string name="import_image">Import Image</string>
+    <string name="import_font">Import Font</string>
+    <string name="import_css">Import CSS</string>
+    <string name="import_js">Import JS</string>
+    <string name="view_resources">View Resources</string>
+    <string name="about_project">About Project</string>
+</resources>

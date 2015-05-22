@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/help_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="48dp"
+        android:text="@string/faq_desc"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:typeface="sans" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/help_desc"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/too_lazy"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="42sp"
+        android:textStyle="italic" />
+
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/help_desc"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="-30dp"
+        android:src="@drawable/ic_feedback"
+        app:fab_colorNormal="?attr/colorAccent"
+        app:fab_colorPressed="#1976D2"
+        app:fab_colorRipple="#64B5F6" />
+
+</RelativeLayout>

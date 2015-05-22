@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="io.geeteshk.hyper.ResourcesActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/widget_toolbar" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/resources_images"
+        android:textColor="?attr/colorAccent"
+        android:typeface="serif" />
+
+    <ListView
+        android:id="@+id/images_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/resources_fonts"
+        android:textColor="?attr/colorAccent"
+        android:typeface="serif" />
+
+    <ListView
+        android:id="@+id/fonts_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/resources_css"
+        android:textColor="?attr/colorAccent"
+        android:typeface="serif" />
+
+    <ListView
+        android:id="@+id/css_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/resources_js"
+        android:textColor="?attr/colorAccent"
+        android:typeface="serif" />
+
+    <ListView
+        android:id="@+id/js_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
+
+</LinearLayout>

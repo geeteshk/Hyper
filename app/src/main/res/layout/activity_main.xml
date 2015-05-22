@@ -1,0 +1,31 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/widget_toolbar" />
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment_drawer"
+        android:name="io.geeteshk.hyper.fragment.DrawerFragment"
+        android:layout_width="284dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
+
+</android.support.v4.widget.DrawerLayout>

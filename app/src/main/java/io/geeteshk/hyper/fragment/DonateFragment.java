@@ -1,0 +1,54 @@
+package io.geeteshk.hyper.fragment;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.melnykov.fab.FloatingActionButton;
+
+import io.geeteshk.hyper.R;
+
+/**
+ * Fragment used to inform people about donations
+ */
+public class DonateFragment extends Fragment {
+
+    /**
+     * Empty public constructor
+     */
+    public DonateFragment() {
+    }
+
+    /**
+     * Method used to inflate and setup view
+     *
+     * @param inflater           used to inflate layout
+     * @param container          parent view
+     * @param savedInstanceState restores state onResume
+     * @return fragment view that is created
+     */
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
+
+        FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_donate);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XFYSLYYVHVE2J");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        return rootView;
+    }
+}
