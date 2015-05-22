@@ -74,7 +74,7 @@ public class HelpFragment extends Fragment {
                         EditText content = (EditText) view.findViewById(R.id.content);
                         if (!content.getText().toString().isEmpty() || !content.getText().toString().isEmpty()) {
                             new FeedbackTask().execute(
-                                    "https://api.github.com/repos/OpenMatter/api_tests/issues",
+                                    "https://api.github.com/repos/OpenMatter/Hyper/issues",
                                     title.getText().toString(),
                                     content.getText().toString()
                             );
