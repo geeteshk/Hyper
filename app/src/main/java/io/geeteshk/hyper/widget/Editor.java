@@ -34,7 +34,7 @@ public class Editor extends EditText {
                     "isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|" +
                     "multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|" +
                     "samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|" +
-                    "textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp)\\b"
+                    "textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b"
     );
     private static final Pattern BUILTINS = Pattern.compile(
             "\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|" +
@@ -240,6 +240,24 @@ public class Editor extends EditText {
 
                     for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
                         e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    int counterCss = 1;
+                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                        if (counterCss % 2 != 0) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counterCss++;
+                    }
+
+                    int counterCssTwo = 1;
+                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
+                        if (counterCssTwo % 2 != 0) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counterCssTwo++;
                     }
                     break;
                 case TYPE_JS:
