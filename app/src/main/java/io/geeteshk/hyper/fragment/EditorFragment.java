@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.ProjectUtil;
-import io.geeteshk.hyper.widget.HtmlEditor;
+import io.geeteshk.hyper.widget.Editor;
 
 /**
  * Fragment used to edit files
@@ -46,9 +46,18 @@ public class EditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
-        final HtmlEditor editText = (HtmlEditor) rootView.findViewById(R.id.file_content);
+        final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
+
+        if (mFilename.endsWith(".html")) {
+            editText.setType(Editor.TYPE_HTML);
+        } else if (mFilename.endsWith(".css")) {
+            editText.setType(Editor.TYPE_CSS);
+        } else if (mFilename.endsWith(".js")) {
+            editText.setType(Editor.TYPE_JS);
+        }
+
         editText.setTextHighlighted(getContents(mProject, mFilename));
-        editText.mOnTextChangedListener = new HtmlEditor.OnTextChangedListener() {
+        editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
                 ProjectUtil.createFile(getActivity(), mProject, mFilename, editText.getText().toString());

@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <io.geeteshk.hyper.widget.HtmlEditor
+    <io.geeteshk.hyper.widget.Editor
         android:id="@+id/file_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
         android:padding="16dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

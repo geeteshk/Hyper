@@ -19,8 +19,11 @@ import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.util.PreferenceUtil;
 
-public class HtmlEditor extends EditText {
+public class Editor extends EditText {
 
+    public static final int TYPE_HTML = 0;
+    public static final int TYPE_CSS = 1;
+    public static final int TYPE_JS = 2;
     private static final int COLOR_KEYWORD = 0xfff92672;
     private static final Pattern KEYWORDS = Pattern.compile(
             "\\b(a|address|app|applet|area|b|" +
@@ -53,19 +56,45 @@ public class HtmlEditor extends EditText {
                     "colspan|rowspan|nowrap|halign|" +
                     "disabled|accesskey|tabindex)\\b"
     );
+    private static final Pattern PARAMS = Pattern.compile(
+            "\\b(azimuth|background-attachment|background-color|" +
+                    "background-image|background-position|background-repeat|" +
+                    "background|border-collapse|border-color|" +
+                    "border-spacing|border-style|border-top|border-right|" +
+                    "border-bottom|border-left|border-top-color|" +
+                    "border-right-color|border-left-color|border-bottom-color|" +
+                    "border-top-style|border-right-style|border-bottom-style|" +
+                    "border-left-style|border-top-width|border-right-width|" +
+                    "border-bottom-width|border-left-width|border-width|" +
+                    "border|bottom|caption-side|clear|clip|color|content|" +
+                    "counter-increment|counter-reset|cue-after|cue-before|" +
+                    "cue|cursor|direction|display|elevation|empty-cells|float|" +
+                    "font-family|font-size|font-style|font-variant|font-weight|" +
+                    "font|height|left|letter-spacing|line-height|list-style-image|" +
+                    "list-style-position|list-style-type|list-style|margin-left|" +
+                    "margin-right|margin-top|margin-bottom|margin|max-height|max-width|" +
+                    "min-height|min-width|orphans|outline-color|outline-style|" +
+                    "outline-width|outline|overflow|padding-top|padding-right|" +
+                    "padding-bottom|padding-left|padding|page-break-after|" +
+                    "page-break-before|page-break-inside|pause-after|pause-before|" +
+                    "pause|pitch-range|pitch|play-during|position|quotes|richness|right|" +
+                    "speak-header|speak-numeral|speak-punctuation|speak|speech-rate|" +
+                    "stress|table-layout|text-align|text-decoration|text-indent|" +
+                    "text-transform|top|unicode-bidi|vertical-align|visibility|" +
+                    "voice-family|volume|white-space|widows|width|word-spacing|" +
+                    "z-index)\\b");
     private static final Pattern COMMENTS = Pattern.compile("/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
     private static final Pattern TRAILING_WHITE_SPACE = Pattern.compile("[\\t ]+$", Pattern.MULTILINE);
+    private static final int COLOR_PARAMS = 0xff64cbf4;
     private static int COLOR_BUILTIN = 0xffa6e22e;
     private static int COLOR_COMMENT = 0xff75715e;
     private static int COLOR_STRINGS = 0xffe6db74;
     private final Handler mUpdateHandler = new Handler();
-
     public OnTextChangedListener mOnTextChangedListener = null;
-
     public int mUpdateDelay = 1000;
     public int mErrorLine = 0;
-
     public boolean mDirty = false;
+    private int mType = 0;
     private boolean mModified = true;
     private final Runnable mUpdateRunnable = new Runnable() {
         @Override
@@ -77,13 +106,13 @@ public class HtmlEditor extends EditText {
     };
     private Context mContext;
 
-    public HtmlEditor(Context context) {
+    public Editor(Context context) {
         super(context);
         mContext = context;
         init();
     }
 
-    public HtmlEditor(Context context, AttributeSet attrs) {
+    public Editor(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -177,32 +206,54 @@ public class HtmlEditor extends EditText {
 
             if (e.length() == 0) return e;
 
-            for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            switch (mType) {
+                case TYPE_HTML:
+                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
 
+                    for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
 
-            for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
-                e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+                    for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
 
-            for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
-                e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+                    int counter = 1;
+                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                        if (counter % 2 != 0) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
 
-            int counter = 1;
-            for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                if (counter % 2 != 0) {
-                    e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                        counter++;
+                    }
+                    break;
+                case TYPE_CSS:
+                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
 
-                counter++;
+                    for (Matcher m = PARAMS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    break;
+                case TYPE_JS:
+                    break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         return e;
+    }
+
+    public void setType(int type) {
+        mType = type;
     }
 
     private void clearSpans(Editable e) {

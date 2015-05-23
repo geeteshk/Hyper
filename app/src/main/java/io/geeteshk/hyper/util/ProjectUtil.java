@@ -32,9 +32,7 @@ public class ProjectUtil {
             "  </body>\n" +
             "</html>";
 
-    public static final String STYLE = ".hyper {\n" +
-            "    message: hello;\n" +
-            "}";
+    public static final String STYLE = "";
 
     public static final String MAIN = "";
 
