@@ -24,11 +24,6 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
         WebView webView = (WebView) findViewById(R.id.web_view);
         webView.loadUrl(getIntent().getStringExtra("url"));
     }
