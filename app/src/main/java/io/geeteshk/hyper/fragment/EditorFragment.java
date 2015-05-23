@@ -3,12 +3,9 @@ package io.geeteshk.hyper.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,6 +15,7 @@ import java.io.InputStreamReader;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.ProjectUtil;
+import io.geeteshk.hyper.widget.HtmlEditor;
 
 /**
  * Fragment used to edit files
@@ -48,23 +46,14 @@ public class EditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
-        final EditText editText = (EditText) rootView.findViewById(R.id.file_content);
-        editText.setText(getContents(mProject, mFilename));
-
-        editText.addTextChangedListener(new TextWatcher() {
+        final HtmlEditor editText = (HtmlEditor) rootView.findViewById(R.id.file_content);
+        editText.setTextHighlighted(getContents(mProject, mFilename));
+        editText.mOnTextChangedListener = new HtmlEditor.OnTextChangedListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onTextChanged(String text) {
+                ProjectUtil.createFile(getActivity(), mProject, mFilename, editText.getText().toString());
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                ProjectUtil.createFile(getActivity(), mProject, mFilename, s.toString());
-            }
-        });
+        };
 
         return rootView;
     }

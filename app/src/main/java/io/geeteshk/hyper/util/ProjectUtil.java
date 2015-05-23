@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class ProjectUtil {
 
-    public static final String INDEX = "<!DOCTYPE html>\n" +
+    public static final String INDEX = "<!doctype html>\n" +
             "<html>\n" +
             "  <head>\n" +
             "    <meta charset=\"UTF-8\">\n" +

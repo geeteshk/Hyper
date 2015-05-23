@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,15 +14,30 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/toolbar"
         android:background="?attr/colorPrimary"
         android:textColor="@android:color/white"
         app:pstsIndicatorColor="?attr/colorAccent"
-        app:pstsShouldExpand="true"
         app:pstsTextColorSelected="@android:color/white" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
 
-</LinearLayout>
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab_build"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tabs"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="-30dp"
+        android:src="@drawable/ic_action_build"
+        app:fab_colorNormal="?attr/colorAccent"
+        app:fab_colorPressed="#1976D2"
+        app:fab_colorRipple="#64B5F6"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

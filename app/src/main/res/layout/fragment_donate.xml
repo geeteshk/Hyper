@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="24dp"
+        android:contentDescription="@string/another_cry_for_help"
         android:src="@drawable/donate" />
 
     <com.melnykov.fab.FloatingActionButton

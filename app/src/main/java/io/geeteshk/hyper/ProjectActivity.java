@@ -19,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.melnykov.fab.FloatingActionButton;
+
+import java.io.File;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.util.JsonUtil;
@@ -72,6 +75,17 @@ public class ProjectActivity extends AppCompatActivity {
 
         PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabStrip.setViewPager(pager);
+
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.fab_build);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
+                intent.putExtra("url", "file:///" + ProjectActivity.this.getFilesDir() + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                intent.putExtra("name", getIntent().getStringExtra("project"));
+                startActivity(intent);
+            }
+        });
     }
 
     /**
