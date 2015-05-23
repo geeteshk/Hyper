@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -54,7 +55,7 @@ public class Editor extends EditText {
                     "http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|" +
                     "cellspacing|rules|bordercolorlight|bordercolordark|summary|" +
                     "colspan|rowspan|nowrap|halign|" +
-                    "disabled|accesskey|tabindex)\\b"
+                    "disabled|accesskey|tabindex|id|class)\\b"
     );
     private static final Pattern PARAMS = Pattern.compile(
             "\\b(azimuth|background-attachment|background-color|" +
@@ -143,8 +144,8 @@ public class Editor extends EditText {
         if (!PreferenceUtil.get(mContext, "dark_theme", false)) {
             COLOR_BUILTIN = 0xff72b000;
             COLOR_STRINGS = 0xffed5c00;
-            COLOR_COMMENT = 0xffb8b8b8;
-            setBackgroundColor(0xffffffff);
+            COLOR_COMMENT = 0xffa0a0a0;
+            setBackgroundColor(0xfff8f8f8);
             setTextColor(0xff000000);
         } else {
             COLOR_BUILTIN = 0xffa6e22e;
@@ -155,8 +156,8 @@ public class Editor extends EditText {
         }
 
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/DroidSansMono.ttf"));
-        setHorizontallyScrolling(true);
 
+        setHorizontallyScrolling(true);
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -206,10 +207,14 @@ public class Editor extends EditText {
 
             if (e.length() == 0) return e;
 
+            int counter = 1;
             switch (mType) {
                 case TYPE_HTML:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
+                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
                     }
 
                     for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
@@ -220,7 +225,7 @@ public class Editor extends EditText {
                         e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    int counter = 1;
+                    counter = 1;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
                         if (counter % 2 != 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -232,6 +237,7 @@ public class Editor extends EditText {
                 case TYPE_CSS:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
                         e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (Matcher m = PARAMS.matcher(e); m.find(); ) {
@@ -242,22 +248,32 @@ public class Editor extends EditText {
                         e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    int counterCss = 1;
+                    for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new StyleSpan(Typeface.BOLD), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new StyleSpan(Typeface.BOLD), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    counter = 1;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counterCss % 2 != 0) {
+                        if (counter % 2 != 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
-                        counterCss++;
+                        counter++;
                     }
 
-                    int counterCssTwo = 1;
+                    counter = 1;
                     for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counterCssTwo % 2 != 0) {
+                        if (counter % 2 != 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
-                        counterCssTwo++;
+                        counter++;
                     }
                     break;
                 case TYPE_JS:
