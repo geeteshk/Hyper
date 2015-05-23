@@ -1,7 +1,10 @@
 package io.geeteshk.hyper.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,30 +66,46 @@ public class HelpFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Submit Feedback");
-                @SuppressLint("InflateParams") final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_feedback, null);
-                builder.setView(view);
-                builder.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText title = (EditText) view.findViewById(R.id.title);
-                        EditText content = (EditText) view.findViewById(R.id.content);
-                        if (!content.getText().toString().isEmpty() || !content.getText().toString().isEmpty()) {
-                            new FeedbackTask().execute(
-                                    "https://api.github.com/repos/OpenMatter/Hyper/issues",
-                                    title.getText().toString(),
-                                    content.getText().toString()
-                            );
+                if (isNetworkAvailable()) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Submit Feedback");
+                    @SuppressLint("InflateParams") final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_feedback, null);
+                    builder.setView(view);
+                    builder.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText title = (EditText) view.findViewById(R.id.title);
+                            EditText content = (EditText) view.findViewById(R.id.content);
+                            if (!content.getText().toString().isEmpty() || !content.getText().toString().isEmpty()) {
+                                new FeedbackTask().execute(
+                                        "https://api.github.com/repos/OpenMatter/Hyper/issues",
+                                        title.getText().toString(),
+                                        content.getText().toString()
+                                );
+                            }
                         }
-                    }
-                });
-                AppCompatDialog dialog = builder.create();
-                dialog.show();
+                    });
+                    AppCompatDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    Toast.makeText(getActivity(), "Oops! Looks like you aren't connected to the internet.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return rootView;
+    }
+
+    /**
+     * Method to check connectivity status
+     *
+     * @return true if network is available
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     /**
