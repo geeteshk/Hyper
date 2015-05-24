@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -48,14 +49,14 @@ public class PilotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_pilot, container, false);
 
-        final String[] objects = getActivity().fileList();
+        final String[] objects = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list();
         ListView listView = (ListView) rootView.findViewById(R.id.pilot_list);
         listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.project_item, objects));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                intent.putExtra("url", "file:///" + getActivity().getFilesDir() + File.separator + objects[position] + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Environment.getExternalStorageState() + File.separator + "Hyper" + File.separator + objects[position] + File.separator + "index.html");
                 intent.putExtra("name", objects[position]);
                 startActivity(intent);
             }
@@ -69,7 +70,7 @@ public class PilotFragment extends Fragment {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(getActivity(), objects[position])) {
+                        if (ProjectUtil.deleteProject(objects[position])) {
                             view.animate().alpha(0).setDuration(600).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {

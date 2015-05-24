@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,37 +38,37 @@ public class ProjectUtil {
     public static final String MAIN = "";
 
     public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream) {
-        if (Arrays.asList(context.fileList()).contains(name)) {
+        if (Arrays.asList(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()).contains(name)) {
             Toast.makeText(context, name + " already exists.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (stream == null) {
-            if (createDirectory(context, name)
-                    && createDirectory(context, name + File.separator + "images")
-                    && createDirectory(context, name + File.separator + "fonts")
-                    && createDirectory(context, name + File.separator + "css")
-                    && createDirectory(context, name + File.separator + "js")
-                    && createFile(context, name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(context, name, "style.css", STYLE)
-                    && createFile(context, name, "main.js", MAIN)
-                    && JsonUtil.createProjectFile(context, name, author, description, keywords)
+            if (createDirectory(name)
+                    && createDirectory(name + File.separator + "images")
+                    && createDirectory(name + File.separator + "fonts")
+                    && createDirectory(name + File.separator + "css")
+                    && createDirectory(name + File.separator + "js")
+                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
+                    && createFile(name, "style.css", STYLE)
+                    && createFile(name, "main.js", MAIN)
+                    && JsonUtil.createProjectFile(name, author, description, keywords)
                     && copyIcon(context, name)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "It seems something went wrong while creating the project.", Toast.LENGTH_SHORT).show();
             }
         } else {
-            if (createDirectory(context, name)
-                    && createDirectory(context, name + File.separator + "images")
-                    && createDirectory(context, name + File.separator + "fonts")
-                    && createDirectory(context, name + File.separator + "css")
-                    && createDirectory(context, name + File.separator + "js")
-                    && createFile(context, name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(context, name, "style.css", STYLE)
-                    && createFile(context, name, "main.js", MAIN)
-                    && JsonUtil.createProjectFile(context, name, author, description, keywords)
-                    && copyIcon(context, name, stream)) {
+            if (createDirectory(name)
+                    && createDirectory(name + File.separator + "images")
+                    && createDirectory(name + File.separator + "fonts")
+                    && createDirectory(name + File.separator + "css")
+                    && createDirectory(name + File.separator + "js")
+                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
+                    && createFile(name, "style.css", STYLE)
+                    && createFile(name, "main.js", MAIN)
+                    && JsonUtil.createProjectFile(name, author, description, keywords)
+                    && copyIcon(name, stream)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "It seems something went wrong while creating the project.", Toast.LENGTH_SHORT).show();
@@ -75,8 +76,8 @@ public class ProjectUtil {
         }
     }
 
-    public static boolean deleteProject(Context context, String name) {
-        File projectDir = new File(context.getFilesDir() + File.separator + name);
+    public static boolean deleteProject(String name) {
+        File projectDir = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name);
         File[] files = projectDir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
@@ -105,17 +106,17 @@ public class ProjectUtil {
         return (directory.delete());
     }
 
-    public static Bitmap getFavicon(Context context, String name) {
-        return BitmapFactory.decodeFile(context.getFilesDir().getAbsolutePath() + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
+    public static Bitmap getFavicon(String name) {
+        return BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
     }
 
-    private static boolean createDirectory(Context context, String name) {
-        return new File(context.getFilesDir() + File.separator + name).mkdirs();
+    private static boolean createDirectory(String name) {
+        return new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name).mkdirs();
     }
 
-    public static boolean createFile(Context context, String parent, String name, String contents) {
+    public static boolean createFile(String parent, String name, String contents) {
         try {
-            OutputStream stream = new FileOutputStream(new File(context.getFilesDir() + File.separator + parent + File.separator + name));
+            OutputStream stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + parent + File.separator + name));
             stream.write(contents.getBytes());
             stream.close();
         } catch (Exception e) {
@@ -129,7 +130,7 @@ public class ProjectUtil {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");
-            OutputStream output = new FileOutputStream(new File(context.getFilesDir() + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
+            OutputStream output = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
             byte[] buffer = new byte[1024];
             int read;
             while ((read = stream.read(buffer)) != -1) {
@@ -145,9 +146,9 @@ public class ProjectUtil {
         return true;
     }
 
-    private static boolean copyIcon(Context context, String name, InputStream stream) {
+    private static boolean copyIcon(String name, InputStream stream) {
         try {
-            OutputStream outputStream = new FileOutputStream(new File(context.getFilesDir() + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
+            OutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
             byte[] buffer = new byte[1024];
             int read;
             while ((read = stream.read(buffer)) != -1) {
@@ -166,7 +167,7 @@ public class ProjectUtil {
     public static boolean importImage(Context context, String name, Uri imageUri, String imageName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-            OutputStream outputStream = new FileOutputStream(context.getFilesDir() + File.separator + name + File.separator + "images" + File.separator + imageName);
+            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + imageName);
             byte[] buffer = new byte[1024];
             int read;
             while ((read = inputStream.read(buffer)) != -1) {
@@ -185,7 +186,7 @@ public class ProjectUtil {
     public static boolean importFont(Context context, String name, Uri fontUri, String fontName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(fontUri);
-            OutputStream outputStream = new FileOutputStream(context.getFilesDir() + File.separator + name + File.separator + "fonts" + File.separator + fontName);
+            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "fonts" + File.separator + fontName);
             byte[] buffer = new byte[1024];
             int read;
             while ((read = inputStream.read(buffer)) != -1) {
@@ -204,7 +205,7 @@ public class ProjectUtil {
     public static boolean importCss(Context context, String name, Uri cssUri, String cssName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(cssUri);
-            OutputStream outputStream = new FileOutputStream(context.getFilesDir() + File.separator + name + File.separator + "css" + File.separator + cssName);
+            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "css" + File.separator + cssName);
             byte[] buffer = new byte[1024];
             int read;
             while ((read = inputStream.read(buffer)) != -1) {

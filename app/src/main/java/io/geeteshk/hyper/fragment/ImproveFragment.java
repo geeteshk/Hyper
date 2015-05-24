@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
+
+import java.io.File;
 
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.ProjectActivity;
@@ -34,7 +37,7 @@ public class ImproveFragment extends Fragment {
 
         final String[] objects = getActivity().fileList();
         ListView listView = (ListView) rootView.findViewById(R.id.project_list);
-        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.project_item, getActivity().fileList()));
+        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.project_item, new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -52,7 +55,7 @@ public class ImproveFragment extends Fragment {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(getActivity(), objects[position])) {
+                        if (ProjectUtil.deleteProject(objects[position])) {
                             view.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {

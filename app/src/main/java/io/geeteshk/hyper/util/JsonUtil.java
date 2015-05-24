@@ -1,6 +1,6 @@
 package io.geeteshk.hyper.util;
 
-import android.content.Context;
+import android.os.Environment;
 
 import org.json.JSONObject;
 
@@ -20,14 +20,13 @@ public class JsonUtil {
     /**
      * Creates the .hyper file at the root of a project
      *
-     * @param context     used to write to file
      * @param name        of the project
      * @param author      of the project
      * @param description of the project
      * @param keywords    about the project
      * @return true if successful
      */
-    public static boolean createProjectFile(Context context, String name, String author, String description, String keywords) {
+    public static boolean createProjectFile(String name, String author, String description, String keywords) {
         try {
             JSONObject object = new JSONObject();
             object.put("name", name);
@@ -35,7 +34,7 @@ public class JsonUtil {
             object.put("description", description);
             object.put("keywords", keywords);
 
-            OutputStream stream = new FileOutputStream(new File(context.getFilesDir() + File.separator + name + File.separator + name + ".hyper"));
+            OutputStream stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + name + ".hyper"));
             stream.write(object.toString(4).getBytes());
             stream.close();
         } catch (Exception e) {
@@ -48,13 +47,12 @@ public class JsonUtil {
     /**
      * Reads contents from project file
      *
-     * @param context used to read file
      * @param name    of project
      * @return project file contents
      */
-    private static String getProjectJSON(Context context, String name) {
+    private static String getProjectJSON(String name) {
         try {
-            InputStream inputStream = new FileInputStream(context.getFilesDir() + File.separator + name + File.separator + name + ".hyper");
+            InputStream inputStream = new FileInputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + name + ".hyper");
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             StringBuilder builder = new StringBuilder();
@@ -75,14 +73,13 @@ public class JsonUtil {
     /**
      * Reads properties from project JSON
      *
-     * @param context used to read files
      * @param name    of project
      * @param prop    property that needs to be read
      * @return value of property
      */
-    public static String getProjectProperty(Context context, String name, String prop) {
+    public static String getProjectProperty(String name, String prop) {
         try {
-            String json = getProjectJSON(context, name);
+            String json = getProjectJSON(name);
             JSONObject object = new JSONObject(json);
             return object.getString(prop);
         } catch (Exception e) {

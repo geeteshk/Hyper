@@ -61,7 +61,7 @@ public class EditorFragment extends Fragment {
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
-                ProjectUtil.createFile(getActivity(), mProject, mFilename, editText.getText().toString());
+                ProjectUtil.createFile(mProject, mFilename, editText.getText().toString());
             }
         };
 

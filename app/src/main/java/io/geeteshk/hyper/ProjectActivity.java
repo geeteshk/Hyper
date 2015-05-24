@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -81,7 +82,7 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
-                intent.putExtra("url", "file:///" + ProjectActivity.this.getFilesDir() + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
                 intent.putExtra("name", getIntent().getStringExtra("project"));
                 startActivity(intent);
             }
@@ -290,10 +291,10 @@ public class ProjectActivity extends AppCompatActivity {
         TextView description = (TextView) layout.findViewById(R.id.project_description);
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
 
-        name.setText(JsonUtil.getProjectProperty(ProjectActivity.this, getIntent().getStringExtra("project"), "name"));
-        author.setText(JsonUtil.getProjectProperty(ProjectActivity.this, getIntent().getStringExtra("project"), "author"));
-        description.setText(JsonUtil.getProjectProperty(ProjectActivity.this, getIntent().getStringExtra("project"), "description"));
-        keywords.setText(JsonUtil.getProjectProperty(ProjectActivity.this, getIntent().getStringExtra("project"), "keywords"));
+        name.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "name"));
+        author.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "author"));
+        description.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "description"));
+        keywords.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "keywords"));
 
         AppCompatDialog dialog = builder.create();
         dialog.show();

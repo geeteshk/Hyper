@@ -69,9 +69,9 @@ public class ProjectAdapter extends ArrayAdapter<String> {
         TextView title = (TextView) rootView.findViewById(R.id.title);
         TextView desc = (TextView) rootView.findViewById(R.id.desc);
 
-        favicon.setImageBitmap(ProjectUtil.getFavicon(mContext, mObjects[position]));
+        favicon.setImageBitmap(ProjectUtil.getFavicon(mObjects[position]));
         title.setText(mObjects[position]);
-        desc.setText(JsonUtil.getProjectProperty(mContext, mObjects[position], "description"));
+        desc.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
 
         return rootView;
     }
