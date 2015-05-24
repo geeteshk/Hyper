@@ -14,8 +14,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+/**
+ * Utility class to handle all project related tasks
+ */
 public class ProjectUtil {
 
+    /**
+     * HTML BareBones Template
+     */
     public static final String INDEX = "<!doctype html>\n" +
             "<html>\n" +
             "  <head>\n" +
@@ -33,10 +39,26 @@ public class ProjectUtil {
             "  </body>\n" +
             "</html>";
 
+    /**
+     * Empty Style
+     */
     public static final String STYLE = "";
 
+    /**
+     * Empty Script
+     */
     public static final String MAIN = "";
 
+    /**
+     * Method to handle project creation
+     *
+     * @param context     used to show toasts
+     * @param name        of project
+     * @param author      of project
+     * @param description of project
+     * @param keywords    about project
+     * @param stream      used for importing favicon
+     */
     public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream) {
         if (Arrays.asList(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()).contains(name)) {
             Toast.makeText(context, name + " already exists.", Toast.LENGTH_SHORT).show();
@@ -76,6 +98,12 @@ public class ProjectUtil {
         }
     }
 
+    /**
+     * Method used to delete a project
+     *
+     * @param name of project
+     * @return true if successfully deleted
+     */
     public static boolean deleteProject(String name) {
         File projectDir = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name);
         File[] files = projectDir.listFiles();
@@ -90,6 +118,12 @@ public class ProjectUtil {
         return projectDir.delete();
     }
 
+    /**
+     * Method used to delete directory
+     *
+     * @param directory to delete
+     * @return true if successfully deleted
+     */
     private static boolean deleteDirectory(File directory) {
         if (directory.exists()) {
             File[] files = directory.listFiles();
@@ -106,14 +140,34 @@ public class ProjectUtil {
         return (directory.delete());
     }
 
+    /**
+     * Method to get Favicon as Bitmap
+     *
+     * @param name of project
+     * @return bitmap object of favicon
+     */
     public static Bitmap getFavicon(String name) {
         return BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
     }
 
+    /**
+     * Method used to create directory
+     *
+     * @param name of project
+     * @return true if successfully create
+     */
     private static boolean createDirectory(String name) {
         return new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name).mkdirs();
     }
 
+    /**
+     * Method used for creation of files
+     *
+     * @param parent name of project
+     * @param name of file
+     * @param contents of file
+     * @return true if successfully created
+     */
     public static boolean createFile(String parent, String name, String contents) {
         try {
             OutputStream stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + parent + File.separator + name));
@@ -126,6 +180,13 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Method used to copy the default icon
+     *
+     * @param context used to open assets
+     * @param name of projects
+     * @return true if successfully copied
+     */
     private static boolean copyIcon(Context context, String name) {
         try {
             AssetManager manager = context.getAssets();
@@ -146,6 +207,13 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Method used to copy a custom icon
+     *
+     * @param name of project
+     * @param stream containing path to custom icon
+     * @return true if successfully copied
+     */
     private static boolean copyIcon(String name, InputStream stream) {
         try {
             OutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
@@ -164,6 +232,15 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Method used for importing images into project
+     *
+     * @param context used to getContentResolver
+     * @param name of project
+     * @param imageUri of chosen image
+     * @param imageName of chosen image
+     * @return true if successfully imported
+     */
     public static boolean importImage(Context context, String name, Uri imageUri, String imageName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
@@ -183,6 +260,15 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Method used for importing fonts into project
+     *
+     * @param context used to getContentResolver
+     * @param name of project
+     * @param fontUri of chosen font
+     * @param fontName of chosen font
+     * @return true if successfully imported
+     */
     public static boolean importFont(Context context, String name, Uri fontUri, String fontName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(fontUri);
@@ -202,6 +288,15 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Method used for importing CSS files into project
+     *
+     * @param context used to getContentResolver
+     * @param name of project
+     * @param cssUri of chosen CSS file
+     * @param cssName of chosen CSS file
+     * @return true if successfully imported
+     */
     public static boolean importCss(Context context, String name, Uri cssUri, String cssName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(cssUri);
