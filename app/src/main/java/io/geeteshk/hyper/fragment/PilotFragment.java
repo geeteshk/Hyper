@@ -51,7 +51,7 @@ public class PilotFragment extends Fragment {
 
         final String[] objects = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list();
         ListView listView = (ListView) rootView.findViewById(R.id.pilot_list);
-        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.project_item, objects));
+        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.item_project, objects));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

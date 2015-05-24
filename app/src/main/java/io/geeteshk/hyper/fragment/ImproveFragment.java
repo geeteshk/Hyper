@@ -37,7 +37,7 @@ public class ImproveFragment extends Fragment {
 
         final String[] objects = getActivity().fileList();
         ListView listView = (ListView) rootView.findViewById(R.id.project_list);
-        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.project_item, new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()));
+        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.item_project, new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

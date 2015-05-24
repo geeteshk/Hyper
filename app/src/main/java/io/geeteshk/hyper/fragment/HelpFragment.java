@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -37,6 +38,7 @@ import java.util.Calendar;
 
 import io.geeteshk.hyper.Bot;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.adapter.FAQAdapter;
 
 /**
  * Fragment used to show help about the IDE. A lot of work still needs to be done here.
@@ -61,6 +63,9 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_help, container, false);
+
+        ListView faqList = (ListView) rootView.findViewById(R.id.faq_list);
+        faqList.setAdapter(new FAQAdapter(getActivity(), R.layout.item_faq));
 
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_feedback);
         button.setOnClickListener(new View.OnClickListener() {

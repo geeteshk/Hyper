@@ -20,16 +20,13 @@
         android:textSize="18sp"
         android:typeface="sans" />
 
-    <TextView
+    <ListView
+        android:id="@+id/faq_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/help_desc"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="@string/too_lazy"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="42sp"
-        android:textStyle="italic" />
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab_feedback"

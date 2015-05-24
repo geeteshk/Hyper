@@ -1,7 +1,9 @@
 package io.geeteshk.hyper.util;
 
+import android.content.Context;
 import android.os.Environment;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -82,6 +84,26 @@ public class JsonUtil {
             String json = getProjectJSON(name);
             JSONObject object = new JSONObject(json);
             return object.getString(prop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static JSONArray getFAQs(Context context) {
+        try {
+            InputStream inputStream = context.getAssets().open("json/faq.json");
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuilder builder = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line).append(System.getProperty("line.separator"));
+            }
+
+            return new JSONArray(builder.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
