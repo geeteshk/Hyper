@@ -91,6 +91,12 @@ public class JsonUtil {
         return null;
     }
 
+    /**
+     * Method used to read from faq.json file and return array of FAQs
+     *
+     * @param context used to read assets
+     * @return array of JSONObjects
+     */
     public static JSONArray getFAQs(Context context) {
         try {
             InputStream inputStream = context.getAssets().open("json/faq.json");

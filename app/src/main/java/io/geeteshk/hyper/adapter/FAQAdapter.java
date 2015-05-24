@@ -15,10 +15,27 @@ import io.geeteshk.hyper.util.JsonUtil;
 
 public class FAQAdapter extends ArrayAdapter {
 
+    /**
+     * Context used to inflate layout
+     */
     Context mContext;
+
+    /**
+     * Resource ID of layout
+     */
     int mResource;
+
+    /**
+     * Array of JSONObjects holding FAQs
+     */
     JSONArray mArray;
 
+    /**
+     * Public constructor
+     *
+     * @param context  used to get FAQs
+     * @param resource of layout
+     */
     public FAQAdapter(Context context, int resource) {
         super(context, resource);
         mContext = context;
@@ -26,6 +43,14 @@ public class FAQAdapter extends ArrayAdapter {
         mArray = JsonUtil.getFAQs(mContext);
     }
 
+    /**
+     * Method to inflate each view
+     *
+     * @param position    current position in list
+     * @param convertView reusable view
+     * @param parent      view above this one
+     * @return view of specific position
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
