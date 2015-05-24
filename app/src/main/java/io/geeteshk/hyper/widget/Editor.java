@@ -26,10 +26,12 @@ import io.geeteshk.hyper.util.PreferenceUtil;
 public class Editor extends EditText {
 
     /**
-     * Different colours for parts of code
+     * Different colours for different parts of code
      */
     private static final int COLOR_KEYWORD = 0xfff92672;
     private static final int COLOR_PARAMS = 0xff64cbf4;
+    private static final int COLOR_ENDING = 0xff9a79dd;
+    private static final int COLOR_FUNCTIONS = 0xffed5c00;
     /**
      * Various patterns for detecting words in code
      */
@@ -93,6 +95,26 @@ public class Editor extends EditText {
                     "z-index)\\b");
     private static final Pattern COMMENTS = Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
+    private static final Pattern ENDINGS = Pattern.compile(
+            "(em|rem|px|pt|%)");
+    private static final Pattern DATATYPES = Pattern.compile(
+            "\\b(abstract|arguments|boolean|byte|char|class|" +
+                    "const|double|enum|final|float|function|" +
+                    "int|interface|long|native|package|" +
+                    "private|protected|public|short|static|" +
+                    "synchronized|transient|var|void|volatile)\\b");
+    private static final Pattern SYMBOLS = Pattern.compile(
+            "(&|=|throw|new|for|" +
+                    "if|else|>|<|^|\\+|-|\\s\\|\\s|" +
+                    "break|try|catch|finally|do|!|" +
+                    "finally|default|case|switch|" +
+                    "native|let|super|throws|return)");
+    private static final Pattern FUNCTIONS = Pattern.compile("n\\((.*?)\\)");
+    private static final Pattern NUMBERS = Pattern.compile("[-.0-9]+");
+    private static final Pattern BOOLEANS = Pattern.compile("\\b(true|false)\\b");
+    /**
+     * Different colours for parts of code
+     */
     private static int COLOR_BUILTIN = 0xffa6e22e;
     private static int COLOR_COMMENT = 0xff75715e;
     private static int COLOR_STRINGS = 0xffe6db74;
@@ -280,7 +302,7 @@ public class Editor extends EditText {
                     break;
                 case CSS:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
@@ -289,17 +311,19 @@ public class Editor extends EditText {
                     }
 
                     for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
                         e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.BOLD), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
                         e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.BOLD), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (Matcher m = ENDINGS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     counter = 0;
@@ -321,6 +345,49 @@ public class Editor extends EditText {
                     }
                     break;
                 case JS:
+                    for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_FUNCTIONS), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new StyleSpan(Typeface.ITALIC), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (Matcher m = SYMBOLS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (int index = e.toString().indexOf("null"); index >= 0; index = e.toString().indexOf("null", index + 1)) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (Matcher m = NUMBERS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    for (Matcher m = BOOLEANS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    counter = 0;
+                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                        if (counter % 2 == 0) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counter++;
+                    }
+
+                    counter = 0;
+                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
+                        if (counter % 2 == 0) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counter++;
+                    }
                     break;
             }
         } catch (Exception ex) {
