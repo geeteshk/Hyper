@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.melnykov.fab.ObservableScrollView;
@@ -122,6 +123,14 @@ public class CreateFragment extends Fragment {
                     MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
                     DrawerFragment.select(getActivity(), 1);
                 }
+            }
+        });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getActivity(), "Create project", Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 

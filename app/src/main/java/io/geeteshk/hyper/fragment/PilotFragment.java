@@ -114,6 +114,14 @@ public class PilotFragment extends Fragment {
             }
         });
 
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getActivity(), "Create project", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
         return rootView;
     }
 }

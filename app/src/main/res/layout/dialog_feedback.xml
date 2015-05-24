@@ -5,6 +5,13 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/feedback_note"
+        android:typeface="sans" />
+
     <io.geeteshk.hyper.widget.FloatLabelLayout
         style="@style/TextAppearance.Hyper.FloatLabel"
         android:layout_width="match_parent"

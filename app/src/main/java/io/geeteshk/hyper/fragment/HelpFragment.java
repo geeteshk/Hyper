@@ -93,6 +93,14 @@ public class HelpFragment extends Fragment {
             }
         });
 
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getActivity(), "Submit feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
         return rootView;
     }
 

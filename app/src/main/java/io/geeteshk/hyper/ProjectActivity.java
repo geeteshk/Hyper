@@ -86,6 +86,14 @@ public class ProjectActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(ProjectActivity.this, "Test project", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     /**

@@ -56,4 +56,5 @@
     <string name="view_resources">View Resources</string>
     <string name="about_project">About Project</string>
     <string name="another_cry_for_help">Please donate!</string>
+    <string name="feedback_note">If you do have a GitHub user name then please include it in the content.</string>
 </resources>
