@@ -108,9 +108,7 @@ public class Editor extends EditText {
     private Context mContext;
 
     public Editor(Context context) {
-        super(context);
-        mContext = context;
-        init();
+        this(context, null);
     }
 
     public Editor(Context context, AttributeSet attrs) {
@@ -146,7 +144,7 @@ public class Editor extends EditText {
             COLOR_STRINGS = 0xffed5c00;
             COLOR_COMMENT = 0xffa0a0a0;
             setBackgroundColor(0xfff8f8f8);
-            setTextColor(0xff000000);
+            setTextColor(0xff222222);
         } else {
             COLOR_BUILTIN = 0xffa6e22e;
             COLOR_COMMENT = 0xff75715e;
