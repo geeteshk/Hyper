@@ -20,12 +20,19 @@ import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.util.PreferenceUtil;
 
+/**
+ * Editor class to handle code highlighting etc
+ */
 public class Editor extends EditText {
 
-    public static final int TYPE_HTML = 0;
-    public static final int TYPE_CSS = 1;
-    public static final int TYPE_JS = 2;
+    /**
+     * Different colours for parts of code
+     */
     private static final int COLOR_KEYWORD = 0xfff92672;
+    private static final int COLOR_PARAMS = 0xff64cbf4;
+    /**
+     * Various patterns for detecting words in code
+     */
     private static final Pattern KEYWORDS = Pattern.compile(
             "\\b(a|address|app|applet|area|b|" +
                     "base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|" +
@@ -84,19 +91,34 @@ public class Editor extends EditText {
                     "text-transform|top|unicode-bidi|vertical-align|visibility|" +
                     "voice-family|volume|white-space|widows|width|word-spacing|" +
                     "z-index)\\b");
-    private static final Pattern COMMENTS = Pattern.compile("/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
-    private static final Pattern TRAILING_WHITE_SPACE = Pattern.compile("[\\t ]+$", Pattern.MULTILINE);
-    private static final int COLOR_PARAMS = 0xff64cbf4;
+    private static final Pattern COMMENTS = Pattern.compile(
+            "/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
     private static int COLOR_BUILTIN = 0xffa6e22e;
     private static int COLOR_COMMENT = 0xff75715e;
     private static int COLOR_STRINGS = 0xffe6db74;
+    /**
+     * Handler used to update colours when code is changed
+     */
     private final Handler mUpdateHandler = new Handler();
+    /**
+     * Custom listener
+     */
     public OnTextChangedListener mOnTextChangedListener = null;
+    /**
+     * Delay used to update code
+     */
     public int mUpdateDelay = 1000;
-    public int mErrorLine = 0;
-    public boolean mDirty = false;
-    private int mType = 0;
+    /**
+     * Type of code set
+     */
+    private CodeType mType;
+    /**
+     * Checks if code has been changed
+     */
     private boolean mModified = true;
+    /**
+     * Runnable used to update colours when code is changed
+     */
     private final Runnable mUpdateRunnable = new Runnable() {
         @Override
         public void run() {
@@ -105,23 +127,39 @@ public class Editor extends EditText {
             highlightWithoutChange(e);
         }
     };
+    /**
+     * Context used to get preferences
+     */
     private Context mContext;
 
+    /**
+     * Public constructor
+     *
+     * @param context used to get preferences
+     */
     public Editor(Context context) {
         this(context, null);
     }
 
+    /**
+     * Public ocnstructor
+     *
+     * @param context used to get preferences
+     * @param attrs   not used
+     */
     public Editor(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
     }
 
+    /**
+     * Highlights given code and sets it as text
+     *
+     * @param text to be highlighted
+     */
     public void setTextHighlighted(CharSequence text) {
         cancelUpdate();
-
-        mErrorLine = 0;
-        mDirty = false;
 
         mModified = false;
         setText(highlight(new SpannableStringBuilder(text)));
@@ -130,14 +168,9 @@ public class Editor extends EditText {
         if (mOnTextChangedListener != null) mOnTextChangedListener.onTextChanged(text.toString());
     }
 
-    public String getCleanText() {
-        return TRAILING_WHITE_SPACE.matcher(getText()).replaceAll("");
-    }
-
-    public void refresh() {
-        highlightWithoutChange(getText());
-    }
-
+    /**
+     * Code used to initialise editor
+     */
     private void init() {
         if (!PreferenceUtil.get(mContext, "dark_theme", false)) {
             COLOR_BUILTIN = 0xff72b000;
@@ -161,7 +194,7 @@ public class Editor extends EditText {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 if (mModified && end - start == 1 && start < source.length() && dstart < dest.length()) {
                     char c = source.charAt(start);
-                    if (c == '\n') return autoIndent(source, start, end, dest, dstart, dend);
+                    if (c == '\n') return autoIndent(source, dest, dstart, dend);
                 }
 
                 return source;
@@ -183,31 +216,44 @@ public class Editor extends EditText {
 
                 if (!mModified) return;
 
-                mDirty = true;
                 mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
             }
         });
     }
 
+    /**
+     * Prevent code from updating
+     */
     private void cancelUpdate() {
         mUpdateHandler.removeCallbacks(mUpdateRunnable);
     }
 
+    /**
+     * Used in main runnable
+     *
+     * @param e text to be highlighted
+     */
     private void highlightWithoutChange(Editable e) {
         mModified = false;
         highlight(e);
         mModified = true;
     }
 
+    /**
+     * Main method used for highlightin i.e. this is where the magic happens
+     *
+     * @param e text to be highlighted
+     * @return highlighted text
+     */
     private Editable highlight(Editable e) {
         try {
             clearSpans(e);
 
             if (e.length() == 0) return e;
 
-            int counter = 1;
+            int counter;
             switch (mType) {
-                case TYPE_HTML:
+                case HTML:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
                             e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -223,16 +269,16 @@ public class Editor extends EditText {
                         e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    counter = 1;
+                    counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 != 0) {
+                        if (counter % 2 == 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
                     break;
-                case TYPE_CSS:
+                case CSS:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
                         e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -256,25 +302,25 @@ public class Editor extends EditText {
                         e.setSpan(new StyleSpan(Typeface.BOLD), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    counter = 1;
+                    counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 != 0) {
+                        if (counter % 2 == 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
 
-                    counter = 1;
+                    counter = 0;
                     for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counter % 2 != 0) {
+                        if (counter % 2 == 0) {
                             e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
                     break;
-                case TYPE_JS:
+                case JS:
                     break;
             }
         } catch (Exception ex) {
@@ -284,10 +330,20 @@ public class Editor extends EditText {
         return e;
     }
 
-    public void setType(int type) {
+    /**
+     * Method to set the code type
+     *
+     * @param type of code
+     */
+    public void setType(CodeType type) {
         mType = type;
     }
 
+    /**
+     * Removes all spans
+     *
+     * @param e text to be cleared
+     */
     private void clearSpans(Editable e) {
         {
             ForegroundColorSpan spans[] = e.getSpans(0, e.length(), ForegroundColorSpan.class);
@@ -300,10 +356,19 @@ public class Editor extends EditText {
         }
     }
 
-    private CharSequence autoIndent(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+    /**
+     * Method used for indenting code automatically
+     *
+     * @param source the main code
+     * @param dest   the new code
+     * @param dstart start of the code
+     * @param dend   end of the code
+     * @return indented code
+     */
+    private CharSequence autoIndent(CharSequence source, Spanned dest, int dstart, int dend) {
         String indent = "";
         int istart = dstart - 1;
-        int iend = -1;
+        int iend;
 
         boolean dataBefore = false;
         int pt = 0;
@@ -330,7 +395,6 @@ public class Editor extends EditText {
                     dataBefore = true;
                 }
 
-                // parenthesis counter
                 if (c == '(')
                     --pt;
                 else if (c == ')')
@@ -338,7 +402,6 @@ public class Editor extends EditText {
             }
         }
 
-        // copy indent of this line into the next
         if (istart > -1) {
             char charAtCursor = dest.charAt(dstart);
 
@@ -347,7 +410,6 @@ public class Editor extends EditText {
                  ++iend) {
                 char c = dest.charAt(iend);
 
-                // auto expand comments
                 if (charAtCursor != '\n' &&
                         c == '/' &&
                         iend + 1 < dend &&
@@ -364,14 +426,22 @@ public class Editor extends EditText {
             indent += dest.subSequence(istart, iend);
         }
 
-        // add new indent
         if (pt < 0)
             indent += "\t";
 
-        // append white space of previous line and new indent
         return source + indent;
     }
 
+    /**
+     * Determines the type of code that is being handled
+     */
+    public enum CodeType {
+        HTML, CSS, JS
+    }
+
+    /**
+     * Listens to when text is changed
+     */
     public interface OnTextChangedListener {
         void onTextChanged(String text);
     }

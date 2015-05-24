@@ -50,11 +50,11 @@ public class EditorFragment extends Fragment {
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
 
         if (mFilename.endsWith(".html")) {
-            editText.setType(Editor.TYPE_HTML);
+            editText.setType(Editor.CodeType.HTML);
         } else if (mFilename.endsWith(".css")) {
-            editText.setType(Editor.TYPE_CSS);
+            editText.setType(Editor.CodeType.CSS);
         } else if (mFilename.endsWith(".js")) {
-            editText.setType(Editor.TYPE_JS);
+            editText.setType(Editor.CodeType.JS);
         }
 
         editText.setTextHighlighted(getContents(mProject, mFilename));
