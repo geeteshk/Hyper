@@ -315,4 +315,32 @@ public class ProjectUtil {
 
         return true;
     }
+
+    /**
+     * Method used for importing JS files into project
+     *
+     * @param context used to getContentResolver
+     * @param name    of project
+     * @param jsUri   of chosen JS file
+     * @param jsName  of chosen JS file
+     * @return true if successfully imported
+     */
+    public static boolean importJs(Context context, String name, Uri jsUri, String jsName) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(jsUri);
+            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "js" + File.separator + jsName);
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            inputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 }

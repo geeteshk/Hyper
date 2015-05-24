@@ -258,7 +258,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, getIntent().getStringExtra("project"), jsUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, getIntent().getStringExtra("project"), jsUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported JS file.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this JS file.", Toast.LENGTH_SHORT).show();
