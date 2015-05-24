@@ -31,6 +31,7 @@ public class EditorFragment extends Fragment {
      * Default empty constructor
      */
     public EditorFragment() {
+        setRetainInstance(true);
     }
 
     /**

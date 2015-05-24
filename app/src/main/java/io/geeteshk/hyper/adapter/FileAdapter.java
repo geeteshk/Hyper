@@ -2,14 +2,14 @@ package io.geeteshk.hyper.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import io.geeteshk.hyper.fragment.EditorFragment;
 
 /**
  * Adapter to load main files into editor
  */
-public class FileAdapter extends FragmentStatePagerAdapter {
+public class FileAdapter extends FragmentPagerAdapter {
 
     /**
      * Names of main files to edit
