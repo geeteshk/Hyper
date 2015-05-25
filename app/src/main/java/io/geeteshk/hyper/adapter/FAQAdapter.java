@@ -1,6 +1,7 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.util.PreferenceUtil;
 
 public class FAQAdapter extends ArrayAdapter {
 
@@ -62,6 +64,7 @@ public class FAQAdapter extends ArrayAdapter {
             rootView = inflater.inflate(mResource, parent, false);
         }
 
+        CardView faqCard = (CardView) rootView.findViewById(R.id.faq_card);
         TextView title = (TextView) rootView.findViewById(R.id.faq_title);
         TextView content = (TextView) rootView.findViewById(R.id.faq_content);
 
@@ -70,6 +73,10 @@ public class FAQAdapter extends ArrayAdapter {
             content.setText(mArray.getJSONObject(position).getString("content"));
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (PreferenceUtil.get(mContext, "dark_theme", false)) {
+            faqCard.setCardBackgroundColor(0xff222222);
         }
 
         return rootView;
