@@ -42,12 +42,12 @@ public class ProjectUtil {
     /**
      * Empty Style
      */
-    public static final String STYLE = "";
+    public static final String STYLE = "/** Add all your styles here */";
 
     /**
      * Empty Script
      */
-    public static final String MAIN = "";
+    public static final String MAIN = "// Add all your JS here";
 
     /**
      * Method to handle project creation
