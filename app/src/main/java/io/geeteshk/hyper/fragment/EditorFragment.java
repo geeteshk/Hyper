@@ -1,6 +1,7 @@
 package io.geeteshk.hyper.fragment;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -77,7 +78,7 @@ public class EditorFragment extends Fragment {
      */
     private String getContents(String project, String filename) {
         try {
-            InputStream inputStream = new FileInputStream(getActivity().getFilesDir().getAbsolutePath() + File.separator + project + File.separator + filename);
+            InputStream inputStream = new FileInputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + project + File.separator + filename);
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             StringBuilder builder = new StringBuilder();

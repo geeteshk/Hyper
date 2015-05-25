@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.io.File;
+
 import io.geeteshk.hyper.fragment.EditorFragment;
 
 /**
@@ -14,7 +16,7 @@ public class FileAdapter extends FragmentPagerAdapter {
     /**
      * Names of main files to edit
      */
-    String[] mFiles = {"index.html", "style.css", "main.js"};
+    String[] mFiles = {"index.html", "css" + File.separator + "style.css", "js" + File.separator + "main.js"};
 
     /**
      * Name of currently opened project
@@ -61,6 +63,12 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     @Override
     public CharSequence getPageTitle(int position) {
+        if (mFiles[position].startsWith("css")) {
+            return mFiles[position].substring(4);
+        } else if (mFiles[position].startsWith("js")) {
+            return mFiles[position].substring(3);
+        }
+
         return mFiles[position];
     }
 

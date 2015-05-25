@@ -42,7 +42,7 @@ public class ProjectUtil {
     /**
      * Empty Style
      */
-    public static final String STYLE = "/** Add all your styles here */";
+    public static final String STYLE = "/* Add all your styles here */";
 
     /**
      * Empty Script
@@ -72,8 +72,8 @@ public class ProjectUtil {
                     && createDirectory(name + File.separator + "css")
                     && createDirectory(name + File.separator + "js")
                     && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(name, "style.css", STYLE)
-                    && createFile(name, "main.js", MAIN)
+                    && createFile(name, "css" + File.separator + "style.css", STYLE)
+                    && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && JsonUtil.createProjectFile(name, author, description, keywords)
                     && copyIcon(context, name)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
@@ -87,8 +87,8 @@ public class ProjectUtil {
                     && createDirectory(name + File.separator + "css")
                     && createDirectory(name + File.separator + "js")
                     && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(name, "style.css", STYLE)
-                    && createFile(name, "main.js", MAIN)
+                    && createFile(name, "css" + File.separator + "style.css", STYLE)
+                    && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && JsonUtil.createProjectFile(name, author, description, keywords)
                     && copyIcon(name, stream)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();

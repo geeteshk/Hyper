@@ -95,6 +95,10 @@ public class Editor extends EditText {
                     "z-index)\\b");
     private static final Pattern COMMENTS = Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
+    private static final Pattern CSS_COMMENTS = Pattern.compile(
+            "/\\*(?:.|[\\n\\r])*?\\*/|/\\*\\*.*");
+    private static final Pattern JS_COMMENTS = Pattern.compile(
+            "/\\*(?:.|[\\n\\r])*?\\*/|//.*");
     private static final Pattern ENDINGS = Pattern.compile(
             "(em|rem|px|pt|%)");
     private static final Pattern DATATYPES = Pattern.compile(
@@ -287,10 +291,6 @@ public class Editor extends EditText {
                         e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
                     counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
                         if (counter % 2 == 0) {
@@ -298,6 +298,10 @@ public class Editor extends EditText {
                         }
 
                         counter++;
+                    }
+
+                    for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
                 case CSS:
@@ -343,6 +347,10 @@ public class Editor extends EditText {
 
                         counter++;
                     }
+
+                    for (Matcher m = CSS_COMMENTS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                     break;
                 case JS:
                     for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
@@ -387,6 +395,10 @@ public class Editor extends EditText {
                         }
 
                         counter++;
+                    }
+
+                    for (Matcher m = JS_COMMENTS.matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
             }
