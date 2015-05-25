@@ -1,8 +1,12 @@
 package io.geeteshk.hyper.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spannable;
@@ -159,6 +163,16 @@ public class Editor extends EditText {
     private Context mContext;
 
     /**
+     * Rect to represent each line
+     */
+    private Rect mRect;
+
+    /**
+     * Paint to draw line numbers
+     */
+    private Paint mPaint;
+
+    /**
      * Public constructor
      *
      * @param context used to get preferences
@@ -168,7 +182,7 @@ public class Editor extends EditText {
     }
 
     /**
-     * Public ocnstructor
+     * Public constructor
      *
      * @param context used to get preferences
      * @param attrs   not used
@@ -198,18 +212,27 @@ public class Editor extends EditText {
      * Code used to initialise editor
      */
     private void init() {
+        mRect = new Rect();
+        mPaint = new Paint();
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setAntiAlias(true);
+        mPaint.setTextSize(32);
+        mPaint.setTypeface(Typeface.SANS_SERIF);
+
         if (!PreferenceUtil.get(mContext, "dark_theme", false)) {
             COLOR_BUILTIN = 0xff72b000;
             COLOR_STRINGS = 0xffed5c00;
             COLOR_COMMENT = 0xffa0a0a0;
             setBackgroundColor(0xfff8f8f8);
             setTextColor(0xff222222);
+            mPaint.setColor(0xffa0a0a0);
         } else {
             COLOR_BUILTIN = 0xffa6e22e;
             COLOR_COMMENT = 0xff75715e;
             COLOR_STRINGS = 0xffe6db74;
             setBackgroundColor(0xff222222);
             setTextColor(0xfff8f8f8);
+            mPaint.setColor(0xffd3d3d3);
         }
 
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/DroidSansMono.ttf"));
@@ -433,6 +456,23 @@ public class Editor extends EditText {
             BackgroundColorSpan spans[] = e.getSpans(0, e.length(), BackgroundColorSpan.class);
             for (int n = spans.length; n-- > 0; ) e.removeSpan(spans[n]);
         }
+    }
+
+    /**
+     * Method used to draw line numbers onto code
+     *
+     * @param canvas used for drawing
+     */
+    @Override
+    protected void onDraw(@NonNull Canvas canvas) {
+        int count = getLineCount();
+
+        for (int i = 0; i < count; i++) {
+            int baseline = getLineBounds(i, mRect);
+            canvas.drawText(String.valueOf(i + 1), mRect.left - 48, baseline + 1, mPaint);
+        }
+
+        super.onDraw(canvas);
     }
 
     /**

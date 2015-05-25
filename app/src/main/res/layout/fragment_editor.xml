@@ -10,7 +10,10 @@
         android:layout_height="match_parent"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
-        android:padding="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
         android:textSize="14sp" />
 
 </LinearLayout>
