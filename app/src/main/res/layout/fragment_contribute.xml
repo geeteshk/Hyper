@@ -5,12 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/toolbar_space"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" />
-
     <ImageView
         android:id="@+id/github_icon"
         android:layout_width="match_parent"
@@ -45,10 +39,9 @@
         android:id="@+id/fab_git"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/toolbar_space"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="-30dp"
+        android:layout_margin="16dp"
         android:src="@drawable/ic_action_git"
         app:fab_colorNormal="?attr/colorAccent"
         app:fab_colorPressed="#1976D2"
