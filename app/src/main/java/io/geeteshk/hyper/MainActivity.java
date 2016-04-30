@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -23,7 +24,6 @@ import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
 import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.TypefaceUtil;
 
 /**
  * Main activity to show all main content
@@ -109,13 +109,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         File projectDir = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper");
-        if (!projectDir.exists()) {
-            projectDir.mkdir();
+        boolean fileTest = projectDir.exists();
+        if (!fileTest) {
+            fileTest = projectDir.mkdir();
         }
 
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/RobotoCondensed-BoldItalic.ttf");
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
+        if (!fileTest) {
+            Toast.makeText(this, "Could not create project directory!", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.action_drawer_open, R.string.action_drawer_close);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         update(this, getSupportFragmentManager(), PreferenceUtil.get(this, "last_fragment", 0));

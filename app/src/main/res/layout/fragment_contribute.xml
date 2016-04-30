@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow" />
 
     <ImageView
         android:id="@+id/github_icon"
         android:layout_width="match_parent"
         android:layout_height="240dp"
+        android:layout_above="@+id/contribute_title"
         android:contentDescription="@string/hello_octocat"
         android:padding="16dp"
         android:scaleType="fitCenter"
@@ -18,7 +23,9 @@
         android:id="@+id/contribute_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/github_icon"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/open_source"
@@ -35,17 +42,14 @@
         android:paddingRight="32dp"
         android:text="@string/contribute_desc" />
 
-    <com.melnykov.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_git"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_action_git"
-        app:fab_colorNormal="?attr/colorAccent"
-        app:fab_colorPressed="#1976D2"
-        app:fab_colorRipple="#64B5F6"
-        tools:ignore="RtlHardcoded" />
+        android:src="@drawable/ic_action_git" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -16,9 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
-import com.melnykov.fab.FloatingActionButton;
-import com.melnykov.fab.ObservableScrollView;
 
 import java.io.InputStream;
 
@@ -107,9 +105,7 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        ObservableScrollView scrollView = (ObservableScrollView) rootView.findViewById(R.id.scroll_view);
         final FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        button.attachToScrollView(scrollView);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

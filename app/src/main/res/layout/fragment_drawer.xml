@@ -23,6 +23,12 @@
             android:typeface="monospace" />
 
         <View
+            android:id="@+id/toolbar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_shadow" />
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="16dp" />
 

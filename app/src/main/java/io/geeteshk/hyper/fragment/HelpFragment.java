@@ -2,24 +2,24 @@ package io.geeteshk.hyper.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.melnykov.fab.FloatingActionButton;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -76,22 +76,35 @@ public class HelpFragment extends Fragment {
                     builder.setTitle("Submit Feedback");
                     @SuppressLint("InflateParams") final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_feedback, null);
                     builder.setView(view);
-                    builder.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("SUBMIT", null);
+                    final AppCompatDialog dialog = builder.create();
+                    dialog.show();
+
+                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(View v) {
                             EditText title = (EditText) view.findViewById(R.id.title);
                             EditText content = (EditText) view.findViewById(R.id.content);
-                            if (!content.getText().toString().isEmpty() || !content.getText().toString().isEmpty()) {
+                            TextInputLayout titleLayout = (TextInputLayout) view.findViewById(R.id.title_layout);
+                            TextInputLayout contentLayout = (TextInputLayout) view.findViewById(R.id.content_layout);
+                            if (title.getText().toString().equals("")) {
+                                titleLayout.setError("Please enter a title.");
+                                titleLayout.setErrorEnabled(true);
+                            } else if (content.getText().toString().equals("")) {
+                                contentLayout.setError("Please enter some content.");
+                                contentLayout.setErrorEnabled(true);
+                            } else {
                                 new FeedbackTask().execute(
                                         "https://api.github.com/repos/OpenMatter/Hyper/issues",
                                         title.getText().toString(),
                                         content.getText().toString()
                                 );
+
+                                dialog.dismiss();
                             }
                         }
                     });
-                    AppCompatDialog dialog = builder.create();
-                    dialog.show();
                 } else {
                     Toast.makeText(getActivity(), "Oops! Looks like you aren't connected to the internet.", Toast.LENGTH_SHORT).show();
                 }

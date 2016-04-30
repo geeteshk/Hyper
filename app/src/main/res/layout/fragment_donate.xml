@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow" />
+
     <TextView
         android:id="@+id/funny_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/donate_desc"
         android:layout_marginTop="16dp"
         android:alpha="0.57"
+        android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="16dp"
@@ -19,34 +26,34 @@
         android:textSize="24sp" />
 
     <TextView
+        android:id="@+id/donate_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/funny_title"
+        android:layout_centerInParent="true"
         android:layout_marginTop="8dp"
         android:alpha="0.85"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:gravity="center"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:text="@string/cry_for_help" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
+        android:layout_below="@+id/donate_desc"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/another_cry_for_help"
         android:src="@drawable/donate" />
 
-    <com.melnykov.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_donate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_action_donate"
-        app:fab_colorNormal="?attr/colorAccent"
-        app:fab_colorPressed="#1976D2"
-        app:fab_colorRipple="#64B5F6"
-        tools:ignore="RelativeOverlap,RtlHardcoded" />
+        tools:ignore="RelativeOverlap" />
 
 </RelativeLayout>

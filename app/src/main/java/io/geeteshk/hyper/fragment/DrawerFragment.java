@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +56,9 @@ public class DrawerFragment extends Fragment {
         view.setActivated(true);
         if (mOldView != null) {
             if (PreferenceUtil.get(context, "dark_theme", false)) {
-                mOldView.setTextColor(context.getResources().getColor(R.color.primary_text_default_material_dark));
+                mOldView.setTextColor(ContextCompat.getColor(context, R.color.primary_text_default_material_dark));
             } else {
-                mOldView.setTextColor(context.getResources().getColor(R.color.primary_text_default_material_light));
+                mOldView.setTextColor(ContextCompat.getColor(context, R.color.primary_text_default_material_light));
             }
 
             mOldView.setAlpha(0.87f);
@@ -70,7 +71,7 @@ public class DrawerFragment extends Fragment {
 
         if (mOldImage != null) {
             if (PreferenceUtil.get(context, "dark_theme", false)) {
-                mOldImage.getDrawable().setColorFilter(context.getResources().getColor(R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
+                mOldImage.getDrawable().setColorFilter(ContextCompat.getColor(context, R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
             } else {
                 mOldImage.getDrawable().clearColorFilter();
             }
@@ -116,7 +117,21 @@ public class DrawerFragment extends Fragment {
         mLayouts = new LinearLayout[]{create, edit, pilot, contribute, donate, settings, help};
         if (PreferenceUtil.get(getActivity(), "dark_theme", false)) {
             for (LinearLayout linearLayout : mLayouts) {
-                ((ImageView) linearLayout.findViewById(R.id.image_view)).getDrawable().setColorFilter(getActivity().getResources().getColor(R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
+                ((ImageView) linearLayout.findViewById(R.id.image_view)).getDrawable().setColorFilter(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
+            }
+        } else {
+            for (LinearLayout linearLayout : mLayouts) {
+                ((ImageView) linearLayout.findViewById(R.id.image_view)).getDrawable().clearColorFilter();
+            }
+        }
+
+        if (PreferenceUtil.get(getActivity(), "dark_theme", false)) {
+            for (LinearLayout linearLayout : mLayouts) {
+                ((TextView) linearLayout.findViewById(R.id.text_view)).setTextColor(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_dark));
+            }
+        } else {
+            for (LinearLayout linearLayout : mLayouts) {
+                ((TextView) linearLayout.findViewById(R.id.text_view)).setTextColor(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_light));
             }
         }
 
@@ -156,9 +171,9 @@ public class DrawerFragment extends Fragment {
             v.setActivated(true);
             if (mOldView != null) {
                 if (PreferenceUtil.get(getActivity(), "dark_theme", false)) {
-                    mOldView.setTextColor(getActivity().getResources().getColor(R.color.primary_text_default_material_dark));
+                    mOldView.setTextColor(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_dark));
                 } else {
-                    mOldView.setTextColor(getActivity().getResources().getColor(R.color.primary_text_default_material_light));
+                    mOldView.setTextColor(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_light));
                 }
 
                 mOldView.setAlpha(0.87f);
@@ -171,7 +186,7 @@ public class DrawerFragment extends Fragment {
 
             if (mOldImage != null) {
                 if (PreferenceUtil.get(getActivity(), "dark_theme", false)) {
-                    mOldImage.getDrawable().setColorFilter(getActivity().getResources().getColor(R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
+                    mOldImage.getDrawable().setColorFilter(ContextCompat.getColor(getActivity(), R.color.primary_text_default_material_dark), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     mOldImage.getDrawable().clearColorFilter();
                 }

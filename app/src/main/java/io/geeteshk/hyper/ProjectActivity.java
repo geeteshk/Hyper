@@ -1,10 +1,13 @@
 package io.geeteshk.hyper;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +21,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.astuetz.PagerSlidingTabStrip;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 
@@ -72,12 +72,17 @@ public class ProjectActivity extends AppCompatActivity {
         FileAdapter adapter = new FileAdapter(getSupportFragmentManager());
         adapter.setProject(getIntent().getStringExtra("project"));
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(adapter);
+        if (pager != null) {
+            pager.setAdapter(adapter);
+        }
 
-        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabStrip.setViewPager(pager);
+        TabLayout tabStrip = (TabLayout) findViewById(R.id.tabs);
+        if (tabStrip != null) {
+            tabStrip.setupWithViewPager(pager);
+        }
 
         FloatingActionButton button = (FloatingActionButton) findViewById(R.id.fab_build);
+        assert button != null;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,6 +284,7 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Method to show about dialog holding project information
      */
+    @SuppressLint("InflateParams")
     private void showAbout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
         LayoutInflater inflater = getLayoutInflater();

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,33 +9,35 @@
         android:id="@+id/toolbar"
         layout="@layout/widget_toolbar" />
 
-    <com.astuetz.PagerSlidingTabStrip
+    <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@+id/toolbar"
-        android:background="?attr/colorPrimary"
-        android:textColor="@android:color/white"
-        app:pstsIndicatorColor="?attr/colorAccent"
-        app:pstsTextColorSelected="@android:color/white" />
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/tabs"
+        android:background="@drawable/toolbar_shadow" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tabs" />
+        android:layout_below="@+id/toolbar_shadow" />
 
-    <com.melnykov.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_build"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_action_build"
-        app:fab_colorNormal="?attr/colorAccent"
-        app:fab_colorPressed="#1976D2"
-        app:fab_colorRipple="#64B5F6"
-        tools:ignore="RtlHardcoded" />
+        android:src="@drawable/ic_action_build" />
 
 </RelativeLayout>

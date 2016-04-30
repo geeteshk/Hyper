@@ -10,6 +10,7 @@
     <string name="contribute">Contribute</string>
     <string name="donate">Donate</string>
     <string name="hyper"><![CDATA[<hyper/>]]></string>
+    <string name="ok">OK</string>
 
     <string-array name="drawer_items">
         <item>@string/create</item>
@@ -56,4 +57,8 @@
     <string name="about_project">About Project</string>
     <string name="another_cry_for_help">Please donate!</string>
     <string name="feedback_note">If you do have a GitHub user name then please include it in the content.</string>
+
+    <string name="permission_network_rationale">Network state permission is needed to check if network is up.</string>
+    <string name="permission_internet_rationale">Internet permission is needed to test projects.</string>
+    <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
 </resources>
