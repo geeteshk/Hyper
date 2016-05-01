@@ -10,13 +10,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="io.geeteshk.hyper.SplashActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/centre_divider"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_logo" />
+
+    <android.support.v4.widget.Space
+        android:id="@+id/centre_divider"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_centerInParent="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@+id/centre_divider"
+        android:layout_centerHorizontal="true"
         android:text="@string/hyper"
         android:textColor="@android:color/white"
-        android:textSize="72sp"
+        android:textSize="52sp"
         android:typeface="monospace" />
 
 </RelativeLayout>

@@ -41,7 +41,7 @@ public class ContributeFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://github.com/openhyper/Hyper");
+                Uri uri = Uri.parse("https://github.com/OpenMatter/Hyper");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(intent);
@@ -52,7 +52,7 @@ public class ContributeFragment extends Fragment {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), "Go to repo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "GitHub", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

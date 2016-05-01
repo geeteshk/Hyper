@@ -93,7 +93,7 @@ public class EditorFragment extends Fragment {
             e.printStackTrace();
         }
 
-        return null;
+        return "Unable to read file!";
     }
 
     /**

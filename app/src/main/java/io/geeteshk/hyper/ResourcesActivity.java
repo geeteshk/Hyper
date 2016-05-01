@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -47,35 +48,43 @@ public class ResourcesActivity extends AppCompatActivity {
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.resources_list);
         ResourceAdapter adapter = new ResourceAdapter(this, mListDataHeader, mListDataChild);
+        assert listView != null;
         listView.setAdapter(adapter);
-        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, final int groupPosition, final int childPosition, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ResourcesActivity.this);
-                builder.setTitle("Delete Resource?");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("index.html")
-                                && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("style.css")
-                                && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("main.js")
-                                && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("favicon.ico")) {
-                            if (Resources.remove(getIntent().getStringExtra("project"), mListDataHeader.get(groupPosition).toLowerCase(), mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition))) {
-                                Toast.makeText(ResourcesActivity.this, "Successfully deleted.", Toast.LENGTH_SHORT).show();
-                                recreate();
-                            } else {
-                                Toast.makeText(ResourcesActivity.this, "Unable to delete resource.", Toast.LENGTH_SHORT).show();
-                                recreate();
-                            }
-                        } else {
-                            Toast.makeText(ResourcesActivity.this, "You can't delete this file!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                    final int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-                AppCompatDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ResourcesActivity.this);
+                    builder.setTitle("Delete Resource?");
+                    builder.setMessage("Are you sure?");
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("index.html")
+                                    && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("style.css")
+                                    && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("main.js")
+                                    && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("favicon.ico")) {
+                                if (Resources.remove(getIntent().getStringExtra("project"), mListDataHeader.get(groupPosition).toLowerCase(), mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition))) {
+                                    Toast.makeText(ResourcesActivity.this, "Successfully deleted.", Toast.LENGTH_SHORT).show();
+                                    recreate();
+                                } else {
+                                    Toast.makeText(ResourcesActivity.this, "Unable to delete resource.", Toast.LENGTH_SHORT).show();
+                                    recreate();
+                                }
+                            } else {
+                                Toast.makeText(ResourcesActivity.this, "You can't delete this file!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    AppCompatDialog dialog = builder.create();
+                    dialog.show();
+
+                    return true;
+                }
 
                 return false;
             }

@@ -52,7 +52,7 @@ public class DonateFragment extends Fragment {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), "Donate to developer", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Donate! :D", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

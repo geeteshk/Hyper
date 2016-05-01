@@ -87,7 +87,7 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
-                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper" + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
                 intent.putExtra("name", getIntent().getStringExtra("project"));
                 startActivity(intent);
             }

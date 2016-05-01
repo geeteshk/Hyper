@@ -48,14 +48,14 @@ public class PilotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_pilot, container, false);
 
-        final String[] objects = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list();
+        final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         ListView listView = (ListView) rootView.findViewById(R.id.pilot_list);
         listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.item_project, objects));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                intent.putExtra("url", "file:///" + Environment.getExternalStorageState() + File.separator + "Hyper" + File.separator + objects[position] + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper" + File.separator + objects[position] + File.separator + "index.html");
                 intent.putExtra("name", objects[position]);
                 startActivity(intent);
             }
