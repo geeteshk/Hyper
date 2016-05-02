@@ -96,7 +96,7 @@ public class ProjectActivity extends AppCompatActivity {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(ProjectActivity.this, "Test project", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProjectActivity.this, "Test", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -173,7 +173,7 @@ public class ProjectActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Name");
             final EditText editText = new EditText(this);
-            editText.setHint("Name of your resource...");
+            editText.setHint("Resource name");
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
@@ -201,7 +201,7 @@ public class ProjectActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Name");
             final EditText editText = new EditText(this);
-            editText.setHint("Name of your resource...");
+            editText.setHint("Resource name");
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
@@ -229,7 +229,7 @@ public class ProjectActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Name");
             final EditText editText = new EditText(this);
-            editText.setHint("Name of your resource...");
+            editText.setHint("Resource name");
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
@@ -257,7 +257,7 @@ public class ProjectActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Name");
             final EditText editText = new EditText(this);
-            editText.setHint("Name of your resource...");
+            editText.setHint("Resource name");
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {

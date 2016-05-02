@@ -33,7 +33,7 @@
             android:name=".ProjectActivity"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

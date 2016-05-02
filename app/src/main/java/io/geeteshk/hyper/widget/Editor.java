@@ -9,15 +9,20 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Layout;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.view.ViewTreeObserver;
+import android.widget.ArrayAdapter;
+import android.widget.MultiAutoCompleteTextView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +32,7 @@ import io.geeteshk.hyper.util.PreferenceUtil;
 /**
  * Editor class to handle code highlighting etc
  */
-public class Editor extends EditText {
+public class Editor extends MultiAutoCompleteTextView {
 
     /**
      * Different colours for different parts of code
@@ -266,6 +271,13 @@ public class Editor extends EditText {
                 if (!mModified) return;
 
                 mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
+            }
+        });
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                setupAutoComplete();
             }
         });
     }
@@ -549,6 +561,100 @@ public class Editor extends EditText {
             indent += "\t";
 
         return source + indent;
+    }
+
+    private void setupAutoComplete() {
+        String[] items = KEYWORDS.pattern().substring(2, KEYWORDS.pattern().length() - 2).split("\\|");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, items);
+        setAdapter(adapter);
+
+        setThreshold(1);
+        setTokenizer(new Tokenizer() {
+            @Override
+            public int findTokenStart(CharSequence text, int cursor) {
+                int i = cursor;
+
+                while (i > 0 && text.charAt(i - 1) != '<') {
+                    i--;
+                }
+
+                //Check if token really started with @, else we don't have a valid token
+                if (i < 1 || text.charAt(i - 1) != '<') {
+                    return cursor;
+                }
+
+                return i;
+            }
+
+            @Override
+            public int findTokenEnd(CharSequence text, int cursor) {
+                int i = cursor;
+                int len = text.length();
+
+                while (i < len) {
+                    if (text.charAt(i) == ' ') {
+                        return i;
+                    } else {
+                        i++;
+                    }
+                }
+
+                return len;
+            }
+
+            @Override
+            public CharSequence terminateToken(CharSequence text) {
+                int i = text.length();
+
+                while (i > 0 && text.charAt(i - 1) == ' ') {
+                    i--;
+                }
+
+                if (i > 0 && text.charAt(i - 1) == ' ') {
+                    return text;
+                } else {
+                    if (text instanceof Spanned) {
+                        SpannableString sp = new SpannableString(text + " ");
+                        TextUtils.copySpansFrom((Spanned) text, 0, text.length(), Object.class, sp, 0);
+                        return sp;
+                    } else {
+                        return text + " ";
+                    }
+                }
+            }
+        });
+
+        addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Layout layout = getLayout();
+                int position = getSelectionStart();
+                int line = layout.getLineForOffset(position);
+                int baseline = layout.getLineBaseline(line);
+                int bottom = getHeight();
+                int x = (int) layout.getPrimaryHorizontal(position);
+
+                if (x + (getWidth() / 2) > getWidth()) {
+                    x = getWidth() / 2;
+                }
+
+                setDropDownVerticalOffset(baseline - bottom);
+                setDropDownHorizontalOffset(x);
+
+                setDropDownHeight(getHeight() / 3);
+                setDropDownWidth(getWidth() / 2);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
