@@ -37,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
 import io.geeteshk.hyper.Bot;
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.FAQAdapter;
 
@@ -96,7 +97,7 @@ public class HelpFragment extends Fragment {
                                 contentLayout.setErrorEnabled(true);
                             } else {
                                 new FeedbackTask().execute(
-                                        "https://api.github.com/repos/OpenMatter/Hyper/issues",
+                                        Constants.GITHUB_ISSUES_URL,
                                         title.getText().toString(),
                                         content.getText().toString()
                                 );

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 
 /**
@@ -41,7 +42,7 @@ public class DonateFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XFYSLYYVHVE2J");
+                Uri uri = Uri.parse(Constants.PAYPAL_URL);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(intent);

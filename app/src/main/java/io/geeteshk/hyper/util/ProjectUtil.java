@@ -5,7 +5,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+
+import io.geeteshk.hyper.Constants;
 
 /**
  * Utility class to handle all project related tasks
@@ -60,7 +62,7 @@ public class ProjectUtil {
      * @param stream      used for importing favicon
      */
     public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream) {
-        if (Arrays.asList(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper").list()).contains(name)) {
+        if (Arrays.asList(new File(Constants.HYPER_ROOT).list()).contains(name)) {
             Toast.makeText(context, name + " already exists.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -105,13 +107,15 @@ public class ProjectUtil {
      * @return true if successfully deleted
      */
     public static boolean deleteProject(String name) {
-        File projectDir = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name);
+        File projectDir = new File(Constants.HYPER_ROOT + File.separator + name);
         File[] files = projectDir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
                 deleteDirectory(file);
             } else {
-                file.delete();
+                if (!file.delete()) {
+                    Log.w("Hyper", "Cannot delete file: " + file.getPath());
+                }
             }
         }
 
@@ -132,7 +136,9 @@ public class ProjectUtil {
                     if (file.isDirectory()) {
                         deleteDirectory(file);
                     } else {
-                        file.delete();
+                        if (!file.delete()) {
+                            Log.w("Hyper", "Cannot delete file: " + file.getPath());
+                        }
                     }
                 }
             }
@@ -147,7 +153,7 @@ public class ProjectUtil {
      * @return bitmap object of favicon
      */
     public static Bitmap getFavicon(String name) {
-        return BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
+        return BitmapFactory.decodeFile(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
     }
 
     /**
@@ -157,7 +163,7 @@ public class ProjectUtil {
      * @return true if successfully create
      */
     private static boolean createDirectory(String name) {
-        return new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name).mkdirs();
+        return new File(Constants.HYPER_ROOT + File.separator + name).mkdirs();
     }
 
     /**
@@ -170,7 +176,7 @@ public class ProjectUtil {
      */
     public static boolean createFile(String parent, String name, String contents) {
         try {
-            OutputStream stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + parent + File.separator + name));
+            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + parent + File.separator + name));
             stream.write(contents.getBytes());
             stream.close();
         } catch (Exception e) {
@@ -191,7 +197,7 @@ public class ProjectUtil {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");
-            OutputStream output = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
+            OutputStream output = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
             byte[] buffer = new byte[1024];
             int read;
             while ((read = stream.read(buffer)) != -1) {
@@ -216,7 +222,7 @@ public class ProjectUtil {
      */
     private static boolean copyIcon(String name, InputStream stream) {
         try {
-            OutputStream outputStream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
+            OutputStream outputStream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
             byte[] buffer = new byte[1024];
             int read;
             while ((read = stream.read(buffer)) != -1) {
@@ -244,13 +250,15 @@ public class ProjectUtil {
     public static boolean importImage(Context context, String name, Uri imageUri, String imageName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "images" + File.separator + imageName);
+            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + imageName);
             byte[] buffer = new byte[1024];
             int read;
-            while ((read = inputStream.read(buffer)) != -1) {
+            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
                 outputStream.write(buffer, 0, read);
             }
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
@@ -272,13 +280,15 @@ public class ProjectUtil {
     public static boolean importFont(Context context, String name, Uri fontUri, String fontName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(fontUri);
-            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "fonts" + File.separator + fontName);
+            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "fonts" + File.separator + fontName);
             byte[] buffer = new byte[1024];
             int read;
-            while ((read = inputStream.read(buffer)) != -1) {
+            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
                 outputStream.write(buffer, 0, read);
             }
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
@@ -300,13 +310,15 @@ public class ProjectUtil {
     public static boolean importCss(Context context, String name, Uri cssUri, String cssName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(cssUri);
-            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "css" + File.separator + cssName);
+            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "css" + File.separator + cssName);
             byte[] buffer = new byte[1024];
             int read;
-            while ((read = inputStream.read(buffer)) != -1) {
+            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
                 outputStream.write(buffer, 0, read);
             }
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
@@ -328,13 +340,17 @@ public class ProjectUtil {
     public static boolean importJs(Context context, String name, Uri jsUri, String jsName) {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(jsUri);
-            OutputStream outputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + "js" + File.separator + jsName);
+            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "js" + File.separator + jsName);
             byte[] buffer = new byte[1024];
             int read;
-            while ((read = inputStream.read(buffer)) != -1) {
+            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
                 outputStream.write(buffer, 0, read);
             }
-            inputStream.close();
+
+            if (inputStream != null) {
+                inputStream.close();
+            }
+
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {

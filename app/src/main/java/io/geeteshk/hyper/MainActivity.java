@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        File projectDir = new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper");
+        File projectDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper");
         boolean fileTest = projectDir.exists();
         if (!fileTest) {
             fileTest = projectDir.mkdir();
@@ -177,9 +177,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
-            return;
         }
-
-        super.onBackPressed();
     }
 }

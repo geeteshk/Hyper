@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.WebActivity;
@@ -55,7 +56,7 @@ public class PilotFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper" + File.separator + objects[position] + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + objects[position] + File.separator + "index.html");
                 intent.putExtra("name", objects[position]);
                 startActivity(intent);
             }

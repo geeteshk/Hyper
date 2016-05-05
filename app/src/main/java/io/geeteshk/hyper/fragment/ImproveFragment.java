@@ -83,6 +83,7 @@ public class ImproveFragment extends Fragment {
                         }
                     }
                 });
+
                 builder.setNegativeButton("NO", null);
                 builder.show();
 

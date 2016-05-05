@@ -3,15 +3,12 @@ package io.geeteshk.hyper.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import io.geeteshk.hyper.Constants;
+
 /**
  * Utility class to store and read preferences
  */
 public class PreferenceUtil {
-
-    /**
-     * Name of this application's package
-     */
-    private static final String PACKAGE = "io.geeteshk.hyper";
 
     /**
      * Method to get sharedpreferences
@@ -20,7 +17,7 @@ public class PreferenceUtil {
      * @return shared preferences object
      */
     private static SharedPreferences pref(Context context) {
-        return context.getSharedPreferences(PACKAGE, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(Constants.PACKAGE, Context.MODE_PRIVATE);
     }
 
     /**

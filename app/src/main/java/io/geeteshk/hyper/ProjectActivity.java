@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -27,6 +26,7 @@ import java.io.File;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
+import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
 
 /**
  * Activity to list projects
@@ -61,7 +61,9 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_project);
+
+        KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
+        setContentView(layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,11 +89,13 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
-                intent.putExtra("url", "file:///" + Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper" + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
                 intent.putExtra("name", getIntent().getStringExtra("project"));
                 startActivity(intent);
             }
         });
+
+        layout.setButton(button);
 
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -286,7 +290,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.dialog_about, null);
         builder.setTitle("About " + getIntent().getStringExtra("project"));

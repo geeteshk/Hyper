@@ -2,7 +2,6 @@ package io.geeteshk.hyper;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
@@ -118,7 +117,7 @@ public class ResourcesActivity extends AppCompatActivity {
          * @return list of resources
          */
         public static String[] get(String project, String resource) {
-            return new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + project + File.separator + resource).list();
+            return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource).list();
         }
 
         /**
@@ -130,7 +129,7 @@ public class ResourcesActivity extends AppCompatActivity {
          * @return true if deleted
          */
         public static boolean remove(String project, String resource, String name) {
-            return new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + project + File.separator + resource + File.separator + name).delete();
+            return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource + File.separator + name).delete();
         }
     }
 }

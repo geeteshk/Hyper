@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 
 /**
@@ -41,7 +42,7 @@ public class ContributeFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://github.com/OpenMatter/Hyper");
+                Uri uri = Uri.parse(Constants.GITHUB_URL);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(intent);

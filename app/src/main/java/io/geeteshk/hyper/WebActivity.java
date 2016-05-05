@@ -21,10 +21,12 @@ public class WebActivity extends AppCompatActivity {
         setContentView(R.layout.activity_web);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        assert toolbar != null;
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
 
         WebView webView = (WebView) findViewById(R.id.web_view);
+        assert webView != null;
         webView.loadUrl(getIntent().getStringExtra("url"));
     }
 }

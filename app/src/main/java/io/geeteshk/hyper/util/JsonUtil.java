@@ -1,7 +1,6 @@
 package io.geeteshk.hyper.util;
 
 import android.content.Context;
-import android.os.Environment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
+import io.geeteshk.hyper.Constants;
 
 /**
  * Utility class to handle JSON
@@ -36,7 +37,7 @@ public class JsonUtil {
             object.put("description", description);
             object.put("keywords", keywords);
 
-            OutputStream stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + name + ".hyper"));
+            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + name + ".hyper"));
             stream.write(object.toString(4).getBytes());
             stream.close();
         } catch (Exception e) {
@@ -54,7 +55,7 @@ public class JsonUtil {
      */
     private static String getProjectJSON(String name) {
         try {
-            InputStream inputStream = new FileInputStream(Environment.getExternalStorageDirectory() + File.separator + "Hyper" + File.separator + name + File.separator + name + ".hyper");
+            InputStream inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + name + ".hyper");
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             StringBuilder builder = new StringBuilder();

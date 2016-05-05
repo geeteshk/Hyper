@@ -31,7 +31,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_shadow" />
+        android:layout_below="@+id/tabs" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_build"
