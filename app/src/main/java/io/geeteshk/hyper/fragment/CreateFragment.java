@@ -7,13 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -38,7 +38,7 @@ public class CreateFragment extends Fragment {
     /**
      * Input fields for project parameters
      */
-    EditText mName, mAuthor, mDescription, mKeywords;
+    TextInputLayout mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout;
     /**
      * Options to choose favicon
      */
@@ -71,19 +71,19 @@ public class CreateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_create, container, false);
 
-        mName = (EditText) rootView.findViewById(R.id.name);
-        mAuthor = (EditText) rootView.findViewById(R.id.author);
-        mDescription = (EditText) rootView.findViewById(R.id.description);
-        mKeywords = (EditText) rootView.findViewById(R.id.keywords);
+        mNameLayout = (TextInputLayout) rootView.findViewById(R.id.name_layout);
+        mAuthorLayout = (TextInputLayout) rootView.findViewById(R.id.author_layout);
+        mDescriptionLayout = (TextInputLayout) rootView.findViewById(R.id.description_layout);
+        mKeywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
 
         mDefaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
         mChooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
         mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
 
-        mName.setText(PreferenceUtil.get(getActivity(), "name", ""));
-        mAuthor.setText(PreferenceUtil.get(getActivity(), "author", ""));
-        mDescription.setText(PreferenceUtil.get(getActivity(), "description", ""));
-        mKeywords.setText(PreferenceUtil.get(getActivity(), "keywords", ""));
+        mNameLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "name", ""));
+        mAuthorLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "author", ""));
+        mDescriptionLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "description", ""));
+        mKeywordsLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "keywords", ""));
 
         mDefaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -109,13 +109,13 @@ public class CreateFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ValidatorUtil.validate(getActivity(), mName.getText().toString(), mAuthor.getText().toString(), mDescription.getText().toString(), mKeywords.getText().toString())) {
-                    PreferenceUtil.store(getActivity(), "name", mName.getText().toString());
-                    PreferenceUtil.store(getActivity(), "author", mAuthor.getText().toString());
-                    PreferenceUtil.store(getActivity(), "description", mDescription.getText().toString());
-                    PreferenceUtil.store(getActivity(), "keywords", mKeywords.getText().toString());
+                if (ValidatorUtil.validate(mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout)) {
+                    PreferenceUtil.store(getActivity(), "name", mNameLayout.getEditText().getText().toString());
+                    PreferenceUtil.store(getActivity(), "author", mAuthorLayout.getEditText().getText().toString());
+                    PreferenceUtil.store(getActivity(), "description", mDescriptionLayout.getEditText().getText().toString());
+                    PreferenceUtil.store(getActivity(), "keywords", mKeywordsLayout.getEditText().getText().toString());
 
-                    ProjectUtil.generate(getActivity(), mName.getText().toString(), mAuthor.getText().toString(), mDescription.getText().toString(), mKeywords.getText().toString(), mStream);
+                    ProjectUtil.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mStream);
                     MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
                     DrawerFragment.select(getActivity(), 1);
                 }

@@ -61,4 +61,7 @@
     <string name="permission_network_rationale">Network state permission is needed to check if network is up.</string>
     <string name="permission_internet_rationale">Internet permission is needed to test projects.</string>
     <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
+    <string name="set_pin">Set PIN</string>
+    <string name="set_pin_desc">Use a PIN for extra security.</string>
+    <string name="not_set">NOT SET</string>
 </resources>

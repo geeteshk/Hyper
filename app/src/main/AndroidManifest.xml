@@ -48,6 +48,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.ProjectActivity" />
         </activity>
+        <activity android:name=".EncryptActivity"></activity>
     </application>
 
 </manifest>

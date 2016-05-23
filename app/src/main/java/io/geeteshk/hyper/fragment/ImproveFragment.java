@@ -18,10 +18,12 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import io.geeteshk.hyper.EncryptActivity;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
+import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 
 public class ImproveFragment extends Fragment {
@@ -31,7 +33,7 @@ public class ImproveFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_improve, container, false);
 
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
@@ -40,18 +42,26 @@ public class ImproveFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), ProjectActivity.class);
-                intent.putExtra("project", objects[position]);
-                startActivity(intent);
+                Intent intent;
+                if (PreferenceUtil.get(getActivity(), "pin", "").equals("")) {
+                    intent = new Intent(getActivity(), ProjectActivity.class);
+                    intent.putExtra("project", objects[position]);
+                    startActivityForResult(intent, 0);
+                } else {
+                    intent = new Intent(getActivity(), EncryptActivity.class);
+                    intent.putExtra("project", objects[position]);
+                    startActivity(intent);
+                }
             }
         });
+
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Delete " + objects[position] + "?");
-                builder.setMessage("Are you sure you want to do this?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                builder.setMessage("This change cannot be undone.");
+                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (ProjectUtil.deleteProject(objects[position])) {
@@ -84,7 +94,7 @@ public class ImproveFragment extends Fragment {
                     }
                 });
 
-                builder.setNegativeButton("NO", null);
+                builder.setNegativeButton("CANCEL", null);
                 builder.show();
 
                 return true;

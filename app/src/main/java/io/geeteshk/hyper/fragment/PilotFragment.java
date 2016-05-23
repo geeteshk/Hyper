@@ -66,8 +66,8 @@ public class PilotFragment extends Fragment {
             public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Delete " + objects[position] + "?");
-                builder.setMessage("Are you sure you want to do this?");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                builder.setMessage("This change cannot be undone.");
+                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (ProjectUtil.deleteProject(objects[position])) {
@@ -99,7 +99,7 @@ public class PilotFragment extends Fragment {
                         }
                     }
                 });
-                builder.setNegativeButton("NO", null);
+                builder.setNegativeButton("CANCEL", null);
                 builder.show();
 
                 return true;

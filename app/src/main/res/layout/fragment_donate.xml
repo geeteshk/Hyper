@@ -15,13 +15,12 @@
         android:id="@+id/funny_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/donate_desc"
         android:layout_marginTop="16dp"
         android:alpha="0.57"
         android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="32dp"
         android:text="@string/not_funny_joke"
         android:textSize="24sp" />
 
@@ -29,7 +28,7 @@
         android:id="@+id/donate_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@+id/funny_title"
         android:layout_marginTop="8dp"
         android:alpha="0.85"
         android:gravity="center"
@@ -39,9 +38,9 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/donate_desc"
-        android:layout_marginTop="16dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="32dp"
         android:contentDescription="@string/another_cry_for_help"
         android:src="@drawable/donate" />
 

@@ -1,16 +1,26 @@
 package io.geeteshk.hyper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -29,6 +39,9 @@ import io.geeteshk.hyper.util.PreferenceUtil;
  * Main activity to show all main content
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static Context mContext;
+    private static FragmentManager mManager;
 
     /**
      * Layout that holds NavigationDrawer
@@ -82,9 +95,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        if (context == null) {
+            context = mContext;
+        }
+
+        if (manager == null) {
+            manager = mManager;
+        }
+
         manager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .commit();
+                .commitAllowingStateLoss();
 
         PreferenceUtil.store(context, "last_fragment", position);
         mToolbar.setTitle(mItems[position]);
@@ -135,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
+        mContext = this;
+        mManager = getSupportFragmentManager();
         update(this, getSupportFragmentManager(), PreferenceUtil.get(this, "last_fragment", 0));
         DrawerFragment.select(this, PreferenceUtil.get(this, "last_fragment", 0));
     }
@@ -177,6 +200,46 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case -1:
+                MainActivity.update(this, getSupportFragmentManager(), 5);
+                break;
+            case 1:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Please enter a new PIN");
+                EditText editText = new EditText(MainActivity.this);
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setPadding(60, 14, 60, 24);
+                final TextInputLayout layout = new TextInputLayout(MainActivity.this);
+                layout.addView(editText);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(60, 16, 60, 16);
+                layout.setLayoutParams(params);
+                builder.setView(layout);
+                builder.setPositiveButton("ACCEPT", null);
+                builder.setCancelable(false);
+                final AppCompatDialog dialog = builder.create();
+                dialog.show();
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String newPin = layout.getEditText().getText().toString();
+                        if (newPin.length() != 4) {
+                            layout.setError("The pin must consist only of 4 digits.");
+                        } else {
+                            PreferenceUtil.store(MainActivity.this, "pin", newPin);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                break;
         }
     }
 }

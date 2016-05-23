@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import java.io.File;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
 
@@ -64,6 +67,19 @@ public class ProjectActivity extends AppCompatActivity {
 
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
         setContentView(layout);
+
+        RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
+        if (PreferenceUtil.get(this, "pin", "").equals("")) {
+            Snackbar snackbar = Snackbar.make(projectLayout, "It is recommended you set a PIN for security in the Settings.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("SET PIN", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setResult(-1);
+                            finish();
+                        }
+                    });
+            snackbar.show();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
