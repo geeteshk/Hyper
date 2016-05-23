@@ -5,11 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
+import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -27,6 +29,7 @@ import android.widget.MultiAutoCompleteTextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
@@ -175,7 +178,7 @@ public class Editor extends MultiAutoCompleteTextView {
     /**
      * Paint to draw line numbers
      */
-    private Paint mPaint;
+    private Paint mNumberPaint, mLineShadowPaint;
 
     /**
      * Public constructor
@@ -218,11 +221,17 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     private void init() {
         mRect = new Rect();
-        mPaint = new Paint();
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setAntiAlias(true);
-        mPaint.setTextSize(32);
-        mPaint.setTypeface(Typeface.SANS_SERIF);
+
+        mLineShadowPaint = new Paint();
+        mLineShadowPaint.setStyle(Paint.Style.FILL);
+
+        mNumberPaint = new Paint();
+        mNumberPaint.setStyle(Paint.Style.FILL);
+        mNumberPaint.setColor(0x80FFFFFF);
+        mNumberPaint.setAntiAlias(false);
+        mNumberPaint.setTextSize(48);
+        mNumberPaint.setTextAlign(Paint.Align.RIGHT);
+        mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
 
         if (!PreferenceUtil.get(mContext, "dark_theme", false)) {
             COLOR_BUILTIN = 0xff72b000;
@@ -230,17 +239,19 @@ public class Editor extends MultiAutoCompleteTextView {
             COLOR_COMMENT = 0xffa0a0a0;
             setBackgroundColor(0xfff8f8f8);
             setTextColor(0xff222222);
-            mPaint.setColor(0xffa0a0a0);
+            mNumberPaint.setColor(0xffa0a0a0);
+            mLineShadowPaint.setColor(0x10000000);
         } else {
             COLOR_BUILTIN = 0xffa6e22e;
             COLOR_COMMENT = 0xff75715e;
             COLOR_STRINGS = 0xffe6db74;
             setBackgroundColor(0xff222222);
             setTextColor(0xfff8f8f8);
-            mPaint.setColor(0xffd3d3d3);
+            mNumberPaint.setColor(0xffd3d3d3);
+            mLineShadowPaint.setColor(0x10FFFFFF);
         }
 
-        setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/DroidSansMono.ttf"));
+        setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/SourceCodePro-Regular.otf"));
 
         setHorizontallyScrolling(true);
         setFilters(new InputFilter[]{new InputFilter() {
@@ -477,14 +488,36 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-        int count = getLineCount();
+        int cursorLine = getCurrentCursorLine();
+        int lineBounds = getLineBounds(cursorLine, mRect);
+        int lineHeight = getLineHeight();
+        int lineCount = getLineCount();
 
-        for (int i = 0; i < count; i++) {
-            int baseline = getLineBounds(i, mRect);
-            canvas.drawText(String.valueOf(i + 1), mRect.left - 48, baseline + 1, mPaint);
+        canvas.drawRect(getScrollX(), 4 + lineBounds - lineHeight, getScrollX() + 180, lineBounds + 10, mLineShadowPaint);
+
+        for (int i = 0; i < lineCount; i++) {
+            lineBounds = getLineBounds(i, mRect);
+            canvas.drawText(String.valueOf(i + 1), getScrollX() + 140, lineBounds - 5, mNumberPaint);
+        }
+
+        if (getScrollX() >= 20) {
+            Drawable shadow = getResources().getDrawable(R.drawable.drawer_shadow);
+            shadow.setBounds(getScrollX() + 180, 0, getScrollX() + 200, getHeight());
+            shadow.draw(canvas);
         }
 
         super.onDraw(canvas);
+    }
+
+    public int getCurrentCursorLine() {
+        int selectionStart = Selection.getSelectionStart(getText());
+        Layout layout = getLayout();
+
+        if (!(selectionStart == -1)) {
+            return layout.getLineForOffset(selectionStart);
+        }
+
+        return -1;
     }
 
     /**

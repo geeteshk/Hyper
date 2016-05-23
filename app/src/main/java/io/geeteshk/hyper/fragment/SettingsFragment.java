@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class SettingsFragment extends Fragment {
         });
 
         setPin = (TextView) rootView.findViewById(R.id.set_pin);
+        Log.i("PIN: ", PreferenceUtil.get(getActivity(), "pin", ""));
         if (!PreferenceUtil.get(getActivity(), "pin", "").equals("")) {
             setPin.setText("****");
         }

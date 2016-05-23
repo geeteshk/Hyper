@@ -9,11 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="start"
-        android:inputType="textMultiLine"
+        android:inputType="textMultiLine|textNoSuggestions|"
         android:paddingEnd="16dp"
-        android:paddingLeft="32dp"
+        android:paddingLeft="52dp"
         android:paddingRight="16dp"
         android:paddingStart="32dp"
+        android:scrollbars="vertical"
         android:textSize="14sp" />
 
 </LinearLayout>

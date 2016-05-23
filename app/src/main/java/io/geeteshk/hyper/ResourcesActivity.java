@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.geeteshk.hyper.adapter.ResourceAdapter;
+import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
  * Activity to list resources of a certain project
@@ -88,6 +89,12 @@ public class ResourcesActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        if (!PreferenceUtil.get(this, "dark_theme", false)) {
+
+        } else {
+
+        }
     }
 
     private void prepare() {

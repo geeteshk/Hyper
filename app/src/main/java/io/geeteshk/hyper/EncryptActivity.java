@@ -20,7 +20,7 @@ public class EncryptActivity extends AppCompatActivity {
     View dotOne, dotTwo, dotThree, dotFour;
     int dotCounter = 0;
 
-    private int[] PIN = {0, 0, 0, 0};
+    private int[] PIN = new int[4];
     private int[] ENTERED_PIN = new int[4];
 
     @Override
@@ -74,44 +74,6 @@ public class EncryptActivity extends AppCompatActivity {
         }
     }
 
-    private class NumberClickListener implements View.OnClickListener {
-
-        private int number;
-
-        public NumberClickListener(int number) {
-            this.number = number;
-        }
-
-        @Override
-        public void onClick(View v) {
-            ENTERED_PIN[dotCounter] = number;
-            setDot(dotCounter, true);
-            dotCounter++;
-
-            if (dotCounter == 4) {
-                boolean pinCheck = true;
-                for (int i = 0; i < 4; i++) {
-                    pinCheck = pinCheck && (ENTERED_PIN[i] == PIN[i]);
-                }
-
-                if (pinCheck) {
-                    if (getIntent().hasExtra("project")) {
-                        Intent intent = new Intent(EncryptActivity.this, ProjectActivity.class);
-                        intent.putExtras(getIntent().getExtras());
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        setResult(1);
-                        finish();
-                    }
-                } else {
-                    dotsLayout.startAnimation(AnimationUtils.loadAnimation(EncryptActivity.this, R.anim.shake));
-                    resetDots();
-                }
-            }
-        }
-    }
-
     private void setDot(int dotNumber, boolean active) {
         if (active) {
             switch (dotNumber) {
@@ -146,6 +108,14 @@ public class EncryptActivity extends AppCompatActivity {
         }
     }
 
+    private void resetDots() {
+        dotCounter = 0;
+        dotOne.setBackgroundResource(R.drawable.circle_empty);
+        dotTwo.setBackgroundResource(R.drawable.circle_empty);
+        dotThree.setBackgroundResource(R.drawable.circle_empty);
+        dotFour.setBackgroundResource(R.drawable.circle_empty);
+    }
+
     private class NumberClickListener implements View.OnClickListener {
 
         private int number;
@@ -182,13 +152,5 @@ public class EncryptActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void resetDots() {
-        dotCounter = 0;
-        dotOne.setBackgroundResource(R.drawable.circle_empty);
-        dotTwo.setBackgroundResource(R.drawable.circle_empty);
-        dotThree.setBackgroundResource(R.drawable.circle_empty);
-        dotFour.setBackgroundResource(R.drawable.circle_empty);
     }
 }
