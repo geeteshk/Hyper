@@ -35,6 +35,10 @@ public class ResourcesActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            setTheme(R.style.Hyper_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resources);
 

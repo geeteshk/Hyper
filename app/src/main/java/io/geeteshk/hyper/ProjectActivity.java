@@ -63,6 +63,10 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            setTheme(R.style.Hyper_Dark);
+        }
+
         super.onCreate(savedInstanceState);
 
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
@@ -306,13 +310,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
-        AlertDialog.Builder builder;
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
-            builder = new AlertDialog.Builder(this, R.style.Hyper_Dialog);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.dialog_about, null);
         builder.setTitle("About " + getIntent().getStringExtra("project"));
