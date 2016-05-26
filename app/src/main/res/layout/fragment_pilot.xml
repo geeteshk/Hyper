@@ -25,12 +25,14 @@
         android:textSize="20sp"
         android:typeface="sans" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/pilot_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/pilot_desc"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_create"

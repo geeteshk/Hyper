@@ -1,30 +1,24 @@
 package io.geeteshk.hyper.fragment;
 
-import android.animation.Animator;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
 
-import io.geeteshk.hyper.EncryptActivity;
 import io.geeteshk.hyper.MainActivity;
-import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
+import io.geeteshk.hyper.util.DecorUtil;
 
 public class ImproveFragment extends Fragment {
 
@@ -37,7 +31,15 @@ public class ImproveFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_improve, container, false);
 
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
-        ListView listView = (ListView) rootView.findViewById(R.id.project_list);
+        ProjectAdapter projectAdapter = new ProjectAdapter(getActivity(), objects, true);
+        RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.project_list);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        projectsList.setLayoutManager(layoutManager);
+        projectsList.addItemDecoration(new DecorUtil.GridSpacingItemDecoration(2, DecorUtil.dpToPx(getActivity(), 8), true));
+        projectsList.setItemAnimator(new DefaultItemAnimator());
+        projectsList.setAdapter(projectAdapter);
+
+        /*ListView listView = (ListView) rootView.findViewById(R.id.project_list);
         listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.item_project, objects));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,7 +101,7 @@ public class ImproveFragment extends Fragment {
 
                 return true;
             }
-        });
+        });*/
 
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
         button.setOnClickListener(new View.OnClickListener() {

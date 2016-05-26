@@ -1,21 +1,35 @@
 package io.geeteshk.hyper.adapter;
 
+import android.animation.Animator;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+
+import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.EncryptActivity;
+import io.geeteshk.hyper.MainActivity;
+import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.WebActivity;
 import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 
 /**
  * Adapter to list all projects
  */
-public class ProjectAdapter extends ArrayAdapter<String> {
+public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHolder> {
 
     /**
      * Context used for various purposes such as loading files and inflating layouts
@@ -23,56 +37,122 @@ public class ProjectAdapter extends ArrayAdapter<String> {
     Context mContext;
 
     /**
-     * Id of resource to inflate
-     */
-    int mResource;
-
-    /**
      * Array of objects to fill list
      */
     String[] mObjects;
 
-    /**
-     * Public constructor for adapter
-     *
-     * @param context  used for inflating layouts
-     * @param resource id of resource to inflate
-     * @param objects  list contents
-     */
-    public ProjectAdapter(Context context, int resource, String[] objects) {
-        super(context, resource, objects);
+    boolean mImprove;
+
+    public ProjectAdapter(Context context, String[] objects, boolean improve) {
         this.mContext = context;
-        this.mResource = resource;
         this.mObjects = objects;
+        this.mImprove = improve;
     }
 
-    /**
-     * Method to inflate each view
-     *
-     * @param position    current position in list
-     * @param convertView reusable view
-     * @param parent      view above this one
-     * @return view of specific position
-     */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView;
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_project, parent, false);
+        return new MyViewHolder(itemView);
+    }
 
-        if (convertView != null) {
-            rootView = convertView;
+    @Override
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        holder.mTitle.setText(mObjects[position]);
+        holder.mDescription.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
+        holder.mFavicon.setImageBitmap(ProjectUtil.getFavicon(mObjects[position]));
+
+        if (mImprove) {
+            holder.mFavicon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent;
+                    if (PreferenceUtil.get(mContext, "pin", "").equals("")) {
+                        intent = new Intent(mContext, ProjectActivity.class);
+                        intent.putExtra("project", mObjects[position]);
+                        ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
+                    } else {
+                        intent = new Intent(mContext, EncryptActivity.class);
+                        intent.putExtra("project", mObjects[position]);
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
         } else {
-            rootView = inflater.inflate(mResource, parent, false);
+            holder.mFavicon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, WebActivity.class);
+                    intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[position] + File.separator + "index.html");
+                    intent.putExtra("name", mObjects[position]);
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
-        ImageView favicon = (ImageView) rootView.findViewById(R.id.favicon);
-        TextView title = (TextView) rootView.findViewById(R.id.title);
-        TextView desc = (TextView) rootView.findViewById(R.id.desc);
+        holder.mFavicon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Delete " + mObjects[position] + "?");
+                builder.setMessage("This change cannot be undone.");
+                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (ProjectUtil.deleteProject(mObjects[position])) {
+                            holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
 
-        favicon.setImageBitmap(ProjectUtil.getFavicon(mObjects[position]));
-        title.setText(mObjects[position]);
-        desc.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
+                                }
 
-        return rootView;
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+                                    MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
+
+                                }
+                            });
+                            Toast.makeText(mContext, "Goodbye " + mObjects[position] + ".", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(mContext, "Oops! Something went wrong while deleting " + mObjects[position] + ".", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("CANCEL", null);
+                builder.show();
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mObjects.length;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView mTitle, mDescription;
+        public ImageView mFavicon;
+
+        public MyViewHolder(View view) {
+            super(view);
+
+            mTitle = (TextView) view.findViewById(R.id.title);
+            mDescription = (TextView) view.findViewById(R.id.desc);
+            mFavicon = (ImageView) view.findViewById(R.id.favicon);
+        }
     }
 }
