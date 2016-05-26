@@ -1,6 +1,7 @@
 package io.geeteshk.hyper;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,10 @@ public class ResourcesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Resources");
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
         }
 
         prepare();

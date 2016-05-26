@@ -1,5 +1,6 @@
 package io.geeteshk.hyper;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +25,10 @@ public class WebActivity extends AppCompatActivity {
         assert toolbar != null;
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
+        }
 
         WebView webView = (WebView) findViewById(R.id.web_view);
         assert webView != null;

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -25,6 +26,10 @@ public class SplashActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
         }
 
         final Handler handler = new Handler();

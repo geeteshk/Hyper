@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -71,6 +72,10 @@ public class ProjectActivity extends AppCompatActivity {
 
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
         setContentView(layout);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
+        }
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (PreferenceUtil.get(this, "pin", "").equals("")) {

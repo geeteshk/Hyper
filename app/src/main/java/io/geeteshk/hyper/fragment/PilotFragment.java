@@ -53,67 +53,10 @@ public class PilotFragment extends Fragment {
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(projectAdapter);
 
-        /*ListView listView = (ListView) rootView.findViewById(R.id.pilot_list);
-        listView.setAdapter(new ProjectAdapter(getActivity(), R.layout.item_project, objects));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), WebActivity.class);
-                intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + objects[position] + File.separator + "index.html");
-                intent.putExtra("name", objects[position]);
-                startActivity(intent);
-            }
-        });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Delete " + objects[position] + "?");
-                builder.setMessage("This change cannot be undone.");
-                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(objects[position])) {
-                            view.animate().alpha(0).setDuration(600).setListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-                                    MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-
-                                }
-                            });
-                            Toast.makeText(getActivity(), "Goodbye " + objects[position] + ".", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(getActivity(), "Oops! Something went wrong while deleting " + objects[position] + ".", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                builder.setNegativeButton("CANCEL", null);
-                builder.show();
-
-                return true;
-            }
-        });*/
-
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DrawerFragment.select(getActivity(), 0);
                 MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 0);
             }
         });

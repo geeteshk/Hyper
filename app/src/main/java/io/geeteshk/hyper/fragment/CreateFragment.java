@@ -117,7 +117,6 @@ public class CreateFragment extends Fragment {
 
                     ProjectUtil.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mStream);
                     MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
-                    DrawerFragment.select(getActivity(), 1);
                 }
             }
         });

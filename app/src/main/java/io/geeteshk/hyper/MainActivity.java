@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,11 +27,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.geeteshk.hyper.fragment.ContributeFragment;
 import io.geeteshk.hyper.fragment.CreateFragment;
 import io.geeteshk.hyper.fragment.DonateFragment;
-import io.geeteshk.hyper.fragment.DrawerFragment;
 import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
      * Items to be listed in drawer
      */
     private static String[] mItems;
+    private static NavigationView mDrawer;
     /**
      * Drawer toggle displayed on toolbar
      */
@@ -109,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         PreferenceUtil.store(context, "last_fragment", position);
         mToolbar.setTitle(mItems[position]);
+        mDrawer.setCheckedItem(mDrawer.getMenu().getItem(position).getItemId());
     }
 
     /**
@@ -156,10 +162,30 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
+        mDrawer = (NavigationView) findViewById(R.id.drawer);
+        final List<MenuItem> items = new ArrayList<>();
+        Menu menu = mDrawer.getMenu();
+
+        for (int i = 0; i < menu.size(); i++) {
+            items.add(menu.getItem(i));
+        }
+
+        mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                if (!item.isChecked()) {
+                    item.setChecked(true);
+                }
+
+                mDrawerLayout.closeDrawers();
+                update(MainActivity.this, getSupportFragmentManager(), items.indexOf(item));
+                return true;
+            }
+        });
+
         mContext = this;
         mManager = getSupportFragmentManager();
         update(this, getSupportFragmentManager(), PreferenceUtil.get(this, "last_fragment", 0));
-        DrawerFragment.select(this, PreferenceUtil.get(this, "last_fragment", 0));
     }
 
     /**

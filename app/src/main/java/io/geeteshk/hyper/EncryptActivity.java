@@ -1,6 +1,7 @@
 package io.geeteshk.hyper;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,6 +28,10 @@ public class EncryptActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encrypt);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
+        }
 
         dotOne = findViewById(R.id.dotOne);
         dotTwo = findViewById(R.id.dotTwo);
