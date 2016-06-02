@@ -11,6 +11,8 @@ import android.webkit.WebView;
  */
 public class WebActivity extends AppCompatActivity {
 
+    private static final String TAG = "WebSettings";
+
     /**
      * Called when the activity is created
      *

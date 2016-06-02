@@ -220,6 +220,7 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
+        mUpdateDelay = 1000 * (PreferenceUtil.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
 
         mLineShadowPaint = new Paint();
