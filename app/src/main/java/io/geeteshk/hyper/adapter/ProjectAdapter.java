@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.EncryptActivity;
@@ -22,7 +24,9 @@ import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.WebActivity;
+import io.geeteshk.hyper.helper.HyperDrive;
 import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 
@@ -30,6 +34,8 @@ import io.geeteshk.hyper.util.ProjectUtil;
  * Adapter to list all projects
  */
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHolder> {
+
+    private static final String TAG = ProjectAdapter.class.getSimpleName();
 
     /**
      * Context used for various purposes such as loading files and inflating layouts
@@ -82,9 +88,24 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             holder.mFavicon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    NetworkUtil.setDrive(new HyperDrive(mObjects[position]));
+
+                    try {
+                        NetworkUtil.getDrive().start();
+                    } catch (IOException e) {
+                        Log.e(TAG, e.toString());
+                    }
+
                     Intent intent = new Intent(mContext, WebActivity.class);
-                    intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[position] + File.separator + "index.html");
+
+                    if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
+                        intent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
+                    } else {
+                        intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[position] + File.separator + "index.html");
+                    }
+
                     intent.putExtra("name", mObjects[position]);
+                    intent.putExtra("pilot", true);
                     mContext.startActivity(intent);
                 }
             });

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
+import android.widget.Toast;
+
+import io.geeteshk.hyper.util.NetworkUtil;
 
 /**
  * Activity to test projects
@@ -35,5 +38,15 @@ public class WebActivity extends AppCompatActivity {
         WebView webView = (WebView) findViewById(R.id.web_view);
         assert webView != null;
         webView.loadUrl(getIntent().getStringExtra("url"));
+
+        Toast.makeText(this, getIntent().getStringExtra("url"), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (getIntent().getBooleanExtra("pilot", false) && NetworkUtil.getDrive() != null) {
+            NetworkUtil.getDrive().stop();
+        }
     }
 }

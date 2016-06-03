@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,9 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
+import io.geeteshk.hyper.helper.HyperDrive;
 import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
@@ -36,6 +40,8 @@ import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
  * Activity to list projects
  */
 public class ProjectActivity extends AppCompatActivity {
+
+    private static final String TAG = ProjectActivity.class.getSimpleName();
 
     /**
      * Intent code to import image
@@ -68,7 +74,14 @@ public class ProjectActivity extends AppCompatActivity {
             setTheme(R.style.Hyper_Dark);
         }
 
+        NetworkUtil.setDrive(new HyperDrive(getIntent().getStringExtra("project")));
         super.onCreate(savedInstanceState);
+
+        try {
+            NetworkUtil.getDrive().start();
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
 
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
         setContentView(layout);
@@ -114,7 +127,13 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
-                intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+
+                if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
+                    intent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
+                } else {
+                    intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                }
+
                 intent.putExtra("name", getIntent().getStringExtra("project"));
                 startActivity(intent);
             }
@@ -129,6 +148,14 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (NetworkUtil.getDrive() != null) {
+            NetworkUtil.getDrive().stop();
+        }
     }
 
     /**
