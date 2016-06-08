@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <io.geeteshk.hyper.widget.Editor
         android:id="@+id/file_content"
@@ -17,4 +16,75 @@
         android:scrollbars="vertical"
         android:textSize="14sp" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/symbol_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#80FFFFFF"
+        android:orientation="horizontal"
+        android:weightSum="6">
+
+        <Button
+            android:id="@+id/symbol_one"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="&lt;"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/symbol_two"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="/"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/symbol_three"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="&gt;"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/symbol_four"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="&quot;"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/symbol_five"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="="
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/symbol_six"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:text="!"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +17,7 @@ import java.io.InputStreamReader;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.util.PreferenceUtil;
 import io.geeteshk.hyper.util.ProjectUtil;
 import io.geeteshk.hyper.widget.Editor;
 
@@ -48,14 +51,50 @@ public class EditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
+        boolean darkTheme = PreferenceUtil.get(getActivity(), "dark_theme", false);
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
+        LinearLayout symbolLayout = (LinearLayout) rootView.findViewById(R.id.symbol_layout);
+        Button symbolOne = (Button) rootView.findViewById(R.id.symbol_one);
+        Button symbolTwo = (Button) rootView.findViewById(R.id.symbol_two);
+        Button symbolThree = (Button) rootView.findViewById(R.id.symbol_three);
+        Button symbolFour = (Button) rootView.findViewById(R.id.symbol_four);
+        Button symbolFive = (Button) rootView.findViewById(R.id.symbol_five);
+        Button symbolSix = (Button) rootView.findViewById(R.id.symbol_six);
 
         if (mFilename.endsWith(".html")) {
             editText.setType(Editor.CodeType.HTML);
+            setSymbol(editText, symbolOne, "<");
+            setSymbol(editText, symbolTwo, "/");
+            setSymbol(editText, symbolThree, ">");
+            setSymbol(editText, symbolFour, "\"");
+            setSymbol(editText, symbolFive, "=");
+            setSymbol(editText, symbolSix, "!");
         } else if (mFilename.endsWith(".css")) {
             editText.setType(Editor.CodeType.CSS);
+            setSymbol(editText, symbolOne, "{");
+            setSymbol(editText, symbolTwo, "}");
+            setSymbol(editText, symbolThree, ":");
+            setSymbol(editText, symbolFour, ",");
+            setSymbol(editText, symbolFive, "#");
+            setSymbol(editText, symbolSix, ".");
         } else if (mFilename.endsWith(".js")) {
             editText.setType(Editor.CodeType.JS);
+            setSymbol(editText, symbolOne, "{");
+            setSymbol(editText, symbolTwo, "}");
+            setSymbol(editText, symbolThree, "(");
+            setSymbol(editText, symbolFour, ")");
+            setSymbol(editText, symbolFive, ";");
+            setSymbol(editText, symbolSix, "=");
+        }
+
+        if (!darkTheme) {
+            symbolLayout.setBackgroundColor(0x80333333);
+            symbolOne.setTextColor(0xFFFFFFFF);
+            symbolTwo.setTextColor(0xFFFFFFFF);
+            symbolThree.setTextColor(0xFFFFFFFF);
+            symbolFour.setTextColor(0xFFFFFFFF);
+            symbolFive.setTextColor(0xFFFFFFFF);
+            symbolSix.setTextColor(0xFFFFFFFF);
         }
 
         editText.setTextHighlighted(getContents(mProject, mFilename));
@@ -67,6 +106,11 @@ public class EditorFragment extends Fragment {
         };
 
         return rootView;
+    }
+
+    private void setSymbol(Editor editor, Button button, String symbol) {
+        button.setText(symbol);
+        button.setOnClickListener(new SymbolClickListener(editor, symbol));
     }
 
     /**
@@ -112,5 +156,24 @@ public class EditorFragment extends Fragment {
      */
     public void setFilename(String filename) {
         this.mFilename = filename;
+    }
+
+    private class SymbolClickListener implements View.OnClickListener {
+
+        private Editor mEditor;
+        private String mSymbol;
+
+        public SymbolClickListener(Editor editor, String symbol) {
+            mEditor = editor;
+            mSymbol = symbol;
+        }
+
+        @Override
+        public void onClick(View v) {
+            int start = Math.max(mEditor.getSelectionStart(), 0);
+            int end = Math.max(mEditor.getSelectionEnd(), 0);
+            mEditor.getText().replace(Math.min(start, end), Math.max(start, end),
+                    mSymbol, 0, mSymbol.length());
+        }
     }
 }
