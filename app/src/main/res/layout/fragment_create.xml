@@ -26,14 +26,6 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/inspiration"
-                android:textSize="20sp"
-                android:typeface="sans" />
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
                 android:layout_width="match_parent"

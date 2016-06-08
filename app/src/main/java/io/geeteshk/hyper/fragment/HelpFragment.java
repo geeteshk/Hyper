@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -68,9 +67,6 @@ public class HelpFragment extends Fragment {
 
         ListView faqList = (ListView) rootView.findViewById(R.id.faq_list);
         faqList.setAdapter(new FAQAdapter(getActivity(), R.layout.item_faq));
-
-        TextView header = (TextView) inflater.inflate(R.layout.item_help_desc, faqList, false);
-        faqList.addHeaderView(header, null, false);
 
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_feedback);
         button.setOnClickListener(new View.OnClickListener() {

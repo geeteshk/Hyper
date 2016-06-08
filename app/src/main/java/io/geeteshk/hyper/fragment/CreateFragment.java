@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class CreateFragment extends Fragment {
      * Intent code for selecting an icon
      */
     public static final int SELECT_ICON = 100;
+    private static final String TAG = CreateFragment.class.getSimpleName();
     /**
      * Input fields for project parameters
      */
@@ -150,7 +152,7 @@ public class CreateFragment extends Fragment {
                         mStream = getActivity().getContentResolver().openInputStream(selectedImage);
                         mIcon.setImageBitmap(decodeUri(selectedImage));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.toString());
                     }
                 }
 

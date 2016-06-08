@@ -96,7 +96,7 @@ public class ProjectActivity extends AppCompatActivity {
                     .setAction("SET PIN", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            setResult(-1);
+                            setResult(1337);
                             finish();
                         }
                     });

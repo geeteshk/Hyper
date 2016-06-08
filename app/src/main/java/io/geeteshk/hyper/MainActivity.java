@@ -232,12 +232,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
-            case -1:
+            case 1337:
                 MainActivity.update(this, getSupportFragmentManager(), 5);
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Please enter a new PIN");
+                builder.setTitle("New PIN");
                 EditText editText = new EditText(MainActivity.this);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setPadding(60, 14, 60, 24);
@@ -267,5 +267,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 break;
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
