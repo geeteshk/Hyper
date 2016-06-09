@@ -5,10 +5,11 @@
 
     <io.geeteshk.hyper.widget.Editor
         android:id="@+id/file_content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_above="@+id/symbol_layout"
         android:gravity="start"
-        android:inputType="textMultiLine|textNoSuggestions|"
+        android:inputType="textMultiLine|textNoSuggestions"
         android:paddingEnd="16dp"
         android:paddingLeft="52dp"
         android:paddingRight="16dp"

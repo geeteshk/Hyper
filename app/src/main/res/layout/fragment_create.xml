@@ -119,6 +119,24 @@
 
             </RadioGroup>
 
+            <TextView
+                style="@style/TextAppearance.Hyper.FloatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/create_color" />
+
+            <TextView
+                android:id="@+id/color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="#000000"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:typeface="monospace" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -32,6 +32,7 @@ public class ProjectUtil {
             "    <meta name=\"author\" content=\"@author\">\n" +
             "    <meta name=\"description\" content=\"@description\">\n" +
             "    <meta name=\"keywords\" content=\"@keywords\">\n" +
+            "    <meta name=\"theme-color\" content=\"@color\">\n" +
             "    <link rel=\"shortcut icon\" href=\"images/favicon.ico\" type=\"image/vnd.microsoft.icon\">\n" +
             "    <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\">\n" +
             "    <script src=\"main.js\" type=\"text/javascript\"></script>\n" +
@@ -61,7 +62,7 @@ public class ProjectUtil {
      * @param keywords    about project
      * @param stream      used for importing favicon
      */
-    public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream) {
+    public static void generate(Context context, String name, String author, String description, String keywords, String color, InputStream stream) {
         if (Arrays.asList(new File(Constants.HYPER_ROOT).list()).contains(name)) {
             Toast.makeText(context, name + " already exists.", Toast.LENGTH_SHORT).show();
             return;
@@ -73,10 +74,10 @@ public class ProjectUtil {
                     && createDirectory(name + File.separator + "fonts")
                     && createDirectory(name + File.separator + "css")
                     && createDirectory(name + File.separator + "js")
-                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
+                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", color))
                     && createFile(name, "css" + File.separator + "style.css", STYLE)
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && JsonUtil.createProjectFile(name, author, description, keywords)
+                    && JsonUtil.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(context, name)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
             } else {
@@ -88,10 +89,10 @@ public class ProjectUtil {
                     && createDirectory(name + File.separator + "fonts")
                     && createDirectory(name + File.separator + "css")
                     && createDirectory(name + File.separator + "js")
-                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
+                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", color))
                     && createFile(name, "css" + File.separator + "style.css", STYLE)
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && JsonUtil.createProjectFile(name, author, description, keywords)
+                    && JsonUtil.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(name, stream)) {
                 Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
             } else {

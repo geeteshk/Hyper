@@ -3,8 +3,10 @@ package io.geeteshk.hyper.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -17,7 +19,14 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.pavelsikun.vintagechroma.ChromaDialog;
+import com.pavelsikun.vintagechroma.ChromaUtil;
+import com.pavelsikun.vintagechroma.IndicatorMode;
+import com.pavelsikun.vintagechroma.OnColorSelectedListener;
+import com.pavelsikun.vintagechroma.colormode.ColorMode;
 
 import java.io.InputStream;
 
@@ -54,6 +63,8 @@ public class CreateFragment extends Fragment {
      */
     InputStream mStream;
 
+    TextView mColor;
+
     /**
      * Default empty constructor
      */
@@ -81,11 +92,14 @@ public class CreateFragment extends Fragment {
         mDefaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
         mChooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
         mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
+        mColor = (TextView) rootView.findViewById(R.id.color);
 
         mNameLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "name", ""));
         mAuthorLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "author", ""));
         mDescriptionLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "description", ""));
         mKeywordsLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "keywords", ""));
+        mColor.setText(ChromaUtil.getFormattedColorString(PreferenceUtil.get(getActivity(), "color", Color.BLACK), false));
+        mColor.setTextColor(PreferenceUtil.get(getActivity(), "color", Color.BLACK));
 
         mDefaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -107,6 +121,25 @@ public class CreateFragment extends Fragment {
             }
         });
 
+        mColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ChromaDialog.Builder()
+                        .initialColor(mColor.getCurrentTextColor())
+                        .colorMode(ColorMode.RGB)
+                        .indicatorMode(IndicatorMode.HEX)
+                        .onColorSelected(new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(@ColorInt int color) {
+                                mColor.setText(ChromaUtil.getFormattedColorString(color, false));
+                                mColor.setTextColor(color);
+                            }
+                        })
+                        .create()
+                        .show(getActivity().getSupportFragmentManager(), "Choose a colour for this project");
+            }
+        });
+
         final FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,8 +149,9 @@ public class CreateFragment extends Fragment {
                     PreferenceUtil.store(getActivity(), "author", mAuthorLayout.getEditText().getText().toString());
                     PreferenceUtil.store(getActivity(), "description", mDescriptionLayout.getEditText().getText().toString());
                     PreferenceUtil.store(getActivity(), "keywords", mKeywordsLayout.getEditText().getText().toString());
+                    PreferenceUtil.store(getActivity(), "color", mColor.getCurrentTextColor());
 
-                    ProjectUtil.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mStream);
+                    ProjectUtil.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mColor.getText().toString(), mStream);
                     MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
                 }
             }

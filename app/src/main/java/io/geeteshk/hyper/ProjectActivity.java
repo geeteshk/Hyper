@@ -3,6 +3,7 @@ package io.geeteshk.hyper;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -352,11 +353,14 @@ public class ProjectActivity extends AppCompatActivity {
         TextView author = (TextView) layout.findViewById(R.id.project_author);
         TextView description = (TextView) layout.findViewById(R.id.project_description);
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
+        TextView color = (TextView) layout.findViewById(R.id.project_color);
 
         name.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "name"));
         author.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "author"));
         description.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "description"));
         keywords.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "keywords"));
+        color.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
+        color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
 
         AppCompatDialog dialog = builder.create();
         dialog.show();

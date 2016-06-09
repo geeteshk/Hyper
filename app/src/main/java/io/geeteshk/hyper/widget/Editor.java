@@ -253,7 +253,6 @@ public class Editor extends MultiAutoCompleteTextView {
         }
 
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/SourceCodePro-Regular.otf"));
-
         setHorizontallyScrolling(true);
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
@@ -503,7 +502,7 @@ public class Editor extends MultiAutoCompleteTextView {
 
         if (getScrollX() >= 20) {
             Drawable shadow = getResources().getDrawable(R.drawable.drawer_shadow);
-            shadow.setBounds(getScrollX() + 180, 0, getScrollX() + 200, getHeight());
+            shadow.setBounds(getScrollX() + 180, getScrollY(), getScrollX() + 200, getScrollY() + getHeight());
             shadow.draw(canvas);
         }
 

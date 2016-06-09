@@ -63,4 +63,6 @@
     <string name="not_set">NOT SET</string>
     <string name="auto_save_freq">Automatic Save Frequency</string>
     <string name="auto_save_freq_desc">Choose how long to wait before saving a file.</string>
+    <string name="create_color">Colour</string>
+    <string name="about_color">Colour</string>
 </resources>

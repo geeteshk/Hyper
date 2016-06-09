@@ -13,6 +13,12 @@
         android:elevation="3dp"
         app:cardCornerRadius="0dp">
 
+        <View
+            android:id="@+id/color_theme"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@android:color/black" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

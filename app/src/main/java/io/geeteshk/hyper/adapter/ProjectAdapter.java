@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -67,6 +68,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         holder.mTitle.setText(mObjects[position]);
         holder.mDescription.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
         holder.mFavicon.setImageBitmap(ProjectUtil.getFavicon(mObjects[position]));
+        holder.mColorTheme.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mObjects[position], "color")));
 
         if (mImprove) {
             holder.mFavicon.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +169,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
         public TextView mTitle, mDescription;
         public ImageView mFavicon;
+        public View mColorTheme;
 
         public MyViewHolder(View view) {
             super(view);
@@ -174,6 +177,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             mTitle = (TextView) view.findViewById(R.id.title);
             mDescription = (TextView) view.findViewById(R.id.desc);
             mFavicon = (ImageView) view.findViewById(R.id.favicon);
+            mColorTheme = view.findViewById(R.id.color_theme);
         }
     }
 }
