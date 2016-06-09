@@ -65,4 +65,5 @@
     <string name="auto_save_freq_desc">Choose how long to wait before saving a file.</string>
     <string name="create_color">Colour</string>
     <string name="about_color">Colour</string>
+    <string name="open_in_web_browser">Open in Web Browser</string>
 </resources>
