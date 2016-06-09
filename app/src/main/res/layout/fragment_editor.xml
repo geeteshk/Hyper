@@ -21,9 +21,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#80FFFFFF"
+        android:background="#FFFFFF"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="7">
+
+        <ImageButton
+            android:id="@+id/symbol_tab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="16dp"
+            android:src="@drawable/ic_tab_dark" />
 
         <Button
             android:id="@+id/symbol_one"
@@ -32,7 +41,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="&lt;"
-            android:textColor="@android:color/black"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <Button
@@ -42,7 +51,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="/"
-            android:textColor="@android:color/black"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <Button
@@ -62,7 +71,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="&quot;"
-            android:textColor="@android:color/black"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <Button
@@ -72,7 +81,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="="
-            android:textColor="@android:color/black"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <Button
@@ -82,7 +91,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="!"
-            android:textColor="@android:color/black"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
     </LinearLayout>

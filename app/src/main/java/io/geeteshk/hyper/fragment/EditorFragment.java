@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
@@ -54,6 +55,7 @@ public class EditorFragment extends Fragment {
         boolean darkTheme = PreferenceUtil.get(getActivity(), "dark_theme", false);
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
         LinearLayout symbolLayout = (LinearLayout) rootView.findViewById(R.id.symbol_layout);
+        ImageButton symbolTab = (ImageButton) rootView.findViewById(R.id.symbol_tab);
         Button symbolOne = (Button) rootView.findViewById(R.id.symbol_one);
         Button symbolTwo = (Button) rootView.findViewById(R.id.symbol_two);
         Button symbolThree = (Button) rootView.findViewById(R.id.symbol_three);
@@ -63,6 +65,7 @@ public class EditorFragment extends Fragment {
 
         if (mFilename.endsWith(".html")) {
             editText.setType(Editor.CodeType.HTML);
+            setSymbol(editText, symbolTab, "\t\t");
             setSymbol(editText, symbolOne, "<");
             setSymbol(editText, symbolTwo, "/");
             setSymbol(editText, symbolThree, ">");
@@ -71,6 +74,7 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolSix, "!");
         } else if (mFilename.endsWith(".css")) {
             editText.setType(Editor.CodeType.CSS);
+            setSymbol(editText, symbolTab, "\t\t\t\t");
             setSymbol(editText, symbolOne, "{");
             setSymbol(editText, symbolTwo, "}");
             setSymbol(editText, symbolThree, ":");
@@ -79,6 +83,7 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolSix, ".");
         } else if (mFilename.endsWith(".js")) {
             editText.setType(Editor.CodeType.JS);
+            setSymbol(editText, symbolTab, "\t\t\t\t");
             setSymbol(editText, symbolOne, "{");
             setSymbol(editText, symbolTwo, "}");
             setSymbol(editText, symbolThree, "(");
@@ -88,7 +93,8 @@ public class EditorFragment extends Fragment {
         }
 
         if (!darkTheme) {
-            symbolLayout.setBackgroundColor(0x80333333);
+            symbolLayout.setBackgroundColor(0xFF333333);
+            symbolTab.setImageResource(R.drawable.ic_tab);
             symbolOne.setTextColor(0xFFFFFFFF);
             symbolTwo.setTextColor(0xFFFFFFFF);
             symbolThree.setTextColor(0xFFFFFFFF);
@@ -110,6 +116,10 @@ public class EditorFragment extends Fragment {
 
     private void setSymbol(Editor editor, Button button, String symbol) {
         button.setText(symbol);
+        button.setOnClickListener(new SymbolClickListener(editor, symbol));
+    }
+
+    private void setSymbol(Editor editor, ImageButton button, String symbol) {
         button.setOnClickListener(new SymbolClickListener(editor, symbol));
     }
 
