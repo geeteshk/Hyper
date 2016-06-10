@@ -8,4 +8,10 @@
         android:title="@string/open_in_web_browser"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/web_settings"
+        android:icon="@drawable/ic_web_settings"
+        android:title="@string/web_settings"
+        app:showAsAction="ifRoom" />
+
 </menu>

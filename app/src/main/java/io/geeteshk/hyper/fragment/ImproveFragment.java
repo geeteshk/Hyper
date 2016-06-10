@@ -33,9 +33,9 @@ public class ImproveFragment extends Fragment {
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         ProjectAdapter projectAdapter = new ProjectAdapter(getActivity(), objects, true);
         RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.project_list);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new DecorUtil.GridSpacingItemDecoration(3, DecorUtil.dpToPx(getActivity(), 4), true));
+        projectsList.addItemDecoration(new DecorUtil.GridSpacingItemDecoration(2, DecorUtil.dpToPx(getActivity(), 4), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(projectAdapter);
 
