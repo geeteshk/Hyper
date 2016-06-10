@@ -93,7 +93,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (PreferenceUtil.get(this, "pin", "").equals("")) {
-            Snackbar snackbar = Snackbar.make(projectLayout, "It is recommended you set a PIN for security in the Settings.", Snackbar.LENGTH_INDEFINITE)
+            Snackbar snackbar = Snackbar.make(projectLayout, "It is recommended you set a PIN for security in the Settings.", Snackbar.LENGTH_LONG)
                     .setAction("SET PIN", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
