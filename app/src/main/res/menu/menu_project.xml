@@ -4,9 +4,8 @@
 
     <item
         android:id="@+id/action_run"
-        android:icon="@drawable/ic_run"
         android:title="@string/run_project"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_import_image"

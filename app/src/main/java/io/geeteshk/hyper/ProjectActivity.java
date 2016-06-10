@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,8 +89,14 @@ public class ProjectActivity extends AppCompatActivity {
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
         setContentView(layout);
 
+        float[] hsv = new float[3];
+        int color = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= 0.8f;
+        color = Color.HSVToColor(hsv);
+
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(0xFFE64A19);
+            getWindow().setStatusBarColor(color);
         }
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
@@ -108,6 +116,7 @@ public class ProjectActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getIntent().getStringExtra("project"));
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
         }
 
         FileAdapter adapter = new FileAdapter(getSupportFragmentManager());
@@ -120,7 +129,26 @@ public class ProjectActivity extends AppCompatActivity {
         TabLayout tabStrip = (TabLayout) findViewById(R.id.tabs);
         if (tabStrip != null) {
             tabStrip.setupWithViewPager(pager);
+            tabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+            tabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
         }
+
+        int newColor = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
+        if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
+            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("project") + "</font>")));
+            tabStrip.setTabTextColors(0x80000000, 0xFF000000);
+        } else {
+            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("project") + "</font>")));
+            tabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
+        }
+    }
+
+    private int getComplementaryColor(int colorToInvert) {
+        float[] hsv = new float[3];
+        Color.RGBToHSV(Color.red(colorToInvert), Color.green(colorToInvert),
+                Color.blue(colorToInvert), hsv);
+        hsv[0] = (hsv[0] + 180) % 360;
+        return Color.HSVToColor(hsv);
     }
 
     @Override

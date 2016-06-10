@@ -11,13 +11,7 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"
         android:elevation="3dp"
-        app:cardCornerRadius="0dp">
-
-        <View
-            android:id="@+id/color_theme"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@android:color/black" />
+        app:cardCornerRadius="3dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,7 +32,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/favicon"
-                android:alpha="0.87"
                 android:paddingBottom="4dp"
                 android:paddingTop="8dp"
                 android:singleLine="true"
@@ -50,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
-                android:alpha="0.54"
                 android:singleLine="true" />
 
         </RelativeLayout>
