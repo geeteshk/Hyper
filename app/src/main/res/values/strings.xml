@@ -66,4 +66,5 @@
     <string name="create_color">Colour</string>
     <string name="about_color">Colour</string>
     <string name="open_in_web_browser">Open in Web Browser</string>
+    <string name="run_project">Run Project</string>
 </resources>

@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -121,34 +120,6 @@ public class ProjectActivity extends AppCompatActivity {
         if (tabStrip != null) {
             tabStrip.setupWithViewPager(pager);
         }
-
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.fab_build);
-        assert button != null;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProjectActivity.this, WebActivity.class);
-
-                if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
-                    intent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
-                } else {
-                    intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
-                }
-
-                intent.putExtra("name", getIntent().getStringExtra("project"));
-                startActivity(intent);
-            }
-        });
-
-        layout.setButton(button);
-
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(ProjectActivity.this, "Test", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
     }
 
     @Override
@@ -181,6 +152,18 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_run:
+                Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
+
+                if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
+                    runIntent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
+                } else {
+                    runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                }
+
+                runIntent.putExtra("name", getIntent().getStringExtra("project"));
+                startActivity(runIntent);
+                return true;
             case R.id.action_import_image:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");

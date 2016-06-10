@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_run"
+        android:icon="@drawable/ic_run"
+        android:title="@string/run_project"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_import_image"
         android:title="@string/import_image"
         app:showAsAction="never" />
