@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -326,11 +327,8 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.dialog_about, null);
-        builder.setTitle("About " + getIntent().getStringExtra("project"));
-        builder.setView(layout);
 
         TextView name = (TextView) layout.findViewById(R.id.project_name);
         TextView author = (TextView) layout.findViewById(R.id.project_author);
@@ -345,7 +343,8 @@ public class ProjectActivity extends AppCompatActivity {
         color.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
         color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
 
-        AppCompatDialog dialog = builder.create();
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(layout);
         dialog.show();
     }
 }
