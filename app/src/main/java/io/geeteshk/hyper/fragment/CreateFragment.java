@@ -106,6 +106,7 @@ public class CreateFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mIcon.setImageResource(R.drawable.icon);
+                    mStream = null;
                 }
             }
         });

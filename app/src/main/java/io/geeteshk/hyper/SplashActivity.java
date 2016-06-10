@@ -38,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 PermissionUtil.getRequiredPermissions(SplashActivity.this);
             }
-        }, 1000);
+        }, 800);
     }
 
     @SuppressLint("InlinedApi")
@@ -65,7 +65,9 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         if (PermissionUtil.checkAllPermissions(SplashActivity.this)) {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             finish();
         }
     }
