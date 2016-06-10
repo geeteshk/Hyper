@@ -371,6 +371,10 @@ public class ProjectActivity extends AppCompatActivity {
         color.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
         color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
 
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            layout.setBackgroundColor(0xFF333333);
+        }
+
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(layout);
         dialog.show();

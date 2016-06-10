@@ -5,7 +5,7 @@
 
     <io.geeteshk.hyper.widget.Editor
         android:id="@+id/file_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/symbol_layout"
         android:gravity="start"
