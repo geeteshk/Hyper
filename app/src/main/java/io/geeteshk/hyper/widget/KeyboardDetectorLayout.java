@@ -1,7 +1,6 @@
 package io.geeteshk.hyper.widget;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import io.geeteshk.hyper.R;
 public class KeyboardDetectorLayout extends RelativeLayout {
 
     Context mContext;
-    FloatingActionButton mButton;
 
     public KeyboardDetectorLayout(Context context) {
         this(context, null);
@@ -30,22 +28,16 @@ public class KeyboardDetectorLayout extends RelativeLayout {
         inflater.inflate(R.layout.activity_project, this);
     }
 
-    public void setButton(FloatingActionButton button) {
-        mButton = button;
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int proposedheight = MeasureSpec.getSize(heightMeasureSpec);
         final int actualHeight = getHeight();
 
-        if (((AppCompatActivity) mContext).getSupportActionBar() != null && mButton != null) {
+        if (((AppCompatActivity) mContext).getSupportActionBar() != null) {
             if (actualHeight > proposedheight) {
                 ((AppCompatActivity) mContext).getSupportActionBar().hide();
-                mButton.hide();
             } else if (actualHeight < proposedheight) {
                 ((AppCompatActivity) mContext).getSupportActionBar().show();
-                mButton.show();
             }
         }
 
