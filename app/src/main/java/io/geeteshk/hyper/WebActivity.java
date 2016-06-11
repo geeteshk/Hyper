@@ -48,6 +48,7 @@ public class WebActivity extends AppCompatActivity {
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
+
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
