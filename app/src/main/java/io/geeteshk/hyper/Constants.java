@@ -11,4 +11,5 @@ public class Constants {
     public static final String PAYPAL_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XFYSLYYVHVE2J";
     public static final String HYPER_ROOT = Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper";
     public static final String PACKAGE = "io.geeteshk.hyper";
+    public static final String SCHEME = "package";
 }

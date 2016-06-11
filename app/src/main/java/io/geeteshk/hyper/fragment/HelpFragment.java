@@ -2,11 +2,14 @@ package io.geeteshk.hyper.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -67,6 +71,14 @@ public class HelpFragment extends Fragment {
 
         ListView faqList = (ListView) rootView.findViewById(R.id.faq_list);
         faqList.setAdapter(new FAQAdapter(getActivity(), R.layout.item_faq));
+        faqList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 4) {
+                    showInstalledAppDetails(Constants.PACKAGE);
+                }
+            }
+        });
 
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_feedback);
         button.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +133,14 @@ public class HelpFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void showInstalledAppDetails(String packageName) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts(Constants.SCHEME, packageName, null);
+        intent.setData(uri);
+        getActivity().startActivity(intent);
     }
 
     /**
