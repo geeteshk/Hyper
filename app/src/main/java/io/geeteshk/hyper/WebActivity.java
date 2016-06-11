@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
+import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
  * Activity to test projects
@@ -36,11 +37,17 @@ public class WebActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            setTheme(R.style.Hyper_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        assert toolbar != null;
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            toolbar.setPopupTheme(R.style.Hyper_Dark);
+        }
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
@@ -91,6 +98,10 @@ public class WebActivity extends AppCompatActivity {
             case R.id.web_settings:
                 LayoutInflater inflater = getLayoutInflater();
                 View layout = inflater.inflate(R.layout.sheet_web_settings, null);
+
+                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                    layout.setBackgroundColor(0xFF333333);
+                }
 
                 SwitchCompat allowContentAccess, allowFileAccess, allowFileAccessFromFileURLs, allowUniversalAccessFromFileURLs, blockNetworkImage, blockNetworkLoads, builtInZoomControls, database, displayZoomControls, domStorage, jsCanOpenWindows, js, loadOverview, imageLoad, saveForm, wideView;
                 allowContentAccess = (SwitchCompat) layout.findViewById(R.id.allow_content_access);

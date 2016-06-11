@@ -113,6 +113,9 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (PreferenceUtil.get(this, "dark_theme", false)) {
+            toolbar.setPopupTheme(R.style.Hyper_Dark);
+        }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getIntent().getStringExtra("project"));
