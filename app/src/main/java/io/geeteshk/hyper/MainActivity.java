@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
         } else {
-            finishAffinity();
+            super.onBackPressed();
         }
     }
 

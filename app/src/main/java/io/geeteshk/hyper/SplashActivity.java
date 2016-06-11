@@ -44,21 +44,9 @@ public class SplashActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PermissionUtil.NETWORK_ACCESS_REQUEST_CODE) {
-            if (PermissionUtil.checkPermission(SplashActivity.this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-                PermissionUtil.getPermission(SplashActivity.this, Manifest.permission.ACCESS_NETWORK_STATE, R.string.permission_network_rationale, PermissionUtil.NETWORK_ACCESS_REQUEST_CODE);
-            }
-        } else if (requestCode == PermissionUtil.INTERNET_REQUEST_CODE) {
-            if (PermissionUtil.checkPermission(SplashActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                PermissionUtil.getPermission(SplashActivity.this, Manifest.permission.INTERNET, R.string.permission_internet_rationale, PermissionUtil.INTERNET_REQUEST_CODE);
-            }
-        } else if (requestCode == PermissionUtil.WRITE_STORAGE_REQUEST_CODE) {
+        if (requestCode == PermissionUtil.WRITE_STORAGE_REQUEST_CODE) {
             if (PermissionUtil.checkPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 PermissionUtil.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, PermissionUtil.WRITE_STORAGE_REQUEST_CODE);
-            }
-        } else if (requestCode == PermissionUtil.READ_STORAGE_REQUEST_CODE) {
-            if (PermissionUtil.checkPermission(SplashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                PermissionUtil.getPermission(SplashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, R.string.permission_storage_rationale, PermissionUtil.READ_STORAGE_REQUEST_CODE);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
