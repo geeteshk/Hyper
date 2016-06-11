@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,6 +9,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
@@ -22,8 +25,15 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
 import java.util.regex.Matcher;
@@ -254,6 +264,7 @@ public class Editor extends MultiAutoCompleteTextView {
 
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/SourceCodePro-Regular.otf"));
         setHorizontallyScrolling(true);
+        setCustomSelectionActionModeCallback(new EditorCallback());
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -702,5 +713,97 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     public interface OnTextChangedListener {
         void onTextChanged(String text);
+    }
+
+    private class EditorCallback implements ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            menu.add(0, 1, 3, "Refactor");
+            menu.add(0, 2, 3, "Comment");
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case 1:
+                    String selected = getSelectedString();
+                    LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.dialog_refactor, null);
+
+                    final EditText replaceFrom = (EditText) layout.findViewById(R.id.replace_from);
+                    final EditText replaceTo = (EditText) layout.findViewById(R.id.replace_to);
+                    replaceFrom.setText(selected);
+
+                    AlertDialog.Builder builder;
+                    if (PreferenceUtil.get(mContext, "dark_theme", false)) {
+                        builder = new AlertDialog.Builder(mContext, R.style.Hyper_Dark);
+                    } else {
+                        builder = new AlertDialog.Builder(mContext);
+                    }
+
+                    builder.setView(layout);
+                    builder.setPositiveButton("REPLACE", null);
+
+                    final AppCompatDialog dialog = builder.create();
+                    dialog.show();
+
+                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String replaceFromStr = replaceFrom.getText().toString();
+                            String replaceToStr = replaceTo.getText().toString();
+
+                            if (replaceFromStr.isEmpty()) {
+                                replaceFrom.setError("This field cannot be empty.");
+                            } else if (replaceToStr.isEmpty()) {
+                                replaceTo.setError("This field cannot be empty.");
+                            } else {
+                                setText(getText().toString().replace(replaceFromStr, replaceToStr));
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+
+                    return true;
+                case 2:
+                    String startComment = "", endComment = "";
+                    switch (mType) {
+                        case HTML:
+                            startComment = "<!-- ";
+                            endComment = " -->";
+                            break;
+                        case CSS:
+                            startComment = "/*  ";
+                            endComment = "*/";
+                            break;
+                        case JS:
+                            startComment = "/** ";
+                            endComment = " */";
+                            break;
+                    }
+
+                    setText(getText().insert(getSelectionStart(), startComment).insert(getSelectionEnd(), endComment));
+                    return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+        }
+
+        private String getSelectedString() {
+            return getText().toString().substring(getSelectionStart(), getSelectionEnd());
+        }
     }
 }

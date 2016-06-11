@@ -250,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
                 layout.setLayoutParams(params);
                 builder.setView(layout);
                 builder.setPositiveButton("ACCEPT", null);
-                builder.setCancelable(true);
                 final AppCompatDialog dialog = builder.create();
                 dialog.show();
 

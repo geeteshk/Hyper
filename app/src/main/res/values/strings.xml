@@ -101,4 +101,6 @@
     <string name="use_wide_view_port">Wide View Port</string>
     <string name="use_wide_view_port_desc">Set whether the \"viewport\" HTML meta tag is supported or will a wide viewport be used.</string>
     <string name="web_settings">Settings</string>
+    <string name="replace_from">Replace From</string>
+    <string name="replace_to">Replace To</string>
 </resources>
