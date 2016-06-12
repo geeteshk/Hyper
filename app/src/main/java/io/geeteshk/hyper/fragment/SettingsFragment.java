@@ -86,12 +86,15 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        final TextView autoSave = (TextView) rootView.findViewById(R.id.auto_save_freq_text);
+        autoSave.setText(String.valueOf(PreferenceUtil.get(getActivity(), "auto_save_freq", 2)) + "s");
         AppCompatSeekBar seekBar = (AppCompatSeekBar) rootView.findViewById(R.id.auto_save_freq);
         seekBar.setProgress(PreferenceUtil.get(getActivity(), "auto_save_freq", 2) - 1);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 PreferenceUtil.store(getActivity(), "auto_save_freq", progress + 1);
+                autoSave.setText(String.valueOf(progress + 1) + "s");
             }
 
             @Override

@@ -137,6 +137,15 @@
             android:max="5"
             android:progress="1" />
 
+        <TextView
+            android:id="@+id/auto_save_freq_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/default_auto_save_freq"
+            android:typeface="sans" />
+
     </RelativeLayout>
 
 </LinearLayout>
