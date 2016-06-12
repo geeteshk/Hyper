@@ -24,6 +24,7 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,6 +70,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     "samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|" +
                     "textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b"
     );
+
     private static final Pattern BUILTINS = Pattern.compile(
             "\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|" +
                     "code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|" +
@@ -139,6 +141,7 @@ public class Editor extends MultiAutoCompleteTextView {
     private static final Pattern FUNCTIONS = Pattern.compile("n\\((.*?)\\)");
     private static final Pattern NUMBERS = Pattern.compile("[-.0-9]+");
     private static final Pattern BOOLEANS = Pattern.compile("\\b(true|false)\\b");
+    private static final String TAG = Editor.class.getSimpleName();
     /**
      * Different colours for parts of code
      */
@@ -349,7 +352,9 @@ public class Editor extends MultiAutoCompleteTextView {
                     }
 
                     for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        if (e.toString().charAt(m.start() - 1) == ' ' && e.toString().charAt(m.end()) == '=') {
+                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
                     }
 
                     counter = 0;
@@ -372,7 +377,9 @@ public class Editor extends MultiAutoCompleteTextView {
                     }
 
                     for (Matcher m = PARAMS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        if (e.toString().charAt(m.end()) == ':') {
+                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
                     }
 
                     for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
@@ -415,8 +422,10 @@ public class Editor extends MultiAutoCompleteTextView {
                     break;
                 case JS:
                     for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        if (e.toString().charAt(m.end()) == ' ') {
+                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
                     }
 
                     for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
@@ -464,7 +473,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     break;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.e(TAG, ex.toString());
         }
 
         return e;
