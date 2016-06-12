@@ -62,6 +62,8 @@ public class EditorFragment extends Fragment {
         Button symbolFour = (Button) rootView.findViewById(R.id.symbol_four);
         Button symbolFive = (Button) rootView.findViewById(R.id.symbol_five);
         Button symbolSix = (Button) rootView.findViewById(R.id.symbol_six);
+        Button symbolSeven = (Button) rootView.findViewById(R.id.symbol_seven);
+        Button symbolEight = (Button) rootView.findViewById(R.id.symbol_eight);
 
         if (mFilename.endsWith(".html")) {
             editText.setType(Editor.CodeType.HTML);
@@ -72,6 +74,8 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolFour, "\"");
             setSymbol(editText, symbolFive, "=");
             setSymbol(editText, symbolSix, "!");
+            setSymbol(editText, symbolSeven, "-");
+            setSymbol(editText, symbolEight, "/");
         } else if (mFilename.endsWith(".css")) {
             editText.setType(Editor.CodeType.CSS);
             setSymbol(editText, symbolTab, "\t\t\t\t");
@@ -81,6 +85,8 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolFour, ",");
             setSymbol(editText, symbolFive, "#");
             setSymbol(editText, symbolSix, ".");
+            setSymbol(editText, symbolSeven, ";");
+            setSymbol(editText, symbolEight, "-");
         } else if (mFilename.endsWith(".js")) {
             editText.setType(Editor.CodeType.JS);
             setSymbol(editText, symbolTab, "\t\t\t\t");
@@ -88,8 +94,10 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolTwo, "}");
             setSymbol(editText, symbolThree, "(");
             setSymbol(editText, symbolFour, ")");
-            setSymbol(editText, symbolFive, ";");
+            setSymbol(editText, symbolFive, "!");
             setSymbol(editText, symbolSix, "=");
+            setSymbol(editText, symbolSeven, ":");
+            setSymbol(editText, symbolEight, "?");
         }
 
         if (!darkTheme) {
@@ -101,6 +109,8 @@ public class EditorFragment extends Fragment {
             symbolFour.setTextColor(0xFFFFFFFF);
             symbolFive.setTextColor(0xFFFFFFFF);
             symbolSix.setTextColor(0xFFFFFFFF);
+            symbolSeven.setTextColor(0xFFFFFFFF);
+            symbolEight.setTextColor(0xFFFFFFFF);
         }
 
         editText.setTextHighlighted(getContents(mProject, mFilename));

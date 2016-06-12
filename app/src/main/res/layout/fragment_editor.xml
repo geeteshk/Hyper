@@ -7,7 +7,7 @@
         android:id="@+id/file_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/symbol_layout"
+        android:layout_above="@+id/symbol_layout_scroll_container"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
         android:paddingEnd="16dp"
@@ -17,84 +17,103 @@
         android:scrollbars="vertical"
         android:textSize="14sp" />
 
-    <LinearLayout
-        android:id="@+id/symbol_layout"
+    <HorizontalScrollView
+        android:id="@+id/symbol_layout_scroll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:orientation="horizontal"
-        android:weightSum="7">
+        android:scrollbars="none">
 
-        <ImageButton
-            android:id="@+id/symbol_tab"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/symbol_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="16dp"
-            android:src="@drawable/ic_tab_dark" />
+            android:background="#FFFFFF"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/symbol_one"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="&lt;"
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            <ImageButton
+                android:id="@+id/symbol_tab"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:src="@drawable/ic_tab_dark" />
 
-        <Button
-            android:id="@+id/symbol_two"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="/"
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/symbol_one"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="&lt;"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/symbol_three"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="&gt;"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/symbol_two"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="/"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/symbol_four"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="&quot;"
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/symbol_three"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="&gt;"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/symbol_five"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="="
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/symbol_four"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="&quot;"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/symbol_six"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="!"
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/symbol_five"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="="
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/symbol_six"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="!"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/symbol_seven"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="-"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/symbol_eight"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="\"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
 </RelativeLayout>
