@@ -359,7 +359,7 @@ public class ProjectActivity extends AppCompatActivity {
     @SuppressLint("InflateParams")
     private void showAbout() {
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.dialog_about, null);
+        View layout = inflater.inflate(R.layout.sheet_about, null);
 
         TextView name = (TextView) layout.findViewById(R.id.project_name);
         TextView author = (TextView) layout.findViewById(R.id.project_author);

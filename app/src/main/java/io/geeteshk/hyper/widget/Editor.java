@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +35,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,6 +157,8 @@ public class Editor extends MultiAutoCompleteTextView {
      * Delay used to update code
      */
     public int mUpdateDelay = 1000;
+    int mLine = 0;
+    int mLineDiff = 0;
     /**
      * Type of code set
      */
@@ -265,6 +268,7 @@ public class Editor extends MultiAutoCompleteTextView {
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/SourceCodePro-Regular.otf"));
         setHorizontallyScrolling(true);
         setCustomSelectionActionModeCallback(new EditorCallback());
+        setHorizontallyScrolling(false);
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -504,20 +508,44 @@ public class Editor extends MultiAutoCompleteTextView {
         int lineHeight = getLineHeight();
         int lineCount = getLineCount();
 
-        canvas.drawRect(getScrollX(), 4 + lineBounds - lineHeight, getScrollX() + 180, lineBounds + 10, mLineShadowPaint);
-
         for (int i = 0; i < lineCount; i++) {
-            lineBounds = getLineBounds(i, mRect);
-            canvas.drawText(String.valueOf(i + 1), getScrollX() + 140, lineBounds - 5, mNumberPaint);
-        }
+            lineBounds = getLineBounds(i - mLineDiff, mRect);
+            if (getLines().get(i).toString().endsWith("\n")) {
+                canvas.drawText(String.valueOf(mLine + 1), 140, lineBounds, mNumberPaint);
+                mLine += 1;
+                mLineDiff = 0;
+            } else {
+                mLineDiff += 1;
+            }
 
-        if (getScrollX() >= 20) {
-            Drawable shadow = getResources().getDrawable(R.drawable.drawer_shadow);
-            shadow.setBounds(getScrollX() + 180, getScrollY(), getScrollX() + 200, getScrollY() + getHeight());
-            shadow.draw(canvas);
+            if (i == cursorLine) {
+                canvas.drawRect(0, 4 + lineBounds - lineHeight, 178, lineBounds + 10, mLineShadowPaint);
+            }
+
+            if (i == lineCount - 1) {
+                mLine = 0;
+                mLineDiff = 0;
+            }
         }
 
         super.onDraw(canvas);
+    }
+
+    public List<CharSequence> getLines() {
+        final List<CharSequence> lines = new ArrayList<>();
+        final Layout layout = getLayout();
+
+        if (layout != null) {
+            final int lineCount = layout.getLineCount();
+            final CharSequence text = layout.getText();
+
+            for (int i = 0, startIndex = 0; i < lineCount; i++) {
+                final int endIndex = layout.getLineEnd(i);
+                lines.add(text.subSequence(startIndex, endIndex));
+                startIndex = endIndex;
+            }
+        }
+        return lines;
     }
 
     public int getCurrentCursorLine() {
