@@ -27,7 +27,7 @@ public class HyperDrive extends NanoHTTPD {
         try {
             FileReader fileReader = new FileReader(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line = "";
+            String line;
             while ((line = bufferedReader.readLine()) != null) {
                 reply += line;
             }

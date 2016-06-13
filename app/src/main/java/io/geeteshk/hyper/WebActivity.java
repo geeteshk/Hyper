@@ -1,5 +1,6 @@
 package io.geeteshk.hyper;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -35,6 +36,7 @@ public class WebActivity extends AppCompatActivity {
      *
      * @param savedInstanceState restored when onResume is called
      */
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (PreferenceUtil.get(this, "dark_theme", false)) {
@@ -45,12 +47,15 @@ public class WebActivity extends AppCompatActivity {
         setContentView(R.layout.activity_web);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        assert toolbar != null;
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
+
+        assert getSupportActionBar() != null;
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
 
         int color = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"));
@@ -70,6 +75,7 @@ public class WebActivity extends AppCompatActivity {
         }
 
         mWebView = (WebView) findViewById(R.id.web_view);
+        assert mWebView != null;
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(getIntent().getStringExtra("url"));
     }
@@ -89,6 +95,7 @@ public class WebActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -94,6 +94,11 @@ public class CreateFragment extends Fragment {
         mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
         mColor = (TextView) rootView.findViewById(R.id.color);
 
+        assert mNameLayout.getEditText() != null;
+        assert mAuthorLayout.getEditText() != null;
+        assert mDescriptionLayout.getEditText() != null;
+        assert mKeywordsLayout.getEditText() != null;
+
         mNameLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "name", ""));
         mAuthorLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "author", ""));
         mDescriptionLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "description", ""));

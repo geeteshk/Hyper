@@ -58,7 +58,7 @@ public class PilotFragment extends Fragment {
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
         ValidatorUtil.removeBroken(mObjectsList);
-        mProjectAdapter = new ProjectAdapter(getActivity(), mObjectsList.toArray(new String[0]), false);
+        mProjectAdapter = new ProjectAdapter(getActivity(), mObjectsList.toArray(new String[mObjectsList.size()]), false);
         final RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.pilot_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
@@ -105,7 +105,7 @@ public class PilotFragment extends Fragment {
                     }
                 }
 
-                mProjectAdapter = new ProjectAdapter(getActivity(), mObjectsList.toArray(new String[0]), true);
+                mProjectAdapter = new ProjectAdapter(getActivity(), mObjectsList.toArray(new String[mObjectsList.size()]), true);
                 projectsList.setAdapter(mProjectAdapter);
             }
         });

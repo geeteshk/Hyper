@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ResourceAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
@@ -76,6 +78,7 @@ public class ResourceAdapter extends BaseExpandableListAdapter {
         return groupPosition;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {

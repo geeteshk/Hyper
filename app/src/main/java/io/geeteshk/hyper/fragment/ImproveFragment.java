@@ -44,7 +44,7 @@ public class ImproveFragment extends Fragment {
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
         ValidatorUtil.removeBroken(mObjectsList);
-        mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[0]), true);
+        mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), true);
         final RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
@@ -84,14 +84,14 @@ public class ImproveFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 mObjectsList = new ArrayList<>(Arrays.asList(objects));
                 ValidatorUtil.removeBroken(mObjectsList);
-                for (Iterator<String> iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
-                    String string = iterator.next();
+                for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
+                    String string = (String) iterator.next();
                     if (!string.toLowerCase(Locale.getDefault()).startsWith(s.toString())) {
                         iterator.remove();
                     }
                 }
 
-                mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[0]), true);
+                mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), true);
                 projectsList.setAdapter(mProjectAdapter);
             }
         });

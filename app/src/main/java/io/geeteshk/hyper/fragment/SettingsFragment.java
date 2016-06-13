@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,6 +52,7 @@ public class SettingsFragment extends Fragment {
      * @param savedInstanceState restores state onResume
      * @return fragment view that is created
      */
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -141,6 +143,7 @@ public class SettingsFragment extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    assert layout.getEditText() != null;
                     String newPin = layout.getEditText().getText().toString();
                     if (newPin.length() != 4) {
                         layout.setError("The pin must consist only of 4 digits.");

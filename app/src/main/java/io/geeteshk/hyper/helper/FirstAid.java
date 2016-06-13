@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
@@ -26,7 +27,7 @@ public class FirstAid {
     private static boolean repair(Context context, String name, String author, String description, String keywords) {
         boolean success = true;
         if (mStatus[0] == 1) {
-            success = success && JsonUtil.createProjectFile(name, author, description, keywords, "#000000");
+            success = JsonUtil.createProjectFile(name, author, description, keywords, "#000000");
             mStatus[0] = 0;
         }
 
@@ -65,7 +66,7 @@ public class FirstAid {
         for (final String object : objects) {
             if (isBroken(object)) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-                View layout = inflater.inflate(R.layout.dialog_repair, null);
+                @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_repair, null);
 
                 final TextInputLayout authorLayout, descLayout, keyLayout;
                 authorLayout = (TextInputLayout) layout.findViewById(R.id.author_layout);
@@ -90,6 +91,9 @@ public class FirstAid {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        assert authorLayout.getEditText() != null;
+                        assert descLayout.getEditText() != null;
+                        assert keyLayout.getEditText() != null;
                         if (ValidatorUtil.validate(null, authorLayout, descLayout, keyLayout)) {
                             if (repair(context, object, authorLayout.getEditText().getText().toString(), descLayout.getEditText().getText().toString(), keyLayout.getEditText().getText().toString())) {
                                 Toast.makeText(context, object + " repaired.", Toast.LENGTH_SHORT).show();

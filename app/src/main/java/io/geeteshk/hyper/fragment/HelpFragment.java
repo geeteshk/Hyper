@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -196,7 +195,7 @@ public class HelpFragment extends Fragment {
             }
 
             try {
-                HttpResponse httpResponse = httpClient.execute(httpPost);
+                httpClient.execute(httpPost);
             } catch (IOException e) {
                 e.printStackTrace();
             }

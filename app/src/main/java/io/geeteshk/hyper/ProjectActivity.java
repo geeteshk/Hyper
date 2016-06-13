@@ -101,6 +101,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (PreferenceUtil.get(this, "pin", "").equals("")) {
+            assert projectLayout != null;
             Snackbar snackbar = Snackbar.make(projectLayout, "It is recommended you set a PIN for security in the Settings.", Snackbar.LENGTH_LONG)
                     .setAction("SET PIN", new View.OnClickListener() {
                         @Override
@@ -114,6 +115,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (PreferenceUtil.get(this, "dark_theme", false)) {
+            assert toolbar != null;
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
         setSupportActionBar(toolbar);
@@ -130,11 +132,10 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         TabLayout tabStrip = (TabLayout) findViewById(R.id.tabs);
-        if (tabStrip != null) {
-            tabStrip.setupWithViewPager(pager);
-            tabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
-            tabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
-        }
+        assert tabStrip != null;
+        tabStrip.setupWithViewPager(pager);
+        tabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+        tabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
 
         int newColor = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {

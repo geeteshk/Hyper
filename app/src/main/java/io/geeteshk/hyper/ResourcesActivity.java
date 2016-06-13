@@ -98,12 +98,6 @@ public class ResourcesActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        if (!PreferenceUtil.get(this, "dark_theme", false)) {
-
-        } else {
-
-        }
     }
 
     private void prepare() {

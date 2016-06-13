@@ -65,8 +65,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         int color = Color.parseColor(JsonUtil.getProjectProperty(mObjects[position], "color"));
+        final int newPos = holder.getAdapterPosition();
 
         holder.mTitle.setText(mObjects[position]);
         holder.mDescription.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
@@ -88,11 +89,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     Intent intent;
                     if (PreferenceUtil.get(mContext, "pin", "").equals("")) {
                         intent = new Intent(mContext, ProjectActivity.class);
-                        intent.putExtra("project", mObjects[position]);
+                        intent.putExtra("project", mObjects[newPos]);
                         ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
                     } else {
                         intent = new Intent(mContext, EncryptActivity.class);
-                        intent.putExtra("project", mObjects[position]);
+                        intent.putExtra("project", mObjects[newPos]);
                         mContext.startActivity(intent);
                     }
                 }
@@ -101,7 +102,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             holder.mFavicon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NetworkUtil.setDrive(new HyperDrive(mObjects[position]));
+                    NetworkUtil.setDrive(new HyperDrive(mObjects[newPos]));
 
                     try {
                         NetworkUtil.getDrive().start();
@@ -114,10 +115,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
                         intent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
                     } else {
-                        intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[position] + File.separator + "index.html");
+                        intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
                     }
 
-                    intent.putExtra("name", mObjects[position]);
+                    intent.putExtra("name", mObjects[newPos]);
                     intent.putExtra("pilot", true);
                     mContext.startActivity(intent);
                 }
@@ -128,12 +129,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Delete " + mObjects[position] + "?");
+                builder.setTitle("Delete " + mObjects[newPos] + "?");
                 builder.setMessage("This change cannot be undone.");
                 builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(mObjects[position])) {
+                        if (ProjectUtil.deleteProject(mObjects[newPos])) {
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -155,10 +156,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 }
                             });
-                            Toast.makeText(mContext, "Goodbye " + mObjects[position] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Goodbye " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Toast.makeText(mContext, "Oops! Something went wrong while deleting " + mObjects[position] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Oops! Something went wrong while deleting " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

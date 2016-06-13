@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        assert layout.getEditText() != null;
                         String newPin = layout.getEditText().getText().toString();
                         if (newPin.length() != 4) {
                             layout.setError("The pin must consist only of 4 digits.");
