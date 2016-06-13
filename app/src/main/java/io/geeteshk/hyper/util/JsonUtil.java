@@ -1,6 +1,7 @@
 package io.geeteshk.hyper.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ public class JsonUtil {
             stream.write(object.toString(4).getBytes());
             stream.close();
         } catch (Exception e) {
+            Log.e("JsonUtil", e.toString());
             return false;
         }
 

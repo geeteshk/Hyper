@@ -104,4 +104,6 @@
     <string name="replace_from">Replace From</string>
     <string name="replace_to">Replace To</string>
     <string name="default_auto_save_freq">1s</string>
+    <string name="repair">First Aid for Projects</string>
+    <string name="repair_desc">Project no longer showing in the Improve or Pilot menus? Click here to repair any broken projects.</string>
 </resources>

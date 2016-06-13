@@ -163,7 +163,7 @@ public class ProjectUtil {
      * @param name of project
      * @return true if successfully create
      */
-    private static boolean createDirectory(String name) {
+    public static boolean createDirectory(String name) {
         return new File(Constants.HYPER_ROOT + File.separator + name).mkdirs();
     }
 
@@ -194,7 +194,7 @@ public class ProjectUtil {
      * @param name of projects
      * @return true if successfully copied
      */
-    private static boolean copyIcon(Context context, String name) {
+    public static boolean copyIcon(Context context, String name) {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");

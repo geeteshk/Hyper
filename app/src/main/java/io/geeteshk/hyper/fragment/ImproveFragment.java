@@ -26,6 +26,7 @@ import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.util.DecorUtil;
+import io.geeteshk.hyper.util.ValidatorUtil;
 
 public class ImproveFragment extends Fragment {
 
@@ -42,7 +43,8 @@ public class ImproveFragment extends Fragment {
 
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
-        mProjectAdapter = new ProjectAdapter(getActivity(), objects, true);
+        ValidatorUtil.removeBroken(mObjectsList);
+        mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[0]), true);
         final RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
@@ -81,6 +83,7 @@ public class ImproveFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 mObjectsList = new ArrayList<>(Arrays.asList(objects));
+                ValidatorUtil.removeBroken(mObjectsList);
                 for (Iterator<String> iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
                     String string = iterator.next();
                     if (!string.toLowerCase(Locale.getDefault()).startsWith(s.toString())) {

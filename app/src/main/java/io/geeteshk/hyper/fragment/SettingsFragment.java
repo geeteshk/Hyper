@@ -27,6 +27,7 @@ import android.widget.Toast;
 import io.geeteshk.hyper.EncryptActivity;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
@@ -105,6 +106,14 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        RelativeLayout repairLayout = (RelativeLayout) rootView.findViewById(R.id.repair_layout);
+        repairLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirstAid.repairAll(getActivity());
             }
         });
 
