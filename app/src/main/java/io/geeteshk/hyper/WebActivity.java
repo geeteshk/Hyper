@@ -17,8 +17,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
@@ -30,6 +36,7 @@ import io.geeteshk.hyper.util.PreferenceUtil;
 public class WebActivity extends AppCompatActivity {
 
     private WebView mWebView;
+    private ArrayList<String> mLogs;
 
     /**
      * Called when the activity is created
@@ -74,10 +81,19 @@ public class WebActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(color);
         }
 
+        mLogs = new ArrayList<>();
+
         mWebView = (WebView) findViewById(R.id.web_view);
         assert mWebView != null;
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(getIntent().getStringExtra("url"));
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                mLogs.add(consoleMessage.message() + " -- From line " + consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
+                return true;
+            }
+        });
     }
 
     @Override
@@ -98,15 +114,27 @@ public class WebActivity extends AppCompatActivity {
     @SuppressLint("InflateParams")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        LayoutInflater inflater = getLayoutInflater();
         switch (item.getItemId()) {
             case R.id.web_browser:
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getIntent().getStringExtra("url")));
                 startActivity(intent);
                 return true;
-            case R.id.web_settings:
-                LayoutInflater inflater = getLayoutInflater();
-                View layout = inflater.inflate(R.layout.sheet_web_settings, null);
+            case R.id.web_logs:
+                View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
+                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                    layoutLog.setBackgroundColor(0xFF333333);
+                }
 
+                ListView logsList = (ListView) layoutLog.findViewById(R.id.logs_list);
+                logsList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mLogs));
+
+                BottomSheetDialog dialogLog = new BottomSheetDialog(this);
+                dialogLog.setContentView(layoutLog);
+                dialogLog.show();
+                return true;
+            case R.id.web_settings:
+                View layout = inflater.inflate(R.layout.sheet_web_settings, null);
                 if (PreferenceUtil.get(this, "dark_theme", false)) {
                     layout.setBackgroundColor(0xFF333333);
                 }

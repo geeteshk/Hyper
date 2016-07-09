@@ -34,8 +34,8 @@ public class ProjectUtil {
             "    <meta name=\"keywords\" content=\"@keywords\">\n" +
             "    <meta name=\"theme-color\" content=\"@color\">\n" +
             "    <link rel=\"shortcut icon\" href=\"images/favicon.ico\" type=\"image/vnd.microsoft.icon\">\n" +
-            "    <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\">\n" +
-            "    <script src=\"main.js\" type=\"text/javascript\"></script>\n" +
+            "    <link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\">\n" +
+            "    <script src=\"js/main.js\" type=\"text/javascript\"></script>\n" +
             "  </head>\n" +
             "  <body>\n" +
             "    <h1>Hello World!</h1>\n" +

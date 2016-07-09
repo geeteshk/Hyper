@@ -73,9 +73,7 @@ public class HelpFragment extends Fragment {
         faqList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 4) {
-                    showInstalledAppDetails(Constants.PACKAGE);
-                }
+                if (position == 4) showInstalledAppDetails(Constants.PACKAGE);
             }
         });
 
