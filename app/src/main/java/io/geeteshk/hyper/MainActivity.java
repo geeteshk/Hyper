@@ -30,9 +30,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.geeteshk.hyper.fragment.ContributeFragment;
+import io.geeteshk.hyper.fragment.AssistFragment;
 import io.geeteshk.hyper.fragment.CreateFragment;
-import io.geeteshk.hyper.fragment.DonateFragment;
 import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
@@ -87,15 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new PilotFragment();
                 break;
             case 3:
-                fragment = new ContributeFragment();
+                fragment = new AssistFragment();
                 break;
             case 4:
-                fragment = new DonateFragment();
-                break;
-            case 5:
                 fragment = new SettingsFragment();
                 break;
-            case 6:
+            case 5:
                 fragment = new HelpFragment();
                 break;
         }
@@ -235,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
             case 1337:
-                MainActivity.update(this, getSupportFragmentManager(), 5);
+                MainActivity.update(this, getSupportFragmentManager(), 4);
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);

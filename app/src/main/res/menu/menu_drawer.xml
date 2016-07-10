@@ -23,23 +23,11 @@
             android:icon="@drawable/ic_pilot"
             android:title="@string/pilot" />
 
-    </group>
-
-    <group
-        android:id="@+id/social_group"
-        android:checkableBehavior="single">
-
         <item
-            android:id="@+id/contribute_menu_item"
+            android:id="@+id/assist_menu_item"
             android:checked="false"
-            android:icon="@drawable/ic_contribute"
-            android:title="@string/contribute" />
-
-        <item
-            android:id="@+id/donate_menu_item"
-            android:checked="false"
-            android:icon="@drawable/ic_donate"
-            android:title="@string/donate" />
+            android:icon="@drawable/ic_assist"
+            android:title="@string/assist" />
 
     </group>
 

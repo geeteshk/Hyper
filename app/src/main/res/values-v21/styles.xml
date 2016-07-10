@@ -17,4 +17,9 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="AssistButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">#FF5722</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/assist_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar_shadow"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="24dp"
+                android:gravity="center"
+                android:text="@string/license" />
+
+            <Button
+                android:id="@+id/donate_to_dev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/assist_text"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@drawable/ic_paypal"
+                android:drawableStart="@drawable/ic_paypal"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/donate_to_dev"
+                android:theme="@style/AssistButton" />
+
+            <Button
+                android:id="@+id/contribute_to_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/donate_to_dev"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@drawable/ic_octocat"
+                android:drawableStart="@drawable/ic_octocat"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/contribute_to_the_app"
+                android:theme="@style/AssistButton" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</LinearLayout>

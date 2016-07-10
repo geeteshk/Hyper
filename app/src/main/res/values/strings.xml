@@ -7,8 +7,6 @@
     <string name="pilot">Pilot</string>
     <string name="settings">Settings</string>
     <string name="help"><![CDATA[Help & feedback]]></string>
-    <string name="contribute">Contribute</string>
-    <string name="donate">Donate</string>
     <string name="hyper"><![CDATA[<hyper/>]]></string>
     <string name="ok">OK</string>
 
@@ -16,8 +14,7 @@
         <item>@string/create</item>
         <item>@string/edit</item>
         <item>@string/pilot</item>
-        <item>@string/contribute</item>
-        <item>@string/donate</item>
+        <item>@string/assist</item>
         <item>@string/settings</item>
         <item>@string/help</item>
     </string-array>
@@ -34,16 +31,10 @@
     <string name="about_keywords">Keywords</string>
     <string name="feedback_title">Title</string>
     <string name="feedback_content">Content</string>
-    <string name="hello_octocat">Hello Octocat!</string>
-    <string name="open_source">Hyper is Open Source!</string>
-    <string name="contribute_desc">You can contribute to Hyper by submitting Pull Requests or reporting Issues on the Github repo. By doing this you help yourself, the developer (me) and the community. Feel free to help out whenever you can. Thank you! :D</string>
-    <string name="inspiration">Have some inspiration? Make it a reality.</string>
     <string name="create_keywords">Keywords (separated with commas)</string>
     <string name="create_favicon">Favicon</string>
     <string name="favicon_default">Default</string>
     <string name="favicon_choose">Choose</string>
-    <string name="not_funny_joke">Woah! Trying to get my money!?</string>
-    <string name="cry_for_help">No no! That\'s not what I\'m trying to do. If you feel that my work should be rewarded then please feel free to donate some money. It really helps and motivates me to develop.</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="dark_theme_desc">Put a little less stress on your eyes.</string>
     <string name="import_image">Import Image</string>
@@ -53,7 +44,7 @@
     <string name="view_resources">View Resources</string>
     <string name="about_project">About Project</string>
     <string name="another_cry_for_help">Please donate!</string>
-    <string name="feedback_note">If you do have a GitHub user name then please include it in the content.</string>
+    <string name="feedback_note">If you have a GitHub user name then please include it in the content.</string>
 
     <string name="permission_network_rationale">Network state permission is needed to check if network is up.</string>
     <string name="permission_internet_rationale">Internet permission is needed to test projects.</string>
@@ -107,4 +98,21 @@
     <string name="repair">First Aid for Projects</string>
     <string name="repair_desc">Project no longer showing in the Improve or Pilot menus? Click here to repair any broken projects.</string>
     <string name="view_logs">View Logs</string>
+    <string name="donate_to_dev">Donate to the developer</string>
+    <string name="contribute_to_the_app">Contribute to the app</string>
+    <string name="assist">Assist</string>
+
+    <string name="license">The MIT License (MIT)\n\nCopyright (c) 2016 OpenMatter\n\nPermission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</string>
 </resources>
