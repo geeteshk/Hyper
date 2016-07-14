@@ -37,9 +37,4 @@
         android:title="@string/about_project"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/temp"
-        android:title="Temp"
-        app:showAsAction="never" />
-
 </menu>
