@@ -383,12 +383,6 @@ public class ProjectActivity extends AppCompatActivity {
             case R.id.action_about:
                 showAbout();
                 return true;
-            case R.id.temp:
-                mFiles.add("css" + File.separator + "style.css");
-                mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
-                mPager.setAdapter(mAdapter);
-                mTabStrip.setupWithViewPager(mPager);
-                return true;
         }
 
         return false;
