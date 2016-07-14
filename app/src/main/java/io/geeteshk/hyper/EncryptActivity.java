@@ -145,6 +145,12 @@ public class EncryptActivity extends AppCompatActivity {
                     if (getIntent().hasExtra("project")) {
                         Intent intent = new Intent(EncryptActivity.this, ProjectActivity.class);
                         intent.putExtras(getIntent().getExtras());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+
+                        if (Build.VERSION.SDK_INT >= 21) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+                        }
+
                         startActivity(intent);
                         finish();
                     } else {

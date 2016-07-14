@@ -1,17 +1,26 @@
 package io.geeteshk.hyper;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
@@ -22,14 +31,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.helper.HyperDrive;
@@ -65,6 +80,15 @@ public class ProjectActivity extends AppCompatActivity {
      * Intent code to import js
      */
     private static final int IMPORT_JS = 104;
+
+    private List<String> mFiles;
+    private FileAdapter mAdapter;
+    private ViewPager mPager;
+    private TabLayout mTabStrip;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mDrawer;
 
     /**
      * Called when the activity is created
@@ -124,26 +148,152 @@ public class ProjectActivity extends AppCompatActivity {
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
         }
 
-        FileAdapter adapter = new FileAdapter(getSupportFragmentManager());
-        adapter.setProject(getIntent().getStringExtra("project"));
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        if (pager != null) {
-            pager.setAdapter(adapter);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
+        // TODO: Once 24.1.0 of the support lib is released add setColor(color) here
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        mDrawer = (NavigationView) findViewById(R.id.drawer);
+        setupMenu(getIntent().getStringExtra("project"), null);
+
+        mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                if (!item.isChecked()) {
+                    item.setChecked(true);
+                }
+
+                if (item.getTitle().toString().endsWith(".css") || item.getTitle().toString().endsWith(".js") || item.getTitle().toString().endsWith(".html")) {
+                    String file = "";
+                    if (item.getTitle().toString().endsWith(".css")) {
+                        file = "css" + File.separator + item.getTitle().toString();
+                    } else if (item.getTitle().toString().endsWith(".js")) {
+                        file = "js" + File.separator + item.getTitle().toString();
+                    } else {
+                        file = item.getTitle().toString();
+                    }
+
+                    if (mFiles.contains(file)) {
+                        mPager.setCurrentItem(mFiles.indexOf(file));
+                    } else {
+                        mFiles.add(file);
+                        mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
+                        mPager.setAdapter(mAdapter);
+                        mTabStrip.setupWithViewPager(mPager);
+                    }
+                }
+
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        mFiles = new ArrayList<>();
+        mFiles.add("index.html");
+
+        mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        if (mPager != null) {
+            mPager.setAdapter(mAdapter);
         }
 
-        TabLayout tabStrip = (TabLayout) findViewById(R.id.tabs);
-        assert tabStrip != null;
-        tabStrip.setupWithViewPager(pager);
-        tabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
-        tabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
+        mTabStrip = (TabLayout) findViewById(R.id.tabs);
+        assert mTabStrip != null;
+        mTabStrip.setupWithViewPager(mPager);
+        mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
 
         int newColor = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("project") + "</font>")));
-            tabStrip.setTabTextColors(0x80000000, 0xFF000000);
+            mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
+            PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
+            setOverflowButtonColor(filter);
         } else {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("project") + "</font>")));
-            tabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
+            mTabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(getIntent().getStringExtra("project"), ProjectUtil.getFavicon(getIntent().getStringExtra("project")), Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+            this.setTaskDescription(description);
+        }
+    }
+
+    private void setOverflowButtonColor(final PorterDuffColorFilter colorFilter) {
+        final String overflowDescription = getString(R.string.abc_action_menu_overflow_description);
+        final ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
+        final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                final ArrayList<View> outViews = new ArrayList<View>();
+                decorView.findViewsWithText(outViews, overflowDescription,
+                        View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
+                if (outViews.isEmpty()) {
+                    return;
+                }
+                ImageView overflow = (ImageView) outViews.get(0);
+                overflow.setColorFilter(colorFilter);
+            }
+        });
+    }
+
+    private void setupMenu(String project, @Nullable SubMenu menu) {
+        File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
+        File[] files = projectDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
+                if (menu == null) {
+                    setupMenu(project + File.separator + files[i].getName(), mDrawer.getMenu().addSubMenu(files[i].getName()));
+                } else {
+                    setupMenu(project + File.separator + files[i].getName(), menu.addSubMenu(files[i].getName()));
+                }
+            } else {
+                if (!files[i].getName().endsWith(".hyper")) {
+                    if (menu == null) {
+                        mDrawer.getMenu().add(files[i].getName());
+                    } else {
+                        menu.add(files[i].getName());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Called after activity is created
+     *
+     * @param savedInstanceState restored when onResume is called
+     */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    /**
+     * Called when config is changed
+     *
+     * @param newConfig new configuration
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Called when back button is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -232,6 +382,12 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_about:
                 showAbout();
+                return true;
+            case R.id.temp:
+                mFiles.add("css" + File.separator + "style.css");
+                mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
+                mPager.setAdapter(mAdapter);
+                mTabStrip.setupWithViewPager(mPager);
                 return true;
         }
 

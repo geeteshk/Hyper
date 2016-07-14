@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import java.io.File;
+import java.util.List;
 
 import io.geeteshk.hyper.fragment.EditorFragment;
 
@@ -16,7 +16,7 @@ public class FileAdapter extends FragmentPagerAdapter {
     /**
      * Names of main files to edit
      */
-    String[] mFiles = {"index.html", "css" + File.separator + "style.css", "js" + File.separator + "main.js"};
+    List<String> mFiles;
 
     /**
      * Name of currently opened project
@@ -28,17 +28,10 @@ public class FileAdapter extends FragmentPagerAdapter {
      *
      * @param fm fragmentManager used to add fragment
      */
-    public FileAdapter(FragmentManager fm) {
+    public FileAdapter(FragmentManager fm, String project, List<String> files) {
         super(fm);
-    }
-
-    /**
-     * Method to specify which project to load files from
-     *
-     * @param project name for parent directory / project
-     */
-    public void setProject(String project) {
-        this.mProject = project;
+        mFiles = files;
+        mProject = project;
     }
 
     /**
@@ -51,7 +44,7 @@ public class FileAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         EditorFragment editorFragment = new EditorFragment();
         editorFragment.setProject(mProject);
-        editorFragment.setFilename(mFiles[position]);
+        editorFragment.setFilename(mFiles.get(position));
         return editorFragment;
     }
 
@@ -63,13 +56,13 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     @Override
     public CharSequence getPageTitle(int position) {
-        if (mFiles[position].startsWith("css")) {
-            return mFiles[position].substring(4);
-        } else if (mFiles[position].startsWith("js")) {
-            return mFiles[position].substring(3);
+        if (mFiles.get(position).startsWith("css")) {
+            return mFiles.get(position).substring(4);
+        } else if (mFiles.get(position).startsWith("js")) {
+            return mFiles.get(position).substring(3);
         }
 
-        return mFiles[position];
+        return mFiles.get(position);
     }
 
     /**
@@ -79,6 +72,6 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     @Override
     public int getCount() {
-        return mFiles.length;
+        return mFiles.size();
     }
 }
