@@ -46,6 +46,7 @@ import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
  * Editor class to handle code highlighting etc
+ * Derived from: https://github.com/markusfisch/ShaderEditor/blob/master/app/src/main/java/de/markusfisch/android/shadereditor/widget/ShaderEditor.java
  */
 public class Editor extends MultiAutoCompleteTextView {
 
@@ -139,7 +140,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     "finally|default|case|switch|" +
                     "native|let|super|throws|return)");
     private static final Pattern FUNCTIONS = Pattern.compile("n\\((.*?)\\)");
-    private static final Pattern NUMBERS = Pattern.compile("[-.0-9]+");
+    private static final Pattern NUMBERS = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
     private static final Pattern BOOLEANS = Pattern.compile("\\b(true|false)\\b");
     private static final String TAG = Editor.class.getSimpleName();
     /**
@@ -171,30 +172,32 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     private boolean mModified = true;
     /**
+     * Context used to get preferences
+     */
+    private Context mContext;
+    /**
+     * Rect to represent each line
+     */
+    private Rect mRect;
+    /**
+     * Paint to draw line numbers
+     */
+    private Paint mNumberPaint, mLineShadowPaint;
+    private boolean mHighlightStarted;
+    /**
      * Runnable used to update colours when code is changed
      */
     private final Runnable mUpdateRunnable = new Runnable() {
         @Override
         public void run() {
-            Editable e = getText();
-            if (mOnTextChangedListener != null) mOnTextChangedListener.onTextChanged(e.toString());
-            highlightWithoutChange(e);
+            if (!mHighlightStarted) {
+                Editable e = getText();
+                if (mOnTextChangedListener != null)
+                    mOnTextChangedListener.onTextChanged(e.toString());
+                highlightWithoutChange(e);
+            }
         }
     };
-    /**
-     * Context used to get preferences
-     */
-    private Context mContext;
-
-    /**
-     * Rect to represent each line
-     */
-    private Rect mRect;
-
-    /**
-     * Paint to draw line numbers
-     */
-    private Paint mNumberPaint, mLineShadowPaint;
 
     /**
      * Public constructor
@@ -336,6 +339,8 @@ public class Editor extends MultiAutoCompleteTextView {
      * @return highlighted text
      */
     private Editable highlight(Editable e) {
+        mHighlightStarted = true;
+
         try {
             clearSpans(e);
 
@@ -476,6 +481,7 @@ public class Editor extends MultiAutoCompleteTextView {
             Log.e(TAG, ex.toString());
         }
 
+        mHighlightStarted = false;
         return e;
     }
 

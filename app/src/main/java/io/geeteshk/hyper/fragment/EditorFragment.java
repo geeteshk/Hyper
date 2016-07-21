@@ -113,7 +113,8 @@ public class EditorFragment extends Fragment {
             symbolEight.setTextColor(0xFFFFFFFF);
         }
 
-        editText.setTextHighlighted(getContents(mProject, mFilename));
+        String contents = getContents(mProject, mFilename);
+        editText.setText(contents);
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {

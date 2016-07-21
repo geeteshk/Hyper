@@ -90,6 +90,8 @@ public class ProjectActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawer;
 
+    private String mProject;
+
     /**
      * Called when the activity is created
      *
@@ -97,11 +99,12 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mProject = getIntent().getStringExtra("project");
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 
-        NetworkUtil.setDrive(new HyperDrive(getIntent().getStringExtra("project")));
+        NetworkUtil.setDrive(new HyperDrive(mProject));
         super.onCreate(savedInstanceState);
 
         try {
@@ -114,7 +117,7 @@ public class ProjectActivity extends AppCompatActivity {
         setContentView(layout);
 
         float[] hsv = new float[3];
-        int color = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
+        int color = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
         Color.colorToHSV(color, hsv);
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
@@ -144,8 +147,8 @@ public class ProjectActivity extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getIntent().getStringExtra("project"));
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
+            getSupportActionBar().setTitle(mProject);
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -156,7 +159,18 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mDrawer = (NavigationView) findViewById(R.id.drawer);
-        setupMenu(getIntent().getStringExtra("project"), null);
+        setupMenu(mProject, null);
+
+        View headerView = mDrawer.getHeaderView(0);
+        RelativeLayout headerLayout = (RelativeLayout) headerView.findViewById(R.id.header_background);
+        ImageView headerIcon = (ImageView) headerView.findViewById(R.id.header_icon);
+        TextView headerTitle = (TextView) headerView.findViewById(R.id.header_title);
+        TextView headerDesc = (TextView) headerView.findViewById(R.id.header_desc);
+
+        headerLayout.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
+        headerIcon.setImageBitmap(ProjectUtil.getFavicon(mProject));
+        headerTitle.setText(JsonUtil.getProjectProperty(mProject, "name"));
+        headerDesc.setText(JsonUtil.getProjectProperty(mProject, "description"));
 
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -179,7 +193,7 @@ public class ProjectActivity extends AppCompatActivity {
                         mPager.setCurrentItem(mFiles.indexOf(file));
                     } else {
                         mFiles.add(file);
-                        mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
+                        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
                         mPager.setAdapter(mAdapter);
                         mTabStrip.setupWithViewPager(mPager);
                     }
@@ -193,7 +207,7 @@ public class ProjectActivity extends AppCompatActivity {
         mFiles = new ArrayList<>();
         mFiles.add("index.html");
 
-        mAdapter = new FileAdapter(getSupportFragmentManager(), getIntent().getStringExtra("project"), mFiles);
+        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
         mPager = (ViewPager) findViewById(R.id.pager);
         if (mPager != null) {
             mPager.setAdapter(mAdapter);
@@ -202,22 +216,24 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip = (TabLayout) findViewById(R.id.tabs);
         assert mTabStrip != null;
         mTabStrip.setupWithViewPager(mPager);
-        mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
-        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"))));
+        mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
+        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
 
-        int newColor = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
+        int newColor = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("project") + "</font>")));
+            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
             setOverflowButtonColor(filter);
+            headerTitle.setTextColor(0xff000000);
+            headerDesc.setTextColor(0xff000000);
         } else {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("project") + "</font>")));
+            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(getIntent().getStringExtra("project"), ProjectUtil.getFavicon(getIntent().getStringExtra("project")), Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, ProjectUtil.getFavicon(mProject), Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
             this.setTaskDescription(description);
         }
     }
@@ -341,10 +357,10 @@ public class ProjectActivity extends AppCompatActivity {
                 if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
                     runIntent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
                 } else {
-                    runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + getIntent().getStringExtra("project") + File.separator + "index.html");
+                    runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
                 }
 
-                runIntent.putExtra("name", getIntent().getStringExtra("project"));
+                runIntent.putExtra("name", mProject);
                 startActivity(runIntent);
                 return true;
             case R.id.action_import_image:
@@ -377,7 +393,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_view_resources:
                 Intent resourceIntent = new Intent(ProjectActivity.this, ResourcesActivity.class);
-                resourceIntent.putExtra("project", getIntent().getStringExtra("project"));
+                resourceIntent.putExtra("project", mProject);
                 startActivity(resourceIntent);
                 return true;
             case R.id.action_about:
@@ -402,8 +418,9 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importImage(ProjectActivity.this, getIntent().getStringExtra("project"), imageUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported image.", Toast.LENGTH_SHORT).show();
+                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this image.", Toast.LENGTH_SHORT).show();
                     }
@@ -430,8 +447,9 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importFont(ProjectActivity.this, getIntent().getStringExtra("project"), fontUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported font.", Toast.LENGTH_SHORT).show();
+                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this font.", Toast.LENGTH_SHORT).show();
                     }
@@ -458,8 +476,9 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, getIntent().getStringExtra("project"), cssUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
+                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
                     }
@@ -486,8 +505,9 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, getIntent().getStringExtra("project"), jsUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported JS file.", Toast.LENGTH_SHORT).show();
+                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this JS file.", Toast.LENGTH_SHORT).show();
                     }
@@ -518,12 +538,12 @@ public class ProjectActivity extends AppCompatActivity {
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
         TextView color = (TextView) layout.findViewById(R.id.project_color);
 
-        name.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "name"));
-        author.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "author"));
-        description.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "description"));
-        keywords.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "keywords"));
-        color.setText(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color"));
-        color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("project"), "color")));
+        name.setText(JsonUtil.getProjectProperty(mProject, "name"));
+        author.setText(JsonUtil.getProjectProperty(mProject, "author"));
+        description.setText(JsonUtil.getProjectProperty(mProject, "description"));
+        keywords.setText(JsonUtil.getProjectProperty(mProject, "keywords"));
+        color.setText(JsonUtil.getProjectProperty(mProject, "color"));
+        color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
 
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);
@@ -532,5 +552,11 @@ public class ProjectActivity extends AppCompatActivity {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(layout);
         dialog.show();
+    }
+
+    private void refreshMenu() {
+        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
+        mPager.setAdapter(mAdapter);
+        mTabStrip.setupWithViewPager(mPager);
     }
 }
