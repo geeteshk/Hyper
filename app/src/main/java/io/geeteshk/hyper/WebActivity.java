@@ -3,6 +3,8 @@ package io.geeteshk.hyper;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
@@ -68,6 +71,8 @@ public class WebActivity extends AppCompatActivity {
         int color = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"));
         if ((Color.red(color) * 0.299 + Color.green(color) * 0.587 + Color.blue(color) * 0.114) > 186) {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("name") + "</font>")));
+            PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
+            DecorUtil.setOverflowButtonColor(WebActivity.this, filter);
         } else {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("name") + "</font>")));
         }

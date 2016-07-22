@@ -33,8 +33,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -48,6 +46,7 @@ import java.util.List;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.helper.HyperDrive;
+import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
@@ -225,7 +224,7 @@ public class ProjectActivity extends AppCompatActivity {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
-            setOverflowButtonColor(filter);
+            DecorUtil.setOverflowButtonColor(ProjectActivity.this, filter);
             headerTitle.setTextColor(0xff000000);
             headerDesc.setTextColor(0xff000000);
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_menu);
@@ -244,25 +243,6 @@ public class ProjectActivity extends AppCompatActivity {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, ProjectUtil.getFavicon(mProject), Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
             this.setTaskDescription(description);
         }
-    }
-
-    private void setOverflowButtonColor(final PorterDuffColorFilter colorFilter) {
-        final String overflowDescription = getString(R.string.abc_action_menu_overflow_description);
-        final ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
-        final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                final ArrayList<View> outViews = new ArrayList<View>();
-                decorView.findViewsWithText(outViews, overflowDescription,
-                        View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-                if (outViews.isEmpty()) {
-                    return;
-                }
-                ImageView overflow = (ImageView) outViews.get(0);
-                overflow.setColorFilter(colorFilter);
-            }
-        });
     }
 
     private void setupMenu(String project, @Nullable SubMenu menu) {
