@@ -180,23 +180,21 @@ public class ProjectActivity extends AppCompatActivity {
                     item.setChecked(true);
                 }
 
-                if (item.getTitle().toString().endsWith(".css") || item.getTitle().toString().endsWith(".js") || item.getTitle().toString().endsWith(".html")) {
-                    String file = "";
-                    if (item.getTitle().toString().endsWith(".css")) {
-                        file = "css" + File.separator + item.getTitle().toString();
-                    } else if (item.getTitle().toString().endsWith(".js")) {
-                        file = "js" + File.separator + item.getTitle().toString();
-                    } else {
-                        file = item.getTitle().toString();
-                    }
+                String file;
+                if (item.getIntent() != null) {
+                    file = item.getIntent().getStringExtra("location") + "/" + item.getTitle();
+                } else {
+                    file = item.getTitle().toString();
+                }
 
-                    if (mFiles.contains(file)) {
-                        mPager.setCurrentItem(mFiles.indexOf(file));
-                    } else {
+                if (mFiles.contains(file)) {
+                    mPager.setCurrentItem(mFiles.indexOf(file));
+                } else {
+                    if (!ProjectUtil.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
                         mFiles.add(file);
-                        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
-                        mPager.setAdapter(mAdapter);
-                        mTabStrip.setupWithViewPager(mPager);
+                        refreshMenu();
+                    } else {
+                        Toast.makeText(ProjectActivity.this, "The selected file is not a text file.", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -207,6 +205,8 @@ public class ProjectActivity extends AppCompatActivity {
 
         mFiles = new ArrayList<>();
         mFiles.add("index.html");
+        mFiles.add("css/style.css");
+        mFiles.add("js/main.js");
 
         mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -280,7 +280,10 @@ public class ProjectActivity extends AppCompatActivity {
                     if (menu == null) {
                         mDrawer.getMenu().add(files[i].getName());
                     } else {
-                        menu.add(files[i].getName());
+                        MenuItem item = menu.add(files[i].getName());
+                        Intent intent = new Intent();
+                        intent.putExtra("location", menu.getItem().getTitle());
+                        item.setIntent(intent);
                     }
                 }
             }
