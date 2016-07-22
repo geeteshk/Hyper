@@ -145,6 +145,7 @@ public class ProjectActivity extends AppCompatActivity {
             assert toolbar != null;
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(mProject);
@@ -154,7 +155,7 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
-        // TODO: Once 24.1.0 of the support lib is released add setColor(color) here
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -227,6 +228,13 @@ public class ProjectActivity extends AppCompatActivity {
             setOverflowButtonColor(filter);
             headerTitle.setTextColor(0xff000000);
             headerDesc.setTextColor(0xff000000);
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_menu);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+            });
         } else {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
