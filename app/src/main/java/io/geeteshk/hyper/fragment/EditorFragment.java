@@ -114,7 +114,7 @@ public class EditorFragment extends Fragment {
         }
 
         String contents = getContents(mProject, mFilename);
-        editText.setText(contents);
+        editText.setTextHighlighted(contents);
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {

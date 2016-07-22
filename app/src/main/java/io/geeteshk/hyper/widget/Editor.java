@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -183,19 +184,16 @@ public class Editor extends MultiAutoCompleteTextView {
      * Paint to draw line numbers
      */
     private Paint mNumberPaint, mLineShadowPaint;
-    private boolean mHighlightStarted;
     /**
      * Runnable used to update colours when code is changed
      */
     private final Runnable mUpdateRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!mHighlightStarted) {
-                Editable e = getText();
-                if (mOnTextChangedListener != null)
-                    mOnTextChangedListener.onTextChanged(e.toString());
-                highlightWithoutChange(e);
-            }
+            Editable e = getText();
+            if (mOnTextChangedListener != null)
+                mOnTextChangedListener.onTextChanged(e.toString());
+            highlightWithoutChange(e);
         }
     };
 
@@ -229,7 +227,8 @@ public class Editor extends MultiAutoCompleteTextView {
         cancelUpdate();
 
         mModified = false;
-        setText(highlight(new SpannableStringBuilder(text)));
+        Editable e = new SpannableStringBuilder(text);
+        new HighlightTask(e).execute(e);
         mModified = true;
 
         if (mOnTextChangedListener != null) mOnTextChangedListener.onTextChanged(text.toString());
@@ -328,161 +327,8 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     private void highlightWithoutChange(Editable e) {
         mModified = false;
-        highlight(e);
+        new HighlightTask(e).execute(e);
         mModified = true;
-    }
-
-    /**
-     * Main method used for highlightin i.e. this is where the magic happens
-     *
-     * @param e text to be highlighted
-     * @return highlighted text
-     */
-    private Editable highlight(Editable e) {
-        mHighlightStarted = true;
-
-        try {
-            clearSpans(e);
-
-            if (e.length() == 0) return e;
-
-            int counter;
-            switch (mType) {
-                case HTML:
-                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                        if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                    }
-
-                    for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
-                        if (e.toString().charAt(m.start() - 1) == ' ' && e.toString().charAt(m.end()) == '=') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                    break;
-                case CSS:
-                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (Matcher m = PARAMS.matcher(e); m.find(); ) {
-                        if (e.toString().charAt(m.end()) == ':') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                    }
-
-                    for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (Matcher m = ENDINGS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    for (Matcher m = CSS_COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                    break;
-                case JS:
-                    for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
-                        if (e.toString().charAt(m.end()) == ' ') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-                    }
-
-                    for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_FUNCTIONS), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.ITALIC), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (Matcher m = SYMBOLS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (int index = e.toString().indexOf("null"); index >= 0; index = e.toString().indexOf("null", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (Matcher m = NUMBERS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    for (Matcher m = BOOLEANS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    for (Matcher m = JS_COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                    break;
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
-        }
-
-        mHighlightStarted = false;
-        return e;
     }
 
     /**
@@ -519,7 +365,7 @@ public class Editor extends MultiAutoCompleteTextView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         int cursorLine = getCurrentCursorLine();
-        int lineBounds = getLineBounds(cursorLine, mRect);
+        int lineBounds;
         int lineHeight = getLineHeight();
         int lineCount = getLineCount();
 
@@ -847,6 +693,170 @@ public class Editor extends MultiAutoCompleteTextView {
 
         private String getSelectedString() {
             return getText().toString().substring(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    class HighlightTask extends AsyncTask<Editable, Void, Editable> {
+
+        Editable e;
+
+        public HighlightTask(Editable e) {
+            super();
+            this.e = e;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            clearSpans(e);
+        }
+
+        @Override
+        protected Editable doInBackground(Editable... editables) {
+            Editable e = editables[0];
+            try {
+                if (e.length() == 0) return e;
+
+                int counter;
+                switch (mType) {
+                    case HTML:
+                        for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
+                            if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
+                                e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+                        }
+
+                        for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
+                            if (e.toString().charAt(m.start() - 1) == ' ' && e.toString().charAt(m.end()) == '=') {
+                                e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+                        }
+
+                        counter = 0;
+                        for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                            if (counter % 2 == 0) {
+                                e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            counter++;
+                        }
+
+                        for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        break;
+                    case CSS:
+                        for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (Matcher m = PARAMS.matcher(e); m.find(); ) {
+                            if (e.toString().charAt(m.end()) == ':') {
+                                e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+                        }
+
+                        for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (Matcher m = ENDINGS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counter = 0;
+                        for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                            if (counter % 2 == 0) {
+                                e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            counter++;
+                        }
+
+                        counter = 0;
+                        for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
+                            if (counter % 2 == 0) {
+                                e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            counter++;
+                        }
+
+                        for (Matcher m = CSS_COMMENTS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        break;
+                    case JS:
+                        for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
+                            if (e.toString().charAt(m.end()) == ' ') {
+                                e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+                        }
+
+                        for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_FUNCTIONS), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new StyleSpan(Typeface.ITALIC), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (Matcher m = SYMBOLS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (int index = e.toString().indexOf("null"); index >= 0; index = e.toString().indexOf("null", index + 1)) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (Matcher m = NUMBERS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        for (Matcher m = BOOLEANS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        counter = 0;
+                        for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
+                            if (counter % 2 == 0) {
+                                e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            counter++;
+                        }
+
+                        counter = 0;
+                        for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
+                            if (counter % 2 == 0) {
+                                e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            counter++;
+                        }
+
+                        for (Matcher m = JS_COMMENTS.matcher(e); m.find(); ) {
+                            e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        break;
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, ex.toString());
+            }
+
+            return e;
+        }
+
+        @Override
+        protected void onPostExecute(Editable editable) {
+            setText(editable);
         }
     }
 }

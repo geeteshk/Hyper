@@ -2,26 +2,24 @@ language: android
 jdk: oraclejdk8
 android:
   components:
-    # SDK Tools
-    - platform-tools
-    - tools
-
-    # Build Tools
-    - build-tools-24.0.0
-
-    # SDK Version
-    - android-24
-
-    # Additional Components
-    - extra-android-support
-    - extra-android-m2repository
-
+  - platform-tools
+  - tools
+  - build-tools-24.0.0
+  - android-24
+  - extra-android-support
+  - extra-android-m2repository
 before_script:
-  - chmod +x gradlew
-  - sed -i -e 's/Bot.USERNAME/"nope"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
-  - sed -i -e 's/Bot.PASSWORD/"hahanochance"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
-  - sed -i -e 's/import io.geeteshk.hyper.Bot;/ /g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
-
-script: 
-  - chmod +x gradlew
-  - ./gradlew assembleDebug
+- chmod +x gradlew
+- sed -i -e 's/Bot.USERNAME/"nope"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
+- sed -i -e 's/Bot.PASSWORD/"hahanochance"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
+- sed -i -e 's/import io.geeteshk.hyper.Bot;/ /g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
+script:
+- chmod +x gradlew
+- "./gradlew assembleDebug"
+deploy:
+  provider: releases
+  api_key:
+    secure: rta1EXh7W4N3yt7mkFg3UIBRsA42Qu4iwJEf8Kcqd6qUW4T9xFUuB+bpmC95up1hvA4mlOFZ7hGfEzlVMU4GxHI1BD/cK1yRhQYjSdwHFtZqEqIBrhw9gk0ftZ7NtO8rS6yyYYA+uxxMgxqpXJucebgwmc3GJG0MagDYb4kCTbDSpouySEHPs+inSOfEhq1zG0xA7rRxK95sK5RuGYfCJ85OBn2Zq9fmn2dMK99kG+13PlwRC6GZfCn0lL+E7ZwWsi2P5dUTt+UI1qvbc14RvjabWWlHMOCR0yrf3X2ElPvN4C2kDVmR/0DaIYlfBmbih3dFoKrIoofQETEZRXGdG1OxSFS4DD4dVQpKGtpf8XNd8J6EjN3IeOWfKLhS3k7rqyxI5vl3WUkANEVnYiDUo0RDsN1/jy84ScIqbWQrhfy/blXwBVmHWZOxWEDctaJuBXl8QFKk+9BcWq7SZ4B7HXQhSb4Z6+A3vSu+OnVMMbKXnpcS6BRAgAnHAu46W9vj5Bmjs2olLWExjf+JmEfekgd9Fsd5fJR4m7nCuI49n7Ddz2XJOw8RX0Wngv0siYU0y/t5LRT95xz84UL74oZCKAQbkJ2wJAE3UTfpTnpUYD6xMO5+hfMyUyicssLpDJIHJj8YhtN2w4BH3t+JQsfg9XCY2bZd3/bfsN2MBM2YUcM=
+  file: app/build/outputs/apk/app-debug.apk
+  on:
+    repo: OpenMatter/Hyper
