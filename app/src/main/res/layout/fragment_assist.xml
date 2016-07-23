@@ -54,6 +54,19 @@
                 android:text="@string/contribute_to_the_app"
                 android:theme="@style/AssistButton" />
 
+            <Button
+                android:id="@+id/view_travis_builds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/contribute_to_app"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@drawable/ic_travis_ci"
+                android:drawableStart="@drawable/ic_travis_ci"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/view_travis_builds"
+                android:theme="@style/AssistButton" />
+
         </RelativeLayout>
 
     </ScrollView>

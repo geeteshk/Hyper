@@ -35,29 +35,29 @@
     <string name="create_favicon">Favicon</string>
     <string name="favicon_default">Default</string>
     <string name="favicon_choose">Choose</string>
-    <string name="dark_theme">Dark Theme</string>
+    <string name="dark_theme">Night Mode</string>
     <string name="dark_theme_desc">Put a little less stress on your eyes.</string>
-    <string name="import_image">Import Image</string>
-    <string name="import_font">Import Font</string>
-    <string name="import_css">Import CSS</string>
-    <string name="import_js">Import JS</string>
-    <string name="view_resources">View Resources</string>
-    <string name="about_project">About Project</string>
-    <string name="another_cry_for_help">Please donate!</string>
+    <string name="import_image">Image</string>
+    <string name="import_font">Font</string>
+    <string name="import_css">CSS</string>
+    <string name="import_js">JS</string>
+    <string name="import_html">HTML</string>
+    <string name="view_resources">Resources</string>
+    <string name="about_project">About</string>
     <string name="feedback_note">If you have a GitHub user name then please include it in the content.</string>
 
     <string name="permission_network_rationale">Network state permission is needed to check if network is up.</string>
     <string name="permission_internet_rationale">Internet permission is needed to test projects.</string>
     <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
-    <string name="set_pin">Set PIN</string>
+    <string name="set_pin">PIN</string>
     <string name="set_pin_desc">Use a PIN for extra security.</string>
     <string name="not_set">NOT SET</string>
-    <string name="auto_save_freq">Automatic Save Frequency</string>
+    <string name="auto_save_freq">AutoSave Frequency</string>
     <string name="auto_save_freq_desc">Choose how long to wait before saving a file.</string>
     <string name="create_color">Colour</string>
     <string name="about_color">Colour</string>
-    <string name="open_in_web_browser">Open in Web Browser</string>
-    <string name="run_project">Run Project</string>
+    <string name="open_in_web_browser">Web Browser</string>
+    <string name="run_project">Run</string>
 
     <string name="allow_content_access">Allow Content Access</string>
     <string name="allow_content_access_desc">Set content URL access support.</string>
@@ -95,14 +95,14 @@
     <string name="replace_from">Replace From</string>
     <string name="replace_to">Replace To</string>
     <string name="default_auto_save_freq">1s</string>
-    <string name="repair">First Aid for Projects</string>
+    <string name="repair">First Aid</string>
     <string name="repair_desc">Project no longer showing in the Improve or Pilot menus? Click here to repair any broken projects.</string>
-    <string name="view_logs">View Logs</string>
+    <string name="view_logs">Logs</string>
     <string name="donate_to_dev">Donate to the developer</string>
     <string name="contribute_to_the_app">Contribute to the app</string>
     <string name="assist">Assist</string>
 
-    <string name="license">The MIT License (MIT)\n\nCopyright (c) 2016 OpenMatter\n\nPermission is hereby granted, free of charge, to any person obtaining a copy
+    <string name="license">The MIT License (MIT)\n\nCopyright &#169; 2016 OpenMatter\n\nPermission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -115,4 +115,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</string>
+    <string name="import_not_java">Import</string>
+    <string name="create_not_java">New</string>
+    <string name="view_travis_builds">View Travis Builds</string>
 </resources>

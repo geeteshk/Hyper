@@ -25,6 +25,7 @@ public class AssistFragment extends Fragment {
 
         Button donate = (Button) rootView.findViewById(R.id.donate_to_dev);
         Button contribute = (Button) rootView.findViewById(R.id.contribute_to_app);
+        Button travis = (Button) rootView.findViewById(R.id.view_travis_builds);
 
         donate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +42,17 @@ public class AssistFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Uri uri = Uri.parse(Constants.GITHUB_URL);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        travis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse(Constants.TRAVIS_URL);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(intent);

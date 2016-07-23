@@ -12,4 +12,5 @@ public class Constants {
     public static final String HYPER_ROOT = Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper";
     public static final String PACKAGE = "io.geeteshk.hyper";
     public static final String SCHEME = "package";
+    public static final String TRAVIS_URL = "https://travis-ci.org/OpenMatter/Hyper";
 }

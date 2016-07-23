@@ -192,6 +192,7 @@ public class ProjectActivity extends AppCompatActivity {
                     if (!ProjectUtil.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
                         mFiles.add(file);
                         refreshMenu();
+                        mPager.setCurrentItem(mFiles.indexOf(file));
                     } else {
                         Toast.makeText(ProjectActivity.this, "The selected file is not a text file.", Toast.LENGTH_SHORT).show();
                     }
@@ -218,6 +219,26 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip.setupWithViewPager(mPager);
         mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
         mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
+        mTabStrip.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (mFiles.size() > 1) {
+                    mFiles.remove(tab.getPosition());
+                    mTabStrip.removeTabAt(tab.getPosition());
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         int newColor = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
@@ -248,19 +269,19 @@ public class ProjectActivity extends AppCompatActivity {
     private void setupMenu(String project, @Nullable SubMenu menu) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
+        for (File file : files) {
+            if (file.isDirectory()) {
                 if (menu == null) {
-                    setupMenu(project + File.separator + files[i].getName(), mDrawer.getMenu().addSubMenu(files[i].getName()));
+                    setupMenu(project + File.separator + file.getName(), mDrawer.getMenu().addSubMenu(file.getName()));
                 } else {
-                    setupMenu(project + File.separator + files[i].getName(), menu.addSubMenu(files[i].getName()));
+                    setupMenu(project + File.separator + file.getName(), menu.addSubMenu(file.getName()));
                 }
             } else {
-                if (!files[i].getName().endsWith(".hyper")) {
+                if (!file.getName().endsWith(".hyper")) {
                     if (menu == null) {
-                        mDrawer.getMenu().add(files[i].getName());
+                        mDrawer.getMenu().add(file.getName());
                     } else {
-                        MenuItem item = menu.add(files[i].getName());
+                        MenuItem item = menu.add(file.getName());
                         Intent intent = new Intent();
                         intent.putExtra("location", menu.getItem().getTitle());
                         item.setIntent(intent);
@@ -381,6 +402,93 @@ public class ProjectActivity extends AppCompatActivity {
                 if (jsIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(jsIntent, IMPORT_JS);
                 }
+                return true;
+            case R.id.action_create_html:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("New");
+                final EditText editText = new EditText(this);
+                editText.setHint("Resource name");
+                builder.setView(editText);
+                builder.setCancelable(false);
+                builder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString(), ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
+                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            mFiles.add(editText.getText().toString());
+                            refreshMenu();
+                            mPager.setCurrentItem(mFiles.indexOf(editText.getText().toString()));
+                        } else {
+                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AppCompatDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            case R.id.action_create_css:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle("New");
+                final EditText editText2 = new EditText(this);
+                editText2.setHint("Resource name");
+                builder2.setView(editText2);
+                builder2.setCancelable(false);
+                builder2.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString(), ProjectUtil.STYLE)) {
+                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            mFiles.add("css" + File.separator + editText2.getText().toString());
+                            refreshMenu();
+                            mPager.setCurrentItem(mFiles.indexOf("css" + File.separator + editText2.getText().toString()));
+                        } else {
+                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder2.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AppCompatDialog dialog2 = builder2.create();
+                dialog2.show();
+                return true;
+            case R.id.action_create_js:
+                AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
+                builder3.setTitle("New");
+                final EditText editText3 = new EditText(this);
+                editText3.setHint("Resource name");
+                builder3.setView(editText3);
+                builder3.setCancelable(false);
+                builder3.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString(), ProjectUtil.MAIN)) {
+                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            mFiles.add("js" + File.separator + editText3.getText().toString());
+                            refreshMenu();
+                            mPager.setCurrentItem(mFiles.indexOf("js" + File.separator + editText3.getText().toString()));
+                        } else {
+                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder3.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AppCompatDialog dialog3 = builder3.create();
+                dialog3.show();
                 return true;
             case R.id.action_view_resources:
                 Intent resourceIntent = new Intent(ProjectActivity.this, ResourcesActivity.class);
@@ -546,6 +654,8 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     private void refreshMenu() {
+        mDrawer.getMenu().clear();
+        setupMenu(mProject, null);
         mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
         mPager.setAdapter(mAdapter);
         mTabStrip.setupWithViewPager(mPager);

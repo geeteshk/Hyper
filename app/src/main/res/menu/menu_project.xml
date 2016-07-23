@@ -3,28 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@string/create_not_java"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_create_html"
+                android:title="@string/import_html"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_create_css"
+                android:title="@string/import_css"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_create_js"
+                android:title="@string/import_js"
+                app:showAsAction="never" />
+        </menu>
+
+    </item>
+
+    <item
+        android:title="@string/import_not_java"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_import_image"
+                android:title="@string/import_image"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_import_font"
+                android:title="@string/import_font"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_import_css"
+                android:title="@string/import_css"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_import_js"
+                android:title="@string/import_js"
+                app:showAsAction="never" />
+        </menu>
+
+    </item>
+
+    <item
         android:id="@+id/action_run"
         android:title="@string/run_project"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_import_image"
-        android:title="@string/import_image"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_import_font"
-        android:title="@string/import_font"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_import_css"
-        android:title="@string/import_css"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_import_js"
-        android:title="@string/import_js"
         app:showAsAction="never" />
 
     <item
