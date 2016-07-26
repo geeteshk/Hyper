@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!fileTest) {
-            Toast.makeText(this, "Could not create project directory!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.project_dir_error, Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("New PIN");
+                builder.setTitle(R.string.new_pin);
                 EditText editText = new EditText(MainActivity.this);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setPadding(60, 14, 60, 24);
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 params.setMargins(60, 16, 60, 16);
                 layout.setLayoutParams(params);
                 builder.setView(layout);
-                builder.setPositiveButton("ACCEPT", null);
+                builder.setPositiveButton(R.string.accept, null);
                 final AppCompatDialog dialog = builder.create();
                 dialog.show();
 
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                         assert layout.getEditText() != null;
                         String newPin = layout.getEditText().getText().toString();
                         if (newPin.length() != 4) {
-                            layout.setError("The pin must consist only of 4 digits.");
+                            layout.setError(getString(R.string.pin_four_digits));
                         } else {
                             PreferenceUtil.store(MainActivity.this, "pin", newPin);
                             dialog.dismiss();

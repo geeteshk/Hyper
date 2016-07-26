@@ -80,9 +80,9 @@ public class FirstAid {
                     builder = new AlertDialog.Builder(context);
                 }
 
-                builder.setTitle("Repair " + object);
+                builder.setTitle(context.getString(R.string.repair_key) + " " + object);
                 builder.setView(layout);
-                builder.setPositiveButton("REPAIR", null);
+                builder.setPositiveButton(R.string.repair_key, null);
 
                 final AppCompatDialog dialog = builder.create();
                 dialog.show();
@@ -94,11 +94,11 @@ public class FirstAid {
                         assert authorLayout.getEditText() != null;
                         assert descLayout.getEditText() != null;
                         assert keyLayout.getEditText() != null;
-                        if (ValidatorUtil.validate(null, authorLayout, descLayout, keyLayout)) {
+                        if (ValidatorUtil.validate(context, null, authorLayout, descLayout, keyLayout)) {
                             if (repair(context, object, authorLayout.getEditText().getText().toString(), descLayout.getEditText().getText().toString(), keyLayout.getEditText().getText().toString())) {
-                                Toast.makeText(context, object + " repaired.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, object + " " + context.getString(R.string.repaired) + ".", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, object + " failed.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, object + " " + context.getString(R.string.failed) + ".", Toast.LENGTH_SHORT).show();
                             }
 
                             dialog.dismiss();

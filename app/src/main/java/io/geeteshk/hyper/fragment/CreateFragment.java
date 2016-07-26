@@ -150,7 +150,7 @@ public class CreateFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ValidatorUtil.validate(mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout)) {
+                if (ValidatorUtil.validate(getActivity(), mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout)) {
                     PreferenceUtil.store(getActivity(), "name", mNameLayout.getEditText().getText().toString());
                     PreferenceUtil.store(getActivity(), "author", mAuthorLayout.getEditText().getText().toString());
                     PreferenceUtil.store(getActivity(), "description", mDescriptionLayout.getEditText().getText().toString());
@@ -166,7 +166,7 @@ public class CreateFragment extends Fragment {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), "Create project", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.create_project, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

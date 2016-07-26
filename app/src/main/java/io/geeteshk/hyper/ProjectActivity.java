@@ -128,8 +128,8 @@ public class ProjectActivity extends AppCompatActivity {
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (PreferenceUtil.get(this, "pin", "").equals("")) {
             assert projectLayout != null;
-            Snackbar snackbar = Snackbar.make(projectLayout, "It is recommended you set a PIN for security in the Settings.", Snackbar.LENGTH_LONG)
-                    .setAction("SET PIN", new View.OnClickListener() {
+            Snackbar snackbar = Snackbar.make(projectLayout, R.string.pin_snack_bar, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.set_pin, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             setResult(1337);
@@ -194,7 +194,7 @@ public class ProjectActivity extends AppCompatActivity {
                         refreshMenu();
                         mPager.setCurrentItem(mFiles.indexOf(file));
                     } else {
-                        Toast.makeText(ProjectActivity.this, "The selected file is not a text file.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.not_text_file, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -405,25 +405,25 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_create_html:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("New");
+                builder.setTitle(R.string.new_not_java);
                 final EditText editText = new EditText(this);
-                editText.setHint("Resource name");
+                editText.setHint(R.string.resource_name);
                 builder.setView(editText);
                 builder.setCancelable(false);
-                builder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString(), ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
-                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add(editText.getText().toString());
                             refreshMenu();
                             mPager.setCurrentItem(mFiles.indexOf(editText.getText().toString()));
                         } else {
-                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -434,25 +434,25 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_create_css:
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle("New");
+                builder2.setTitle(R.string.new_not_java);
                 final EditText editText2 = new EditText(this);
-                editText2.setHint("Resource name");
+                editText2.setHint(R.string.resource_name);
                 builder2.setView(editText2);
                 builder2.setCancelable(false);
-                builder2.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString(), ProjectUtil.STYLE)) {
-                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add("css" + File.separator + editText2.getText().toString());
                             refreshMenu();
                             mPager.setCurrentItem(mFiles.indexOf("css" + File.separator + editText2.getText().toString()));
                         } else {
-                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-                builder2.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                builder2.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -463,25 +463,25 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_create_js:
                 AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-                builder3.setTitle("New");
+                builder3.setTitle(R.string.new_not_java);
                 final EditText editText3 = new EditText(this);
-                editText3.setHint("Resource name");
+                editText3.setHint(R.string.resource_name);
                 builder3.setView(editText3);
                 builder3.setCancelable(false);
-                builder3.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString(), ProjectUtil.MAIN)) {
-                            Toast.makeText(ProjectActivity.this, "Successfully created file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add("js" + File.separator + editText3.getText().toString());
                             refreshMenu();
                             mPager.setCurrentItem(mFiles.indexOf("js" + File.separator + editText3.getText().toString()));
                         } else {
-                            Toast.makeText(ProjectActivity.this, "There was a problem while creating this file.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-                builder3.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                builder3.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -509,23 +509,23 @@ public class ProjectActivity extends AppCompatActivity {
         if (requestCode == IMPORT_IMAGE && resultCode == RESULT_OK) {
             final Uri imageUri = data.getData();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Name");
+            builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
-            editText.setHint("Resource name");
+            editText.setHint(R.string.resource_name);
             builder.setView(editText);
             builder.setCancelable(false);
-            builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && ProjectUtil.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
-                        Toast.makeText(ProjectActivity.this, "Successfully imported image.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
-                        Toast.makeText(ProjectActivity.this, "There was a problem while importing this image.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -538,23 +538,23 @@ public class ProjectActivity extends AppCompatActivity {
         if (requestCode == IMPORT_FONT && resultCode == RESULT_OK) {
             final Uri fontUri = data.getData();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Name");
+            builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
-            editText.setHint("Resource name");
+            editText.setHint(R.string.resource_name);
             builder.setView(editText);
             builder.setCancelable(false);
-            builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && ProjectUtil.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
-                        Toast.makeText(ProjectActivity.this, "Successfully imported font.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
-                        Toast.makeText(ProjectActivity.this, "There was a problem while importing this font.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.font_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -596,23 +596,23 @@ public class ProjectActivity extends AppCompatActivity {
         if (requestCode == IMPORT_JS && resultCode == RESULT_OK) {
             final Uri jsUri = data.getData();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Name");
+            builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
-            editText.setHint("Resource name");
+            editText.setHint(R.string.resource_name);
             builder.setView(editText);
             builder.setCancelable(false);
-            builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString())) {
-                        Toast.makeText(ProjectActivity.this, "Successfully imported JS file.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
-                        Toast.makeText(ProjectActivity.this, "There was a problem while importing this JS file.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();

@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.util;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.R;
 
 /**
  * Utility class to validate project creation
@@ -23,30 +25,30 @@ public class ValidatorUtil {
      * @param keywords    about project
      * @return true if valid
      */
-    public static boolean validate(@Nullable TextInputLayout name, TextInputLayout author, TextInputLayout description, TextInputLayout keywords) {
+    public static boolean validate(Context context, @Nullable TextInputLayout name, TextInputLayout author, TextInputLayout description, TextInputLayout keywords) {
         if (name != null) {
             assert name.getEditText() != null;
             if (name.getEditText().getText().toString().isEmpty()) {
-                name.setError("Please enter a name.");
+                name.setError(context.getString(R.string.name_error));
                 return false;
             }
         }
 
         assert author.getEditText() != null;
         if (author.getEditText().getText().toString().isEmpty()) {
-            author.setError("Please enter an author.");
+            author.setError(context.getString(R.string.author_error));
             return false;
         }
 
         assert description.getEditText() != null;
         if (description.getEditText().getText().toString().isEmpty()) {
-            description.setError("Please enter a description.");
+            description.setError(context.getString(R.string.desc_error));
             return false;
         }
 
         assert keywords.getEditText() != null;
         if (keywords.getEditText().getText().toString().isEmpty()) {
-            keywords.setError("Please enter some keywords.");
+            keywords.setError(context.getString(R.string.keywords_error));
             return false;
         }
 

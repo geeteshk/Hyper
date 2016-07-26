@@ -120,12 +120,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Delete " + mObjects[newPos] + "?");
-                builder.setMessage("This change cannot be undone.");
-                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects[newPos] + "?");
+                builder.setMessage(R.string.change_undone);
+                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(mObjects[newPos])) {
+                        if (ProjectUtil.deleteProject(mContext, mObjects[newPos])) {
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -147,15 +147,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 }
                             });
-                            Toast.makeText(mContext, "Goodbye " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Toast.makeText(mContext, "Oops! Something went wrong while deleting " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
-                builder.setNegativeButton("CANCEL", null);
+                builder.setNegativeButton(R.string.cancel, null);
                 builder.show();
 
                 return true;

@@ -46,7 +46,7 @@ public class ResourcesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Resources");
+            getSupportActionBar().setTitle(R.string.resources);
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -67,9 +67,9 @@ public class ResourcesActivity extends AppCompatActivity {
                     final int childPosition = ExpandableListView.getPackedPositionChild(id);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ResourcesActivity.this);
-                    builder.setTitle("Delete Resource?");
-                    builder.setMessage("Are you sure?");
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    builder.setTitle(R.string.delete_resource);
+                    builder.setMessage(R.string.sure);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (!mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("index.html")
@@ -77,14 +77,14 @@ public class ResourcesActivity extends AppCompatActivity {
                                     && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("main.js")
                                     && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("favicon.ico")) {
                                 if (Resources.remove(getIntent().getStringExtra("project"), mListDataHeader.get(groupPosition).toLowerCase(), mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition))) {
-                                    Toast.makeText(ResourcesActivity.this, "Successfully deleted.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ResourcesActivity.this, R.string.delete_success, Toast.LENGTH_SHORT).show();
                                     recreate();
                                 } else {
-                                    Toast.makeText(ResourcesActivity.this, "Unable to delete resource.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ResourcesActivity.this, R.string.delete_fail, Toast.LENGTH_SHORT).show();
                                     recreate();
                                 }
                             } else {
-                                Toast.makeText(ResourcesActivity.this, "You can't delete this file!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ResourcesActivity.this, R.string.nope, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

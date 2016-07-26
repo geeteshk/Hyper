@@ -125,7 +125,7 @@ public class SettingsFragment extends Fragment {
     private void updatePin() {
         if (PreferenceUtil.get(getActivity(), "pin", "").equals("")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Please enter a new PIN");
+            builder.setTitle(R.string.pin_request);
             EditText editText = new EditText(getActivity());
             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
             final TextInputLayout layout = new TextInputLayout(getActivity());
@@ -134,7 +134,7 @@ public class SettingsFragment extends Fragment {
             params.setMargins(60, 16, 60, 16);
             layout.setLayoutParams(params);
             builder.setView(layout);
-            builder.setPositiveButton("ACCEPT", null);
+            builder.setPositiveButton(R.string.accept, null);
             builder.setCancelable(false);
             final AppCompatDialog dialog = builder.create();
             dialog.show();
@@ -146,7 +146,7 @@ public class SettingsFragment extends Fragment {
                     assert layout.getEditText() != null;
                     String newPin = layout.getEditText().getText().toString();
                     if (newPin.length() != 4) {
-                        layout.setError("The pin must consist only of 4 digits.");
+                        layout.setError(getString(R.string.error_pin));
                     } else {
                         setPin.setText("****");
                         PreferenceUtil.store(getActivity(), "pin", newPin);
@@ -155,7 +155,7 @@ public class SettingsFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "Please enter your current PIN.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.current_pin, Toast.LENGTH_SHORT).show();
             startActivityForResult(new Intent(getActivity(), EncryptActivity.class), 0);
         }
     }

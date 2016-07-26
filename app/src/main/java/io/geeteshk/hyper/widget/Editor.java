@@ -762,8 +762,8 @@ public class Editor extends MultiAutoCompleteTextView {
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            menu.add(0, 1, 3, "Refactor");
-            menu.add(0, 2, 3, "Comment");
+            menu.add(0, 1, 3, R.string.refactor);
+            menu.add(0, 2, 3, R.string.comment);
             return true;
         }
 
@@ -792,7 +792,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     }
 
                     builder.setView(layout);
-                    builder.setPositiveButton("REPLACE", null);
+                    builder.setPositiveButton(R.string.replace, null);
 
                     final AppCompatDialog dialog = builder.create();
                     dialog.show();
@@ -805,9 +805,9 @@ public class Editor extends MultiAutoCompleteTextView {
                             String replaceToStr = replaceTo.getText().toString();
 
                             if (replaceFromStr.isEmpty()) {
-                                replaceFrom.setError("This field cannot be empty.");
+                                replaceFrom.setError(mContext.getString(R.string.empty_field_no_no));
                             } else if (replaceToStr.isEmpty()) {
-                                replaceTo.setError("This field cannot be empty.");
+                                replaceTo.setError(mContext.getString(R.string.empty_field_no_no));
                             } else {
                                 setText(getText().toString().replace(replaceFromStr, replaceToStr));
                                 dialog.dismiss();

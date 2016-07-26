@@ -83,10 +83,10 @@ public class HelpFragment extends Fragment {
             public void onClick(final View v) {
                 if (isNetworkAvailable()) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Submit Feedback");
+                    builder.setTitle(R.string.submit_feedback);
                     @SuppressLint("InflateParams") final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_feedback, null);
                     builder.setView(view);
-                    builder.setPositiveButton("SUBMIT", null);
+                    builder.setPositiveButton(R.string.submit, null);
                     final AppCompatDialog dialog = builder.create();
                     dialog.show();
 
@@ -99,10 +99,10 @@ public class HelpFragment extends Fragment {
                             TextInputLayout titleLayout = (TextInputLayout) view.findViewById(R.id.title_layout);
                             TextInputLayout contentLayout = (TextInputLayout) view.findViewById(R.id.content_layout);
                             if (title.getText().toString().equals("")) {
-                                titleLayout.setError("Please enter a title.");
+                                titleLayout.setError(getString(R.string.error_feedback_title));
                                 titleLayout.setErrorEnabled(true);
                             } else if (content.getText().toString().equals("")) {
-                                contentLayout.setError("Please enter some content.");
+                                contentLayout.setError(getString(R.string.error_feedback_content));
                                 contentLayout.setErrorEnabled(true);
                             } else {
                                 new FeedbackTask().execute(
@@ -116,7 +116,7 @@ public class HelpFragment extends Fragment {
                         }
                     });
                 } else {
-                    Toast.makeText(getActivity(), "Oops! Looks like you aren't connected to the internet.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.oops_internet, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -124,7 +124,7 @@ public class HelpFragment extends Fragment {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), "Submit feedback", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.submit_feedback, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -208,7 +208,7 @@ public class HelpFragment extends Fragment {
          */
         @Override
         protected void onPostExecute(String s) {
-            Toast.makeText(getActivity(), "Feedback sent. Thank you. :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.feedback_thanks, Toast.LENGTH_SHORT).show();
         }
     }
 }

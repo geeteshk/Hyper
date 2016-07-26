@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.R;
 
 /**
  * Utility class to handle all project related tasks
@@ -65,7 +66,7 @@ public class ProjectUtil {
      */
     public static void generate(Context context, String name, String author, String description, String keywords, String color, InputStream stream) {
         if (Arrays.asList(new File(Constants.HYPER_ROOT).list()).contains(name)) {
-            Toast.makeText(context, name + " already exists.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, name + " " + context.getString(R.string.already_exists) + ".", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -80,9 +81,9 @@ public class ProjectUtil {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && JsonUtil.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(context, name)) {
-                Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "It seems something went wrong while creating the project.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
             }
         } else {
             if (createDirectory(name)
@@ -95,9 +96,9 @@ public class ProjectUtil {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && JsonUtil.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(name, stream)) {
-                Toast.makeText(context, "Your project has been successfully created!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "It seems something went wrong while creating the project.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -108,15 +109,15 @@ public class ProjectUtil {
      * @param name of project
      * @return true if successfully deleted
      */
-    public static boolean deleteProject(String name) {
+    public static boolean deleteProject(Context context, String name) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + name);
         File[] files = projectDir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                deleteDirectory(file);
+                deleteDirectory(context, file);
             } else {
                 if (!file.delete()) {
-                    Log.w("Hyper", "Cannot delete file: " + file.getPath());
+                    Log.w("Hyper", context.getString(R.string.cannot_delete) + " " + file.getPath());
                 }
             }
         }
@@ -130,16 +131,16 @@ public class ProjectUtil {
      * @param directory to delete
      * @return true if successfully deleted
      */
-    private static boolean deleteDirectory(File directory) {
+    private static boolean deleteDirectory(Context context, File directory) {
         if (directory.exists()) {
             File[] files = directory.listFiles();
             if (null != files) {
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        deleteDirectory(file);
+                        deleteDirectory(context, file);
                     } else {
                         if (!file.delete()) {
-                            Log.w("Hyper", "Cannot delete file: " + file.getPath());
+                            Log.w("Hyper", context.getString(R.string.cannot_delete) + " " + file.getPath());
                         }
                     }
                 }
