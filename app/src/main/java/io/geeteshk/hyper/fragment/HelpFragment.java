@@ -16,6 +16,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ import io.geeteshk.hyper.adapter.FAQAdapter;
  * Fragment used to show help about the IDE. A lot of work still needs to be done here.
  */
 public class HelpFragment extends Fragment {
+
+    private static final String TAG = HelpFragment.class.getSimpleName();
 
     /**
      * Default empty constructor
@@ -177,25 +180,25 @@ public class HelpFragment extends Fragment {
             try {
                 object.put("title", params[1]);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
 
             try {
                 object.put("body", params[2] + "\n\nFeedback from Hyper at " + java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()) + "." + "\nInstalled on " + Build.MODEL + ".");
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
 
             try {
                 httpPost.setEntity(new StringEntity(object.toString()));
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
 
             try {
                 httpClient.execute(httpPost);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
 
             return null;

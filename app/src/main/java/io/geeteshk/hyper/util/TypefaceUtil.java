@@ -2,6 +2,7 @@ package io.geeteshk.hyper.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 
@@ -9,6 +10,8 @@ import java.lang.reflect.Field;
  * Utility class to help override typeface
  */
 public final class TypefaceUtil {
+
+    private static final String TAG = TypefaceUtil.class.getSimpleName();
 
     /**
      * Method to set default font
@@ -34,7 +37,7 @@ public final class TypefaceUtil {
             StaticField.setAccessible(true);
             StaticField.set(null, newTypeface);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
     }
 }

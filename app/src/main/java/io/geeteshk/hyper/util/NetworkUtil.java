@@ -28,7 +28,7 @@ public class NetworkUtil {
                 }
             }
         } catch (SocketException ex) {
-            Log.e(TAG, ex.toString());
+            Log.e(TAG, ex.getMessage());
         }
 
         return null;

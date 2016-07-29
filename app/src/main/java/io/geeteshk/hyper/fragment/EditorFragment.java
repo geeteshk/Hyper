@@ -3,6 +3,7 @@ package io.geeteshk.hyper.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import io.geeteshk.hyper.widget.Editor;
  * Fragment used to edit files
  */
 public class EditorFragment extends Fragment {
+
+    private static final String TAG = EditorFragment.class.getSimpleName();
 
     /**
      * Strings representing project and filename
@@ -155,7 +158,7 @@ public class EditorFragment extends Fragment {
 
             return builder.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return "Unable to read file!";

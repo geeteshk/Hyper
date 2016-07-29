@@ -35,7 +35,7 @@ public class HyperDrive extends NanoHTTPD {
         try {
             inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + mProject + uri);
         } catch (IOException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, e.getMessage());
         }
 
         return new Response(Response.Status.OK, mimeType, inputStream);

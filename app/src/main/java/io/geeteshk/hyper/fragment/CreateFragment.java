@@ -192,7 +192,7 @@ public class CreateFragment extends Fragment {
                         mStream = getActivity().getContentResolver().openInputStream(selectedImage);
                         mIcon.setImageBitmap(decodeUri(selectedImage));
                     } catch (Exception e) {
-                        Log.e(TAG, e.toString());
+                        Log.e(TAG, e.getMessage());
                     }
                 }
 
@@ -234,6 +234,7 @@ public class CreateFragment extends Fragment {
             o2.inSampleSize = scale;
             return BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage), null, o2);
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }

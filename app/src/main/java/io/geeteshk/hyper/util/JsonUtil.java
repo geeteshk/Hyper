@@ -21,6 +21,8 @@ import io.geeteshk.hyper.Constants;
  */
 public class JsonUtil {
 
+    private static final String TAG = JsonUtil.class.getSimpleName();
+
     /**
      * Creates the .hyper file at the root of a project
      *
@@ -43,7 +45,7 @@ public class JsonUtil {
             stream.write(object.toString(4).getBytes());
             stream.close();
         } catch (Exception e) {
-            Log.e("JsonUtil", e.toString());
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -70,7 +72,7 @@ public class JsonUtil {
 
             return builder.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return null;
@@ -89,7 +91,7 @@ public class JsonUtil {
             JSONObject object = new JSONObject(json);
             return object.getString(prop);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return null;
@@ -115,7 +117,7 @@ public class JsonUtil {
 
             return new JSONArray(builder.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return null;

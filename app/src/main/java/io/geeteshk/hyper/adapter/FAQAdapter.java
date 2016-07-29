@@ -1,6 +1,7 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.JsonUtil;
 
 public class FAQAdapter extends ArrayAdapter {
+
+    private static final String TAG = FAQAdapter.class.getSimpleName();
 
     /**
      * Context used to inflate layout
@@ -69,7 +72,7 @@ public class FAQAdapter extends ArrayAdapter {
             title.setText(mArray.getJSONObject(position).getString("title"));
             content.setText(mArray.getJSONObject(position).getString("content"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return rootView;

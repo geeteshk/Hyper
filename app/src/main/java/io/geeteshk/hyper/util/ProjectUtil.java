@@ -43,16 +43,15 @@ public class ProjectUtil {
             "    <h1>Hello World!</h1>\n" +
             "  </body>\n" +
             "</html>";
-
     /**
      * Empty Style
      */
     public static final String STYLE = "/* Add all your styles here */";
-
     /**
      * Empty Script
      */
     public static final String MAIN = "// Add all your JS here";
+    private static final String TAG = ProjectUtil.class.getSimpleName();
 
     /**
      * Method to handle project creation
@@ -117,7 +116,7 @@ public class ProjectUtil {
                 deleteDirectory(context, file);
             } else {
                 if (!file.delete()) {
-                    Log.w("Hyper", context.getString(R.string.cannot_delete) + " " + file.getPath());
+                    Log.e(TAG, context.getString(R.string.cannot_delete) + " " + file.getPath());
                 }
             }
         }
@@ -140,7 +139,7 @@ public class ProjectUtil {
                         deleteDirectory(context, file);
                     } else {
                         if (!file.delete()) {
-                            Log.w("Hyper", context.getString(R.string.cannot_delete) + " " + file.getPath());
+                            Log.e(TAG, context.getString(R.string.cannot_delete) + " " + file.getPath());
                         }
                     }
                 }
@@ -183,6 +182,7 @@ public class ProjectUtil {
             stream.write(contents.getBytes());
             stream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -210,6 +210,7 @@ public class ProjectUtil {
             output.flush();
             output.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -235,6 +236,7 @@ public class ProjectUtil {
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -269,7 +271,7 @@ public class ProjectUtil {
 
             return 100 * other / (ascii + other) > 95;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
         return true;
@@ -300,6 +302,7 @@ public class ProjectUtil {
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -330,6 +333,7 @@ public class ProjectUtil {
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -360,6 +364,7 @@ public class ProjectUtil {
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 
@@ -392,6 +397,7 @@ public class ProjectUtil {
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
             return false;
         }
 

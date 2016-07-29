@@ -98,7 +98,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     try {
                         NetworkUtil.getDrive().start();
                     } catch (IOException e) {
-                        Log.e(TAG, e.toString());
+                        Log.e(TAG, e.getMessage());
                     }
 
                     Intent intent = new Intent(mContext, WebActivity.class);
