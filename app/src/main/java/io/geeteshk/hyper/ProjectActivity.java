@@ -219,26 +219,6 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip.setupWithViewPager(mPager);
         mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
         mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
-        mTabStrip.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                if (mFiles.size() > 1) {
-                    mFiles.remove(tab.getPosition());
-                    mTabStrip.removeTabAt(tab.getPosition());
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        });
 
         int newColor = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
