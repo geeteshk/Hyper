@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/web_browser"
+        android:title="@string/open_in_web_browser"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/web_logs"
+        android:title="@string/view_logs"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/web_settings"
+        android:title="@string/web_settings"
+        app:showAsAction="never" />
+
+</menu>
