@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -10,10 +11,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
@@ -68,7 +72,7 @@ public class ImproveFragment extends Fragment {
             }
         });
 
-        EditText projectSearch = (EditText) rootView.findViewById(R.id.project_search);
+        final EditText projectSearch = (EditText) rootView.findViewById(R.id.project_search);
         projectSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,6 +97,28 @@ public class ImproveFragment extends Fragment {
 
                 mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), true);
                 projectsList.setAdapter(mProjectAdapter);
+            }
+        });
+
+        projectSearch.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(projectSearch.getApplicationWindowToken(), 0);
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        ImageButton clearSearch = (ImageButton) rootView.findViewById(R.id.clear_search);
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                projectSearch.setText("");
             }
         });
 
