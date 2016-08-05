@@ -154,7 +154,6 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
-        mDrawerToggle.setDrawerIndicatorEnabled(false);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -228,6 +227,7 @@ public class ProjectActivity extends AppCompatActivity {
             DecorUtil.setOverflowButtonColor(ProjectActivity.this, filter);
             headerTitle.setTextColor(0xff000000);
             headerDesc.setTextColor(0xff000000);
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_menu);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -393,7 +393,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString(), ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
+                        if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString() + ".html", ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add(editText.getText().toString());
                             refreshMenu();
@@ -410,6 +410,8 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog = builder.create();
+                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                    showToast(true);
                 dialog.show();
                 return true;
             case R.id.action_create_css:
@@ -422,7 +424,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString(), ProjectUtil.STYLE)) {
+                        if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", ProjectUtil.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add("css" + File.separator + editText2.getText().toString());
                             refreshMenu();
@@ -439,6 +441,8 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog2 = builder2.create();
+                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                    showToast(true);
                 dialog2.show();
                 return true;
             case R.id.action_create_js:
@@ -451,7 +455,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString(), ProjectUtil.MAIN)) {
+                        if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", ProjectUtil.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             mFiles.add("js" + File.separator + editText3.getText().toString());
                             refreshMenu();
@@ -468,6 +472,8 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog3 = builder3.create();
+                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                    showToast(true);
                 dialog3.show();
                 return true;
             case R.id.action_view_resources:
@@ -481,6 +487,14 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void showToast(boolean image) {
+        if (!image) {
+            Toast.makeText(this, R.string.file_ending_warn, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.file_ending_warn_image, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -512,6 +526,8 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
+            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                showToast(true);
             dialog.show();
         }
 
@@ -541,6 +557,8 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
+            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                showToast(true);
             dialog.show();
         }
 
@@ -555,7 +573,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -570,6 +588,8 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
+            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                showToast(false);
             dialog.show();
         }
 
@@ -584,7 +604,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
                         Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -599,6 +619,8 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
+            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                showToast(false);
             dialog.show();
         }
     }

@@ -172,7 +172,11 @@ SOFTWARE.</string>
     <string name="delete_success">Successfully deleted.</string>
     <string name="delete_fail">Unable to delete resource.</string>
     <string name="nope">You can\'t delete this file!</string>
-    <string name="from_line">" -- From line "</string>
-    <string name="of">" of "</string>
+    <string name="from_line">\t— From line\t</string>
+    <string name="of">\tof\t</string>
     <string name="search">Search</string>
+    <string name="file_ending_warn">File endings will be added automatically.</string>
+    <string name="file_ending_warn_image">Please enter a file ending when importing images or fonts.</string>
+    <string name="file_ending_warn_title">Show File Ending Warning</string>
+    <string name="file_ending_warn_desc">Show small warning while creating and importing project files.</string>
 </resources>

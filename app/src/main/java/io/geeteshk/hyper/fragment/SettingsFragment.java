@@ -119,6 +119,22 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        RelativeLayout disableFileLayout = (RelativeLayout) rootView.findViewById(R.id.disable_file_ending_warn_layout);
+        final SwitchCompat disableFile = (SwitchCompat) rootView.findViewById(R.id.disable_file_ending_warn);
+        disableFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceUtil.store(getActivity(), "show_toast_file_ending", b);
+            }
+        });
+
+        disableFileLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                disableFile.setChecked(!disableFile.isChecked());
+            }
+        });
+
         return rootView;
     }
 
