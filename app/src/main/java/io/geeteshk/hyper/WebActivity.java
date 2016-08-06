@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -23,12 +25,11 @@ import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import io.geeteshk.hyper.adapter.LogsAdapter;
 import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
@@ -139,8 +140,12 @@ public class WebActivity extends AppCompatActivity {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
-                ListView logsList = (ListView) layoutLog.findViewById(R.id.logs_list);
-                logsList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mLogs));
+                RecyclerView logsList = (RecyclerView) layoutLog.findViewById(R.id.logs_list);
+                RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+                RecyclerView.Adapter adapter = new LogsAdapter(mLogs);
+
+                logsList.setLayoutManager(manager);
+                logsList.setAdapter(adapter);
 
                 BottomSheetDialog dialogLog = new BottomSheetDialog(this);
                 dialogLog.setContentView(layoutLog);
