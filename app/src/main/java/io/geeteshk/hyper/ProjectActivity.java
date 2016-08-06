@@ -58,28 +58,25 @@ import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
  */
 public class ProjectActivity extends AppCompatActivity {
 
+    public static final int FILES_CHANGED = 201;
     private static final String TAG = ProjectActivity.class.getSimpleName();
-
     /**
      * Intent code to import image
      */
     private static final int IMPORT_IMAGE = 101;
-
     /**
      * Intent code to import font
      */
     private static final int IMPORT_FONT = 102;
-
     /**
      * Intent code to import css
      */
     private static final int IMPORT_CSS = 103;
-
     /**
      * Intent code to import js
      */
     private static final int IMPORT_JS = 104;
-
+    private static final int OPEN_RESOURCES = 105;
     private List<String> mFiles;
     private FileAdapter mAdapter;
     private ViewPager mPager;
@@ -388,6 +385,8 @@ public class ProjectActivity extends AppCompatActivity {
                 builder.setTitle(R.string.new_not_java);
                 final EditText editText = new EditText(this);
                 editText.setHint(R.string.resource_name);
+                editText.setSingleLine(true);
+                editText.setMaxLines(1);
                 builder.setView(editText);
                 builder.setCancelable(false);
                 builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
@@ -395,9 +394,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString() + ".html", ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
-                            mFiles.add(editText.getText().toString());
                             refreshMenu();
-                            mPager.setCurrentItem(mFiles.indexOf(editText.getText().toString()));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -411,7 +408,7 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog = builder.create();
                 if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(true);
+                    showToast(false);
                 dialog.show();
                 return true;
             case R.id.action_create_css:
@@ -419,6 +416,8 @@ public class ProjectActivity extends AppCompatActivity {
                 builder2.setTitle(R.string.new_not_java);
                 final EditText editText2 = new EditText(this);
                 editText2.setHint(R.string.resource_name);
+                editText2.setSingleLine(true);
+                editText2.setMaxLines(1);
                 builder2.setView(editText2);
                 builder2.setCancelable(false);
                 builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
@@ -426,9 +425,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", ProjectUtil.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
-                            mFiles.add("css" + File.separator + editText2.getText().toString());
                             refreshMenu();
-                            mPager.setCurrentItem(mFiles.indexOf("css" + File.separator + editText2.getText().toString()));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -442,7 +439,7 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog2 = builder2.create();
                 if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(true);
+                    showToast(false);
                 dialog2.show();
                 return true;
             case R.id.action_create_js:
@@ -450,6 +447,8 @@ public class ProjectActivity extends AppCompatActivity {
                 builder3.setTitle(R.string.new_not_java);
                 final EditText editText3 = new EditText(this);
                 editText3.setHint(R.string.resource_name);
+                editText3.setSingleLine(true);
+                editText3.setMaxLines(1);
                 builder3.setView(editText3);
                 builder3.setCancelable(false);
                 builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
@@ -457,9 +456,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", ProjectUtil.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
-                            mFiles.add("js" + File.separator + editText3.getText().toString());
                             refreshMenu();
-                            mPager.setCurrentItem(mFiles.indexOf("js" + File.separator + editText3.getText().toString()));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -473,13 +470,13 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog3 = builder3.create();
                 if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(true);
+                    showToast(false);
                 dialog3.show();
                 return true;
             case R.id.action_view_resources:
                 Intent resourceIntent = new Intent(ProjectActivity.this, ResourcesActivity.class);
                 resourceIntent.putExtra("project", mProject);
-                startActivity(resourceIntent);
+                startActivityForResult(resourceIntent, OPEN_RESOURCES);
                 return true;
             case R.id.action_about:
                 showAbout();
@@ -506,6 +503,8 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
             editText.setHint(R.string.resource_name);
+            editText.setSingleLine(true);
+            editText.setMaxLines(1);
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
@@ -537,6 +536,8 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
             editText.setHint(R.string.resource_name);
+            editText.setSingleLine(true);
+            editText.setMaxLines(1);
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
@@ -568,6 +569,8 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setTitle("Name");
             final EditText editText = new EditText(this);
             editText.setHint("Resource name");
+            editText.setSingleLine(true);
+            editText.setMaxLines(1);
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
@@ -599,6 +602,8 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setTitle(R.string.name);
             final EditText editText = new EditText(this);
             editText.setHint(R.string.resource_name);
+            editText.setSingleLine(true);
+            editText.setMaxLines(1);
             builder.setView(editText);
             builder.setCancelable(false);
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
@@ -622,6 +627,10 @@ public class ProjectActivity extends AppCompatActivity {
             if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(false);
             dialog.show();
+        }
+
+        if (requestCode == OPEN_RESOURCES && resultCode == FILES_CHANGED) {
+            refreshMenu();
         }
     }
 

@@ -13,6 +13,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class ResourcesActivity extends AppCompatActivity {
 
     List<String> mListDataHeader;
     HashMap<String, List<String>> mListDataChild;
+    boolean mChanged = false;
 
     /**
      * Called when the activity is created
@@ -78,6 +80,7 @@ public class ResourcesActivity extends AppCompatActivity {
                                     && !mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).equals("favicon.ico")) {
                                 if (Resources.remove(getIntent().getStringExtra("project"), mListDataHeader.get(groupPosition).toLowerCase(), mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition))) {
                                     Toast.makeText(ResourcesActivity.this, R.string.delete_success, Toast.LENGTH_SHORT).show();
+                                    mChanged = true;
                                     recreate();
                                 } else {
                                     Toast.makeText(ResourcesActivity.this, R.string.delete_fail, Toast.LENGTH_SHORT).show();
@@ -108,10 +111,20 @@ public class ResourcesActivity extends AppCompatActivity {
         mListDataHeader.add("FONTS");
         mListDataHeader.add("CSS");
         mListDataHeader.add("JS");
+        mListDataHeader.add("HTML");
 
         for (int i = 0; i < mListDataHeader.size(); i++) {
             mListDataChild.put(mListDataHeader.get(i), Arrays.asList(Resources.get(getIntent().getStringExtra("project"), mListDataHeader.get(i).toLowerCase())));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mChanged) {
+            setResult(ProjectActivity.FILES_CHANGED);
+        }
+
+        super.onDestroy();
     }
 
     /**
@@ -127,7 +140,17 @@ public class ResourcesActivity extends AppCompatActivity {
          * @return list of resources
          */
         public static String[] get(String project, String resource) {
-            return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource).list();
+            if (resource.equals("html")) {
+                return new File(Constants.HYPER_ROOT + File.separator + project).list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File file, String s) {
+                        return s.endsWith(".html");
+
+                    }
+                });
+            } else {
+                return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource).list();
+            }
         }
 
         /**
@@ -139,7 +162,11 @@ public class ResourcesActivity extends AppCompatActivity {
          * @return true if deleted
          */
         public static boolean remove(String project, String resource, String name) {
-            return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource + File.separator + name).delete();
+            if (resource.equals("html")) {
+                return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + name).delete();
+            } else {
+                return new File(Constants.HYPER_ROOT + File.separator + project + File.separator + resource + File.separator + name).delete();
+            }
         }
     }
 }
