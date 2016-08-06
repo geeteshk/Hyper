@@ -371,14 +371,14 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_import_css:
                 Intent cssIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                cssIntent.setType("file/*");
+                cssIntent.setType("text/css");
                 if (cssIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(cssIntent, IMPORT_CSS);
                 }
                 return true;
             case R.id.action_import_js:
                 Intent jsIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                jsIntent.setType("file/*");
+                jsIntent.setType("text/javascript");
                 if (jsIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(jsIntent, IMPORT_JS);
                 }
