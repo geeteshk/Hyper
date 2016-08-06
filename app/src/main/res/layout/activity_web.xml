@@ -4,6 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/loading"
+        android:textSize="24sp"
+        android:typeface="serif" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loading_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp" />
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/widget_toolbar" />
@@ -12,7 +28,8 @@
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/toolbar"
+        android:alpha="0" />
 
     <View
         android:id="@+id/toolbar_shadow"

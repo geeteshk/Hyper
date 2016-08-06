@@ -179,4 +179,5 @@ SOFTWARE.</string>
     <string name="file_ending_warn_image">Please enter a file ending when importing images or fonts.</string>
     <string name="file_ending_warn_title">Show File Ending Warning</string>
     <string name="file_ending_warn_desc">Show small warning while creating and importing project files.</string>
+    <string name="loading">Loading...</string>
 </resources>
