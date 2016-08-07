@@ -520,7 +520,7 @@ public class Editor extends MultiAutoCompleteTextView {
 
         for (int i = 0; i < lineCount; i++) {
             lineBounds = getLineBounds(i - mLineDiff, mRect);
-            if (getLines().get(i).toString().endsWith("\n")) {
+            if (getLines().get(i).toString().endsWith("\n") || i == lineCount - 1) {
                 canvas.drawText(String.valueOf(mLine + 1), 140, lineBounds, mNumberPaint);
                 mLine += 1;
                 mLineDiff = 0;
