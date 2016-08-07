@@ -1,85 +1,85 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.util.JsonUtil;
 
-public class FAQAdapter extends ArrayAdapter {
+public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
 
     private static final String TAG = FAQAdapter.class.getSimpleName();
 
-    /**
-     * Context used to inflate layout
-     */
-    Context mContext;
+    private JSONArray mArray;
+    private Context mContext;
 
-    /**
-     * Resource ID of layout
-     */
-    int mResource;
-
-    /**
-     * Array of JSONObjects holding FAQs
-     */
-    JSONArray mArray;
-
-    /**
-     * Public constructor
-     *
-     * @param context  used to get FAQs
-     * @param resource of layout
-     */
-    public FAQAdapter(Context context, int resource) {
-        super(context, resource);
+    public FAQAdapter(Context context) {
         mContext = context;
-        mResource = resource;
-        mArray = JsonUtil.getFAQs(mContext);
+        mArray = JsonUtil.getFAQs(context);
     }
 
-    /**
-     * Method to inflate each view
-     *
-     * @param position    current position in list
-     * @param convertView reusable view
-     * @param parent      view above this one
-     * @return view of specific position
-     */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootView;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_faq, parent, false);
+        return new ViewHolder(layout);
+    }
 
-        if (convertView != null) {
-            rootView = convertView;
-        } else {
-            rootView = inflater.inflate(mResource, parent, false);
-        }
-
-        TextView title = (TextView) rootView.findViewById(R.id.faq_title);
-        TextView content = (TextView) rootView.findViewById(R.id.faq_content);
-
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
         try {
-            title.setText(mArray.getJSONObject(position).getString("title"));
-            content.setText(mArray.getJSONObject(position).getString("content"));
+            holder.mTitle.setText(mArray.getJSONObject(position).getString("title"));
+            holder.mContent.setText(mArray.getJSONObject(position).getString("content"));
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
         }
 
-        return rootView;
+        if (position == 4) {
+            holder.mLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showInstalledAppDetails(Constants.PACKAGE);
+                }
+            });
+        }
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mArray.length();
+    }
+
+    private void showInstalledAppDetails(String packageName) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts(Constants.SCHEME, packageName, null);
+        intent.setData(uri);
+        mContext.startActivity(intent);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public RelativeLayout mLayout;
+        public TextView mTitle;
+        public TextView mContent;
+
+        public ViewHolder(RelativeLayout layout) {
+            super(layout);
+            mLayout = layout;
+            mTitle = (TextView) layout.findViewById(R.id.faq_title);
+            mContent = (TextView) layout.findViewById(R.id.faq_content);
+        }
     }
 }

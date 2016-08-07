@@ -2,28 +2,25 @@ package io.geeteshk.hyper.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -71,14 +68,12 @@ public class HelpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
-        ListView faqList = (ListView) rootView.findViewById(R.id.faq_list);
-        faqList.setAdapter(new FAQAdapter(getActivity(), R.layout.item_faq));
-        faqList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 4) showInstalledAppDetails(Constants.PACKAGE);
-            }
-        });
+        RecyclerView faqList = (RecyclerView) rootView.findViewById(R.id.faq_list);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getActivity());
+        RecyclerView.Adapter adapter = new FAQAdapter(getActivity());
+
+        faqList.setLayoutManager(manager);
+        faqList.setAdapter(adapter);
 
         FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_feedback);
         button.setOnClickListener(new View.OnClickListener() {
@@ -133,14 +128,6 @@ public class HelpFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    private void showInstalledAppDetails(String packageName) {
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts(Constants.SCHEME, packageName, null);
-        intent.setData(uri);
-        getActivity().startActivity(intent);
     }
 
     /**
