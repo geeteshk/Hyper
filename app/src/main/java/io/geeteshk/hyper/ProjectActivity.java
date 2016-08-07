@@ -17,6 +17,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
+import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.helper.HyperDrive;
 import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
@@ -77,6 +79,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private static final int IMPORT_JS = 104;
     private static final int OPEN_RESOURCES = 105;
+    private List<Fragment> mFragments;
     private List<String> mFiles;
     private FileAdapter mAdapter;
     private ViewPager mPager;
@@ -186,7 +189,10 @@ public class ProjectActivity extends AppCompatActivity {
                     mPager.setCurrentItem(mFiles.indexOf(file));
                 } else {
                     if (!ProjectUtil.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
-                        mFiles.add(file);
+                        Bundle b = new Bundle();
+                        b.putInt("position", mAdapter.getCount());
+                        mAdapter.add(file, b);
+                        mAdapter.notifyDataSetChanged();
                         refreshMenu();
                         mPager.setCurrentItem(mFiles.indexOf(file));
                     } else {
@@ -204,7 +210,9 @@ public class ProjectActivity extends AppCompatActivity {
         mFiles.add("css/style.css");
         mFiles.add("js/main.js");
 
-        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
+        mFragments = buildFragments();
+
+        mAdapter = new FileAdapter(this, getSupportFragmentManager(), mProject, mFiles, mFragments);
         mPager = (ViewPager) findViewById(R.id.pager);
         if (mPager != null) {
             mPager.setAdapter(mAdapter);
@@ -667,8 +675,22 @@ public class ProjectActivity extends AppCompatActivity {
     private void refreshMenu() {
         mDrawer.getMenu().clear();
         setupMenu(mProject, null);
-        mAdapter = new FileAdapter(getSupportFragmentManager(), mProject, mFiles);
+        mAdapter = new FileAdapter(this, getSupportFragmentManager(), mProject, mFiles, mFragments);
         mPager.setAdapter(mAdapter);
         mTabStrip.setupWithViewPager(mPager);
+    }
+
+    private List<Fragment> buildFragments() {
+        List<Fragment> fragments = new ArrayList<>();
+        for (int i = 0; i < mFiles.size(); i++) {
+            Bundle b = new Bundle();
+            b.putInt("position", i);
+            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), b);
+            editorFragment.setProject(mProject);
+            editorFragment.setFilename(mFiles.get(i));
+            fragments.add(editorFragment);
+        }
+
+        return fragments;
     }
 }

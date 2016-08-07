@@ -1,5 +1,7 @@
 package io.geeteshk.hyper.adapter;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,15 +25,20 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     String mProject;
 
+    List<Fragment> mFragments;
+    Context mContext;
+
     /**
      * Public constructor for adapter
      *
      * @param fm fragmentManager used to add fragment
      */
-    public FileAdapter(FragmentManager fm, String project, List<String> files) {
+    public FileAdapter(Context context, FragmentManager fm, String project, List<String> files, List<Fragment> fragments) {
         super(fm);
         mFiles = files;
         mProject = project;
+        mFragments = fragments;
+        mContext = context;
     }
 
     /**
@@ -42,10 +49,7 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     @Override
     public Fragment getItem(int position) {
-        EditorFragment editorFragment = new EditorFragment();
-        editorFragment.setProject(mProject);
-        editorFragment.setFilename(mFiles.get(position));
-        return editorFragment;
+        return mFragments.get(position);
     }
 
     /**
@@ -72,6 +76,14 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     @Override
     public int getCount() {
-        return mFiles.size();
+        return mFragments.size();
+    }
+
+    public void add(String title, Bundle b) {
+        EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(mContext, EditorFragment.class.getName(), b);
+        editorFragment.setProject(mProject);
+        editorFragment.setFilename(title);
+        mFragments.add(editorFragment);
+        mFiles.add(title);
     }
 }
