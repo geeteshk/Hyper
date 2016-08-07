@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -352,7 +351,6 @@ public class Editor extends MultiAutoCompleteTextView {
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
                             e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
@@ -378,7 +376,6 @@ public class Editor extends MultiAutoCompleteTextView {
                 case CSS:
                     for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
                         e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.BOLD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (Matcher m = PARAMS.matcher(e); m.find(); ) {
@@ -429,13 +426,11 @@ public class Editor extends MultiAutoCompleteTextView {
                     for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.end()) == ' ') {
                             e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            e.setSpan(new StyleSpan(Typeface.ITALIC), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
                     for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
                         e.setSpan(new ForegroundColorSpan(COLOR_FUNCTIONS), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        e.setSpan(new StyleSpan(Typeface.ITALIC), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (Matcher m = SYMBOLS.matcher(e); m.find(); ) {
