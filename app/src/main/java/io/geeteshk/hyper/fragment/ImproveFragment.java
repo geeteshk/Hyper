@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -121,6 +122,12 @@ public class ImproveFragment extends Fragment {
                 projectSearch.setText("");
             }
         });
+
+        TextView emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        if (mObjectsList.isEmpty()) {
+            projectsList.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }

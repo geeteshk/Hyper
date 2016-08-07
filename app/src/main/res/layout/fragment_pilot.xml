@@ -11,6 +11,18 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_shadow"
+        android:alpha="0.56"
+        android:gravity="center"
+        android:text="@string/no_data_available"
+        android:textSize="24sp"
+        android:typeface="serif"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
