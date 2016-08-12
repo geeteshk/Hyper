@@ -3,6 +3,9 @@ package io.geeteshk.hyper;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.NavigationView;
@@ -17,16 +20,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +43,15 @@ import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
+import io.geeteshk.hyper.helper.GoogleHolder;
 import io.geeteshk.hyper.util.PreferenceUtil;
 
 /**
  * Main activity to show all main content
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static Context mContext;
     private static FragmentManager mManager;
@@ -166,6 +176,16 @@ public class MainActivity extends AppCompatActivity {
             items.add(menu.getItem(i));
         }
 
+        View headerView = mDrawer.getHeaderView(0);
+        ImageView mainIcon = (ImageView) headerView.findViewById(R.id.main_icon);
+        TextView mainName = (TextView) headerView.findViewById(R.id.main_name);
+        TextView mainEmail = (TextView) headerView.findViewById(R.id.main_email);
+
+        new DownloadImageTask(mainIcon)
+                .execute(GoogleHolder.getInstance().getAccount().getPhotoUrl().toString());
+        mainName.setText(GoogleHolder.getInstance().getAccount().getDisplayName());
+        mainEmail.setText(GoogleHolder.getInstance().getAccount().getEmail());
+
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -267,5 +287,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }

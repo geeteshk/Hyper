@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1030052530523",
+    "project_id": "firebase-hyper"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030052530523:android:0ee49bb838fb7692",
+        "android_client_info": {
+          "package_name": "io.geeteshk.hyper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1030052530523-0uktgpol73hcfosa5dvsre5tlmlujbb3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.geeteshk.hyper",
+            "certificate_hash": "2DE367325F555BC5540B46FF071FC9DE9303D84C"
+          }
+        },
+        {
+          "client_id": "1030052530523-eqtmfh95jvtulv7u9jvvp4hvcesnjn2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaK5LpTbEsb5wGWPrRjCtmmAhYKG-o5lg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
