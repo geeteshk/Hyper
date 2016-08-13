@@ -8,6 +8,8 @@ android:
   - android-24
   - extra-android-support
   - extra-android-m2repository
+  - extra-google-google_play_services
+  - extra-google-m2repository
 before_script:
 - chmod +x gradlew
 - sed -i -e 's/Bot.USERNAME/"nope"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
@@ -15,8 +17,7 @@ before_script:
 - sed -i -e 's/import io.geeteshk.hyper.Bot;/ /g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
 - sed -i -e 's/org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
 script:
-- chmod +x gradlew
-- "./gradlew assembleDebug"
+- ./gradlew assembleDebug
 deploy:
   provider: releases
   api_key:
