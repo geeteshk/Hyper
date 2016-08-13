@@ -10,14 +10,14 @@ import java.io.InputStream;
 import fi.iki.elonen.NanoHTTPD;
 import io.geeteshk.hyper.Constants;
 
-public class HyperDrive extends NanoHTTPD {
+public class Hyperion extends NanoHTTPD {
 
-    private static final String TAG = HyperDrive.class.getSimpleName();
+    private static final String TAG = Hyperion.class.getSimpleName();
     private final String[] mTypes = {"css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt"};
     private final String[] mMimes = {"text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt"};
     private String mProject;
 
-    public HyperDrive(String project) {
+    public Hyperion(String project) {
         super(8080);
         mProject = project;
     }

@@ -25,7 +25,7 @@ import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.WebActivity;
-import io.geeteshk.hyper.helper.HyperDrive;
+import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
@@ -93,7 +93,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             holder.mFavicon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NetworkUtil.setDrive(new HyperDrive(mObjects[newPos]));
+                    NetworkUtil.setDrive(new Hyperion(mObjects[newPos]));
 
                     try {
                         NetworkUtil.getDrive().start();

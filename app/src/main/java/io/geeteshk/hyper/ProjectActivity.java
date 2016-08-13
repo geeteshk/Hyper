@@ -47,7 +47,7 @@ import java.util.List;
 
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
-import io.geeteshk.hyper.helper.HyperDrive;
+import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
@@ -103,7 +103,7 @@ public class ProjectActivity extends AppCompatActivity {
             setTheme(R.style.Hyper_Dark);
         }
 
-        NetworkUtil.setDrive(new HyperDrive(mProject));
+        NetworkUtil.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
 
         try {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -62,7 +63,12 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (PreferenceUtil.get(this, "first_sign_in", true)) {
             PreferenceUtil.store(this, "first_sign_in", false);
         } else {
-            signIn();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    signIn();
+                }
+            }, 800);
         }
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);

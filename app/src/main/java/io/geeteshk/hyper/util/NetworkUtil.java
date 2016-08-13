@@ -8,13 +8,13 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import io.geeteshk.hyper.helper.HyperDrive;
+import io.geeteshk.hyper.helper.Hyperion;
 
 public class NetworkUtil {
 
     private static final String TAG = NetworkUtil.class.getSimpleName();
 
-    private static HyperDrive mDrive;
+    private static Hyperion mDrive;
 
     public static String getIpAddress() {
         try {
@@ -34,11 +34,11 @@ public class NetworkUtil {
         return null;
     }
 
-    public static HyperDrive getDrive() {
+    public static Hyperion getDrive() {
         return mDrive;
     }
 
-    public static void setDrive(HyperDrive drive) {
+    public static void setDrive(Hyperion drive) {
         mDrive = drive;
     }
 }
