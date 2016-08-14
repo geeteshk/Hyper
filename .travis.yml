@@ -17,7 +17,7 @@ before_script:
 - sed -i -e 's/import io.geeteshk.hyper.Bot;/ /g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
 - sed -i -e 's/org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
 script:
-- ./gradlew assembleDebug
+- ./gradlew assembleRelease
 deploy:
   provider: releases
   api_key:
