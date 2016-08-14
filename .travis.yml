@@ -18,6 +18,7 @@ before_script:
 - sed -i -e 's/org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
 script:
 - ./gradlew assembleRelease
+- ls -LR
 deploy:
   provider: releases
   api_key:
