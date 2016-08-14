@@ -48,6 +48,7 @@ import java.util.List;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.helper.Hyperion;
+import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
@@ -488,6 +489,10 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_about:
                 showAbout();
+                return true;
+            case R.id.action_polymer_add:
+                Intent catalogIntent = new Intent(ProjectActivity.this, CatalogActivity.class);
+                startActivity(catalogIntent);
                 return true;
         }
 

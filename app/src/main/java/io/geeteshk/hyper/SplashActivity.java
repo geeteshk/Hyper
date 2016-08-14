@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -60,9 +59,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             getWindow().setStatusBarColor(0xFFE64A19);
         }
 
-        if (PreferenceUtil.get(this, "first_sign_in", true)) {
-            PreferenceUtil.store(this, "first_sign_in", false);
-        } else {
+        if (!PreferenceUtil.get(this, "first_sign_in", true)) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -129,11 +126,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "Sign-in result: " + result.isSuccess());
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
             GoogleHolder.getInstance().setAccount(account);
             PermissionUtil.getRequiredPermissions(SplashActivity.this);
+            PreferenceUtil.store(this, "first_sign_in", false);
         } else {
             Toast.makeText(this, "Sign-in failed. Please sign-in to Google to use Hyper.", Toast.LENGTH_LONG).show();
         }

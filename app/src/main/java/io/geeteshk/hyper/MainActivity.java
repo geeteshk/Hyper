@@ -181,10 +181,12 @@ public class MainActivity extends AppCompatActivity {
         TextView mainName = (TextView) headerView.findViewById(R.id.main_name);
         TextView mainEmail = (TextView) headerView.findViewById(R.id.main_email);
 
-        new DownloadImageTask(mainIcon)
-                .execute(GoogleHolder.getInstance().getAccount().getPhotoUrl().toString());
-        mainName.setText(GoogleHolder.getInstance().getAccount().getDisplayName());
-        mainEmail.setText(GoogleHolder.getInstance().getAccount().getEmail());
+        if (GoogleHolder.getInstance().getAccount() != null) {
+            new DownloadImageTask(mainIcon)
+                    .execute(GoogleHolder.getInstance().getAccount().getPhotoUrl().toString());
+            mainName.setText(GoogleHolder.getInstance().getAccount().getDisplayName());
+            mainEmail.setText(GoogleHolder.getInstance().getAccount().getEmail());
+        }
 
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -132,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:text="#000000"
+                android:text="@string/black"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
                 android:typeface="monospace" />

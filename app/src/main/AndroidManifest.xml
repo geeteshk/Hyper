@@ -51,6 +51,15 @@
                 android:value="io.geeteshk.hyper.ProjectActivity" />
         </activity>
         <activity android:name=".EncryptActivity" />
+        <activity
+            android:name=".polymer.CatalogActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".ProjectActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.ProjectActivity" />
+        </activity>
     </application>
 
 </manifest>

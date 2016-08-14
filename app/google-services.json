@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1056354010408",
-    "project_id": "hyper-effe1"
+    "project_number": "506819944018",
+    "project_id": "hyper-83dca"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1056354010408:android:0ee49bb838fb7692",
+        "mobilesdk_app_id": "1:506819944018:android:0ee49bb838fb7692",
         "android_client_info": {
           "package_name": "io.geeteshk.hyper"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1056354010408-9bhpoe218lv0e5qh0m8q4qq3di5sjqpm.apps.googleusercontent.com",
+          "client_id": "506819944018-bl4lt3vcu2rugj4c5lv6qlfggthdhksi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "io.geeteshk.hyper",
-            "certificate_hash": "C2C0C1B2652612C452B6BCCBE714C0B71FF60547"
+            "certificate_hash": "2DE367325F555BC5540B46FF071FC9DE9303D84C"
           }
         },
         {
-          "client_id": "1056354010408-5ubnkpfudrnc6tlcubca5nibofd9slk6.apps.googleusercontent.com",
+          "client_id": "506819944018-pkmipoq723ui9kana89kn604aln6hqa0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBx7bE1stFiGNrevOSy-3nMMehqEdFzrlQ"
+          "current_key": "AIzaSyAdxGnX39qLnWvqImuP5M2B5_Am51oSeaM"
         }
       ],
       "services": {
