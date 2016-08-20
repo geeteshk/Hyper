@@ -12,22 +12,25 @@ import io.geeteshk.hyper.R;
 
 public class CatalogAdapter extends BaseAdapter {
 
-    private Context mContext;
-
-    private int[] mColours = {0xff63ab62, 0xffffffff, 0xff5cacee, 0xffffa54f, 0xff8deeee, 0xffc4c4c4, 0xffee6363};
-
-    private String[] mTitles = {
-            "Fe", "Md", "Go",
-            "Au", "Ne", "Pt", "Mo"
-    };
-
-    private String[] mSubtitles = {
-            "Iron Elements", "Paper Elements",
+    public static int[] mColours = {0xffddc9e6, 0xff63ab62, 0xffffffff, 0xff5cacee, 0xffffa54f, 0xff8deeee, 0xffc4c4c4, 0xffee6363};
+    public static String[] mSubtitles = {
+            "App Elements", "Iron Elements", "Paper Elements",
             "Google Elements", "Gold Elements",
             "Neon Elements", "Platinum Elements", "Molecules"
     };
-
+    public static String[] mVersions = {
+            "0.10.0", "1.0.10",
+            "1.0.7", "1.1.0",
+            "1.0.1", "1.0.0",
+            "2.0.0", "1.0.0"
+    };
+    private Context mContext;
+    private String[] mTitles = {
+            "App", "Fe", "Md", "Go",
+            "Au", "Ne", "Pt", "Mo"
+    };
     private String[] mDescriptions = {
+            "App elements",
             "Polymer core elements",
             "Material design elements",
             "Components for Google's APIs and services",
@@ -37,20 +40,13 @@ public class CatalogAdapter extends BaseAdapter {
             "Wrappers for third-party libraries"
     };
 
-    private String[] mVersions = {
-            "1.0.3", "1.0.5",
-            "1.0.1", "1.0.1",
-            "1.0.0", "1.2.0",
-            "1.0.0"
-    };
-
     public CatalogAdapter(Context context) {
         this.mContext = context;
     }
 
     @Override
     public int getCount() {
-        return 7;
+        return 8;
     }
 
     @Override

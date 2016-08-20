@@ -25,6 +25,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -45,10 +47,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.polymer.CatalogActivity;
+import io.geeteshk.hyper.polymer.Element;
+import io.geeteshk.hyper.polymer.ElementsHolder;
 import io.geeteshk.hyper.util.DecorUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
@@ -80,6 +85,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private static final int IMPORT_JS = 104;
     private static final int OPEN_RESOURCES = 105;
+    private static final int POLYMER_ADD_CODE = 300;
     private List<Fragment> mFragments;
     private List<String> mFiles;
     private FileAdapter mAdapter;
@@ -226,6 +232,7 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
 
         int newColor = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
+
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
@@ -256,21 +263,23 @@ public class ProjectActivity extends AppCompatActivity {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
         for (File file : files) {
-            if (file.isDirectory()) {
-                if (menu == null) {
-                    setupMenu(project + File.separator + file.getName(), mDrawer.getMenu().addSubMenu(file.getName()));
-                } else {
-                    setupMenu(project + File.separator + file.getName(), menu.addSubMenu(file.getName()));
-                }
-            } else {
-                if (!file.getName().endsWith(".hyper")) {
+            if (!file.getName().equals("bower_components")) {
+                if (file.isDirectory()) {
                     if (menu == null) {
-                        mDrawer.getMenu().add(file.getName());
+                        setupMenu(project + File.separator + file.getName(), mDrawer.getMenu().addSubMenu(file.getName()));
                     } else {
-                        MenuItem item = menu.add(file.getName());
-                        Intent intent = new Intent();
-                        intent.putExtra("location", menu.getItem().getTitle());
-                        item.setIntent(intent);
+                        setupMenu(project + File.separator + file.getName(), menu.addSubMenu(file.getName()));
+                    }
+                } else {
+                    if (!file.getName().endsWith(".hyper")) {
+                        if (menu == null) {
+                            mDrawer.getMenu().add(file.getName());
+                        } else {
+                            MenuItem item = menu.add(file.getName());
+                            Intent intent = new Intent();
+                            intent.putExtra("location", menu.getItem().getTitle());
+                            item.setIntent(intent);
+                        }
                     }
                 }
             }
@@ -492,7 +501,14 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_polymer_add:
                 Intent catalogIntent = new Intent(ProjectActivity.this, CatalogActivity.class);
-                startActivity(catalogIntent);
+                startActivityForResult(catalogIntent, POLYMER_ADD_CODE);
+                ElementsHolder.getInstance().setProject(mProject);
+                if (!new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "packages.hyper").exists()) {
+                    ElementsHolder.getInstance().setElements(new ArrayList<Element>());
+                } else {
+                    ElementsHolder.getInstance().setElements(JsonUtil.getPreviousElements(mProject));
+                }
+
                 return true;
         }
 
@@ -645,6 +661,10 @@ public class ProjectActivity extends AppCompatActivity {
         if (requestCode == OPEN_RESOURCES && resultCode == FILES_CHANGED) {
             refreshMenu();
         }
+
+        if (requestCode == POLYMER_ADD_CODE) {
+            refreshMenu();
+        }
     }
 
     /**
@@ -661,12 +681,19 @@ public class ProjectActivity extends AppCompatActivity {
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
         TextView color = (TextView) layout.findViewById(R.id.project_color);
 
+        RecyclerView elementsView = (RecyclerView) layout.findViewById(R.id.project_elements);
+        RecyclerView.Adapter adapter = new AboutElementsAdapter(mProject);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+
         name.setText(JsonUtil.getProjectProperty(mProject, "name"));
         author.setText(JsonUtil.getProjectProperty(mProject, "author"));
         description.setText(JsonUtil.getProjectProperty(mProject, "description"));
         keywords.setText(JsonUtil.getProjectProperty(mProject, "keywords"));
         color.setText(JsonUtil.getProjectProperty(mProject, "color"));
         color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
+
+        elementsView.setAdapter(adapter);
+        elementsView.setLayoutManager(manager);
 
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);

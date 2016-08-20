@@ -60,6 +60,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.ProjectActivity" />
         </activity>
+        <activity
+            android:name=".polymer.ElementsActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".polymer.CatalogActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
+        </activity>
+        <activity
+            android:name=".polymer.SetupActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".polymer.CatalogActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
+        </activity>
     </application>
 
 </manifest>

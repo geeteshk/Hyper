@@ -130,7 +130,7 @@ public class ProjectUtil {
      * @param directory to delete
      * @return true if successfully deleted
      */
-    private static boolean deleteDirectory(Context context, File directory) {
+    public static boolean deleteDirectory(Context context, File directory) {
         if (directory.exists()) {
             File[] files = directory.listFiles();
             if (null != files) {

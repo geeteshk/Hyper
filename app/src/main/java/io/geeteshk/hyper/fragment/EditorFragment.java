@@ -68,7 +68,7 @@ public class EditorFragment extends Fragment {
         Button symbolSeven = (Button) rootView.findViewById(R.id.symbol_seven);
         Button symbolEight = (Button) rootView.findViewById(R.id.symbol_eight);
 
-        if (mFilename.endsWith(".html")) {
+        if (mFilename.endsWith(".html") || mFilename.equals("imports.txt")) {
             editText.setType(Editor.CodeType.HTML);
             setSymbol(editText, symbolTab, "\t\t");
             setSymbol(editText, symbolOne, "<");

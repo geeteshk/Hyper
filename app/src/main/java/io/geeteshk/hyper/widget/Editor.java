@@ -521,7 +521,7 @@ public class Editor extends MultiAutoCompleteTextView {
         for (int i = 0; i < lineCount; i++) {
             lineBounds = getLineBounds(i - mLineDiff, mRect);
             if (getLines().get(i).toString().endsWith("\n") || i == lineCount - 1) {
-                canvas.drawText(String.valueOf(mLine + 1), 140, lineBounds, mNumberPaint);
+                canvas.drawText(String.valueOf(mLine + 1), 100, lineBounds, mNumberPaint);
                 mLine += 1;
                 mLineDiff = 0;
             } else {
@@ -529,7 +529,7 @@ public class Editor extends MultiAutoCompleteTextView {
             }
 
             if (i == cursorLine) {
-                canvas.drawRect(0, 4 + lineBounds - lineHeight, 178, lineBounds + 10, mLineShadowPaint);
+                canvas.drawRect(0, 4 + lineBounds - lineHeight, 120, lineBounds + 10, mLineShadowPaint);
             }
 
             if (i == lineCount - 1) {

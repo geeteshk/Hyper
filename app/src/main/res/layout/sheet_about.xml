@@ -1,88 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        style="@style/TextAppearance.Hyper.FloatLabel"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/about_name"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <TextView
-        android:id="@+id/project_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0.87" />
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_name"
+            android:textSize="24sp" />
 
-    <TextView
-        style="@style/TextAppearance.Hyper.FloatLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/about_author"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        <TextView
+            android:id="@+id/project_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.87" />
 
-    <TextView
-        android:id="@+id/project_author"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0.87" />
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_author"
+            android:textSize="24sp" />
 
-    <TextView
-        style="@style/TextAppearance.Hyper.FloatLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/about_desc"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        <TextView
+            android:id="@+id/project_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.87" />
 
-    <TextView
-        android:id="@+id/project_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0.87" />
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_desc"
+            android:textSize="16sp"
+            android:typeface="sans" />
 
-    <TextView
-        style="@style/TextAppearance.Hyper.FloatLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/about_keywords"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        <TextView
+            android:id="@+id/project_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.87" />
 
-    <TextView
-        android:id="@+id/project_keywords"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0.87" />
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_keywords"
+            android:textSize="24sp" />
 
-    <TextView
-        style="@style/TextAppearance.Hyper.FloatLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/about_color"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        <TextView
+            android:id="@+id/project_keywords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.87" />
 
-    <TextView
-        android:id="@+id/project_color"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:alpha="0.87" />
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_color"
+            android:textSize="24sp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/project_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.87" />
+
+        <TextView
+            style="@style/TextAppearance.Hyper.FloatLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/about_elements"
+            android:textSize="24sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/project_elements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

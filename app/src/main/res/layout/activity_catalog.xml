@@ -3,10 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/widget_toolbar" />
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@drawable/toolbar_shadow" />
+
     <GridView
         android:id="@+id/elements_catalog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_shadow"
         android:columnWidth="150dp"
         android:gravity="center"
         android:horizontalSpacing="10dp"

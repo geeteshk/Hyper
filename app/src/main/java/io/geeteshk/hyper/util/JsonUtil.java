@@ -13,8 +13,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.polymer.Element;
+import io.geeteshk.hyper.polymer.ElementsHolder;
 
 /**
  * Utility class to handle JSON
@@ -121,5 +124,96 @@ public class JsonUtil {
         }
 
         return null;
+    }
+
+    public static ArrayList<Element> getElements(Context context, String type) {
+        ArrayList<Element> elements = new ArrayList<>();
+        try {
+            InputStream inputStream = context.getAssets().open("json/elements.json");
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuilder builder = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line).append(System.getProperty("line.separator"));
+            }
+
+            JSONObject object = new JSONObject(builder.toString());
+            JSONArray array = object.getJSONArray(type);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject typeObject = array.getJSONObject(i);
+                String name = type + "-" + typeObject.getString("name");
+                if (type.equals("molecules") || name.equals("google-firebase-element") || name.equals("google-polymerfire")) {
+                    name = typeObject.getString("name");
+                }
+
+                String description = typeObject.getString("description");
+                String prefix = typeObject.getString("prefix");
+                String version = typeObject.getString("version");
+                elements.add(new Element(name, description, prefix, version));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return elements;
+    }
+
+    public static String generatePackages() {
+        ArrayList<Element> elements = ElementsHolder.getInstance().getElements();
+
+        JSONObject rootObject = new JSONObject();
+        JSONArray array = new JSONArray();
+
+        try {
+            for (int i = 0; i < elements.size(); i++) {
+                Element element = elements.get(i);
+                JSONObject object = new JSONObject();
+                object.put("name", element.getName());
+                object.put("description", element.getDescription());
+                object.put("prefix", element.getPrefix());
+                object.put("version", element.getVersion());
+                array.put(object);
+            }
+
+            rootObject.put("packages", array);
+            return rootObject.toString(4);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static ArrayList<Element> getPreviousElements(String project) {
+        ArrayList<Element> elements = new ArrayList<>();
+
+        try {
+            InputStream inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + project + File.separator + "packages.hyper");
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuilder builder = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line).append(System.getProperty("line.separator"));
+            }
+
+            JSONObject object = new JSONObject(builder.toString());
+            JSONArray array = object.getJSONArray("packages");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject typeObject = array.getJSONObject(i);
+                String name = typeObject.getString("name");
+                String description = typeObject.getString("description");
+                String prefix = typeObject.getString("prefix");
+                String version = typeObject.getString("version");
+                elements.add(new Element(name, description, prefix, version));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return elements;
     }
 }

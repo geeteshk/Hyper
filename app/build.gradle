@@ -19,7 +19,6 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-
         release {
             storeFile rootProject.file('release.keystore')
             storePassword System.getenv("KEYSTORE_PASS")
@@ -27,7 +26,6 @@ android {
             keyPassword System.getenv("ALIAS_PASS")
         }
     }
-
 
     buildTypes {
         release {
@@ -43,11 +41,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support:design:24.1.1'
-    compile 'com.android.support:recyclerview-v7:24.1.1'
-    compile 'com.android.support:cardview-v7:24.1.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:recyclerview-v7:24.2.0'
+    compile 'com.android.support:cardview-v7:24.2.0'
     compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile 'com.pavelsikun:vintage-chroma:1.5'

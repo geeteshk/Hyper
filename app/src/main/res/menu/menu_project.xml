@@ -55,22 +55,9 @@
     </item>
 
     <item
+        android:id="@+id/action_polymer_add"
         android:title="@string/polymer"
-        app:showAsAction="never">
-
-        <menu>
-            <item
-                android:id="@+id/action_polymer_add"
-                android:title="@string/add"
-                app:showAsAction="never" />
-
-            <item
-                android:id="@+id/action_polymer_remove"
-                android:title="@string/remove"
-                app:showAsAction="never" />
-        </menu>
-
-    </item>
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_run"
