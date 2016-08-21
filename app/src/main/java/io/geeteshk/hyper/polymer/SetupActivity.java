@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.polymer;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
@@ -22,6 +23,10 @@ public class SetupActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0xFFE64A19);
+        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();

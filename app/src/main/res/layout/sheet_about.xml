@@ -45,8 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_desc"
-            android:textSize="16sp"
-            android:typeface="sans" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/project_description"
