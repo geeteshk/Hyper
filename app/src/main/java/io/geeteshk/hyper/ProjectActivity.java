@@ -36,8 +36,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -357,19 +359,6 @@ public class ProjectActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isGitRepo = GitUtil.isGitRepo(mProjectFile);
-        menu.findItem(R.id.action_git_init).setEnabled(!isGitRepo);
-        menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_commit).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
-
-        return true;
-    }
-
     /**
      * Called when menu item is selected
      *
@@ -540,34 +529,30 @@ public class ProjectActivity extends AppCompatActivity {
                 GitUtil.add(ProjectActivity.this, mProjectFile);
                 return true;
             case R.id.action_git_commit:
-                if (GitUtil.isCommit(mProjectFile)) {
-                    AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                    gitCommitBuilder.setTitle(R.string.git_commit);
-                    final EditText editText4 = new EditText(this);
-                    editText4.setHint(R.string.commit_message);
-                    gitCommitBuilder.setView(editText4);
-                    gitCommitBuilder.setCancelable(false);
-                    gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (!editText4.getText().toString().isEmpty()) {
-                                GitUtil.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
-                            } else {
-                                Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
-                            }
+                AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                gitCommitBuilder.setTitle(R.string.git_commit);
+                final EditText editText4 = new EditText(this);
+                editText4.setHint(R.string.commit_message);
+                gitCommitBuilder.setView(editText4);
+                gitCommitBuilder.setCancelable(false);
+                gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!editText4.getText().toString().isEmpty()) {
+                            GitUtil.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                        } else {
+                            Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
                         }
-                    });
-                    gitCommitBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    AppCompatDialog dialog4 = gitCommitBuilder.create();
-                    dialog4.show();
-                } else {
-                    Toast.makeText(ProjectActivity.this, "Nothing to commit.", Toast.LENGTH_SHORT).show();
-                }
+                    }
+                });
+                gitCommitBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AppCompatDialog dialog4 = gitCommitBuilder.create();
+                dialog4.show();
                 return true;
             case R.id.action_git_log:
                 List<RevCommit> commits = GitUtil.getCommits(ProjectActivity.this, mProjectFile);
@@ -611,30 +596,70 @@ public class ProjectActivity extends AppCompatActivity {
                 dialogStatus.show();
                 return true;
             case R.id.action_git_branch_new:
-                AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                gitCommitBuilder.setTitle("New branch");
-                final EditText editText4 = new EditText(this);
-                editText4.setHint("Branch name");
-                gitCommitBuilder.setView(editText4);
-                gitCommitBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder gitBranch = new AlertDialog.Builder(ProjectActivity.this);
+                gitBranch.setTitle("New branch");
+                final EditText editText5 = new EditText(this);
+                editText5.setHint("Branch name");
+                LinearLayout layout = new LinearLayout(this);
+                final CheckBox checkBox = new CheckBox(this);
+                checkBox.setText("Checkout?");
+                layout.addView(editText5);
+                layout.addView(checkBox);
+                gitBranch.setView(layout);
+                gitBranch.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText4.getText().toString().isEmpty()) {
-                            GitUtil.createBranch(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                        if (!editText5.getText().toString().isEmpty()) {
+                            GitUtil.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
                         } else {
                             Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-                gitCommitBuilder.setNegativeButton(R.string.cancel, null);
-                AppCompatDialog dialog4 = gitCommitBuilder.create();
-                dialog4.show();
+                gitBranch.setNegativeButton(R.string.cancel, null);
+                AppCompatDialog dialog5 = gitBranch.create();
+                dialog5.show();
                 return true;
             case R.id.action_git_branch_remove:
+                AlertDialog.Builder gitRemove = new AlertDialog.Builder(this);
+                final List<Ref> branchesList = GitUtil.getBranches(ProjectActivity.this, mProjectFile);
+                if (branchesList != null) {
+                    final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
+                    for (int i = 0; i < itemsMultiple.length; i++) {
+                        itemsMultiple[i] = branchesList.get(i).getName();
+                    }
+
+                    final boolean[] checkedItems = new boolean[itemsMultiple.length];
+
+                    final List<CharSequence> toDelete = new ArrayList<>();
+                    gitRemove.setMultiChoiceItems(itemsMultiple, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                            if (b) {
+                                toDelete.add(itemsMultiple[i]);
+                            } else {
+                                toDelete.remove(itemsMultiple[i]);
+                            }
+                        }
+                    });
+
+                    gitRemove.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            GitUtil.deleteBranch(ProjectActivity.this, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
+                            dialogInterface.dismiss();
+                        }
+                    });
+                }
+
+                gitRemove.setNegativeButton(R.string.close, null);
+                gitRemove.setTitle("Delete branches");
+                gitRemove.create().show();
                 return true;
             case R.id.action_git_branch_checkout:
                 AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
                 final List<Ref> branches = GitUtil.getBranches(ProjectActivity.this, mProjectFile);
+                int checkedItem = -1;
                 CharSequence[] items = new CharSequence[0];
                 if (branches != null) {
                     items = new CharSequence[branches.size()];
@@ -643,7 +668,13 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 }
 
-                gitCheckout.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                for (int i = 0; i < items.length; i++) {
+                    if (GitUtil.getCurrentBranch(ProjectActivity.this, mProjectFile).equals(items[i])) {
+                        checkedItem = i;
+                    }
+                }
+
+                gitCheckout.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;

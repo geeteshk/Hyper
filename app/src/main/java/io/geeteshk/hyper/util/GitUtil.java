@@ -23,32 +23,15 @@ public class GitUtil {
 
     private static final String TAG = GitUtil.class.getSimpleName();
 
-    public static boolean isGitRepo(File repo) {
-        return new File(repo, ".git").exists() &&
-                new File(repo, ".git").isDirectory();
-    }
-
-    public static boolean isCommit(File repo) {
-        Git git = null;
-        try {
-            git = Git.open(repo);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return git.getRepository().getRepositoryState().canCommit();
-    }
-
     public static void init(Context context, File repo) {
         try {
             Git git = Git.init()
                     .setDirectory(repo)
                     .call();
-            Toast.makeText(context, "Created repository at: " + git.getRepository().getDirectory(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Initialized repository at: " + git.getRepository().getDirectory(), Toast.LENGTH_LONG).show();
         } catch (GitAPIException e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, "Unable to create git repository.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -58,10 +41,10 @@ public class GitUtil {
             git.add()
                     .addFilepattern(".")
                     .call();
-            Toast.makeText(context, "Added all files to stage.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Added all files to stage.", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, "Couldn't add files to stage.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -139,7 +122,7 @@ public class GitUtil {
             t[8].setText(untrackedFoldersOut);
         } catch (GitAPIException | IOException e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, "Unable to read status of repo.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -152,7 +135,7 @@ public class GitUtil {
                     .call();
         } catch (IOException | GitAPIException e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, "Unable to read commits.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
         }
 
@@ -167,23 +150,61 @@ public class GitUtil {
         List<Ref> branches;
         try {
             Git git = Git.open(repo);
-            git.getRepository().getFullBranch();
             branches = git.branchList().call();
         } catch (IOException | GitAPIException e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(context, "Error while fetching branches.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
         }
 
         return branches;
     }
 
-    public static void createBranch(Context context, File repo, String branch) {
-        new CheckoutTask(context, repo).execute(String.valueOf(true), branch);
+    public static void createBranch(Context context, File repo, String branch, boolean checked) {
+        if (checked) {
+            new CheckoutTask(context, repo).execute(String.valueOf(true), branch);
+        } else {
+            try {
+                Git git = Git.open(repo);
+                git.branchCreate()
+                        .setName(branch)
+                        .call();
+            } catch (IOException | GitAPIException e) {
+                Log.e(TAG, e.getMessage());
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public static void deleteBranch(Context context, File repo, String... branches) {
+        try {
+            Git git = Git.open(repo);
+            git.branchDelete()
+                    .setBranchNames(branches)
+                    .call();
+        } catch (IOException | GitAPIException e) {
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void checkout(Context context, File repo, String branch) {
         new CheckoutTask(context, repo).execute(String.valueOf(false), branch);
+    }
+
+    public static String getCurrentBranch(Context context, File repo) {
+        String branch;
+        try {
+            Git git = Git.open(repo);
+            branch = git.getRepository()
+                    .getFullBranch();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        return branch;
     }
 
     static class CommitTask extends AsyncTask<String, Void, Boolean> {
@@ -205,9 +226,11 @@ public class GitUtil {
                         .call();
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return false;
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return false;
             }
 
@@ -218,9 +241,9 @@ public class GitUtil {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean) {
-                Toast.makeText(mContext, "Committed successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Committed successfully.", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(mContext, "Unable to commit files.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Unable to commit files.", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -245,9 +268,11 @@ public class GitUtil {
                         .call();
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return false;
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return false;
             }
 
@@ -258,10 +283,10 @@ public class GitUtil {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean) {
-                Toast.makeText(mContext, "Checked out successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Checked out successfully.", Toast.LENGTH_LONG).show();
                 ((Activity) mContext).finish();
             } else {
-                Toast.makeText(mContext, "Unable to checkout.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Unable to checkout.", Toast.LENGTH_LONG).show();
             }
         }
     }

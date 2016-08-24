@@ -78,7 +78,11 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return mLogs.size();
+        if (mLogs != null) {
+            return mLogs.size();
+        } else {
+            return 0;
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
