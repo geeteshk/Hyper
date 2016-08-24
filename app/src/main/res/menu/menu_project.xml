@@ -55,6 +55,65 @@
     </item>
 
     <item
+        android:title="@string/git"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_git_init"
+                android:title="@string/git_init"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_git_add"
+                android:title="@string/git_add"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_git_commit"
+                android:title="@string/git_commit"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_git_log"
+                android:title="@string/git_log"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_git_status"
+                android:title="@string/git_status"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_git_branch"
+                android:title="@string/branch"
+                app:showAsAction="never">
+
+                <menu>
+
+                    <item
+                        android:id="@+id/action_git_branch_new"
+                        android:title="@string/new_not_java"
+                        app:showAsAction="never" />
+
+                    <item
+                        android:id="@+id/action_git_branch_remove"
+                        android:title="@string/remove"
+                        app:showAsAction="never" />
+
+                    <item
+                        android:id="@+id/action_git_branch_checkout"
+                        android:title="@string/checkout"
+                        app:showAsAction="never" />
+
+                </menu>
+
+            </item>
+        </menu>
+
+    </item>
+
+    <item
         android:id="@+id/action_polymer_add"
         android:title="@string/polymer"
         app:showAsAction="never" />

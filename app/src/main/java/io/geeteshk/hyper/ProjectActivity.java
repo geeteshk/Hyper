@@ -42,6 +42,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.revwalk.RevCommit;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,12 +52,14 @@ import java.util.List;
 
 import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
+import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 import io.geeteshk.hyper.util.DecorUtil;
+import io.geeteshk.hyper.util.GitUtil;
 import io.geeteshk.hyper.util.JsonUtil;
 import io.geeteshk.hyper.util.NetworkUtil;
 import io.geeteshk.hyper.util.PreferenceUtil;
@@ -98,6 +103,8 @@ public class ProjectActivity extends AppCompatActivity {
 
     private String mProject;
 
+    private File mProjectFile;
+
     /**
      * Called when the activity is created
      *
@@ -106,6 +113,7 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mProject = getIntent().getStringExtra("project");
+        mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
         if (PreferenceUtil.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
@@ -263,7 +271,7 @@ public class ProjectActivity extends AppCompatActivity {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
         for (File file : files) {
-            if (!file.getName().equals("bower_components")) {
+            if (!file.getName().equals("bower_components") && !file.getName().equals(".git")) {
                 if (file.isDirectory()) {
                     if (menu == null) {
                         setupMenu(project + File.separator + file.getName(), mDrawer.getMenu().addSubMenu(file.getName()));
@@ -349,6 +357,19 @@ public class ProjectActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isGitRepo = GitUtil.isGitRepo(mProjectFile);
+        menu.findItem(R.id.action_git_init).setEnabled(!isGitRepo);
+        menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_commit).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
+
+        return true;
+    }
+
     /**
      * Called when menu item is selected
      *
@@ -357,6 +378,8 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        File projectDir = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator);
+        LayoutInflater inflater = LayoutInflater.from(ProjectActivity.this);
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
@@ -509,6 +532,129 @@ public class ProjectActivity extends AppCompatActivity {
                     ElementsHolder.getInstance().setElements(JsonUtil.getPreviousElements(mProject));
                 }
 
+                return true;
+            case R.id.action_git_init:
+                GitUtil.init(ProjectActivity.this, mProjectFile);
+                return true;
+            case R.id.action_git_add:
+                GitUtil.add(ProjectActivity.this, mProjectFile);
+                return true;
+            case R.id.action_git_commit:
+                if (GitUtil.isCommit(mProjectFile)) {
+                    AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                    gitCommitBuilder.setTitle(R.string.git_commit);
+                    final EditText editText4 = new EditText(this);
+                    editText4.setHint(R.string.commit_message);
+                    gitCommitBuilder.setView(editText4);
+                    gitCommitBuilder.setCancelable(false);
+                    gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText4.getText().toString().isEmpty()) {
+                                GitUtil.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                            } else {
+                                Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    gitCommitBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AppCompatDialog dialog4 = gitCommitBuilder.create();
+                    dialog4.show();
+                } else {
+                    Toast.makeText(ProjectActivity.this, "Nothing to commit.", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.action_git_log:
+                List<RevCommit> commits = GitUtil.getCommits(ProjectActivity.this, mProjectFile);
+                View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
+                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                    layoutLog.setBackgroundColor(0xFF333333);
+                }
+
+                RecyclerView logsList = (RecyclerView) layoutLog.findViewById(R.id.logs_list);
+                RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
+                RecyclerView.Adapter adapter = new GitLogsAdapter(ProjectActivity.this, commits);
+
+                logsList.setLayoutManager(manager);
+                logsList.setAdapter(adapter);
+
+                BottomSheetDialog dialogLog = new BottomSheetDialog(this);
+                dialogLog.setContentView(layoutLog);
+                dialogLog.show();
+                return true;
+            case R.id.action_git_status:
+                View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
+                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                    layoutStatus.setBackgroundColor(0xFF333333);
+                }
+
+                TextView conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders;
+                conflict = (TextView) layoutStatus.findViewById(R.id.status_conflicting);
+                added = (TextView) layoutStatus.findViewById(R.id.status_added);
+                changed = (TextView) layoutStatus.findViewById(R.id.status_changed);
+                missing = (TextView) layoutStatus.findViewById(R.id.status_missing);
+                modified = (TextView) layoutStatus.findViewById(R.id.status_modified);
+                removed = (TextView) layoutStatus.findViewById(R.id.status_removed);
+                uncommitted = (TextView) layoutStatus.findViewById(R.id.status_uncommitted);
+                untracked = (TextView) layoutStatus.findViewById(R.id.status_untracked);
+                untrackedFolders = (TextView) layoutStatus.findViewById(R.id.status_untracked_folders);
+
+                GitUtil.status(ProjectActivity.this, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
+
+                BottomSheetDialog dialogStatus = new BottomSheetDialog(this);
+                dialogStatus.setContentView(layoutStatus);
+                dialogStatus.show();
+                return true;
+            case R.id.action_git_branch_new:
+                AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                gitCommitBuilder.setTitle("New branch");
+                final EditText editText4 = new EditText(this);
+                editText4.setHint("Branch name");
+                gitCommitBuilder.setView(editText4);
+                gitCommitBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!editText4.getText().toString().isEmpty()) {
+                            GitUtil.createBranch(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                        } else {
+                            Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                gitCommitBuilder.setNegativeButton(R.string.cancel, null);
+                AppCompatDialog dialog4 = gitCommitBuilder.create();
+                dialog4.show();
+                return true;
+            case R.id.action_git_branch_remove:
+                return true;
+            case R.id.action_git_branch_checkout:
+                AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
+                final List<Ref> branches = GitUtil.getBranches(ProjectActivity.this, mProjectFile);
+                CharSequence[] items = new CharSequence[0];
+                if (branches != null) {
+                    items = new CharSequence[branches.size()];
+                    for (int i = 0; i < items.length; i++) {
+                        items[i] = branches.get(i).getName();
+                    }
+                }
+
+                gitCheckout.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        assert branches != null;
+                        dialogInterface.dismiss();
+                        GitUtil.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
+                    }
+                });
+
+                gitCheckout.setNegativeButton(R.string.close, null);
+                gitCheckout.setTitle("Checkout branch");
+                gitCheckout.create().show();
                 return true;
         }
 

@@ -50,6 +50,7 @@ dependencies {
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile 'com.pavelsikun:vintage-chroma:1.5'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
     compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
 

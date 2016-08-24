@@ -186,4 +186,15 @@ SOFTWARE.</string>
     <string name="add">Add</string>
     <string name="remove">Remove</string>
     <string name="about_elements">Elements</string>
+    <string name="git">Git</string>
+    <string name="git_init">Init</string>
+    <string name="git_add">Add</string>
+    <string name="git_commit">Commit</string>
+    <string name="commit_message">Commit Message</string>
+    <string name="commit_message_empty">Please enter a commit message.</string>
+    <string name="git_log">Log</string>
+    <string name="git_status">Status</string>
+    <string name="branch">Branch</string>
+    <string name="checkout">Checkout</string>
+    <string name="close">Close</string>
 </resources>
