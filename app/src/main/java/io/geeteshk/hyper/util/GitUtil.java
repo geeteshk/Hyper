@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.BatchingProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -18,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import io.geeteshk.hyper.adapter.ProjectAdapter;
 
 public class GitUtil {
 
@@ -207,6 +211,14 @@ public class GitUtil {
         return branch;
     }
 
+    public static void clone(Context context, File repo, ProgressBar progressBar, ProjectAdapter adapter, String remoteUrl) {
+        if (!repo.exists()) {
+            new CloneTask(context, repo, progressBar, adapter).execute(remoteUrl);
+        } else {
+            Toast.makeText(context, "The folder already exists.", Toast.LENGTH_LONG).show();
+        }
+    }
+
     static class CommitTask extends AsyncTask<String, Void, Boolean> {
 
         private Context mContext;
@@ -287,6 +299,76 @@ public class GitUtil {
                 ((Activity) mContext).finish();
             } else {
                 Toast.makeText(mContext, "Unable to checkout.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    static class CloneTask extends AsyncTask<String, Integer, Boolean> {
+
+        private Context mContext;
+        private File mRepo;
+        private ProgressBar mProgressBar;
+        private ProjectAdapter mAdapter;
+
+        public CloneTask(Context context, File repo, ProgressBar progressBar, ProjectAdapter adapter) {
+            mContext = context;
+            mRepo = repo;
+            mProgressBar = progressBar;
+            mAdapter = adapter;
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            try {
+                final Git git = Git.cloneRepository()
+                        .setURI(strings[0])
+                        .setDirectory(mRepo)
+                        .setProgressMonitor(new BatchingProgressMonitor() {
+                            @Override
+                            protected void onUpdate(String taskName, int workCurr) {
+
+                            }
+
+                            @Override
+                            protected void onEndTask(String taskName, int workCurr) {
+
+                            }
+
+                            @Override
+                            protected void onUpdate(String taskName, int workCurr, int workTotal, int percentDone) {
+                                publishProgress(percentDone);
+                            }
+
+                            @Override
+                            protected void onEndTask(String taskName, int workCurr, int workTotal, int percentDone) {
+                                publishProgress(percentDone);
+                            }
+                        })
+                        .call();
+            } catch (GitAPIException e) {
+                Log.e(TAG, e.getMessage());
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            mProgressBar.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean) {
+                Toast.makeText(mContext, "Successfully cloned: " + git.getRepository().getDirectory(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please run First Aid from the Settings if your cloned projects do not show up.", Toast.LENGTH_LONG).show();
+                mAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(mContext, "Unable to clone repo.", Toast.LENGTH_LONG).show();
             }
         }
     }

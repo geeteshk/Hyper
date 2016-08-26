@@ -1,11 +1,12 @@
 package io.geeteshk.hyper.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +19,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,10 +31,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
+import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.util.DecorUtil;
+import io.geeteshk.hyper.util.GitUtil;
 import io.geeteshk.hyper.util.ValidatorUtil;
 
 public class ImproveFragment extends Fragment {
@@ -57,19 +63,43 @@ public class ImproveFragment extends Fragment {
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
 
-        FloatingActionButton button = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
-        button.setOnClickListener(new View.OnClickListener() {
+        final ProgressBar cloneProgress = (ProgressBar) rootView.findViewById(R.id.clone_progress);
+
+        FloatingActionButton createButton = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 0);
             }
         });
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
+        FloatingActionButton cloneButton = (FloatingActionButton) rootView.findViewById(R.id.fab_clone);
+        cloneButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), R.string.create_project, Toast.LENGTH_SHORT).show();
-                return true;
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Clone repository");
+                final EditText file = new EditText(getActivity());
+                file.setMaxLines(1);
+                file.setSingleLine(true);
+                file.setHint("Project name");
+                final EditText remote = new EditText(getActivity());
+                remote.setMaxLines(1);
+                remote.setSingleLine(true);
+                remote.setHint("Remote url");
+                LinearLayout layout = new LinearLayout(getActivity());
+                layout.addView(file);
+                layout.addView(remote);
+                builder.setView(layout);
+                builder.setPositiveButton("CLONE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        GitUtil.clone(getActivity(), new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), cloneProgress, mProjectAdapter, remote.getText().toString());
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, null);
+                builder.create().show();
             }
         });
 
