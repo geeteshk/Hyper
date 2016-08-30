@@ -1,10 +1,10 @@
 package io.geeteshk.hyper.util;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -211,9 +211,9 @@ public class GitUtil {
         return branch;
     }
 
-    public static void clone(Context context, File repo, ProgressBar progressBar, ProjectAdapter adapter, String remoteUrl) {
+    public static void clone(Context context, File repo, ProgressDialog progressDialog, ProjectAdapter adapter, String remoteUrl) {
         if (!repo.exists()) {
-            new CloneTask(context, repo, progressBar, adapter).execute(remoteUrl);
+            new CloneTask(context, repo, progressDialog, adapter).execute(remoteUrl);
         } else {
             Toast.makeText(context, "The folder already exists.", Toast.LENGTH_LONG).show();
         }
@@ -303,17 +303,17 @@ public class GitUtil {
         }
     }
 
-    static class CloneTask extends AsyncTask<String, Integer, Boolean> {
+    static class CloneTask extends AsyncTask<String, String, Boolean> {
 
         private Context mContext;
         private File mRepo;
-        private ProgressBar mProgressBar;
+        private ProgressDialog mProgressDialog;
         private ProjectAdapter mAdapter;
 
-        public CloneTask(Context context, File repo, ProgressBar progressBar, ProjectAdapter adapter) {
+        public CloneTask(Context context, File repo, ProgressDialog progressDialog, ProjectAdapter adapter) {
             mContext = context;
             mRepo = repo;
-            mProgressBar = progressBar;
+            mProgressDialog = progressDialog;
             mAdapter = adapter;
         }
 
@@ -336,12 +336,12 @@ public class GitUtil {
 
                             @Override
                             protected void onUpdate(String taskName, int workCurr, int workTotal, int percentDone) {
-                                publishProgress(percentDone);
+                                publishProgress(taskName, String.valueOf(percentDone));
                             }
 
                             @Override
                             protected void onEndTask(String taskName, int workCurr, int workTotal, int percentDone) {
-                                publishProgress(percentDone);
+                                publishProgress(taskName, String.valueOf(percentDone));
                             }
                         })
                         .call();
@@ -355,16 +355,25 @@ public class GitUtil {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
+        protected void onProgressUpdate(final String... values) {
             super.onProgressUpdate(values);
-            mProgressBar.setProgress(values[0]);
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressDialog.setTitle(values[0]);
+                    mProgressDialog.setMessage(values[0]);
+                }
+            });
+
+            mProgressDialog.setProgress(Integer.valueOf(values[1]));
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
+            mProgressDialog.hide();
             if (aBoolean) {
-                Toast.makeText(mContext, "Successfully cloned: " + git.getRepository().getDirectory(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Successfully cloned.", Toast.LENGTH_SHORT).show();
                 Toast.makeText(mContext, "Please run First Aid from the Settings if your cloned projects do not show up.", Toast.LENGTH_LONG).show();
                 mAdapter.notifyDataSetChanged();
             } else {

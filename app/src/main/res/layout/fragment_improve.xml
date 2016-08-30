@@ -90,15 +90,6 @@
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
-    <ProgressBar
-        android:id="@+id/clone_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:max="100"
-        android:progress="0" />
-
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

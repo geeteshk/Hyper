@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -63,8 +63,6 @@ public class ImproveFragment extends Fragment {
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
 
-        final ProgressBar cloneProgress = (ProgressBar) rootView.findViewById(R.id.clone_progress);
-
         FloatingActionButton createButton = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +70,13 @@ public class ImproveFragment extends Fragment {
                 MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 0);
             }
         });
+
+        final ProgressDialog cloneProgress = new ProgressDialog(getActivity());
+        cloneProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        cloneProgress.setTitle("Cloning repository");
+        cloneProgress.setMax(100);
+        cloneProgress.setProgress(0);
+        cloneProgress.setCancelable(false);
 
         FloatingActionButton cloneButton = (FloatingActionButton) rootView.findViewById(R.id.fab_clone);
         cloneButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +100,7 @@ public class ImproveFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        cloneProgress.show();
                         GitUtil.clone(getActivity(), new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), cloneProgress, mProjectAdapter, remote.getText().toString());
                     }
                 });
