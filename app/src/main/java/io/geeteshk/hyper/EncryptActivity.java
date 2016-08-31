@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 public class EncryptActivity extends AppCompatActivity {
 
@@ -73,7 +73,7 @@ public class EncryptActivity extends AppCompatActivity {
             }
         });
 
-        String pin = PreferenceUtil.get(this, "pin", "0000");
+        String pin = Pref.get(this, "pin", "0000");
         for (int i = 0; i < 4; i++) {
             PIN[i] = Integer.valueOf(String.valueOf(pin.charAt(i)));
         }

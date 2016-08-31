@@ -7,8 +7,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.PolymerUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Polymer;
+import io.geeteshk.hyper.helper.Pref;
 
 public class SetupActivity extends AppCompatActivity {
 
@@ -17,7 +17,7 @@ public class SetupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 
@@ -37,7 +37,7 @@ public class SetupActivity extends AppCompatActivity {
 
         mProgressText.setText("Creating project files...");
         mProgressBar.setIndeterminate(true);
-        PolymerUtil.addPackages(mProgressBar, mProgressText, ElementsHolder.getInstance().getProject(), this);
+        Polymer.addPackages(mProgressBar, mProgressText, ElementsHolder.getInstance().getProject(), this);
     }
 }
 

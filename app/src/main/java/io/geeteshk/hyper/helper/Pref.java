@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import io.geeteshk.hyper.Constants;
 /**
  * Utility class to store and read preferences
  */
-public class PreferenceUtil {
+public class Pref {
 
     /**
      * Method to get sharedpreferences

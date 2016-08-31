@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.helper.Jason;
 
 public class ElementsAdapter extends RecyclerView.Adapter<ElementsAdapter.Holder> {
 
@@ -20,7 +20,7 @@ public class ElementsAdapter extends RecyclerView.Adapter<ElementsAdapter.Holder
     ArrayList<Element> mCheckedItems;
 
     public ElementsAdapter(Context context, String type) {
-        mElements = JsonUtil.getElements(context, type);
+        mElements = Jason.getElements(context, type);
         mCheckedItems = ElementsHolder.getInstance().getElements();
     }
 

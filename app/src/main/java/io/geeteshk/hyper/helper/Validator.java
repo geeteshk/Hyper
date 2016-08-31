@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -14,7 +14,7 @@ import io.geeteshk.hyper.R;
 /**
  * Utility class to validate project creation
  */
-public class ValidatorUtil {
+public class Validator {
 
     /**
      * Method to validate project creation

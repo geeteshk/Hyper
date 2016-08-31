@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.geeteshk.hyper.adapter.ResourceAdapter;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 /**
  * Activity to list resources of a certain project
@@ -38,7 +38,7 @@ public class ResourcesActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 

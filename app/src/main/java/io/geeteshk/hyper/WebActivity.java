@@ -30,10 +30,10 @@ import android.widget.CompoundButton;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.adapter.LogsAdapter;
-import io.geeteshk.hyper.util.DecorUtil;
-import io.geeteshk.hyper.util.JsonUtil;
-import io.geeteshk.hyper.util.NetworkUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Jason;
+import io.geeteshk.hyper.helper.Network;
+import io.geeteshk.hyper.helper.Pref;
 
 /**
  * Activity to test projects
@@ -51,7 +51,7 @@ public class WebActivity extends AppCompatActivity {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 
@@ -60,7 +60,7 @@ public class WebActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         assert toolbar != null;
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
@@ -68,13 +68,13 @@ public class WebActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         assert getSupportActionBar() != null;
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Jason.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
 
-        int color = Color.parseColor(JsonUtil.getProjectProperty(getIntent().getStringExtra("name"), "color"));
+        int color = Color.parseColor(Jason.getProjectProperty(getIntent().getStringExtra("name"), "color"));
         if ((Color.red(color) * 0.299 + Color.green(color) * 0.587 + Color.blue(color) * 0.114) > 186) {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("name") + "</font>")));
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
-            DecorUtil.setOverflowButtonColor(WebActivity.this, filter);
+            Decor.setOverflowButtonColor(WebActivity.this, filter);
         } else {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("name") + "</font>")));
         }
@@ -113,8 +113,8 @@ public class WebActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (getIntent().getBooleanExtra("pilot", false) && NetworkUtil.getDrive() != null) {
-            NetworkUtil.getDrive().stop();
+        if (getIntent().getBooleanExtra("pilot", false) && Network.getDrive() != null) {
+            Network.getDrive().stop();
         }
     }
 
@@ -136,7 +136,7 @@ public class WebActivity extends AppCompatActivity {
                 return true;
             case R.id.web_logs:
                 View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
-                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                if (Pref.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
@@ -153,7 +153,7 @@ public class WebActivity extends AppCompatActivity {
                 return true;
             case R.id.web_settings:
                 View layout = inflater.inflate(R.layout.sheet_web_settings, null);
-                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                if (Pref.get(this, "dark_theme", false)) {
                     layout.setBackgroundColor(0xFF333333);
                 }
 

@@ -29,7 +29,7 @@ import io.geeteshk.hyper.EncryptActivity;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.FirstAid;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 /**
  * Fragment to edit settings
@@ -59,7 +59,7 @@ public class SettingsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         final SwitchCompat darkTheme = (SwitchCompat) rootView.findViewById(R.id.dark_theme);
-        darkTheme.setChecked(PreferenceUtil.get(getActivity(), "dark_theme", false));
+        darkTheme.setChecked(Pref.get(getActivity(), "dark_theme", false));
         darkTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -76,8 +76,8 @@ public class SettingsFragment extends Fragment {
         });
 
         setPin = (TextView) rootView.findViewById(R.id.set_pin);
-        Log.i("PIN: ", PreferenceUtil.get(getActivity(), "pin", ""));
-        if (!PreferenceUtil.get(getActivity(), "pin", "").equals("")) {
+        Log.i("PIN: ", Pref.get(getActivity(), "pin", ""));
+        if (!Pref.get(getActivity(), "pin", "").equals("")) {
             setPin.setText("****");
         }
 
@@ -90,13 +90,13 @@ public class SettingsFragment extends Fragment {
         });
 
         final TextView autoSave = (TextView) rootView.findViewById(R.id.auto_save_freq_text);
-        autoSave.setText(String.valueOf(PreferenceUtil.get(getActivity(), "auto_save_freq", 2)) + "s");
+        autoSave.setText(String.valueOf(Pref.get(getActivity(), "auto_save_freq", 2)) + "s");
         AppCompatSeekBar seekBar = (AppCompatSeekBar) rootView.findViewById(R.id.auto_save_freq);
-        seekBar.setProgress(PreferenceUtil.get(getActivity(), "auto_save_freq", 2) - 1);
+        seekBar.setProgress(Pref.get(getActivity(), "auto_save_freq", 2) - 1);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                PreferenceUtil.store(getActivity(), "auto_save_freq", progress + 1);
+                Pref.store(getActivity(), "auto_save_freq", progress + 1);
                 autoSave.setText(String.valueOf(progress + 1) + "s");
             }
 
@@ -124,7 +124,7 @@ public class SettingsFragment extends Fragment {
         disableFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                PreferenceUtil.store(getActivity(), "show_toast_file_ending", b);
+                Pref.store(getActivity(), "show_toast_file_ending", b);
             }
         });
 
@@ -139,7 +139,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void updatePin() {
-        if (PreferenceUtil.get(getActivity(), "pin", "").equals("")) {
+        if (Pref.get(getActivity(), "pin", "").equals("")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.pin_request);
             EditText editText = new EditText(getActivity());
@@ -165,7 +165,7 @@ public class SettingsFragment extends Fragment {
                         layout.setError(getString(R.string.error_pin));
                     } else {
                         setPin.setText("****");
-                        PreferenceUtil.store(getActivity(), "pin", newPin);
+                        Pref.store(getActivity(), "pin", newPin);
                         dialog.dismiss();
                     }
                 }

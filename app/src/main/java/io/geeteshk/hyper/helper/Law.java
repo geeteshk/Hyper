@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.view.View;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 
-public class PermissionUtil {
+public class Law {
 
     public static final int WRITE_STORAGE_REQUEST_CODE = 3;
 
@@ -42,7 +42,7 @@ public class PermissionUtil {
     public static void getRequiredPermissions(Context context) {
         getPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, WRITE_STORAGE_REQUEST_CODE);
 
-        if (PermissionUtil.checkAllPermissions(context)) {
+        if (Law.checkAllPermissions(context)) {
             Intent intent = new Intent(context, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);

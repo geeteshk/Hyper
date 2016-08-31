@@ -109,6 +109,11 @@
                 </menu>
 
             </item>
+
+            <item
+                android:id="@+id/action_git_clean"
+                android:title="@string/git_clean"
+                app:showAsAction="never" />
         </menu>
 
     </item>

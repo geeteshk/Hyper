@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -21,7 +21,7 @@ import io.geeteshk.hyper.R;
 /**
  * Utility class to handle all project related tasks
  */
-public class ProjectUtil {
+public class Project {
 
     /**
      * HTML BareBones Template
@@ -51,7 +51,7 @@ public class ProjectUtil {
      * Empty Script
      */
     public static final String MAIN = "// Add all your JS here";
-    private static final String TAG = ProjectUtil.class.getSimpleName();
+    private static final String TAG = Project.class.getSimpleName();
 
     /**
      * Method to handle project creation
@@ -78,7 +78,7 @@ public class ProjectUtil {
                     && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", color))
                     && createFile(name, "css" + File.separator + "style.css", STYLE)
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && JsonUtil.createProjectFile(name, author, description, keywords, color)
+                    && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(context, name)) {
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
@@ -93,7 +93,7 @@ public class ProjectUtil {
                     && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", color))
                     && createFile(name, "css" + File.separator + "style.css", STYLE)
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && JsonUtil.createProjectFile(name, author, description, keywords, color)
+                    && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(name, stream)) {
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {

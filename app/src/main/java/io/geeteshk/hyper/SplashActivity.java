@@ -21,9 +21,9 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import io.geeteshk.hyper.helper.GoogleHolder;
-import io.geeteshk.hyper.util.PermissionUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.TypefaceUtil;
+import io.geeteshk.hyper.helper.Law;
+import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Typefacer;
 
 public class SplashActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -35,9 +35,9 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/RobotoCondensed-BoldItalic.ttf");
-        TypefaceUtil.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
+        Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
+        Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/RobotoCondensed-BoldItalic.ttf");
+        Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -59,7 +59,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             getWindow().setStatusBarColor(0xFFE64A19);
         }
 
-        if (!PreferenceUtil.get(this, "first_sign_in", true)) {
+        if (!Pref.get(this, "first_sign_in", true)) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             signInButton.setColorScheme(SignInButton.COLOR_DARK);
         }
 
@@ -93,15 +93,15 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     @SuppressLint("InlinedApi")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PermissionUtil.WRITE_STORAGE_REQUEST_CODE) {
-            if (PermissionUtil.checkPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                PermissionUtil.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, PermissionUtil.WRITE_STORAGE_REQUEST_CODE);
+        if (requestCode == Law.WRITE_STORAGE_REQUEST_CODE) {
+            if (Law.checkPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Law.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, Law.WRITE_STORAGE_REQUEST_CODE);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        if (PermissionUtil.checkAllPermissions(SplashActivity.this)) {
+        if (Law.checkAllPermissions(SplashActivity.this)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -129,8 +129,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
             GoogleHolder.getInstance().setAccount(account);
-            PermissionUtil.getRequiredPermissions(SplashActivity.this);
-            PreferenceUtil.store(this, "first_sign_in", false);
+            Law.getRequiredPermissions(SplashActivity.this);
+            Pref.store(this, "first_sign_in", false);
         } else {
             Toast.makeText(this, "Sign-in failed. Please sign-in to Google to use Hyper.", Toast.LENGTH_LONG).show();
         }

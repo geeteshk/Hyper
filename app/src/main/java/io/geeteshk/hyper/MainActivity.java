@@ -44,7 +44,7 @@ import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
 import io.geeteshk.hyper.helper.GoogleHolder;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 /**
  * Main activity to show all main content
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.container, fragment)
                 .commitAllowingStateLoss();
 
-        PreferenceUtil.store(context, "last_fragment", position);
+        Pref.store(context, "last_fragment", position);
         mToolbar.setTitle(mItems[position]);
         mDrawer.setCheckedItem(mDrawer.getMenu().getItem(position).getItemId());
     }
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
      * @param dark     theme
      */
     public static void changeTheme(AppCompatActivity activity, boolean dark) {
-        PreferenceUtil.store(activity, "dark_theme", dark);
+        Pref.store(activity, "dark_theme", dark);
         activity.recreate();
     }
 
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = this;
         mManager = getSupportFragmentManager();
-        update(this, getSupportFragmentManager(), PreferenceUtil.get(this, "last_fragment", 0));
+        update(this, getSupportFragmentManager(), Pref.get(this, "last_fragment", 0));
     }
 
     /**
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mToolbar.setTitle(mItems[PreferenceUtil.get(this, "last_fragment", 0)]);
+        mToolbar.setTitle(mItems[Pref.get(this, "last_fragment", 0)]);
     }
 
     /**
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                         if (newPin.length() != 4) {
                             layout.setError(getString(R.string.pin_four_digits));
                         } else {
-                            PreferenceUtil.store(MainActivity.this, "pin", newPin);
+                            Pref.store(MainActivity.this, "pin", newPin);
                             dialog.dismiss();
                         }
                     }

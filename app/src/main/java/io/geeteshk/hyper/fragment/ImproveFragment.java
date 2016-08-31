@@ -35,9 +35,9 @@ import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.util.DecorUtil;
-import io.geeteshk.hyper.util.GitUtil;
-import io.geeteshk.hyper.util.ValidatorUtil;
+import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Giiit;
+import io.geeteshk.hyper.helper.Validator;
 
 public class ImproveFragment extends Fragment {
 
@@ -54,12 +54,12 @@ public class ImproveFragment extends Fragment {
 
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
-        ValidatorUtil.removeBroken(mObjectsList);
+        Validator.removeBroken(mObjectsList);
         mProjectAdapter = new ProjectAdapter(getActivity(), (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), true);
         final RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new DecorUtil.GridSpacingItemDecoration(2, DecorUtil.dpToPx(getActivity(), 4), true));
+        projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(getActivity(), 4), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
 
@@ -101,7 +101,7 @@ public class ImproveFragment extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                         cloneProgress.show();
-                        GitUtil.clone(getActivity(), new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), cloneProgress, mProjectAdapter, remote.getText().toString());
+                        Giiit.clone(getActivity(), new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), cloneProgress, mProjectAdapter, remote.getText().toString());
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, null);
@@ -124,7 +124,7 @@ public class ImproveFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 mObjectsList = new ArrayList<>(Arrays.asList(objects));
-                ValidatorUtil.removeBroken(mObjectsList);
+                Validator.removeBroken(mObjectsList);
                 for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
                     String string = (String) iterator.next();
                     if (!string.toLowerCase(Locale.getDefault()).startsWith(s.toString())) {

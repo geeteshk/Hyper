@@ -26,10 +26,10 @@ import io.geeteshk.hyper.ProjectActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.WebActivity;
 import io.geeteshk.hyper.helper.Hyperion;
-import io.geeteshk.hyper.util.JsonUtil;
-import io.geeteshk.hyper.util.NetworkUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
+import io.geeteshk.hyper.helper.Jason;
+import io.geeteshk.hyper.helper.Network;
+import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 
 /**
  * Adapter to list all projects
@@ -65,12 +65,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        int color = Color.parseColor(JsonUtil.getProjectProperty(mObjects[position], "color"));
+        int color = Color.parseColor(Jason.getProjectProperty(mObjects[position], "color"));
         final int newPos = holder.getAdapterPosition();
 
         holder.mTitle.setText(mObjects[position]);
-        holder.mDescription.setText(JsonUtil.getProjectProperty(mObjects[position], "description"));
-        holder.mFavicon.setImageBitmap(ProjectUtil.getFavicon(mObjects[position]));
+        holder.mDescription.setText(Jason.getProjectProperty(mObjects[position], "description"));
+        holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects[position]));
         holder.mColor.setBackgroundColor(color);
 
         if (mImprove) {
@@ -78,7 +78,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                 @Override
                 public void onClick(View v) {
                     Intent intent;
-                    if (PreferenceUtil.get(mContext, "pin", "").equals("")) {
+                    if (Pref.get(mContext, "pin", "").equals("")) {
                         intent = new Intent(mContext, ProjectActivity.class);
                         intent.putExtra("project", mObjects[newPos]);
                         ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
@@ -93,18 +93,18 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             holder.mFavicon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NetworkUtil.setDrive(new Hyperion(mObjects[newPos]));
+                    Network.setDrive(new Hyperion(mObjects[newPos]));
 
                     try {
-                        NetworkUtil.getDrive().start();
+                        Network.getDrive().start();
                     } catch (IOException e) {
                         Log.e(TAG, e.getMessage());
                     }
 
                     Intent intent = new Intent(mContext, WebActivity.class);
 
-                    if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
-                        intent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
+                    if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
+                        intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
                     } else {
                         intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
                     }
@@ -125,7 +125,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (ProjectUtil.deleteProject(mContext, mObjects[newPos])) {
+                        if (Project.deleteProject(mContext, mObjects[newPos])) {
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {

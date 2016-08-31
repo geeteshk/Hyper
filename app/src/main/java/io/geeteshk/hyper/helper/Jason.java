@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,9 +22,9 @@ import io.geeteshk.hyper.polymer.ElementsHolder;
 /**
  * Utility class to handle JSON
  */
-public class JsonUtil {
+public class Jason {
 
-    private static final String TAG = JsonUtil.class.getSimpleName();
+    private static final String TAG = Jason.class.getSimpleName();
 
     /**
      * Creates the .hyper file at the root of a project

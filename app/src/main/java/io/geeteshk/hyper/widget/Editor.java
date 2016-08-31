@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 /**
  * Editor class to handle code highlighting etc
@@ -238,7 +238,7 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
-        mUpdateDelay = 1000 * (PreferenceUtil.get(mContext, "auto_save_freq", 1) + 1);
+        mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
 
         mLineShadowPaint = new Paint();
@@ -252,7 +252,7 @@ public class Editor extends MultiAutoCompleteTextView {
         mNumberPaint.setTextAlign(Paint.Align.RIGHT);
         mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
 
-        if (!PreferenceUtil.get(mContext, "dark_theme", false)) {
+        if (!Pref.get(mContext, "dark_theme", false)) {
             COLOR_BUILTIN = 0xff72b000;
             COLOR_STRINGS = 0xffed5c00;
             COLOR_COMMENT = 0xffa0a0a0;
@@ -780,7 +780,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     replaceFrom.setText(selected);
 
                     AlertDialog.Builder builder;
-                    if (PreferenceUtil.get(mContext, "dark_theme", false)) {
+                    if (Pref.get(mContext, "dark_theme", false)) {
                         builder = new AlertDialog.Builder(mContext, R.style.Hyper_Dark);
                     } else {
                         builder = new AlertDialog.Builder(mContext);

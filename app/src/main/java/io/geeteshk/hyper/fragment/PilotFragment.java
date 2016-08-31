@@ -30,8 +30,8 @@ import java.util.Locale;
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.util.DecorUtil;
-import io.geeteshk.hyper.util.ValidatorUtil;
+import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Validator;
 
 /**
  * Fragment used to test projects
@@ -62,12 +62,12 @@ public class PilotFragment extends Fragment {
 
         final String[] objects = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper").list();
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
-        ValidatorUtil.removeBroken(mObjectsList);
+        Validator.removeBroken(mObjectsList);
         mProjectAdapter = new ProjectAdapter(getActivity(), mObjectsList.toArray(new String[mObjectsList.size()]), false);
         final RecyclerView projectsList = (RecyclerView) rootView.findViewById(R.id.pilot_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new DecorUtil.GridSpacingItemDecoration(2, DecorUtil.dpToPx(getActivity(), 4), true));
+        projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(getActivity(), 4), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
 
@@ -102,7 +102,7 @@ public class PilotFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 mObjectsList = new ArrayList<>(Arrays.asList(objects));
-                ValidatorUtil.removeBroken(mObjectsList);
+                Validator.removeBroken(mObjectsList);
                 for (Iterator<String> iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
                     String string = iterator.next();
                     if (!string.toLowerCase(Locale.getDefault()).startsWith(s.toString())) {

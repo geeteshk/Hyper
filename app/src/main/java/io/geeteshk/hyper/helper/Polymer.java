@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,9 +23,9 @@ import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 
-public class PolymerUtil {
+public class Polymer {
 
-    private static final String TAG = PolymerUtil.class.getSimpleName();
+    private static final String TAG = Polymer.class.getSimpleName();
 
     public static String getComponentsUrl() {
         ArrayList<Element> elements = ElementsHolder.getInstance().getElements();
@@ -172,7 +172,7 @@ public class PolymerUtil {
                 }
             }
 
-            ProjectUtil.deleteDirectory(mContext, new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components"));
+            Project.deleteDirectory(mContext, new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components"));
             new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components.zip").delete();
         }
 
@@ -188,8 +188,8 @@ public class PolymerUtil {
                         .append(".html\">\n");
             }
 
-            ProjectUtil.createFile(mProject, "imports.txt", builder.toString());
-            ProjectUtil.createFile(mProject, "packages.hyper", JsonUtil.generatePackages());
+            Project.createFile(mProject, "imports.txt", builder.toString());
+            Project.createFile(mProject, "packages.hyper", Jason.generatePackages());
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,9 +23,9 @@ import java.util.Set;
 
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 
-public class GitUtil {
+public class Giiit {
 
-    private static final String TAG = GitUtil.class.getSimpleName();
+    private static final String TAG = Giiit.class.getSimpleName();
 
     public static void init(Context context, File repo) {
         try {
@@ -217,6 +217,21 @@ public class GitUtil {
         } else {
             Toast.makeText(context, "The folder already exists.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static Set<String> clean(Context context, File repo) {
+        Set<String> removed = null;
+        try {
+            Git git = Git.open(repo);
+            removed = git.clean()
+                    .setCleanDirectories(false)
+                    .call();
+        } catch (IOException | GitAPIException e) {
+            Log.e(TAG, e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return removed;
     }
 
     static class CommitTask extends AsyncTask<String, Void, Boolean> {

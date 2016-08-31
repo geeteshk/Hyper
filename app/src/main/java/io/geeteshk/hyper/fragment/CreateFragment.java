@@ -32,9 +32,9 @@ import java.io.InputStream;
 
 import io.geeteshk.hyper.MainActivity;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
-import io.geeteshk.hyper.util.ValidatorUtil;
+import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Validator;
 
 /**
  * Fragment used to create projects
@@ -99,12 +99,12 @@ public class CreateFragment extends Fragment {
         assert mDescriptionLayout.getEditText() != null;
         assert mKeywordsLayout.getEditText() != null;
 
-        mNameLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "name", ""));
-        mAuthorLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "author", ""));
-        mDescriptionLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "description", ""));
-        mKeywordsLayout.getEditText().setText(PreferenceUtil.get(getActivity(), "keywords", ""));
-        mColor.setText(ChromaUtil.getFormattedColorString(PreferenceUtil.get(getActivity(), "color", Color.BLACK), false));
-        mColor.setTextColor(PreferenceUtil.get(getActivity(), "color", Color.BLACK));
+        mNameLayout.getEditText().setText(Pref.get(getActivity(), "name", ""));
+        mAuthorLayout.getEditText().setText(Pref.get(getActivity(), "author", ""));
+        mDescriptionLayout.getEditText().setText(Pref.get(getActivity(), "description", ""));
+        mKeywordsLayout.getEditText().setText(Pref.get(getActivity(), "keywords", ""));
+        mColor.setText(ChromaUtil.getFormattedColorString(Pref.get(getActivity(), "color", Color.BLACK), false));
+        mColor.setTextColor(Pref.get(getActivity(), "color", Color.BLACK));
 
         mDefaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -150,14 +150,14 @@ public class CreateFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ValidatorUtil.validate(getActivity(), mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout)) {
-                    PreferenceUtil.store(getActivity(), "name", mNameLayout.getEditText().getText().toString());
-                    PreferenceUtil.store(getActivity(), "author", mAuthorLayout.getEditText().getText().toString());
-                    PreferenceUtil.store(getActivity(), "description", mDescriptionLayout.getEditText().getText().toString());
-                    PreferenceUtil.store(getActivity(), "keywords", mKeywordsLayout.getEditText().getText().toString());
-                    PreferenceUtil.store(getActivity(), "color", mColor.getCurrentTextColor());
+                if (Validator.validate(getActivity(), mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout)) {
+                    Pref.store(getActivity(), "name", mNameLayout.getEditText().getText().toString());
+                    Pref.store(getActivity(), "author", mAuthorLayout.getEditText().getText().toString());
+                    Pref.store(getActivity(), "description", mDescriptionLayout.getEditText().getText().toString());
+                    Pref.store(getActivity(), "keywords", mKeywordsLayout.getEditText().getText().toString());
+                    Pref.store(getActivity(), "color", mColor.getCurrentTextColor());
 
-                    ProjectUtil.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mColor.getText().toString(), mStream);
+                    Project.generate(getActivity(), mNameLayout.getEditText().getText().toString(), mAuthorLayout.getEditText().getText().toString(), mDescriptionLayout.getEditText().getText().toString(), mKeywordsLayout.getEditText().getText().toString(), mColor.getText().toString(), mStream);
                     MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 1);
                 }
             }

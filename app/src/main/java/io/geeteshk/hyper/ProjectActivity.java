@@ -51,21 +51,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
+import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Giiit;
 import io.geeteshk.hyper.helper.Hyperion;
+import io.geeteshk.hyper.helper.Jason;
+import io.geeteshk.hyper.helper.Network;
+import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
-import io.geeteshk.hyper.util.DecorUtil;
-import io.geeteshk.hyper.util.GitUtil;
-import io.geeteshk.hyper.util.JsonUtil;
-import io.geeteshk.hyper.util.NetworkUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
 import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
 
 /**
@@ -116,15 +117,15 @@ public class ProjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 
-        NetworkUtil.setDrive(new Hyperion(mProject));
+        Network.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
 
         try {
-            NetworkUtil.getDrive().start();
+            Network.getDrive().start();
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }
@@ -133,7 +134,7 @@ public class ProjectActivity extends AppCompatActivity {
         setContentView(layout);
 
         float[] hsv = new float[3];
-        int color = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
+        int color = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
         Color.colorToHSV(color, hsv);
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
@@ -143,7 +144,7 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
-        if (PreferenceUtil.get(this, "pin", "").equals("")) {
+        if (Pref.get(this, "pin", "").equals("")) {
             assert projectLayout != null;
             Snackbar snackbar = Snackbar.make(projectLayout, R.string.pin_snack_bar, Snackbar.LENGTH_LONG)
                     .setAction(R.string.set_pin, new View.OnClickListener() {
@@ -157,7 +158,7 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             assert toolbar != null;
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
@@ -165,7 +166,7 @@ public class ProjectActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(mProject);
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -183,10 +184,10 @@ public class ProjectActivity extends AppCompatActivity {
         TextView headerTitle = (TextView) headerView.findViewById(R.id.header_title);
         TextView headerDesc = (TextView) headerView.findViewById(R.id.header_desc);
 
-        headerLayout.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
-        headerIcon.setImageBitmap(ProjectUtil.getFavicon(mProject));
-        headerTitle.setText(JsonUtil.getProjectProperty(mProject, "name"));
-        headerDesc.setText(JsonUtil.getProjectProperty(mProject, "description"));
+        headerLayout.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
+        headerIcon.setImageBitmap(Project.getFavicon(mProject));
+        headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
+        headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
 
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -205,7 +206,7 @@ public class ProjectActivity extends AppCompatActivity {
                 if (mFiles.contains(file)) {
                     mPager.setCurrentItem(mFiles.indexOf(file));
                 } else {
-                    if (!ProjectUtil.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
+                    if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
                         Bundle b = new Bundle();
                         b.putInt("position", mAdapter.getCount());
                         mAdapter.add(file, b);
@@ -238,16 +239,16 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip = (TabLayout) findViewById(R.id.tabs);
         assert mTabStrip != null;
         mTabStrip.setupWithViewPager(mPager);
-        mTabStrip.setBackgroundColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
-        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"))));
+        mTabStrip.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
+        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
 
-        int newColor = Color.parseColor(JsonUtil.getProjectProperty(mProject, "color"));
+        int newColor = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
 
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
             getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
-            DecorUtil.setOverflowButtonColor(ProjectActivity.this, filter);
+            Decor.setOverflowButtonColor(ProjectActivity.this, filter);
             headerTitle.setTextColor(0xff000000);
             headerDesc.setTextColor(0xff000000);
             mDrawerToggle.setDrawerIndicatorEnabled(false);
@@ -264,7 +265,7 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, ProjectUtil.getFavicon(mProject), Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
             this.setTaskDescription(description);
         }
     }
@@ -341,8 +342,8 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (NetworkUtil.getDrive() != null) {
-            NetworkUtil.getDrive().stop();
+        if (Network.getDrive() != null) {
+            Network.getDrive().stop();
         }
     }
 
@@ -373,8 +374,8 @@ public class ProjectActivity extends AppCompatActivity {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
 
-                if (NetworkUtil.getDrive().wasStarted() && NetworkUtil.getDrive().isAlive() && NetworkUtil.getIpAddress() != null) {
-                    runIntent.putExtra("url", "http:///" + NetworkUtil.getIpAddress() + ":8080");
+                if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
+                    runIntent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
                 } else {
                     runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
                 }
@@ -422,7 +423,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, editText.getText().toString() + ".html", ProjectUtil.INDEX.replace("@name", JsonUtil.getProjectProperty(mProject, "name")).replace("author", JsonUtil.getProjectProperty(mProject, "author")).replace("@description", JsonUtil.getProjectProperty(mProject, "description")).replace("@keywords", JsonUtil.getProjectProperty(mProject, "keywords")).replace("@color", JsonUtil.getProjectProperty(mProject, "color")))) {
+                        if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             refreshMenu();
                         } else {
@@ -437,7 +438,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog = builder.create();
-                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                     showToast(false);
                 dialog.show();
                 return true;
@@ -453,7 +454,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText2.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", ProjectUtil.STYLE)) {
+                        if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             refreshMenu();
                         } else {
@@ -468,7 +469,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog2 = builder2.create();
-                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                     showToast(false);
                 dialog2.show();
                 return true;
@@ -484,7 +485,7 @@ public class ProjectActivity extends AppCompatActivity {
                 builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText3.getText().toString().isEmpty() && ProjectUtil.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", ProjectUtil.MAIN)) {
+                        if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             refreshMenu();
                         } else {
@@ -499,7 +500,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog3 = builder3.create();
-                if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                     showToast(false);
                 dialog3.show();
                 return true;
@@ -518,15 +519,15 @@ public class ProjectActivity extends AppCompatActivity {
                 if (!new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "packages.hyper").exists()) {
                     ElementsHolder.getInstance().setElements(new ArrayList<Element>());
                 } else {
-                    ElementsHolder.getInstance().setElements(JsonUtil.getPreviousElements(mProject));
+                    ElementsHolder.getInstance().setElements(Jason.getPreviousElements(mProject));
                 }
 
                 return true;
             case R.id.action_git_init:
-                GitUtil.init(ProjectActivity.this, mProjectFile);
+                Giiit.init(ProjectActivity.this, mProjectFile);
                 return true;
             case R.id.action_git_add:
-                GitUtil.add(ProjectActivity.this, mProjectFile);
+                Giiit.add(ProjectActivity.this, mProjectFile);
                 return true;
             case R.id.action_git_commit:
                 AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
@@ -539,7 +540,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText4.getText().toString().isEmpty()) {
-                            GitUtil.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                            Giiit.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -555,9 +556,9 @@ public class ProjectActivity extends AppCompatActivity {
                 dialog4.show();
                 return true;
             case R.id.action_git_log:
-                List<RevCommit> commits = GitUtil.getCommits(ProjectActivity.this, mProjectFile);
+                List<RevCommit> commits = Giiit.getCommits(ProjectActivity.this, mProjectFile);
                 View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
-                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                if (Pref.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
@@ -574,7 +575,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_status:
                 View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
-                if (PreferenceUtil.get(this, "dark_theme", false)) {
+                if (Pref.get(this, "dark_theme", false)) {
                     layoutStatus.setBackgroundColor(0xFF333333);
                 }
 
@@ -589,7 +590,7 @@ public class ProjectActivity extends AppCompatActivity {
                 untracked = (TextView) layoutStatus.findViewById(R.id.status_untracked);
                 untrackedFolders = (TextView) layoutStatus.findViewById(R.id.status_untracked_folders);
 
-                GitUtil.status(ProjectActivity.this, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
+                Giiit.status(ProjectActivity.this, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
 
                 BottomSheetDialog dialogStatus = new BottomSheetDialog(this);
                 dialogStatus.setContentView(layoutStatus);
@@ -610,7 +611,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText5.getText().toString().isEmpty()) {
-                            GitUtil.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
+                            Giiit.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
                         } else {
                             Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
                         }
@@ -622,7 +623,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_remove:
                 AlertDialog.Builder gitRemove = new AlertDialog.Builder(this);
-                final List<Ref> branchesList = GitUtil.getBranches(ProjectActivity.this, mProjectFile);
+                final List<Ref> branchesList = Giiit.getBranches(ProjectActivity.this, mProjectFile);
                 if (branchesList != null) {
                     final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
                     for (int i = 0; i < itemsMultiple.length; i++) {
@@ -646,7 +647,7 @@ public class ProjectActivity extends AppCompatActivity {
                     gitRemove.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            GitUtil.deleteBranch(ProjectActivity.this, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
+                            Giiit.deleteBranch(ProjectActivity.this, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
                             dialogInterface.dismiss();
                         }
                     });
@@ -658,7 +659,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_checkout:
                 AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
-                final List<Ref> branches = GitUtil.getBranches(ProjectActivity.this, mProjectFile);
+                final List<Ref> branches = Giiit.getBranches(ProjectActivity.this, mProjectFile);
                 int checkedItem = -1;
                 CharSequence[] items = new CharSequence[0];
                 if (branches != null) {
@@ -669,7 +670,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < items.length; i++) {
-                    if (GitUtil.getCurrentBranch(ProjectActivity.this, mProjectFile).equals(items[i])) {
+                    if (Giiit.getCurrentBranch(ProjectActivity.this, mProjectFile).equals(items[i])) {
                         checkedItem = i;
                     }
                 }
@@ -679,13 +680,38 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;
                         dialogInterface.dismiss();
-                        GitUtil.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
+                        Giiit.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
                     }
                 });
 
                 gitCheckout.setNegativeButton(R.string.close, null);
                 gitCheckout.setTitle("Checkout branch");
                 gitCheckout.create().show();
+                return true;
+            case R.id.action_git_clean:
+                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                confirmBuilder.setTitle("Are you sure you want to do this?");
+                confirmBuilder.setMessage("Please use git status to check which files will be deleted. This may break your project if used incorrectly.");
+                confirmBuilder.setPositiveButton(R.string.git_clean, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        Set<String> cleaned = Giiit.clean(ProjectActivity.this, mProjectFile);
+                        String[] cleanedArr = cleaned.toArray(new String[cleaned.size()]);
+                        AlertDialog.Builder cleanBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                        cleanBuilder.setTitle("Cleaned files");
+                        cleanBuilder.setItems(cleanedArr, null);
+                        cleanBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface) {
+                                refreshMenu();
+                            }
+                        });
+                        cleanBuilder.create().show();
+                    }
+                });
+                confirmBuilder.setNegativeButton(R.string.cancel, null);
+                confirmBuilder.create().show();
                 return true;
         }
 
@@ -716,7 +742,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -731,7 +757,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
-            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(true);
             dialog.show();
         }
@@ -749,7 +775,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
+                    if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -764,7 +790,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
-            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(true);
             dialog.show();
         }
@@ -782,7 +808,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
+                    if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -797,7 +823,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
-            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(false);
             dialog.show();
         }
@@ -815,7 +841,7 @@ public class ProjectActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && ProjectUtil.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
+                    if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
                         Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
                         refreshMenu();
                     } else {
@@ -830,7 +856,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
             AppCompatDialog dialog = builder.create();
-            if (PreferenceUtil.get(ProjectActivity.this, "show_toast_file_ending", true))
+            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(false);
             dialog.show();
         }
@@ -862,17 +888,17 @@ public class ProjectActivity extends AppCompatActivity {
         RecyclerView.Adapter adapter = new AboutElementsAdapter(mProject);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
 
-        name.setText(JsonUtil.getProjectProperty(mProject, "name"));
-        author.setText(JsonUtil.getProjectProperty(mProject, "author"));
-        description.setText(JsonUtil.getProjectProperty(mProject, "description"));
-        keywords.setText(JsonUtil.getProjectProperty(mProject, "keywords"));
-        color.setText(JsonUtil.getProjectProperty(mProject, "color"));
-        color.setTextColor(Color.parseColor(JsonUtil.getProjectProperty(mProject, "color")));
+        name.setText(Jason.getProjectProperty(mProject, "name"));
+        author.setText(Jason.getProjectProperty(mProject, "author"));
+        description.setText(Jason.getProjectProperty(mProject, "description"));
+        keywords.setText(Jason.getProjectProperty(mProject, "keywords"));
+        color.setText(Jason.getProjectProperty(mProject, "color"));
+        color.setTextColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
 
         elementsView.setAdapter(adapter);
         elementsView.setLayoutManager(manager);
 
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);
         }
 

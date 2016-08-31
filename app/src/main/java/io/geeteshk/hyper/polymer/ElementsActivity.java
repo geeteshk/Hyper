@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.PreferenceUtil;
+import io.geeteshk.hyper.helper.Pref;
 
 public class ElementsActivity extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class ElementsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (PreferenceUtil.get(this, "dark_theme", false)) {
+        if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);
         }
 

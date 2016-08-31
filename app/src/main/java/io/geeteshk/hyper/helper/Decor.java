@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 
-public class DecorUtil {
+public class Decor {
 
     public static int dpToPx(Context context, int dp) {
         Resources r = context.getResources();

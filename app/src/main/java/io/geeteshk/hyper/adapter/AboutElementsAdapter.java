@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.polymer.Element;
-import io.geeteshk.hyper.util.JsonUtil;
 
 public class AboutElementsAdapter extends RecyclerView.Adapter<AboutElementsAdapter.ViewHolder> {
 
@@ -23,7 +23,7 @@ public class AboutElementsAdapter extends RecyclerView.Adapter<AboutElementsAdap
             mElements = new ArrayList<>();
             mElements.add(new Element("No Polymer elements installed.", "Please select Polymer from the overflow to add elements to your project.", "", ""));
         } else {
-            mElements = JsonUtil.getPreviousElements(project);
+            mElements = Jason.getPreviousElements(project);
         }
     }
 

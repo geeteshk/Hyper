@@ -19,8 +19,8 @@ import java.io.InputStreamReader;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
+import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.widget.Editor;
 
 /**
@@ -55,7 +55,7 @@ public class EditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
-        boolean darkTheme = PreferenceUtil.get(getActivity(), "dark_theme", false);
+        boolean darkTheme = Pref.get(getActivity(), "dark_theme", false);
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
         LinearLayout symbolLayout = (LinearLayout) rootView.findViewById(R.id.symbol_layout);
         ImageButton symbolTab = (ImageButton) rootView.findViewById(R.id.symbol_tab);
@@ -121,7 +121,7 @@ public class EditorFragment extends Fragment {
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
-                ProjectUtil.createFile(mProject, mFilename, editText.getText().toString());
+                Project.createFile(mProject, mFilename, editText.getText().toString());
             }
         };
 

@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -9,9 +9,9 @@ import java.lang.reflect.Field;
 /**
  * Utility class to help override typeface
  */
-public final class TypefaceUtil {
+public final class Typefacer {
 
-    private static final String TAG = TypefaceUtil.class.getSimpleName();
+    private static final String TAG = Typefacer.class.getSimpleName();
 
     /**
      * Method to set default font

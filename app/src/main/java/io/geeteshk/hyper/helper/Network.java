@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.util;
+package io.geeteshk.hyper.helper;
 
 import android.util.Log;
 
@@ -8,11 +8,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import io.geeteshk.hyper.helper.Hyperion;
+public class Network {
 
-public class NetworkUtil {
-
-    private static final String TAG = NetworkUtil.class.getSimpleName();
+    private static final String TAG = Network.class.getSimpleName();
 
     private static Hyperion mDrive;
 

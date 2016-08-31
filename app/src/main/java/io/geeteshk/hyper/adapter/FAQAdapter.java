@@ -17,7 +17,7 @@ import org.json.JSONException;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.JsonUtil;
+import io.geeteshk.hyper.helper.Jason;
 
 public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
 
@@ -28,7 +28,7 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
 
     public FAQAdapter(Context context) {
         mContext = context;
-        mArray = JsonUtil.getFAQs(context);
+        mArray = Jason.getFAQs(context);
     }
 
     @Override

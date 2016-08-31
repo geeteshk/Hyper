@@ -197,4 +197,5 @@ SOFTWARE.</string>
     <string name="branch">Branch</string>
     <string name="checkout">Checkout</string>
     <string name="close">Close</string>
+    <string name="git_clean">Clean</string>
 </resources>

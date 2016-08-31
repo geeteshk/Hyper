@@ -15,10 +15,6 @@ import java.io.File;
 
 import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.util.JsonUtil;
-import io.geeteshk.hyper.util.PreferenceUtil;
-import io.geeteshk.hyper.util.ProjectUtil;
-import io.geeteshk.hyper.util.ValidatorUtil;
 
 public class FirstAid {
 
@@ -27,34 +23,34 @@ public class FirstAid {
     private static boolean repair(Context context, String name, String author, String description, String keywords) {
         boolean success = true;
         if (mStatus[0] == 1) {
-            success = JsonUtil.createProjectFile(name, author, description, keywords, "#000000");
+            success = Jason.createProjectFile(name, author, description, keywords, "#000000");
             mStatus[0] = 0;
         }
 
         if (mStatus[1] == 1) {
-            success = success && ProjectUtil.createFile(name, "index.html", ProjectUtil.INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", "#000000"));
+            success = success && Project.createFile(name, "index.html", Project.INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords).replace("@color", "#000000"));
             mStatus[1] = 0;
         }
 
         if (mStatus[2] == 1) {
-            success = success && ProjectUtil.createDirectory(name + File.separator + "js");
-            success = success && ProjectUtil.createFile(name, "js" + File.separator + "main.js", ProjectUtil.MAIN);
+            success = success && Project.createDirectory(name + File.separator + "js");
+            success = success && Project.createFile(name, "js" + File.separator + "main.js", Project.MAIN);
             mStatus[2] = 0;
         }
 
         if (mStatus[3] == 1) {
-            success = success && ProjectUtil.createDirectory(name + File.separator + "css");
-            success = success && ProjectUtil.createFile(name, "css" + File.separator + "style.css", ProjectUtil.STYLE);
+            success = success && Project.createDirectory(name + File.separator + "css");
+            success = success && Project.createFile(name, "css" + File.separator + "style.css", Project.STYLE);
             mStatus[3] = 0;
         }
 
         if (mStatus[4] == 1) {
-            success = success && ProjectUtil.copyIcon(context, name);
+            success = success && Project.copyIcon(context, name);
             mStatus[4] = 0;
         }
 
         if (mStatus[5] == 1) {
-            success = success && ProjectUtil.createDirectory(name + File.separator + "fonts");
+            success = success && Project.createDirectory(name + File.separator + "fonts");
             mStatus[5] = 0;
         }
 
@@ -74,7 +70,7 @@ public class FirstAid {
                 keyLayout = (TextInputLayout) layout.findViewById(R.id.keywords_layout);
 
                 AlertDialog.Builder builder;
-                if (PreferenceUtil.get(context, "dark_theme", false)) {
+                if (Pref.get(context, "dark_theme", false)) {
                     builder = new AlertDialog.Builder(context, R.style.Hyper_Dark);
                 } else {
                     builder = new AlertDialog.Builder(context);
@@ -94,7 +90,7 @@ public class FirstAid {
                         assert authorLayout.getEditText() != null;
                         assert descLayout.getEditText() != null;
                         assert keyLayout.getEditText() != null;
-                        if (ValidatorUtil.validate(context, null, authorLayout, descLayout, keyLayout)) {
+                        if (Validator.validate(context, null, authorLayout, descLayout, keyLayout)) {
                             if (repair(context, object, authorLayout.getEditText().getText().toString(), descLayout.getEditText().getText().toString(), keyLayout.getEditText().getText().toString())) {
                                 Toast.makeText(context, object + " " + context.getString(R.string.repaired) + ".", Toast.LENGTH_SHORT).show();
                             } else {
