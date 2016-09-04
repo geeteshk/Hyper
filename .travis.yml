@@ -20,7 +20,6 @@ before_script:
 - sed -i -e 's/Bot.USERNAME/"nope"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
 - sed -i -e 's/Bot.PASSWORD/"hahanochance"/g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
 - sed -i -e 's/import io.geeteshk.hyper.Bot;/ /g' app/src/main/java/io/geeteshk/hyper/fragment/HelpFragment.java
-- sed -i -e 's/org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
 script:
 - ./gradlew assembleRelease
 notifications:
