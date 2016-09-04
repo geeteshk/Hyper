@@ -23,6 +23,12 @@ before_script:
 - sed -i -e 's/org.gradle.daemon=true/org.gradle.daemon=false/g' gradle.properties
 script:
 - ./gradlew assembleRelease
+notifications:
+  email:
+    recipients:
+      - kalakotig@gmail.com
+    on_success: never
+    on_failure: always
 deploy:
   provider: releases
   api_key:
