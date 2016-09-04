@@ -38,6 +38,15 @@ android {
     lintOptions {
         disable 'PrivateResource'
     }
+    
+    useLibrary 'org.apache.http.legacy'
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 dependencies {
@@ -47,17 +56,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.0'
     compile 'com.android.support:cardview-v7:24.2.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
-    compile('com.google.android.gms:play-services-auth:9.4.0') {
-        exclude module: 'httpclient'
-        exclude group: 'org.apache.httpcomponents'
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
-
+    compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile 'com.pavelsikun:vintage-chroma:1.5'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
-    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
