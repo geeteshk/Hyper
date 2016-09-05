@@ -22,6 +22,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -40,9 +41,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-            <meta-data
-                android:name="com.lge.support.SPLIT_WINDOW"
-                android:value="true" />
         </activity>
         <activity
             android:name=".ResourcesActivity"
@@ -81,6 +79,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
         </activity>
+        <uses-library required="false" name="com.sec.android.app.multiwindow" />
+        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" /> 
+        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632.0dip" /> 
+        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598.0dip" /> 
+        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:value="632.0dip" /> 
+        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:value="598.0dip" />
+        <meta-data android:name="com.lge.support.SPLIT_WINDOW" android:value="true" />
     </application>
 
 </manifest>
