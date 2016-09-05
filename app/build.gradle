@@ -52,7 +52,7 @@ dependencies {
     compile 'com.pavelsikun:vintage-chroma:1.5'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
-    compile "cz.msebera.android:httpclient:4.4.1.2"
+    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
