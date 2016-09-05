@@ -40,6 +40,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+            <meta-data
+                android:name="com.lge.support.SPLIT_WINDOW"
+                android:value="true" />
         </activity>
         <activity
             android:name=".ResourcesActivity"
