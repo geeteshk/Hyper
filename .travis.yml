@@ -23,11 +23,7 @@ before_script:
 script:
 - ./gradlew assembleRelease
 notifications:
-  email:
-    recipients:
-      - kalakotig@gmail.com
-    on_success: never
-    on_failure: always
+  email: false
 deploy:
   provider: releases
   api_key:
