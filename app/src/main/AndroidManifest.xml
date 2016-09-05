@@ -79,7 +79,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
         </activity>
-        <uses-library required="false" name="com.sec.android.app.multiwindow" />
+        <uses-library android:required="false" android:name="com.sec.android.app.multiwindow" />
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" /> 
         <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632.0dip" /> 
         <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598.0dip" /> 
