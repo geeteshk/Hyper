@@ -25,6 +25,7 @@
         android:layout_centerInParent="true" />
 
     <TextView
+        android:id="@+id/hyper_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/centre_divider"
@@ -32,15 +33,7 @@
         android:text="@string/hyper"
         android:textColor="@android:color/white"
         android:textSize="52sp"
-        android:typeface="monospace" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp"
+        android:typeface="monospace"
         android:alpha="0" />
 
 </RelativeLayout>

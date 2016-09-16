@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -43,7 +42,6 @@ import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
-import io.geeteshk.hyper.helper.GoogleHolder;
 import io.geeteshk.hyper.helper.Pref;
 
 /**
@@ -174,18 +172,6 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < menu.size(); i++) {
             items.add(menu.getItem(i));
-        }
-
-        View headerView = mDrawer.getHeaderView(0);
-        ImageView mainIcon = (ImageView) headerView.findViewById(R.id.main_icon);
-        TextView mainName = (TextView) headerView.findViewById(R.id.main_name);
-        TextView mainEmail = (TextView) headerView.findViewById(R.id.main_email);
-
-        if (GoogleHolder.getInstance().getAccount() != null) {
-            new DownloadImageTask(mainIcon)
-                    .execute(GoogleHolder.getInstance().getAccount().getPhotoUrl().toString());
-            mainName.setText(GoogleHolder.getInstance().getAccount().getDisplayName());
-            mainEmail.setText(GoogleHolder.getInstance().getAccount().getEmail());
         }
 
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
