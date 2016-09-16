@@ -1,7 +1,6 @@
 # Hyper
 
 Web Development IDE for Android.
-[![Build Status](https://travis-ci.org/OpenMatter/Hyper.svg?branch=master)](https://travis-ci.org/OpenMatter/Hyper)
 
 ![Hyper](http://i.imgur.com/Da1u6KU.png)
 
