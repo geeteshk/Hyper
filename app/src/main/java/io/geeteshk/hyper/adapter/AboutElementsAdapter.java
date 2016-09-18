@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
-import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.polymer.Element;

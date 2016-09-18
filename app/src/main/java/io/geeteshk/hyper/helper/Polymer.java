@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 

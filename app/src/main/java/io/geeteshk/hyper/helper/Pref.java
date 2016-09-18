@@ -3,8 +3,6 @@ package io.geeteshk.hyper.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import io.geeteshk.hyper.Constants;
-
 /**
  * Utility class to store and read preferences
  */

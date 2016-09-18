@@ -1,4 +1,4 @@
-package io.geeteshk.hyper;
+package io.geeteshk.hyper.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Pref;
 
 public class EncryptActivity extends AppCompatActivity {

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.geeteshk.hyper">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -15,51 +14,49 @@
         android:theme="@style/Hyper"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".WebActivity"
+            android:name=".activity.WebActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name=".ProjectActivity"
+            android:name=".activity.ProjectActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".ResourcesActivity"
+            android:name=".activity.ResourcesActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".ProjectActivity"
+            android:parentActivityName=".activity.ProjectActivity"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.ProjectActivity" />
+                android:value=".activity.ProjectActivity" />
         </activity>
-        <activity android:name=".EncryptActivity" />
+        <activity android:name=".activity.EncryptActivity" />
         <activity
             android:name=".polymer.CatalogActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".ProjectActivity"
+            android:parentActivityName=".activity.ProjectActivity"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.ProjectActivity" />
+                android:value=".activity.ProjectActivity" />
         </activity>
         <activity
             android:name=".polymer.ElementsActivity"
@@ -79,13 +76,36 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
         </activity>
-        <uses-library android:required="false" android:name="com.sec.android.app.multiwindow" />
-        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true" /> 
-        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W" android:value="632.0dip" /> 
-        <meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:value="598.0dip" /> 
-        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:value="632.0dip" /> 
-        <meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:value="598.0dip" />
-        <meta-data android:name="com.lge.support.SPLIT_WINDOW" android:value="true" />
+        <activity
+            android:name=".activity.SignupActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Hyper.Firebase"
+            android:parentActivityName=".activity.SplashActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.activity.SplashActivity" />
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Hyper.Firebase"
+            android:parentActivityName=".activity.SignupActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.activity.SignupActivity" />
+        </activity>
+        <activity
+            android:name=".activity.ResetPasswordActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Hyper.Firebase"
+            android:parentActivityName=".activity.LoginActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.geeteshk.hyper.activity.LoginActivity" />
+        </activity>
     </application>
 
 </manifest>

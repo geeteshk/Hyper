@@ -16,15 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+
 import java.io.File;
 import java.io.IOException;
 
-import io.geeteshk.hyper.Constants;
-import io.geeteshk.hyper.EncryptActivity;
-import io.geeteshk.hyper.MainActivity;
-import io.geeteshk.hyper.ProjectActivity;
+import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.activity.EncryptActivity;
+import io.geeteshk.hyper.activity.MainActivity;
+import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.WebActivity;
+import io.geeteshk.hyper.activity.WebActivity;
+import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Network;
@@ -50,10 +54,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
     boolean mImprove;
 
-    public ProjectAdapter(Context context, String[] objects, boolean improve) {
+    FirebaseAuth mAuth;
+    FirebaseStorage mStorage;
+
+    public ProjectAdapter(Context context, String[] objects, boolean improve, FirebaseAuth auth, FirebaseStorage storage) {
         this.mContext = context;
         this.mObjects = objects;
         this.mImprove = improve;
+        this.mAuth = auth;
+        this.mStorage = storage;
     }
 
     @Override
@@ -134,11 +143,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
+                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
                                     MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
+                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
                                     MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
                                 }
 

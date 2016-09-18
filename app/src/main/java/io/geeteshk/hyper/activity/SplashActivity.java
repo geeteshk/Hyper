@@ -1,4 +1,4 @@
-package io.geeteshk.hyper;
+package io.geeteshk.hyper.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,12 +9,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Law;
 import io.geeteshk.hyper.helper.Typefacer;
 
 public class SplashActivity extends AppCompatActivity {
+
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        mAuth = FirebaseAuth.getInstance();
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -33,8 +41,10 @@ public class SplashActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(0xFFE64A19);
         }
 
-        TextView logo = (TextView) findViewById(R.id.hyper_logo);
+        ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
+        TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);
         logo.animate().alpha(1).setDuration(800);
+        logoText.animate().alpha(1).setDuration(800);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -55,7 +65,12 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         if (Law.checkAllPermissions(SplashActivity.this)) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Class classTo = SignupActivity.class;
+            if (mAuth.getCurrentUser() != null) {
+                classTo = MainActivity.class;
+            }
+
+            Intent intent = new Intent(getApplicationContext(), classTo);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

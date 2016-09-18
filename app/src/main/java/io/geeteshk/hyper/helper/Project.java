@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 
 /**

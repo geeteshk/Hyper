@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 
 /**

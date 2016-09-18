@@ -8,15 +8,17 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="io.geeteshk.hyper.SplashActivity">
+    tools:context=".activity.SplashActivity">
 
     <ImageView
+        android:id="@+id/hyper_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/centre_divider"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_logo" />
+        android:src="@drawable/ic_logo"
+        android:alpha="1" />
 
     <android.support.v4.widget.Space
         android:id="@+id/centre_divider"
@@ -25,7 +27,7 @@
         android:layout_centerInParent="true" />
 
     <TextView
-        android:id="@+id/hyper_logo"
+        android:id="@+id/hyper_logo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/centre_divider"

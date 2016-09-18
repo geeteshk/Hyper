@@ -1,4 +1,4 @@
-package io.geeteshk.hyper;
+package io.geeteshk.hyper.helper;
 
 import android.os.Environment;
 

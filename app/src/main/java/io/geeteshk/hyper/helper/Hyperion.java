@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.geeteshk.hyper.Constants;
 
 public class Hyperion extends NanoHTTPD {
 

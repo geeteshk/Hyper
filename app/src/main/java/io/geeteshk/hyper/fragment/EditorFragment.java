@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;

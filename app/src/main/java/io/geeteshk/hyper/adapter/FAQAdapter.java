@@ -15,7 +15,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Jason;
 

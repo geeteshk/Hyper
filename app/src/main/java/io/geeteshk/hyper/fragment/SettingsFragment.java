@@ -25,8 +25,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.geeteshk.hyper.EncryptActivity;
-import io.geeteshk.hyper.MainActivity;
+import io.geeteshk.hyper.activity.EncryptActivity;
+import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Pref;

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import io.geeteshk.hyper.Constants;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 
 public class AssistFragment extends Fragment {

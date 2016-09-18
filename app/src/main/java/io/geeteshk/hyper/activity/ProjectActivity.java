@@ -1,4 +1,4 @@
-package io.geeteshk.hyper;
+package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -44,6 +44,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -53,11 +56,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Giiit;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Jason;
@@ -108,6 +114,9 @@ public class ProjectActivity extends AppCompatActivity {
 
     private File mProjectFile;
 
+    FirebaseAuth mAuth;
+    FirebaseStorage mStorage;
+
     /**
      * Called when the activity is created
      *
@@ -121,6 +130,8 @@ public class ProjectActivity extends AppCompatActivity {
             setTheme(R.style.Hyper_Dark);
         }
 
+        mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         Network.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
 
@@ -345,6 +356,8 @@ public class ProjectActivity extends AppCompatActivity {
         if (Network.getDrive() != null) {
             Network.getDrive().stop();
         }
+
+        Firebase.updateProject(mAuth, mStorage, mProject, false);
     }
 
     /**

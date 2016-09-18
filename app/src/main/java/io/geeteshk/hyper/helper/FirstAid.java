@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.R;
 
 public class FirstAid {

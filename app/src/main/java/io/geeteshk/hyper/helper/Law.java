@@ -10,8 +10,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import io.geeteshk.hyper.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
+
+import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.SignupActivity;
 
 public class Law {
 
@@ -43,7 +46,12 @@ public class Law {
         getPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, WRITE_STORAGE_REQUEST_CODE);
 
         if (Law.checkAllPermissions(context)) {
-            Intent intent = new Intent(context, MainActivity.class);
+            Class classTo = SignupActivity.class;
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                classTo = MainActivity.class;
+            }
+
+            Intent intent = new Intent(context, classTo);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);
             ((Activity) context).finish();

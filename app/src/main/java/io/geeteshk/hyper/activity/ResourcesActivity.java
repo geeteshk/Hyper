@@ -1,4 +1,4 @@
-package io.geeteshk.hyper;
+package io.geeteshk.hyper.activity;
 
 import android.content.DialogInterface;
 import android.os.Build;
@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ResourceAdapter;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Pref;
 
 /**

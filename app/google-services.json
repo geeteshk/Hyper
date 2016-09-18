@@ -1,19 +1,21 @@
 {
   "project_info": {
-    "project_number": "506819944018",
-    "project_id": "hyper-83dca"
+    "project_number": "124996828334",
+    "firebase_url": "https://hyper-a0ee4.firebaseio.com",
+    "project_id": "hyper-a0ee4",
+    "storage_bucket": "hyper-a0ee4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:506819944018:android:0ee49bb838fb7692",
+        "mobilesdk_app_id": "1:124996828334:android:0ee49bb838fb7692",
         "android_client_info": {
           "package_name": "io.geeteshk.hyper"
         }
       },
       "oauth_client": [
         {
-          "client_id": "506819944018-bl4lt3vcu2rugj4c5lv6qlfggthdhksi.apps.googleusercontent.com",
+          "client_id": "124996828334-gk99gfpu53bice7r6jslhd7chi6af618.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "io.geeteshk.hyper",
@@ -21,13 +23,13 @@
           }
         },
         {
-          "client_id": "506819944018-pkmipoq723ui9kana89kn604aln6hqa0.apps.googleusercontent.com",
+          "client_id": "124996828334-74l2chor948m12hnlge2pg07rgrihfvn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAdxGnX39qLnWvqImuP5M2B5_Am51oSeaM"
+          "current_key": "AIzaSyAmNpjh7WBmUzkJw8vKimEhTVN1ssFBX_E"
         }
       ],
       "services": {
@@ -35,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124996828334-74l2chor948m12hnlge2pg07rgrihfvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

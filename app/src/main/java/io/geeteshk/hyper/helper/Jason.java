@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import io.geeteshk.hyper.Constants;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 
