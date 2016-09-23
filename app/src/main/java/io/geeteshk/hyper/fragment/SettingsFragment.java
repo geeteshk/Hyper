@@ -25,9 +25,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import io.geeteshk.hyper.activity.AccountActivity;
 import io.geeteshk.hyper.activity.EncryptActivity;
 import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Pref;
 
@@ -57,6 +61,17 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        TextView firebaseAccount = (TextView) rootView.findViewById(R.id.firebase_account);
+        firebaseAccount.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        RelativeLayout firebaseAccountLayout = (RelativeLayout) rootView.findViewById(R.id.firebase_account_layout);
+        firebaseAccountLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AccountActivity.class));
+            }
+        });
 
         final SwitchCompat darkTheme = (SwitchCompat) rootView.findViewById(R.id.dark_theme);
         darkTheme.setChecked(Pref.get(getActivity(), "dark_theme", false));

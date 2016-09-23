@@ -126,7 +126,7 @@ public class EncryptActivity extends AppCompatActivity {
 
         private int number;
 
-        public NumberClickListener(int number) {
+        NumberClickListener(int number) {
             this.number = number;
         }
 

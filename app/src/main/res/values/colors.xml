@@ -18,8 +18,4 @@
     <color name="lbl_name">#333333</color>
     <color name="btn_logut_bg">#ff6861</color>
     <color name="fab_bg">#333333</color>
-
-    <color name="colorPrimaryFire">#00bcd4</color>
-    <color name="colorPrimaryDarkFire">#0097a7</color>
-    <color name="colorAccentFire">#f2fe71</color>
 </resources>

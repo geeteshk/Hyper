@@ -31,14 +31,14 @@ public class ResetPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark_Firebase);
+            setTheme(R.style.Hyper_Dark);
         }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(ResetPasswordActivity.this, R.color.colorPrimaryDarkFire));
+            getWindow().setStatusBarColor(ContextCompat.getColor(ResetPasswordActivity.this, R.color.colorPrimaryDark));
         }
 
         inputEmail = (EditText) findViewById(R.id.email);

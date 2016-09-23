@@ -215,7 +215,7 @@ SOFTWARE.</string>
     <string name="hint_name">Full Name</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Register now!</string>
-    <string name="btn_link_to_login">Already registered. Login to Hyper!</string>
+    <string name="btn_link_to_login">Already registered? Login to Hyper!</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
     <string name="btn_back"><![CDATA[<< Back]]></string>
@@ -226,4 +226,6 @@ SOFTWARE.</string>
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">Password reset instructions will be sent to your registered e-mail.</string>
+    <string name="firebase_account">My Account</string>
+    <string name="firebase_account_desc">Reset credentials or sign out of your account.</string>
 </resources>

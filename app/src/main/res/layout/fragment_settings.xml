@@ -12,6 +12,47 @@
         android:background="@drawable/toolbar_shadow" />
 
     <RelativeLayout
+        android:id="@+id/firebase_account_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            tools:ignore="RelativeOverlap">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.87"
+                android:text="@string/firebase_account"
+                android:textSize="15sp"
+                android:typeface="serif" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.54"
+                android:text="@string/firebase_account_desc" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/firebase_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/dark_theme_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

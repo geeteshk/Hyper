@@ -34,7 +34,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark_Firebase);
+            setTheme(R.style.Hyper_Dark);
         }
 
         super.onCreate(savedInstanceState);
@@ -42,7 +42,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(SignupActivity.this, R.color.colorPrimaryDarkFire));
+            getWindow().setStatusBarColor(ContextCompat.getColor(SignupActivity.this, R.color.colorPrimaryDark));
         }
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);

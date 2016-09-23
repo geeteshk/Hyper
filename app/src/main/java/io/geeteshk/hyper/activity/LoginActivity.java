@@ -28,19 +28,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark_Firebase);
+            setTheme(R.style.Hyper_Dark);
         }
 
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
 
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(LoginActivity.this, R.color.colorPrimaryDarkFire));
+            getWindow().setStatusBarColor(ContextCompat.getColor(LoginActivity.this, R.color.colorPrimaryDark));
         }
 
         if (mAuth.getCurrentUser() != null) {
@@ -55,9 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnSignup = (Button) findViewById(R.id.btn_signup);
-        btnLogin = (Button) findViewById(R.id.btn_login);
-        btnReset = (Button) findViewById(R.id.btn_reset_password);
+        Button btnSignup = (Button) findViewById(R.id.btn_signup);
+        Button btnLogin = (Button) findViewById(R.id.btn_login);
+        Button btnReset = (Button) findViewById(R.id.btn_reset_password);
 
         mAuth = FirebaseAuth.getInstance();
 

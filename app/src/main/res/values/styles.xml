@@ -29,18 +29,4 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Hyper.Firebase" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryFire</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkFire</item>
-        <item name="colorAccent">@color/colorAccentFire</item>
-        <item name="itemTextColor">@color/white</item>
-    </style>
-
-    <style name="Hyper.Dark.Firebase" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryFire</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkFire</item>
-        <item name="colorAccent">@color/colorAccentFire</item>
-        <item name="itemTextColor">@color/white</item>
-    </style>
-
 </resources>

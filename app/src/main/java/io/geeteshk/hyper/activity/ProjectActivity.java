@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
@@ -73,6 +74,7 @@ import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
+import io.geeteshk.hyper.text.HtmlCompat;
 import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
 
 /**
@@ -202,7 +204,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (!item.isChecked()) {
                     item.setChecked(true);
                 }
@@ -256,7 +258,7 @@ public class ProjectActivity extends AppCompatActivity {
         int newColor = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
 
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
+            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
             Decor.setOverflowButtonColor(ProjectActivity.this, filter);
@@ -271,7 +273,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             });
         } else {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + mProject + "</font>")));
+            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#FFFFFF\">" + mProject + "</font>")));
             mTabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
         }
 
@@ -381,7 +383,6 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        File projectDir = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator);
         LayoutInflater inflater = LayoutInflater.from(ProjectActivity.this);
         switch (item.getItemId()) {
             case R.id.action_run:

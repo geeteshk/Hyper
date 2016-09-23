@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import io.geeteshk.hyper.activity.LoginActivity;
 import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.SignupActivity;
@@ -46,7 +47,7 @@ public class Law {
         getPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, WRITE_STORAGE_REQUEST_CODE);
 
         if (Law.checkAllPermissions(context)) {
-            Class classTo = SignupActivity.class;
+            Class classTo = LoginActivity.class;
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 classTo = MainActivity.class;
             }

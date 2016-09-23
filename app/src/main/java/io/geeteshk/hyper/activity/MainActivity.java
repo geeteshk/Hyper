@@ -1,12 +1,10 @@
 package io.geeteshk.hyper.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -22,12 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +36,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,9 +52,8 @@ import io.geeteshk.hyper.helper.Pref;
 /**
  * Main activity to show all main content
  */
+@SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static Context mContext;
     private static FragmentManager mManager;
@@ -182,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(authListener);
-
         mStorage = FirebaseStorage.getInstance();
         Firebase.syncProjects(mAuth, mStorage);
 
@@ -211,26 +198,9 @@ public class MainActivity extends AppCompatActivity {
             items.add(menu.getItem(i));
         }
 
-        View headerView = mDrawer.getHeaderView(0);
-        TextView mainEmail = (TextView) headerView.findViewById(R.id.main_email);
-        ImageButton logout = (ImageButton) headerView.findViewById(R.id.logout);
-
-        if (mAuth.getCurrentUser() != null) {
-            mainEmail.setText(mAuth.getCurrentUser().getEmail());
-            mainEmail.setTypeface(Typeface.DEFAULT_BOLD);
-            logout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAuth.signOut();
-                    startActivity(new Intent(MainActivity.this, SignupActivity.class));
-                    finish();
-                }
-            });
-        }
-
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (!item.isChecked()) {
                     item.setChecked(true);
                 }
@@ -244,6 +214,20 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
         mManager = getSupportFragmentManager();
         update(this, getSupportFragmentManager(), Pref.get(this, "last_fragment", 0));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (authListener != null) {
+            mAuth.removeAuthStateListener(authListener);
+        }
     }
 
     /**

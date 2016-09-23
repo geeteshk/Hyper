@@ -189,6 +189,26 @@ public class Firebase {
         });
     }
 
+    public static void removeUser(final FirebaseAuth auth, final FirebaseStorage storage) {
+        StorageReference projectRef = getStorageRef(storage).child(auth.getCurrentUser().getUid() + File.separator + ".projects");
+        projectRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                try {
+                    JSONArray array = new JSONArray(new String(bytes));
+                    for (int i = 0; i < array.length(); i++) {
+                        removeProject(auth, storage, array.getString(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        StorageReference userRef = getStorageRef(storage).child(auth.getCurrentUser().getUid());
+        userRef.delete();
+    }
+
     private static void downloadProject(final FirebaseAuth auth, final FirebaseStorage storage, final String project) {
         StorageReference structureRef = getStorageRef(storage).child(auth.getCurrentUser().getUid() + File.separator + project + File.separator + ".structure");
         final File projectFile = new File(Constants.HYPER_ROOT + File.separator + project);
