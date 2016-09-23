@@ -85,38 +85,56 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                style="@style/TextAppearance.Hyper.FloatLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/create_favicon" />
-
-            <RadioGroup
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checkedButton="@+id/default_icon">
+                android:orientation="horizontal"
+                android:weightSum="4">
 
-                <RadioButton
-                    android:id="@+id/default_icon"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/favicon_default" />
+                    android:layout_weight="3"
+                    android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/choose_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/favicon_choose" />
+                    <TextView
+                        style="@style/TextAppearance.Hyper.FloatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/create_favicon" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checkedButton="@+id/default_icon">
+
+                        <RadioButton
+                            android:id="@+id/default_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/favicon_default" />
+
+                        <RadioButton
+                            android:id="@+id/choose_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/favicon_choose" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/favicon_image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
                     android:contentDescription="@string/create_favicon"
                     android:src="@drawable/icon" />
 
-            </RadioGroup>
+            </LinearLayout>
 
             <TextView
                 style="@style/TextAppearance.Hyper.FloatLabel"
@@ -130,7 +148,8 @@
                 android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
                 android:text="@string/black"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"

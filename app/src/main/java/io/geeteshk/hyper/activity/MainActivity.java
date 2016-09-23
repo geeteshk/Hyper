@@ -46,8 +46,10 @@ import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 
 /**
  * Main activity to show all main content
@@ -159,20 +161,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        File projectDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper");
-        boolean fileTest = projectDir.exists();
-        if (!fileTest) {
-            fileTest = projectDir.mkdir();
-        }
-
-        if (!fileTest) {
-            Toast.makeText(this, R.string.project_dir_error, Toast.LENGTH_LONG).show();
-            finish();
-        }
-
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
-        Firebase.syncProjects(mAuth, mStorage);
 
         if (Pref.get(this, "dark_theme", false)) {
             setTheme(R.style.Hyper_Dark);

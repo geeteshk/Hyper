@@ -19,9 +19,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.io.File;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -102,6 +108,13 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                    File projectDir = new File(Constants.HYPER_ROOT);
+                                    if (projectDir.exists()) {
+                                        Project.deleteDirectory(SignupActivity.this, projectDir);
+                                    }
+
+                                    projectDir.mkdir();
+                                    Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
                                     Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);

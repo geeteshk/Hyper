@@ -29,7 +29,6 @@ import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -254,6 +253,7 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip.setupWithViewPager(mPager);
         mTabStrip.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
         mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
+        mTabStrip.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         int newColor = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
 
@@ -308,6 +308,18 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
+        menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_commit).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_clean).setEnabled(isGitRepo);
+        return true;
     }
 
     /**

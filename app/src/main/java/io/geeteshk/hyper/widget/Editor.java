@@ -28,6 +28,8 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
@@ -198,6 +200,22 @@ public class Editor extends MultiAutoCompleteTextView {
         }
     };
 
+    private ScaleGestureDetector mDetector;
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            setTextSize(getTextSize() * detector.getScaleFactor());
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mDetector.onTouchEvent(event);
+        return true;
+    }
+
     /**
      * Public constructor
      *
@@ -238,6 +256,7 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
+        mDetector = new ScaleGestureDetector(mContext, new ScaleListener());
         mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
 
