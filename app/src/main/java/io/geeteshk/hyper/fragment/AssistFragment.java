@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 
@@ -23,8 +25,8 @@ public class AssistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_assist, container, false);
 
-        Button donate = (Button) rootView.findViewById(R.id.donate_to_dev);
-        Button contribute = (Button) rootView.findViewById(R.id.contribute_to_app);
+        FloatingActionButton donate = (FloatingActionButton) rootView.findViewById(R.id.donate_to_dev);
+        FloatingActionButton contribute = (FloatingActionButton) rootView.findViewById(R.id.contribute_to_app);
 
         donate.setOnClickListener(new View.OnClickListener() {
             @Override

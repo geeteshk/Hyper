@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -112,8 +113,8 @@ public class CreateFragment extends Fragment {
         mAuthorLayout.getEditText().setText(Pref.get(getActivity(), "author", ""));
         mDescriptionLayout.getEditText().setText(Pref.get(getActivity(), "description", ""));
         mKeywordsLayout.getEditText().setText(Pref.get(getActivity(), "keywords", ""));
-        mColor.setText(ChromaUtil.getFormattedColorString(Pref.get(getActivity(), "color", Color.BLACK), false));
-        mColor.setTextColor(Pref.get(getActivity(), "color", Color.BLACK));
+        mColor.setText(ChromaUtil.getFormattedColorString(Pref.get(getActivity(), "color", ContextCompat.getColor(getActivity(), R.color.colorAccent)), false));
+        mColor.setTextColor(Pref.get(getActivity(), "color", ContextCompat.getColor(getActivity(), R.color.colorAccent)));
 
         mDefaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

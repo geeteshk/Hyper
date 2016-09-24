@@ -113,7 +113,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -123,7 +123,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="ABC"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -133,7 +133,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="DEF"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -199,7 +199,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="GHI"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -209,7 +209,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="JKL"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -219,7 +219,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="MNO"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -285,7 +285,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="PQRS"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -295,7 +295,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="TUV"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 
@@ -305,7 +305,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="WXYZ"
-                android:textColor="?attr/colorPrimaryDark"
+                android:textColor="?attr/colorAccent"
                 android:textSize="16sp"
                 android:typeface="normal" />
 

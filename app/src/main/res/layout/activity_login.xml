@@ -20,7 +20,7 @@
             android:layout_height="@dimen/logo_w_h"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_logo" />
+            android:src="@drawable/ic_launcher" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -80,7 +80,7 @@
             android:background="@null"
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorAccent"
             android:textSize="15dp" />
     </LinearLayout>
 

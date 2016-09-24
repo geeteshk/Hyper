@@ -17,7 +17,7 @@
         android:layout_above="@+id/centre_divider"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_logo"
+        android:src="@drawable/ic_launcher"
         android:alpha="1" />
 
     <android.support.v4.widget.Space

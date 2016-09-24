@@ -4,14 +4,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="itemTextColor">@android:color/black</item>
     </style>
 
     <style name="Hyper.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="itemTextColor">@android:color/white</item>
+        <item name="itemTextColor">@color/drawer_item</item>
+        <item name="itemIconTint">@color/drawer_item</item>
     </style>
 
     <style name="TextAppearance.Hyper.FloatLabel" parent="android:TextAppearance.Small">

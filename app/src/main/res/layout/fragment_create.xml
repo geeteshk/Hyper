@@ -25,6 +25,16 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
+            <TextView
+                style="@style/TextAppearance.Hyper.FloatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Details" />
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
                 android:layout_width="match_parent"
@@ -74,7 +84,7 @@
                 android:id="@+id/keywords_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="16dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/keywords"
@@ -85,24 +95,36 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                style="@style/TextAppearance.Hyper.FloatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/create_favicon" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="4">
+                android:weightSum="6">
+
+                <ImageView
+                    android:id="@+id/favicon_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/create_favicon"
+                    android:src="@drawable/icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="5"
                     android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextAppearance.Hyper.FloatLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/create_favicon" />
 
                     <RadioGroup
                         android:layout_width="match_parent"
@@ -125,15 +147,6 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/favicon_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="end"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/create_favicon"
-                    android:src="@drawable/icon" />
-
             </LinearLayout>
 
             <TextView
@@ -141,7 +154,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-condensed"
                 android:text="@string/create_color" />
 
             <TextView
@@ -152,8 +168,8 @@
                 android:padding="8dp"
                 android:text="@string/black"
                 android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:typeface="monospace" />
+                android:textSize="32sp"
+                android:fontFamily="sans-serif-light" />
 
         </LinearLayout>
 

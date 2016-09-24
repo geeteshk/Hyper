@@ -96,7 +96,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         app:fab_addButtonColorNormal="?attr/colorAccent"
         app:fab_addButtonColorPressed="#1976D2"
         app:fab_addButtonSize="normal"
