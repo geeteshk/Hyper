@@ -85,10 +85,7 @@ public class WebActivity extends AppCompatActivity {
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(color);
-        }
-
+        Decor.setStatusBarColor(this, -1);
         mLogs = new ArrayList<>();
 
         mWebView = (WebView) findViewById(R.id.web_view);

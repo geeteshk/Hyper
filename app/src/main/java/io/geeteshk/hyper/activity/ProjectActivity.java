@@ -151,9 +151,7 @@ public class ProjectActivity extends AppCompatActivity {
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(color);
-        }
+        Decor.setStatusBarColor(this, color);
 
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (Pref.get(this, "pin", "").equals("")) {

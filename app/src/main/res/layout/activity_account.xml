@@ -24,7 +24,7 @@
         android:inputType="textEmailAddress"
         android:hint="E-mail"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="32sp"
         android:fontFamily="sans-serif-light"
         android:background="@null" />
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:text="Sign Out" />
 
     <android.support.v4.widget.Space

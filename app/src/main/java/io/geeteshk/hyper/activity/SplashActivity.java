@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Law;
 import io.geeteshk.hyper.helper.Typefacer;
 
@@ -37,9 +38,7 @@ public class SplashActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(0xFFE64A19);
-        }
+        Decor.setStatusBarColor(this, -1);
 
         ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
         TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);

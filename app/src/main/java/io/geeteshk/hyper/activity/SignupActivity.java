@@ -25,6 +25,7 @@ import java.io.File;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
@@ -46,10 +47,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_signup);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(SignupActivity.this, R.color.colorPrimaryDark));
-        }
+        Decor.setStatusBarColor(this, -1);
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);

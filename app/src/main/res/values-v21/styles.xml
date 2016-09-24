@@ -2,23 +2,23 @@
 <resources>
 
     <style name="Hyper" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#FF5722</item>
-        <item name="colorPrimaryDark">#E64A19</item>
-        <item name="colorAccent">#2196F3</item>
-        <item name="itemTextColor">#000000</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="itemTextColor">@android:color/black</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Hyper.Dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">#FF5722</item>
-        <item name="colorPrimaryDark">#E64A19</item>
-        <item name="colorAccent">#2196F3</item>
-        <item name="itemTextColor">#FFFFFF</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="itemTextColor">@android:color/white</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AssistButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:colorButtonNormal">#FF5722</item>
+        <item name="android:colorButtonNormal">@color/colorAccent</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 

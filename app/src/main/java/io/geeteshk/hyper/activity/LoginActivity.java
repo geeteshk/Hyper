@@ -24,6 +24,7 @@ import java.io.File;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
@@ -43,10 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(LoginActivity.this, R.color.colorPrimaryDark));
-        }
+        Decor.setStatusBarColor(this, -1);
 
         if (mAuth.getCurrentUser() != null) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);

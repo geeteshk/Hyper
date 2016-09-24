@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 
 public class CatalogActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -26,10 +27,7 @@ public class CatalogActivity extends AppCompatActivity implements AdapterView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(0xFFE64A19);
-        }
+        Decor.setStatusBarColor(this, -1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

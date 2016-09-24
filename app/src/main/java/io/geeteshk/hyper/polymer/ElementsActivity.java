@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 
 public class ElementsActivity extends AppCompatActivity {
@@ -37,9 +38,7 @@ public class ElementsActivity extends AppCompatActivity {
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(color);
-        }
+        Decor.setStatusBarColor(this, color);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

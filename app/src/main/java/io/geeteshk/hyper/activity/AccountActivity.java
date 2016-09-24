@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
 
@@ -36,10 +37,7 @@ public class AccountActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(0xFFE64A19);
-        }
+        Decor.setStatusBarColor(this, -1);
 
         Button changeEmail = (Button) findViewById(R.id.acc_change_email);
         Button resetPassword = (Button) findViewById(R.id.acc_change_password);
