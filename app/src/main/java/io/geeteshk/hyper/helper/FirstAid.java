@@ -3,6 +3,7 @@ package io.geeteshk.hyper.helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 
@@ -57,56 +60,93 @@ public class FirstAid {
     }
 
     public static void repairAll(final Context context) {
-        String[] objects = new File(Constants.HYPER_ROOT).list();
-        for (final String object : objects) {
-            if (isBroken(object)) {
-                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-                @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_repair, null);
+        final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return dir.isDirectory() && !name.equals(".git") && isBroken(name);
+            }
+        });
 
-                final TextInputLayout authorLayout, descLayout, keyLayout;
-                authorLayout = (TextInputLayout) layout.findViewById(R.id.author_layout);
-                descLayout = (TextInputLayout) layout.findViewById(R.id.description_layout);
-                keyLayout = (TextInputLayout) layout.findViewById(R.id.keywords_layout);
+        if (objects.length == 0) return;
 
-                AlertDialog.Builder builder;
-                if (Pref.get(context, "dark_theme", false)) {
-                    builder = new AlertDialog.Builder(context, R.style.Hyper_Dark);
-                } else {
-                    builder = new AlertDialog.Builder(context);
-                }
+        final String[] objectToRepair = {""};
+        AlertDialog.Builder choiceBuilder = new AlertDialog.Builder(context);
+        choiceBuilder.setSingleChoiceItems(objects, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                objectToRepair[0] = objects[which];
+            }
+        });
+        choiceBuilder.setNegativeButton("CANCEL", null);
+        choiceBuilder.setPositiveButton("REPAIR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String object = objectToRepair[0];
+                if (object.equals("")) return;
+                if (isBroken(object)) {
+                    if (mStatus[0] == 1 || mStatus[1] == 1) {
+                        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                        @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_repair, null);
 
-                builder.setTitle(context.getString(R.string.repair_key) + " " + object);
-                builder.setView(layout);
-                builder.setPositiveButton(R.string.repair_key, null);
+                        final TextInputLayout authorLayout, descLayout, keyLayout;
+                        authorLayout = (TextInputLayout) layout.findViewById(R.id.author_layout);
+                        descLayout = (TextInputLayout) layout.findViewById(R.id.description_layout);
+                        keyLayout = (TextInputLayout) layout.findViewById(R.id.keywords_layout);
 
-                final AppCompatDialog dialog = builder.create();
-                dialog.show();
+                        AlertDialog.Builder builder;
+                        if (Pref.get(context, "dark_theme", false)) {
+                            builder = new AlertDialog.Builder(context, R.style.Hyper_Dark);
+                        } else {
+                            builder = new AlertDialog.Builder(context);
+                        }
 
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        assert authorLayout.getEditText() != null;
-                        assert descLayout.getEditText() != null;
-                        assert keyLayout.getEditText() != null;
-                        if (Validator.validate(context, null, authorLayout, descLayout, keyLayout)) {
-                            if (repair(context, object, authorLayout.getEditText().getText().toString(), descLayout.getEditText().getText().toString(), keyLayout.getEditText().getText().toString())) {
-                                Toast.makeText(context, object + " " + context.getString(R.string.repaired) + ".", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, object + " " + context.getString(R.string.failed) + ".", Toast.LENGTH_SHORT).show();
+                        builder.setTitle(context.getString(R.string.repair_key) + " " + object);
+                        builder.setView(layout);
+                        builder.setPositiveButton(R.string.repair_key, null);
+
+                        final AppCompatDialog dialog2 = builder.create();
+                        dialog2.show();
+
+                        Button button = ((AlertDialog) dialog2).getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                assert authorLayout.getEditText() != null;
+                                assert descLayout.getEditText() != null;
+                                assert keyLayout.getEditText() != null;
+                                if (Validator.validate(context, null, authorLayout, descLayout, keyLayout)) {
+                                    if (repair(context, object, authorLayout.getEditText().getText().toString(), descLayout.getEditText().getText().toString(), keyLayout.getEditText().getText().toString())) {
+                                        Toast.makeText(context, object + " " + context.getString(R.string.repaired) + ".", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(context, object + " " + context.getString(R.string.failed) + ".", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    dialog2.dismiss();
+                                }
                             }
-
-                            dialog.dismiss();
+                        });
+                    } else {
+                        if (repair(context, object, "", "", "")) {
+                            Toast.makeText(context, object + " " + context.getString(R.string.repaired) + ".", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, object + " " + context.getString(R.string.failed) + ".", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                }
             }
-        }
+        });
+
+        choiceBuilder.create().show();
     }
 
-    private static boolean isBroken(String string) {
+    public static boolean isBroken(String string) {
         boolean out = false;
-        if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + string + ".hyper").exists()) {
+        if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + string + ".hyper").exists()
+                || Jason.getProjectProperty(string, "name") == null
+                || Jason.getProjectProperty(string, "author") == null
+                || Jason.getProjectProperty(string, "description") == null
+                || Jason.getProjectProperty(string, "keywords") == null
+                || Jason.getProjectProperty(string, "color") == null) {
             out = true;
             mStatus[0] = 1;
         }

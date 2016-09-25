@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import io.geeteshk.hyper.helper.Typefacer;
 
 public class SplashActivity extends AppCompatActivity {
 
+    CoordinatorLayout mLayout;
     FirebaseAuth mAuth;
 
     @Override
@@ -44,10 +46,13 @@ public class SplashActivity extends AppCompatActivity {
         TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);
         logo.animate().alpha(1).setDuration(800);
         logoText.animate().alpha(1).setDuration(800);
+
+        mLayout = (CoordinatorLayout) findViewById(R.id.splash_layout);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Law.getRequiredPermissions(SplashActivity.this);
+                Law.getRequiredPermissions(SplashActivity.this, mLayout);
             }
         }, 1000);
     }
@@ -57,7 +62,7 @@ public class SplashActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == Law.WRITE_STORAGE_REQUEST_CODE) {
             if (Law.checkPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Law.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, Law.WRITE_STORAGE_REQUEST_CODE);
+                Law.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, Law.WRITE_STORAGE_REQUEST_CODE, mLayout);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);

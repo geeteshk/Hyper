@@ -62,64 +62,11 @@ public class Editor extends MultiAutoCompleteTextView {
      * Various patterns for detecting words in code
      */
     private static final Pattern KEYWORDS = Pattern.compile(
-            "\\b(a|address|app|applet|area|b|" +
-                    "base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|" +
-                    "colgroup|comment|dd|del|dfn|dir|div|dl|dt|" +
-                    "em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|" +
-                    "h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|" +
-                    "isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|" +
-                    "multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|" +
-                    "samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|" +
-                    "textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b"
-    );
-
+            "\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|del|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b");
     private static final Pattern BUILTINS = Pattern.compile(
-            "\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|" +
-                    "code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|" +
-                    "alt|shape|coords|target|nohref|size|color|face|src|" +
-                    "loop|bgcolor|background|text|vlink|alink|" +
-                    "bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|" +
-                    "onfocus|onblur|stylesrc|scroll|clear|type|value|" +
-                    "valign|span|compact|pluginspage|pluginurl|hidden|autostart|" +
-                    "playcount|volume|controls|controller|mastersound|starttime|endtime|" +
-                    "point-size|weight|action|method|enctype|onsubmit|onreset|" +
-                    "scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|" +
-                    "border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|" +
-                    "nosave|dynsrc|controls|start|suppress|maxlength|checked|language|" +
-                    "onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|" +
-                    "for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|" +
-                    "http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|" +
-                    "cellspacing|rules|bordercolorlight|bordercolordark|summary|" +
-                    "colspan|rowspan|nowrap|halign|" +
-                    "disabled|accesskey|tabindex|id|class)\\b"
-    );
+            "\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controls|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b");
     private static final Pattern PARAMS = Pattern.compile(
-            "\\b(azimuth|background-attachment|background-color|" +
-                    "background-image|background-position|background-repeat|" +
-                    "background|border-collapse|border-color|" +
-                    "border-spacing|border-style|border-top|border-right|" +
-                    "border-bottom|border-left|border-top-color|" +
-                    "border-right-color|border-left-color|border-bottom-color|" +
-                    "border-top-style|border-right-style|border-bottom-style|" +
-                    "border-left-style|border-top-width|border-right-width|" +
-                    "border-bottom-width|border-left-width|border-width|" +
-                    "border|bottom|caption-side|clear|clip|color|content|" +
-                    "counter-increment|counter-reset|cue-after|cue-before|" +
-                    "cue|cursor|direction|display|elevation|empty-cells|float|" +
-                    "font-family|font-size|font-style|font-variant|font-weight|" +
-                    "font|height|left|letter-spacing|line-height|list-style-image|" +
-                    "list-style-position|list-style-type|list-style|margin-left|" +
-                    "margin-right|margin-top|margin-bottom|margin|max-height|max-width|" +
-                    "min-height|min-width|orphans|outline-color|outline-style|" +
-                    "outline-width|outline|overflow|padding-top|padding-right|" +
-                    "padding-bottom|padding-left|padding|page-break-after|" +
-                    "page-break-before|page-break-inside|pause-after|pause-before|" +
-                    "pause|pitch-range|pitch|play-during|position|quotes|richness|right|" +
-                    "speak-header|speak-numeral|speak-punctuation|speak|speech-rate|" +
-                    "stress|table-layout|text-align|text-decoration|text-indent|" +
-                    "text-transform|top|unicode-bidi|vertical-align|visibility|" +
-                    "voice-family|volume|white-space|widows|width|word-spacing|" +
-                    "z-index)\\b");
+            "\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b");
     private static final Pattern COMMENTS = Pattern.compile(
             "/\\*(?:.|[\\n\\r])*?\\*/|<!--.*");
     private static final Pattern CSS_COMMENTS = Pattern.compile(
@@ -129,17 +76,9 @@ public class Editor extends MultiAutoCompleteTextView {
     private static final Pattern ENDINGS = Pattern.compile(
             "(em|rem|px|pt|%)");
     private static final Pattern DATATYPES = Pattern.compile(
-            "\\b(abstract|arguments|boolean|byte|char|class|" +
-                    "const|double|enum|final|float|function|" +
-                    "int|interface|long|native|package|" +
-                    "private|protected|public|short|static|" +
-                    "synchronized|transient|var|void|volatile)\\b");
+            "\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b");
     private static final Pattern SYMBOLS = Pattern.compile(
-            "(&|=|throw|new|for|" +
-                    "if|else|>|<|^|\\+|-|\\s\\|\\s|" +
-                    "break|try|catch|finally|do|!|" +
-                    "finally|default|case|switch|" +
-                    "native|let|super|throws|return)");
+            "(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|finally|do|!|finally|default|case|switch|native|let|super|throws|return)");
     private static final Pattern FUNCTIONS = Pattern.compile("n\\((.*?)\\)");
     private static final Pattern NUMBERS = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
     private static final Pattern BOOLEANS = Pattern.compile("\\b(true|false)\\b");
@@ -200,22 +139,6 @@ public class Editor extends MultiAutoCompleteTextView {
         }
     };
 
-    private ScaleGestureDetector mDetector;
-
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            setTextSize(getTextSize() * detector.getScaleFactor());
-            return true;
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        mDetector.onTouchEvent(event);
-        return true;
-    }
-
     /**
      * Public constructor
      *
@@ -256,7 +179,6 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
-        mDetector = new ScaleGestureDetector(mContext, new ScaleListener());
         mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
 

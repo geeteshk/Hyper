@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,15 +26,15 @@ public class Law {
         return ContextCompat.checkSelfPermission(context, permission);
     }
 
-    public static void getPermission(final Context context, final String permission, final int explanation, final int code) {
+    public static void getPermission(final Context context, final String permission, final int explanation, final int code, final CoordinatorLayout layout) {
         if (checkPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, permission)) {
-                Snackbar.make(((Activity) context).getWindow().getDecorView(), explanation,
+                Snackbar.make(layout, explanation,
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.ok, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                getPermission(context, permission, explanation, code);
+                                getPermission(context, permission, explanation, code, layout);
                             }
                         })
                         .show();
@@ -43,8 +44,8 @@ public class Law {
         }
     }
 
-    public static void getRequiredPermissions(Context context) {
-        getPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, WRITE_STORAGE_REQUEST_CODE);
+    public static void getRequiredPermissions(Context context, CoordinatorLayout layout) {
+        getPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, WRITE_STORAGE_REQUEST_CODE, layout);
 
         if (Law.checkAllPermissions(context)) {
             Class classTo = LoginActivity.class;

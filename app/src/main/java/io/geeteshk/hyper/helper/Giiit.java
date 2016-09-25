@@ -234,7 +234,7 @@ public class Giiit {
         return removed;
     }
 
-    static class CommitTask extends AsyncTask<String, Void, Boolean> {
+    private static class CommitTask extends AsyncTask<String, Void, Boolean> {
 
         private Context mContext;
         private File mRepo;
@@ -275,7 +275,7 @@ public class Giiit {
         }
     }
 
-    static class CheckoutTask extends AsyncTask<String, Void, Boolean> {
+    private static class CheckoutTask extends AsyncTask<String, Void, Boolean> {
 
         private Context mContext;
         private File mRepo;
@@ -318,7 +318,7 @@ public class Giiit {
         }
     }
 
-    static class CloneTask extends AsyncTask<String, String, Boolean> {
+    private static class CloneTask extends AsyncTask<String, String, Boolean> {
 
         private Context mContext;
         private File mRepo;
@@ -351,12 +351,12 @@ public class Giiit {
 
                             @Override
                             protected void onUpdate(String taskName, int workCurr, int workTotal, int percentDone) {
-                                publishProgress(taskName, String.valueOf(percentDone));
+                                publishProgress(taskName, String.valueOf(percentDone), String.valueOf(workCurr), String.valueOf(workTotal));
                             }
 
                             @Override
                             protected void onEndTask(String taskName, int workCurr, int workTotal, int percentDone) {
-                                publishProgress(taskName, String.valueOf(percentDone));
+                                publishProgress(taskName, String.valueOf(workCurr), String.valueOf(workTotal));
                             }
                         })
                         .call();
@@ -377,6 +377,7 @@ public class Giiit {
                 public void run() {
                     mProgressDialog.setTitle(values[0]);
                     mProgressDialog.setMessage(values[0]);
+                    mProgressDialog.setMax(Integer.valueOf(values[2]));
                 }
             });
 
@@ -388,8 +389,12 @@ public class Giiit {
             super.onPostExecute(aBoolean);
             mProgressDialog.hide();
             if (aBoolean) {
-                Toast.makeText(mContext, "Successfully cloned.", Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext, "Please run First Aid from the Settings if your cloned projects do not show up.", Toast.LENGTH_LONG).show();
+                if (FirstAid.isBroken(mRepo.getName())) {
+                    Toast.makeText(mContext, "The repo was successfully cloned but it doesn't sem to be a Hyper project. If it is then please run First Aid from Settings in order to repair it.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Successfully cloned.", Toast.LENGTH_SHORT).show();
+                }
+
                 mAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(mContext, "Unable to clone repo.", Toast.LENGTH_LONG).show();

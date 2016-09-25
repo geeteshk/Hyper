@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
@@ -8,34 +9,41 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
     tools:context=".activity.SplashActivity">
 
-    <ImageView
-        android:id="@+id/hyper_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/centre_divider"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_launcher"
-        android:alpha="1" />
-
-    <android.support.v4.widget.Space
-        android:id="@+id/centre_divider"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_centerInParent="true" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/hyper_logo_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/centre_divider"
-        android:layout_centerHorizontal="true"
-        android:text="@string/hyper"
-        android:textColor="@android:color/white"
-        android:textSize="52sp"
-        android:typeface="monospace"
-        android:alpha="0" />
+        <ImageView
+            android:id="@+id/hyper_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/centre_divider"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_launcher"
+            android:alpha="1" />
 
-</RelativeLayout>
+        <android.support.v4.widget.Space
+            android:id="@+id/centre_divider"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/hyper_logo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/centre_divider"
+            android:layout_centerHorizontal="true"
+            android:text="@string/hyper"
+            android:textColor="@android:color/white"
+            android:textSize="52sp"
+            android:typeface="monospace"
+            android:alpha="0" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
