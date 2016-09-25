@@ -110,17 +110,32 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                         Log.e(TAG, e.getMessage());
                     }
 
-                    Intent intent = new Intent(mContext, WebActivity.class);
 
-                    if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-                        intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
+                    if (Pref.get(mContext, "pin", "").equals("")) {
+                        Intent intent = new Intent(mContext, WebActivity.class);
+
+                        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
+                            intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
+                        } else {
+                            intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
+                        }
+
+                        intent.putExtra("name", mObjects[newPos]);
+                        intent.putExtra("pilot", true);
+                        mContext.startActivity(intent);
                     } else {
-                        intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
-                    }
+                        Intent intent = new Intent(mContext, EncryptActivity.class);
 
-                    intent.putExtra("name", mObjects[newPos]);
-                    intent.putExtra("pilot", true);
-                    mContext.startActivity(intent);
+                        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
+                            intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
+                        } else {
+                            intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
+                        }
+
+                        intent.putExtra("name", mObjects[newPos]);
+                        intent.putExtra("pilot", true);
+                        mContext.startActivity(intent);
+                    }
                 }
             });
         }

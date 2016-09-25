@@ -152,6 +152,11 @@ public class EncryptActivity extends AppCompatActivity {
 
                         startActivity(intent);
                         finish();
+                    } else if (getIntent().hasExtra("url")) {
+                        Intent intent = new Intent(EncryptActivity.this, WebActivity.class);
+                        intent.putExtras(getIntent().getExtras());
+                        startActivity(intent);
+                        finish();
                     } else {
                         setResult(1);
                         finish();
