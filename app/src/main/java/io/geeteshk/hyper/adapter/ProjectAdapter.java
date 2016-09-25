@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -90,6 +91,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     if (Pref.get(mContext, "pin", "").equals("")) {
                         intent = new Intent(mContext, ProjectActivity.class);
                         intent.putExtra("project", mObjects[newPos]);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+
+                        if (Build.VERSION.SDK_INT >= 21) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+                        }
+                        
                         ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
                     } else {
                         intent = new Intent(mContext, EncryptActivity.class);
