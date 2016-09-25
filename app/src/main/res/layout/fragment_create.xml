@@ -27,13 +27,14 @@
 
             <TextView
                 style="@style/TextAppearance.Hyper.FloatLabel"
+                android:id="@+id/meta_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:fontFamily="sans-serif-condensed"
-                android:text="Details" />
+                android:text="Meta" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
@@ -97,6 +98,7 @@
 
             <TextView
                 style="@style/TextAppearance.Hyper.FloatLabel"
+                android:id="@+id/favicon_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -151,6 +153,7 @@
 
             <TextView
                 style="@style/TextAppearance.Hyper.FloatLabel"
+                android:id="@+id/colour_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

@@ -91,6 +91,16 @@ public class CreateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_create, container, false);
 
+        TextView metaTitle = (TextView) rootView.findViewById(R.id.meta_title);
+        TextView faviconTitle = (TextView) rootView.findViewById(R.id.favicon_title);
+        TextView colourTitle = (TextView) rootView.findViewById(R.id.colour_title);
+
+        if (!Pref.get(getActivity(), "dark_theme", false)) {
+            metaTitle.setTextColor(ContextCompat.getColor(getActivity(), R.color.fabLabel));
+            faviconTitle.setTextColor(ContextCompat.getColor(getActivity(), R.color.fabLabel));
+            colourTitle.setTextColor(ContextCompat.getColor(getActivity(), R.color.fabLabel));
+        }
+
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
 

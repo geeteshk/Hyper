@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 
