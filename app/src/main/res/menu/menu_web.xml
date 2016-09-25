@@ -5,16 +5,19 @@
     <item
         android:id="@+id/web_browser"
         android:title="@string/open_in_web_browser"
+        android:icon="@drawable/ic_web_browser"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/web_logs"
         android:title="@string/view_logs"
+        android:icon="@drawable/ic_git_log"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/web_settings"
         android:title="@string/web_settings"
+        android:icon="@drawable/ic_web_settings"
         app:showAsAction="never" />
 
 </menu>

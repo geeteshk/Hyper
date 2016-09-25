@@ -39,7 +39,7 @@
                 android:layout_below="@+id/favicon"
                 android:paddingBottom="4dp"
                 android:paddingTop="8dp"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textSize="18sp"
                 android:typeface="serif" />
 
@@ -48,7 +48,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
-                android:singleLine="true" />
+                android:maxLines="1" />
+
+            <ImageView
+                android:id="@+id/git_repo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="-8dp"
+                android:layout_marginEnd="-8dp"
+                android:layout_marginBottom="-8dp"
+                android:src="@drawable/ic_repo"
+                android:visibility="invisible" />
 
         </RelativeLayout>
 

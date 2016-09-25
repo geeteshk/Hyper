@@ -175,6 +175,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             }
         });
 
+        if (new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").exists() && new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").isDirectory()) {
+            holder.mRepo.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -185,7 +189,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle, mDescription;
-        public ImageView mFavicon;
+        public ImageView mFavicon, mRepo;
         public View mColor;
 
         public MyViewHolder(View view) {
@@ -193,6 +197,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
             mTitle = (TextView) view.findViewById(R.id.title);
             mDescription = (TextView) view.findViewById(R.id.desc);
+            mRepo = (ImageView) view.findViewById(R.id.git_repo);
             mFavicon = (ImageView) view.findViewById(R.id.favicon);
             mColor = view.findViewById(R.id.project_color);
         }

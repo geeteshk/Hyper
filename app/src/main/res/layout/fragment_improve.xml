@@ -119,7 +119,7 @@
             android:layout_height="wrap_content"
             app:fab_colorNormal="?attr/colorAccent"
             app:fab_colorPressed="#1976D2"
-            app:fab_icon="@drawable/ic_action_git"
+            app:fab_icon="@drawable/ic_repo_clone"
             app:fab_size="mini"
             app:fab_title="Clone repository" />
 

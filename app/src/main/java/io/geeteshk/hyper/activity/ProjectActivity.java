@@ -36,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -52,6 +53,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -199,6 +201,7 @@ public class ProjectActivity extends AppCompatActivity {
         headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
         headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
 
+        mDrawer.setItemIconTintList(null);
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -249,6 +252,7 @@ public class ProjectActivity extends AppCompatActivity {
         mTabStrip = (TabLayout) findViewById(R.id.tabs);
         assert mTabStrip != null;
         mTabStrip.setupWithViewPager(mPager);
+
         mTabStrip.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
         mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
         mTabStrip.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -281,6 +285,23 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    private int getIcon(String name) {
+        switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
+            case "html":
+                return R.drawable.ic_html;
+            case "css":
+                return R.drawable.ic_css;
+            case "js":
+                return R.drawable.ic_js;
+            case "ico":case "png":case "jpg":case "gif":case "jpeg":
+                return R.drawable.ic_image;
+            case "woff":case "ttf":case "otf":case "woff2":case "fnt":
+                return R.drawable.ic_font;
+            default:
+                return R.drawable.ic_file;
+        }
+    }
+
     private void setupMenu(String project, @Nullable SubMenu menu) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
@@ -295,9 +316,9 @@ public class ProjectActivity extends AppCompatActivity {
                 } else {
                     if (!file.getName().endsWith(".hyper")) {
                         if (menu == null) {
-                            mDrawer.getMenu().add(file.getName());
+                            mDrawer.getMenu().add(file.getName()).setIcon(getIcon(file.getName()));
                         } else {
-                            MenuItem item = menu.add(file.getName());
+                            MenuItem item = menu.add(file.getName()).setIcon(getIcon(file.getName()));
                             Intent intent = new Intent();
                             intent.putExtra("location", menu.getItem().getTitle());
                             item.setIntent(intent);
@@ -317,7 +338,25 @@ public class ProjectActivity extends AppCompatActivity {
         menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_clean).setEnabled(isGitRepo);
+
         return true;
+    }
+
+    @Override
+    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    Log.e(getClass().getSimpleName(), "onMenuOpened...unable to set icons for overflow menu", e);
+                }
+            }
+        }
+        return super.onPrepareOptionsPanel(view, menu);
     }
 
     /**
