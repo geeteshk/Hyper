@@ -63,6 +63,7 @@ import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
+import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
@@ -222,7 +223,14 @@ public class ProjectActivity extends AppCompatActivity {
                     if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
                         Bundle b = new Bundle();
                         b.putInt("position", mAdapter.getCount());
-                        mAdapter.add(file, b);
+                        mAdapter.add(file, b, false);
+                        mAdapter.notifyDataSetChanged();
+                        refreshMenu();
+                        mPager.setCurrentItem(mFiles.indexOf(file));
+                    } else if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
+                        Bundle b = new Bundle();
+                        b.putInt("position", mAdapter.getCount());
+                        mAdapter.add(file, b, true);
                         mAdapter.notifyDataSetChanged();
                         refreshMenu();
                         mPager.setCurrentItem(mFiles.indexOf(file));
@@ -293,12 +301,14 @@ public class ProjectActivity extends AppCompatActivity {
                 return R.drawable.ic_css;
             case "js":
                 return R.drawable.ic_js;
-            case "ico":case "png":case "jpg":case "gif":case "jpeg":
-                return R.drawable.ic_image;
             case "woff":case "ttf":case "otf":case "woff2":case "fnt":
                 return R.drawable.ic_font;
             default:
-                return R.drawable.ic_file;
+                if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, name))) {
+                    return R.drawable.ic_image;
+                } else {
+                    return R.drawable.ic_file;
+                }
         }
     }
 
@@ -981,12 +991,21 @@ public class ProjectActivity extends AppCompatActivity {
     private List<Fragment> buildFragments() {
         List<Fragment> fragments = new ArrayList<>();
         for (int i = 0; i < mFiles.size(); i++) {
-            Bundle b = new Bundle();
-            b.putInt("position", i);
-            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), b);
-            editorFragment.setProject(mProject);
-            editorFragment.setFilename(mFiles.get(i));
-            fragments.add(editorFragment);
+            if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, mFiles.get(i)))) {
+                Bundle b = new Bundle();
+                b.putInt("position", i);
+                ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(this, ImageFragment.class.getName(), b);
+                imageFragment.setProject(mProject);
+                imageFragment.setFilename(mFiles.get(i));
+                fragments.add(imageFragment);
+            } else {
+                Bundle b = new Bundle();
+                b.putInt("position", i);
+                EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), b);
+                editorFragment.setProject(mProject);
+                editorFragment.setFilename(mFiles.get(i));
+                fragments.add(editorFragment);
+            }
         }
 
         return fragments;

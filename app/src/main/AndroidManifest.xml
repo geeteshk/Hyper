@@ -27,13 +27,14 @@
             android:label="@string/app_name" />
         <activity
             android:name=".activity.WebActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" />
         <activity
             android:name=".activity.ProjectActivity"
             android:label="@string/app_name"
             android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

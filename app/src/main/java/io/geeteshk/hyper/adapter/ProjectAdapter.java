@@ -96,7 +96,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                         if (Build.VERSION.SDK_INT >= 21) {
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                         }
-                        
+
                         ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
                     } else {
                         intent = new Intent(mContext, EncryptActivity.class);

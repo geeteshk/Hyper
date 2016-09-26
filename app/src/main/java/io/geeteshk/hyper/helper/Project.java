@@ -257,8 +257,7 @@ public class Project {
             int ascii = 0;
             int other = 0;
 
-            for (int i = 0; i < data.length; i++) {
-                byte b = data[i];
+            for (byte b : data) {
                 if (b < 0x09) return true;
 
                 if (b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D) ascii++;
@@ -266,14 +265,20 @@ public class Project {
                 else other++;
             }
 
-            if (other == 0) return false;
+            return other != 0 && 100 * other / (ascii + other) > 95;
 
-            return 100 * other / (ascii + other) > 95;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
 
         return true;
+    }
+
+    public static boolean isImageFile(File f) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(f.getAbsolutePath(), options);
+        return options.outWidth != -1 && options.outHeight != -1;
     }
 
 

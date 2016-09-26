@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 import io.geeteshk.hyper.fragment.EditorFragment;
+import io.geeteshk.hyper.fragment.ImageFragment;
 
 /**
  * Adapter to load main files into editor
@@ -64,6 +65,8 @@ public class FileAdapter extends FragmentPagerAdapter {
             return mFiles.get(position).substring(4);
         } else if (mFiles.get(position).startsWith("js")) {
             return mFiles.get(position).substring(3);
+        } else if (mFiles.get(position).startsWith("images")) {
+            return mFiles.get(position).substring(7);
         }
 
         return mFiles.get(position);
@@ -79,11 +82,19 @@ public class FileAdapter extends FragmentPagerAdapter {
         return mFragments.size();
     }
 
-    public void add(String title, Bundle b) {
-        EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(mContext, EditorFragment.class.getName(), b);
-        editorFragment.setProject(mProject);
-        editorFragment.setFilename(title);
-        mFragments.add(editorFragment);
-        mFiles.add(title);
+    public void add(String title, Bundle b, boolean image) {
+        if (image) {
+            ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(mContext, ImageFragment.class.getName(), b);
+            imageFragment.setProject(mProject);
+            imageFragment.setFilename(title);
+            mFragments.add(imageFragment);
+            mFiles.add(title);
+        } else {
+            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(mContext, EditorFragment.class.getName(), b);
+            editorFragment.setProject(mProject);
+            editorFragment.setFilename(title);
+            mFragments.add(editorFragment);
+            mFiles.add(title);
+        }
     }
 }

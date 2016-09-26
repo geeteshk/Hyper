@@ -153,7 +153,7 @@ SOFTWARE.</string>
     <string name="new_pin">New PIN</string>
     <string name="pin_four_digits">The pin must consist only of 4 digits</string>
     <string name="pin_snack_bar">It is recommended you set a PIN for security in the Settings.</string>
-    <string name="not_text_file">The selected file is not a text file.</string>
+    <string name="not_text_file">The selected file is not a text or image file.</string>
     <string name="new_not_java">New</string>
     <string name="resource_name">Resource name</string>
     <string name="file_success">Successfully created file.</string>
