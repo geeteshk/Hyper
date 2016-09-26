@@ -37,6 +37,7 @@ import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.text.HtmlCompat;
 
 /**
  * Activity to test projects
@@ -68,6 +69,7 @@ public class WebActivity extends AppCompatActivity {
         }
 
         toolbar.setTitle(getIntent().getStringExtra("name"));
+        toolbar.setSubtitle(getIntent().getStringExtra("url"));
         setSupportActionBar(toolbar);
 
         assert getSupportActionBar() != null;
@@ -75,7 +77,7 @@ public class WebActivity extends AppCompatActivity {
 
         int color = Color.parseColor(Jason.getProjectProperty(getIntent().getStringExtra("name"), "color"));
         if ((Color.red(color) * 0.299 + Color.green(color) * 0.587 + Color.blue(color) * 0.114) > 186) {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("name") + "</font>")));
+            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("name") + "</font>")));
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
             Decor.setOverflowButtonColor(WebActivity.this, filter);
         } else {
