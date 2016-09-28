@@ -18,26 +18,15 @@
             android:id="@+id/toolbar"
             layout="@layout/widget_toolbar" />
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:tabGravity="fill"
-            app:tabMode="scrollable" />
-
         <View
             android:id="@+id/toolbar_shadow"
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_below="@+id/tabs"
+            android:layout_below="@+id/toolbar"
             android:background="@drawable/toolbar_shadow" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
+        <FrameLayout
+            android:id="@+id/editor_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar_shadow" />

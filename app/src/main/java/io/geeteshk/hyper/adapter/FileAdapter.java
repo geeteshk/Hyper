@@ -2,19 +2,28 @@ package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
+import io.geeteshk.hyper.helper.Decor;
 
 /**
  * Adapter to load main files into editor
  */
-public class FileAdapter extends FragmentPagerAdapter {
+public class FileAdapter extends ArrayAdapter<String> {
 
     /**
      * Names of main files to edit
@@ -26,41 +35,45 @@ public class FileAdapter extends FragmentPagerAdapter {
      */
     String mProject;
 
-    List<Fragment> mFragments;
     Context mContext;
 
     /**
      * Public constructor for adapter
-     *
-     * @param fm fragmentManager used to add fragment
      */
-    public FileAdapter(Context context, FragmentManager fm, String project, List<String> files, List<Fragment> fragments) {
-        super(fm);
+    public FileAdapter(Context context, String project, List<String> files) {
+        super(context, android.R.layout.simple_list_item_1, files);
         mFiles = files;
         mProject = project;
-        mFragments = fragments;
         mContext = context;
     }
 
-    /**
-     * Creates a new EditorFragment and sets the file contents to it
-     *
-     * @param position current fragment position
-     * @return specified fragment
-     */
+    @NonNull
     @Override
-    public Fragment getItem(int position) {
-        return mFragments.get(position);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        TextView textView = (TextView) super.getView(position, convertView, parent);
+        textView.setText(getPageTitle(position));
+        return textView;
     }
 
-    /**
-     * Required for tabs to work correctly
-     *
-     * @param position current fragment position
-     * @return current page title
-     */
     @Override
-    public CharSequence getPageTitle(int position) {
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        View rootView;
+        if (convertView == null) {
+            rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file_project, parent, false);
+        } else {
+            rootView = convertView;
+        }
+
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
+        TextView textView = (TextView) rootView.findViewById(R.id.file_title);
+
+        imageView.setImageResource(Decor.getIcon(getPageTitle(position).toString(), mProject));
+        textView.setText(getPageTitle(position));
+
+        return rootView;
+    }
+
+    private CharSequence getPageTitle(int position) {
         if (mFiles.get(position).startsWith("css")) {
             return mFiles.get(position).substring(4);
         } else if (mFiles.get(position).startsWith("js")) {
@@ -72,29 +85,8 @@ public class FileAdapter extends FragmentPagerAdapter {
         return mFiles.get(position);
     }
 
-    /**
-     * Method to return number of fragments
-     *
-     * @return always three
-     */
     @Override
     public int getCount() {
-        return mFragments.size();
-    }
-
-    public void add(String title, Bundle b, boolean image) {
-        if (image) {
-            ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(mContext, ImageFragment.class.getName(), b);
-            imageFragment.setProject(mProject);
-            imageFragment.setFilename(title);
-            mFragments.add(imageFragment);
-            mFiles.add(title);
-        } else {
-            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(mContext, EditorFragment.class.getName(), b);
-            editorFragment.setProject(mProject);
-            editorFragment.setFilename(title);
-            mFragments.add(editorFragment);
-            mFiles.add(title);
-        }
+        return mFiles.size();
     }
 }

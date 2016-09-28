@@ -273,7 +273,7 @@ public class Editor extends MultiAutoCompleteTextView {
     }
 
     /**
-     * Main method used for highlightin i.e. this is where the magic happens
+     * Main method used for highlighting i.e. this is where the magic happens
      *
      * @param e text to be highlighted
      * @return highlighted text

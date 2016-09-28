@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,6 +54,12 @@ public class EditorFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (!new File(Constants.HYPER_ROOT + File.separator + mProject, mFilename).exists()) {
+            TextView textView = new TextView(getActivity());
+            textView.setText("There was a problem reading this file.");
+            return textView;
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
         boolean darkTheme = Pref.get(getActivity(), "dark_theme", false);

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
@@ -28,6 +29,25 @@ public class Decor {
             } else {
                 activity.getWindow().setStatusBarColor(color);
             }
+        }
+    }
+
+    public static int getIcon(String name, String project) {
+        switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
+            case "html":
+                return R.drawable.ic_html;
+            case "css":
+                return R.drawable.ic_css;
+            case "js":
+                return R.drawable.ic_js;
+            case "woff":case "ttf":case "otf":case "woff2":case "fnt":
+                return R.drawable.ic_font;
+            default:
+                if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + project, name))) {
+                    return R.drawable.ic_image;
+                } else {
+                    return R.drawable.ic_file;
+                }
         }
     }
 

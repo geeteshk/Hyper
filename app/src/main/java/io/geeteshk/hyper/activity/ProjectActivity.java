@@ -36,12 +36,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,11 +108,9 @@ public class ProjectActivity extends AppCompatActivity {
     private static final int IMPORT_JS = 104;
     private static final int OPEN_RESOURCES = 105;
     private static final int POLYMER_ADD_CODE = 300;
-    private List<Fragment> mFragments;
     private List<String> mFiles;
-    private FileAdapter mAdapter;
-    private ViewPager mPager;
-    private TabLayout mTabStrip;
+    private Spinner mSpinner;
+    private ArrayAdapter<String> mFileAdapter;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -148,6 +150,11 @@ public class ProjectActivity extends AppCompatActivity {
         KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
         setContentView(layout);
 
+        mFiles = new ArrayList<>();
+        mFiles.add("index.html");
+        mFiles.add("css/style.css");
+        mFiles.add("js/main.js");
+
         float[] hsv = new float[3];
         int color = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
         Color.colorToHSV(color, hsv);
@@ -171,14 +178,32 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mSpinner = new Spinner(this);
+        mFileAdapter = new FileAdapter(this, mProject, mFiles);
+        mSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mSpinner.setAdapter(mFileAdapter);
+        toolbar.addView(mSpinner);
         if (Pref.get(this, "dark_theme", false)) {
-            assert toolbar != null;
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.editor_fragment, getFragment(mFiles.get(position)))
+                        .commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(mProject);
+            getSupportActionBar().setTitle("");
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
         }
 
@@ -206,10 +231,6 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (!item.isChecked()) {
-                    item.setChecked(true);
-                }
-
                 String file;
                 if (item.getIntent() != null) {
                     file = item.getIntent().getStringExtra("location") + "/" + item.getTitle();
@@ -218,22 +239,12 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 if (mFiles.contains(file)) {
-                    mPager.setCurrentItem(mFiles.indexOf(file));
+                    setFragment(file, false);
                 } else {
                     if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
-                        Bundle b = new Bundle();
-                        b.putInt("position", mAdapter.getCount());
-                        mAdapter.add(file, b, false);
-                        mAdapter.notifyDataSetChanged();
-                        refreshMenu();
-                        mPager.setCurrentItem(mFiles.indexOf(file));
+                        setFragment(file, true);
                     } else if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
-                        Bundle b = new Bundle();
-                        b.putInt("position", mAdapter.getCount());
-                        mAdapter.add(file, b, true);
-                        mAdapter.notifyDataSetChanged();
-                        refreshMenu();
-                        mPager.setCurrentItem(mFiles.indexOf(file));
+                        setFragment(file, true);
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.not_text_file, Toast.LENGTH_SHORT).show();
                     }
@@ -244,32 +255,9 @@ public class ProjectActivity extends AppCompatActivity {
             }
         });
 
-        mFiles = new ArrayList<>();
-        mFiles.add("index.html");
-        mFiles.add("css/style.css");
-        mFiles.add("js/main.js");
-
-        mFragments = buildFragments();
-
-        mAdapter = new FileAdapter(this, getSupportFragmentManager(), mProject, mFiles, mFragments);
-        mPager = (ViewPager) findViewById(R.id.pager);
-        if (mPager != null) {
-            mPager.setAdapter(mAdapter);
-        }
-
-        mTabStrip = (TabLayout) findViewById(R.id.tabs);
-        assert mTabStrip != null;
-        mTabStrip.setupWithViewPager(mPager);
-
-        mTabStrip.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
-        mTabStrip.setSelectedTabIndicatorColor(getComplementaryColor(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
-        mTabStrip.setTabMode(TabLayout.MODE_SCROLLABLE);
-
         int newColor = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
 
         if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
-            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#000000\">" + mProject + "</font>")));
-            mTabStrip.setTabTextColors(0x80000000, 0xFF000000);
             PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
             Decor.setOverflowButtonColor(ProjectActivity.this, filter);
             headerTitle.setTextColor(0xff000000);
@@ -282,9 +270,6 @@ public class ProjectActivity extends AppCompatActivity {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 }
             });
-        } else {
-            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#FFFFFF\">" + mProject + "</font>")));
-            mTabStrip.setTabTextColors(0x80FFFFFF, 0xFFFFFFFF);
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -293,22 +278,31 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
-    private int getIcon(String name) {
-        switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
-            case "html":
-                return R.drawable.ic_html;
-            case "css":
-                return R.drawable.ic_css;
-            case "js":
-                return R.drawable.ic_js;
-            case "woff":case "ttf":case "otf":case "woff2":case "fnt":
-                return R.drawable.ic_font;
-            default:
-                if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, name))) {
-                    return R.drawable.ic_image;
-                } else {
-                    return R.drawable.ic_file;
-                }
+    private void setFragment(String file, boolean add) {
+        if (add) {
+            mFileAdapter.add(file);
+            mFileAdapter.notifyDataSetChanged();
+        }
+
+        mSpinner.setSelection(mFileAdapter.getPosition(file), true);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.editor_fragment, getFragment(file))
+                .commit();
+    }
+
+    public Fragment getFragment(String title) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", mFileAdapter.getCount());
+        if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, title))) {
+            ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
+            imageFragment.setProject(mProject);
+            imageFragment.setFilename(title);
+            return imageFragment;
+        } else {
+            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
+            editorFragment.setProject(mProject);
+            editorFragment.setFilename(title);
+            return editorFragment;
         }
     }
 
@@ -326,9 +320,9 @@ public class ProjectActivity extends AppCompatActivity {
                 } else {
                     if (!file.getName().endsWith(".hyper")) {
                         if (menu == null) {
-                            mDrawer.getMenu().add(file.getName()).setIcon(getIcon(file.getName()));
+                            mDrawer.getMenu().add(file.getName()).setIcon(Decor.getIcon(file.getName(), mProject));
                         } else {
-                            MenuItem item = menu.add(file.getName()).setIcon(getIcon(file.getName()));
+                            MenuItem item = menu.add(file.getName()).setIcon(Decor.getIcon(file.getName(), mProject));
                             Intent intent = new Intent();
                             intent.putExtra("location", menu.getItem().getTitle());
                             item.setIntent(intent);
@@ -401,14 +395,6 @@ public class ProjectActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    private int getComplementaryColor(int colorToInvert) {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(Color.red(colorToInvert), Color.green(colorToInvert),
-                Color.blue(colorToInvert), hsv);
-        hsv[0] = (hsv[0] + 180) % 360;
-        return Color.HSVToColor(hsv);
     }
 
     @Override
@@ -498,6 +484,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            setFragment(editText.getText().toString() + ".html", true);
                             refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
@@ -529,6 +516,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
                             refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
@@ -560,6 +548,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
                             refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
@@ -817,6 +806,7 @@ public class ProjectActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
+                        setFragment(editText.getText().toString(), true);
                         refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
@@ -883,6 +873,7 @@ public class ProjectActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
+                        setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
                         refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
@@ -916,6 +907,7 @@ public class ProjectActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
                         Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
+                        setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
                         refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
@@ -983,31 +975,5 @@ public class ProjectActivity extends AppCompatActivity {
     private void refreshMenu() {
         mDrawer.getMenu().clear();
         setupMenu(mProject, null);
-        mAdapter = new FileAdapter(this, getSupportFragmentManager(), mProject, mFiles, mFragments);
-        mPager.setAdapter(mAdapter);
-        mTabStrip.setupWithViewPager(mPager);
-    }
-
-    private List<Fragment> buildFragments() {
-        List<Fragment> fragments = new ArrayList<>();
-        for (int i = 0; i < mFiles.size(); i++) {
-            if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, mFiles.get(i)))) {
-                Bundle b = new Bundle();
-                b.putInt("position", i);
-                ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(this, ImageFragment.class.getName(), b);
-                imageFragment.setProject(mProject);
-                imageFragment.setFilename(mFiles.get(i));
-                fragments.add(imageFragment);
-            } else {
-                Bundle b = new Bundle();
-                b.putInt("position", i);
-                EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), b);
-                editorFragment.setProject(mProject);
-                editorFragment.setFilename(mFiles.get(i));
-                fragments.add(editorFragment);
-            }
-        }
-
-        return fragments;
     }
 }
