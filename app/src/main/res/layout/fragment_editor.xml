@@ -15,6 +15,7 @@
         android:paddingRight="16dp"
         android:paddingStart="32dp"
         android:scrollbars="vertical"
+        android:privateImeOptions="nm"
         android:textSize="14sp" />
 
     <View
