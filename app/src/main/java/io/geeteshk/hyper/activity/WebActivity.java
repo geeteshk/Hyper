@@ -72,24 +72,7 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setSubtitle(getIntent().getStringExtra("url"));
         setSupportActionBar(toolbar);
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Jason.getProjectProperty(getIntent().getStringExtra("name"), "color"))));
-
-        int color = Color.parseColor(Jason.getProjectProperty(getIntent().getStringExtra("name"), "color"));
-        if ((Color.red(color) * 0.299 + Color.green(color) * 0.587 + Color.blue(color) * 0.114) > 186) {
-            getSupportActionBar().setTitle((HtmlCompat.fromHtml("<font color=\"#000000\">" + getIntent().getStringExtra("name") + "</font>")));
-            PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
-            Decor.setOverflowButtonColor(WebActivity.this, filter);
-        } else {
-            getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#FFFFFF\">" + getIntent().getStringExtra("name") + "</font>")));
-        }
-
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= 0.8f;
-        color = Color.HSVToColor(hsv);
-
-        Decor.setStatusBarColor(this, color);
+        Decor.setStatusBarColor(this, -1);
         mLogs = new ArrayList<>();
 
         mWebView = (WebView) findViewById(R.id.web_view);

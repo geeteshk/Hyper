@@ -56,25 +56,6 @@ public class Decor {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    public static void setOverflowButtonColor(Context context, final PorterDuffColorFilter colorFilter) {
-        final String overflowDescription = context.getString(R.string.abc_action_menu_overflow_description);
-        final ViewGroup decorView = (ViewGroup) ((Activity) context).getWindow().getDecorView();
-        final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                final ArrayList<View> outViews = new ArrayList<View>();
-                decorView.findViewsWithText(outViews, overflowDescription,
-                        View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-                if (outViews.isEmpty()) {
-                    return;
-                }
-                ImageView overflow = (ImageView) outViews.get(0);
-                overflow.setColorFilter(colorFilter);
-            }
-        });
-    }
-
     public static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;

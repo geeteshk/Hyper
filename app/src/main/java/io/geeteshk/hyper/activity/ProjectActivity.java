@@ -155,14 +155,6 @@ public class ProjectActivity extends AppCompatActivity {
         mFiles.add("css/style.css");
         mFiles.add("js/main.js");
 
-        float[] hsv = new float[3];
-        int color = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= 0.8f;
-        color = Color.HSVToColor(hsv);
-
-        Decor.setStatusBarColor(this, color);
-
         RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (Pref.get(this, "pin", "").equals("")) {
             assert projectLayout != null;
@@ -204,7 +196,6 @@ public class ProjectActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Jason.getProjectProperty(mProject, "color"))));
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -254,23 +245,6 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        int newColor = Color.parseColor(Jason.getProjectProperty(mProject, "color"));
-
-        if ((Color.red(newColor) * 0.299 + Color.green(newColor) * 0.587 + Color.blue(newColor) * 0.114) > 186) {
-            PorterDuffColorFilter filter = new PorterDuffColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
-            Decor.setOverflowButtonColor(ProjectActivity.this, filter);
-            headerTitle.setTextColor(0xff000000);
-            headerDesc.setTextColor(0xff000000);
-            mDrawerToggle.setDrawerIndicatorEnabled(false);
-            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_menu);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
-        }
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
