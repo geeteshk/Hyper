@@ -62,9 +62,7 @@ public class EditorFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
-        boolean darkTheme = Pref.get(getActivity(), "dark_theme", false);
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
-        LinearLayout symbolLayout = (LinearLayout) rootView.findViewById(R.id.symbol_layout);
         ImageButton symbolTab = (ImageButton) rootView.findViewById(R.id.symbol_tab);
         Button symbolOne = (Button) rootView.findViewById(R.id.symbol_one);
         Button symbolTwo = (Button) rootView.findViewById(R.id.symbol_two);
@@ -108,19 +106,6 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolSix, "=");
             setSymbol(editText, symbolSeven, ":");
             setSymbol(editText, symbolEight, "?");
-        }
-
-        if (!darkTheme) {
-            symbolLayout.setBackgroundColor(0xFF333333);
-            symbolTab.setImageResource(R.drawable.ic_tab);
-            symbolOne.setTextColor(0xFFFFFFFF);
-            symbolTwo.setTextColor(0xFFFFFFFF);
-            symbolThree.setTextColor(0xFFFFFFFF);
-            symbolFour.setTextColor(0xFFFFFFFF);
-            symbolFive.setTextColor(0xFFFFFFFF);
-            symbolSix.setTextColor(0xFFFFFFFF);
-            symbolSeven.setTextColor(0xFFFFFFFF);
-            symbolEight.setTextColor(0xFFFFFFFF);
         }
 
         String contents = getContents(mProject, mFilename);

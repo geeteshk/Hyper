@@ -37,7 +37,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -80,8 +82,6 @@ import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
-import io.geeteshk.hyper.text.HtmlCompat;
-import io.geeteshk.hyper.widget.KeyboardDetectorLayout;
 
 /**
  * Activity to list projects
@@ -147,15 +147,14 @@ public class ProjectActivity extends AppCompatActivity {
             Log.e(TAG, e.toString());
         }
 
-        KeyboardDetectorLayout layout = new KeyboardDetectorLayout(this, null);
-        setContentView(layout);
+        setContentView(R.layout.activity_project);
 
         mFiles = new ArrayList<>();
         mFiles.add("index.html");
         mFiles.add("css/style.css");
         mFiles.add("js/main.js");
 
-        RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
+        final RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
         if (Pref.get(this, "pin", "").equals("")) {
             assert projectLayout != null;
             Snackbar snackbar = Snackbar.make(projectLayout, R.string.pin_snack_bar, Snackbar.LENGTH_LONG)
