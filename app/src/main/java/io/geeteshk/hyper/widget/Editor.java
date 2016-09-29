@@ -234,6 +234,22 @@ public class Editor extends MultiAutoCompleteTextView {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Layout layout = getLayout();
+                int position = getSelectionStart();
+                int line = layout.getLineForOffset(position);
+                int baseline = layout.getLineBaseline(line);
+                int bottom = getHeight();
+                int x = (int) layout.getPrimaryHorizontal(position);
+
+                if (x + (getWidth() / 2) > getWidth()) {
+                    x = getWidth() / 2;
+                }
+
+                setDropDownVerticalOffset(baseline - bottom);
+                setDropDownHorizontalOffset(x);
+
+                setDropDownHeight(getHeight() / 3);
+                setDropDownWidth(getWidth() / 2);
             }
 
             @Override
@@ -440,11 +456,6 @@ public class Editor extends MultiAutoCompleteTextView {
             ForegroundColorSpan spans[] = e.getSpans(0, e.length(), ForegroundColorSpan.class);
             for (int n = spans.length; n-- > 0; ) e.removeSpan(spans[n]);
         }
-
-        {
-            BackgroundColorSpan spans[] = e.getSpans(0, e.length(), BackgroundColorSpan.class);
-            for (int n = spans.length; n-- > 0; ) e.removeSpan(spans[n]);
-        }
     }
 
     /**
@@ -644,38 +655,6 @@ public class Editor extends MultiAutoCompleteTextView {
                         return text + " ";
                     }
                 }
-            }
-        });
-
-        addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Layout layout = getLayout();
-                int position = getSelectionStart();
-                int line = layout.getLineForOffset(position);
-                int baseline = layout.getLineBaseline(line);
-                int bottom = getHeight();
-                int x = (int) layout.getPrimaryHorizontal(position);
-
-                if (x + (getWidth() / 2) > getWidth()) {
-                    x = getWidth() / 2;
-                }
-
-                setDropDownVerticalOffset(baseline - bottom);
-                setDropDownHorizontalOffset(x);
-
-                setDropDownHeight(getHeight() / 3);
-                setDropDownWidth(getWidth() / 2);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
     }

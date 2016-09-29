@@ -3,20 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <io.geeteshk.hyper.widget.Editor
-        android:id="@+id/file_content"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/toolbar_shadow"
-        android:gravity="start"
-        android:inputType="textMultiLine|textNoSuggestions"
-        android:paddingEnd="16dp"
-        android:paddingLeft="52dp"
-        android:paddingRight="16dp"
-        android:paddingStart="32dp"
-        android:scrollbars="vertical"
-        android:privateImeOptions="nm"
-        android:textSize="14sp" />
+        android:orientation="vertical">
+
+        <io.geeteshk.hyper.widget.Editor
+            android:id="@+id/file_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="start"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:paddingEnd="16dp"
+            android:paddingLeft="52dp"
+            android:paddingRight="16dp"
+            android:paddingStart="32dp"
+            android:scrollbars="vertical"
+            android:privateImeOptions="nm"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/toolbar_shadow"
