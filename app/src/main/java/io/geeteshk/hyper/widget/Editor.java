@@ -227,41 +227,6 @@ public class Editor extends MultiAutoCompleteTextView {
             }
         }});
 
-        addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Layout layout = getLayout();
-                int position = getSelectionStart();
-                int line = layout.getLineForOffset(position);
-                int baseline = layout.getLineBaseline(line);
-                int bottom = getHeight();
-                int x = (int) layout.getPrimaryHorizontal(position);
-
-                if (x + (getWidth() / 2) > getWidth()) {
-                    x = getWidth() / 2;
-                }
-
-                setDropDownVerticalOffset(baseline - bottom);
-                setDropDownHorizontalOffset(x);
-
-                setDropDownHeight(getHeight() / 3);
-                setDropDownWidth(getWidth() / 2);
-            }
-
-            @Override
-            public void afterTextChanged(Editable e) {
-                cancelUpdate();
-
-                if (!mModified) return;
-
-                mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
-            }
-        });
-
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -655,6 +620,41 @@ public class Editor extends MultiAutoCompleteTextView {
                         return text + " ";
                     }
                 }
+            }
+        });
+
+        addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Layout layout = getLayout();
+                int position = getSelectionStart();
+                int line = layout.getLineForOffset(position);
+                int baseline = layout.getLineBaseline(line);
+                int bottom = getHeight();
+                int x = (int) layout.getPrimaryHorizontal(position);
+
+                if (x + (getWidth() / 2) > getWidth()) {
+                    x = getWidth() / 2;
+                }
+
+                setDropDownVerticalOffset(baseline - bottom);
+                setDropDownHorizontalOffset(x);
+
+                setDropDownHeight(getHeight() / 3);
+                setDropDownWidth(getWidth() / 2);
+            }
+
+            @Override
+            public void afterTextChanged(Editable e) {
+                cancelUpdate();
+
+                if (!mModified) return;
+
+                mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
             }
         });
     }
