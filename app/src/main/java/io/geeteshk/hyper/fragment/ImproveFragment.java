@@ -43,19 +43,40 @@ import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Giiit;
 import io.geeteshk.hyper.helper.Validator;
 
+/**
+ * Fragment to display projects to edit
+ */
 public class ImproveFragment extends Fragment {
 
+    /**
+     * Project related stuff
+     */
     ArrayList mObjectsList;
     ProjectAdapter mProjectAdapter;
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
 
+    /**
+     * public Constructor
+     */
     public ImproveFragment() {
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
     }
 
+    /**
+     * Called when fragment view is created
+     *
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
+     */
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

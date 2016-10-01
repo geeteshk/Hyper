@@ -19,6 +19,9 @@ import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Law;
 import io.geeteshk.hyper.helper.Typefacer;
 
+/**
+ * Activity for application splash
+ */
 public class SplashActivity extends AppCompatActivity {
 
     /**

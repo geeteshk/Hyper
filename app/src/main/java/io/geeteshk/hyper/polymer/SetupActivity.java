@@ -11,6 +11,9 @@ import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Polymer;
 import io.geeteshk.hyper.helper.Pref;
 
+/**
+ * Activity to setup polymer elements
+ */
 @SuppressLint("StaticFieldLeak")
 public class SetupActivity extends AppCompatActivity {
 

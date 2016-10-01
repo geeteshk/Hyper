@@ -19,14 +19,26 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 
+/**
+ * Helper class for polymer functions
+ */
 public class Polymer {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = Polymer.class.getSimpleName();
 
-    public static String getComponentsUrl() {
+    /**
+     * Construct components url to download from
+     *
+     * @return url
+     */
+    private static String getComponentsUrl() {
         ArrayList<Element> elements = ElementsHolder.getInstance().getElements();
         StringBuilder builder = new StringBuilder("http://bowerarchiver.appspot.com/archive?");
         for (int i = 0; i < elements.size(); i++) {
@@ -44,18 +56,29 @@ public class Polymer {
         return builder.toString();
     }
 
+    /**
+     * Add packaged to project
+     *
+     * @param progressBar to display progress
+     * @param progressText to explain task
+     * @param project project to add to
+     * @param context context for files
+     */
     public static void addPackages(ProgressBar progressBar, TextView progressText, String project, Context context) {
         new GetComponentsTask(progressBar, progressText, project, context).execute(getComponentsUrl());
     }
 
-    static class GetComponentsTask extends AsyncTask<String, String, String> {
+    /**
+     * Task to download polymer components and set them up
+     */
+    private static class GetComponentsTask extends AsyncTask<String, String, String> {
 
         Context mContext;
         ProgressBar mProgressBar;
         String mProject;
         TextView mProgressText;
 
-        public GetComponentsTask(ProgressBar progressBar, TextView progressText, String project, Context context) {
+        GetComponentsTask(ProgressBar progressBar, TextView progressText, String project, Context context) {
             mContext = context;
             mProgressBar = progressBar;
             mProject = project;
@@ -65,7 +88,7 @@ public class Polymer {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressText.setText("Downloading components...");
+            mProgressText.setText(R.string.downloading_components);
             mProgressBar.setIndeterminate(false);
         }
 
@@ -107,14 +130,14 @@ public class Polymer {
 
         @Override
         protected void onPostExecute(String s) {
-            mProgressText.setText("Setting up components...");
+            mProgressText.setText(R.string.setting_up_components);
             mProgressBar.setIndeterminate(true);
 
             unpackComponents();
             organizeFiles();
             setupImports();
 
-            mProgressText.setText("Finished!");
+            mProgressText.setText(R.string.finished);
             mProgressBar.setIndeterminate(false);
             mProgressBar.setProgress(100);
 
@@ -136,8 +159,10 @@ public class Polymer {
                     fileName = zipEntry.getName();
                     if (zipEntry.isDirectory()) {
                         File file = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + fileName);
-                        file.mkdirs();
-                        mProgressText.setText("Unpacking " + fileName + "...");
+                        if (file.mkdirs()) {
+                            mProgressText.setText("Unpacking " + fileName + "...");
+                        }
+
                         continue;
                     }
 
@@ -160,23 +185,28 @@ public class Polymer {
             File componentsFolder = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components/bower_components");
             File newFolder = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "bower_components");
             if (!newFolder.exists()) {
-                newFolder.mkdir();
+                if (newFolder.mkdir()) {
+                    return;
+                }
             }
 
             if (componentsFolder.isDirectory()) {
                 File[] contents = componentsFolder.listFiles();
                 for (File content : contents) {
-                    content.renameTo(new File(newFolder, content.getName()));
-                    mProgressText.setText("Organizing " + content.getPath() + "...");
+                    if (content.renameTo(new File(newFolder, content.getName()))) {
+                        mProgressText.setText("Organizing " + content.getPath() + "...");
+                    }
                 }
             }
 
             Project.deleteDirectory(mContext, new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components"));
-            new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components.zip").delete();
+            if (!new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "components.zip").delete()) {
+                Log.v(TAG, "Error while deleting.");
+            }
         }
 
         private void setupImports() {
-            mProgressText.setText("Setting up imports...");
+            mProgressText.setText(R.string.setting_up_imports);
             ArrayList<Element> elements = ElementsHolder.getInstance().getElements();
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < elements.size(); i++) {

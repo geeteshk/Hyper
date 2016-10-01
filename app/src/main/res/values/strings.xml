@@ -230,4 +230,8 @@ SOFTWARE.</string>
     <string name="firebase_account_desc">Reset credentials or sign out of your account.</string>
     <string name="file_problem">There was a problem reading this file.</string>
     <string name="creating_files">Creating project files…</string>
+    <string name="downloading_components">Downloading components…</string>
+    <string name="setting_up_components">Setting up components…</string>
+    <string name="finished">Finished!</string>
+    <string name="setting_up_imports">Setting up imports…</string>
 </resources>
