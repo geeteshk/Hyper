@@ -14,10 +14,21 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.polymer.Element;
 
+/**
+ * Adapter to display elements of a project and their descriptions
+ */
 public class AboutElementsAdapter extends RecyclerView.Adapter<AboutElementsAdapter.ViewHolder> {
 
-    ArrayList<Element> mElements;
+    /**
+     * List of polymer elements
+     */
+    private ArrayList<Element> mElements;
 
+    /**
+     * public Constructor
+     *
+     * @param project project that is being worked on
+     */
     public AboutElementsAdapter(String project) {
         if (!new File(Constants.HYPER_ROOT + File.separator + project + File.separator + "packages.hyper").exists()) {
             mElements = new ArrayList<>();
@@ -27,12 +38,25 @@ public class AboutElementsAdapter extends RecyclerView.Adapter<AboutElementsAdap
         }
     }
 
+    /**
+     * When view holder is create
+     *
+     * @param parent parent view
+     * @param viewType type of view
+     * @return AboutElementsAdapter.ViewHolder
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_polymer_element, parent, false);
         return new ViewHolder(rootView);
     }
 
+    /**
+     * View holder is bound to a position
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTitle.setText(mElements.get(position).getName());
@@ -40,18 +64,34 @@ public class AboutElementsAdapter extends RecyclerView.Adapter<AboutElementsAdap
         holder.mVersion.setText(mElements.get(position).getVersion());
     }
 
+    /**
+     * Gets the size of objects
+     *
+     * @return array size
+     */
     @Override
     public int getItemCount() {
         return mElements.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * ViewHolder class for RecyclerView
+     */
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTitle;
-        public TextView mDescription;
-        public TextView mVersion;
+        /**
+         * Views in holder
+         */
+        TextView mTitle;
+        TextView mDescription;
+        TextView mVersion;
 
-        public ViewHolder(View view) {
+        /**
+         * Constructor
+         *
+         * @param view parent view
+         */
+        ViewHolder(View view) {
             super(view);
             mTitle = (TextView) view.findViewById(R.id.element_title_about);
             mDescription = (TextView) view.findViewById(R.id.element_description_about);

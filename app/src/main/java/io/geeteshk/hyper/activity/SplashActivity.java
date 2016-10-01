@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -22,9 +21,22 @@ import io.geeteshk.hyper.helper.Typefacer;
 
 public class SplashActivity extends AppCompatActivity {
 
+    /**
+     * Layout to handle snackbars
+     */
     CoordinatorLayout mLayout;
+
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
 
+    /**
+     * Method called when activity is created
+     *
+     * @param savedInstanceState previously stored state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
@@ -57,6 +69,13 @@ public class SplashActivity extends AppCompatActivity {
         }, 1000);
     }
 
+    /**
+     * Called when a permission request is handled
+     *
+     * @param requestCode code to request permision
+     * @param permissions array of permissions that were requested
+     * @param grantResults what the results are
+     */
     @SuppressLint("InlinedApi")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

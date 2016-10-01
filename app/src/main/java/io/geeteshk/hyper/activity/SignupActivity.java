@@ -1,12 +1,9 @@
 package io.geeteshk.hyper.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -27,34 +24,49 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
-import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Theme;
 
+/**
+ * Activity to signup for a Firebase account
+ */
 public class SignupActivity extends AppCompatActivity {
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
 
+    /**
+     * Input fields and views
+     */
     private EditText inputEmail, inputPassword;
-    private Button btnSignIn, btnSignUp, btnResetPassword;
+
+    /**
+     * Dummy progress
+     */
     private ProgressBar progressBar;
 
+    /**
+     * Method called when activity is created
+     *
+     * @param savedInstanceState previously stored state
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
-
+        setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_signup);
         Decor.setStatusBarColor(this, -1);
 
-        btnSignIn = (Button) findViewById(R.id.sign_in_button);
-        btnSignUp = (Button) findViewById(R.id.sign_up_button);
+        Button btnSignIn = (Button) findViewById(R.id.sign_in_button);
+        Button btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+        Button btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +115,7 @@ public class SignupActivity extends AppCompatActivity {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                    Toast.makeText(SignupActivity.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     File projectDir = new File(Constants.HYPER_ROOT);
@@ -111,12 +123,13 @@ public class SignupActivity extends AppCompatActivity {
                                         Project.deleteDirectory(SignupActivity.this, projectDir);
                                     }
 
-                                    projectDir.mkdir();
-                                    Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
-                                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    finish();
+                                    if (projectDir.mkdir()) {
+                                        Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
+                                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }
                         });
@@ -125,6 +138,9 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called when activity is resumed
+     */
     @Override
     protected void onResume() {
         super.onResume();

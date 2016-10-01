@@ -77,7 +77,7 @@ public class Jason {
             Log.e(TAG, e.getMessage());
         }
 
-        return null;
+        return "";
     }
 
     /**

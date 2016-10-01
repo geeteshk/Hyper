@@ -15,17 +15,39 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 
+/**
+ * Activity to enter PIN for security
+ */
 public class EncryptActivity extends AppCompatActivity {
 
+    /**
+     * Separate views for pin entry
+     */
     TextView buttonOne, buttonTwo, buttonThree, buttonFour, buttonFive, buttonSix, buttonSeven, buttonEight, buttonNine, buttonZero;
     ImageView buttonDelete;
     LinearLayout dotsLayout;
     View dotOne, dotTwo, dotThree, dotFour;
+
+    /**
+     * Number of digits entered
+     */
     int dotCounter = 0;
 
+    /**
+     * Stored PIN
+     */
     private int[] PIN = new int[4];
+
+    /**
+     * PIN entered by user
+     */
     private int[] ENTERED_PIN = new int[4];
 
+    /**
+     * Method called when activity is created
+     *
+     * @param savedInstanceState previously stored state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +100,12 @@ public class EncryptActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method to set single PIN digit at position
+     *
+     * @param dotNumber the number to be stored
+     * @param active whether to add or remove
+     */
     private void setDot(int dotNumber, boolean active) {
         if (active) {
             switch (dotNumber) {
@@ -112,6 +140,9 @@ public class EncryptActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Revert input back to original state
+     */
     private void resetDots() {
         dotCounter = 0;
         dotOne.setBackgroundResource(R.drawable.circle_empty);
@@ -120,14 +151,30 @@ public class EncryptActivity extends AppCompatActivity {
         dotFour.setBackgroundResource(R.drawable.circle_empty);
     }
 
+    /**
+     * Custom OnClickListener class for each number input
+     */
     private class NumberClickListener implements View.OnClickListener {
 
+        /**
+         * Number to input
+         */
         private int number;
 
+        /**
+         * Constructor
+         *
+         * @param number number to input
+         */
         NumberClickListener(int number) {
             this.number = number;
         }
 
+        /**
+         * Called when number is clicked
+         *
+         * @param v view that is clicked
+         */
         @Override
         public void onClick(View v) {
             ENTERED_PIN[dotCounter] = number;

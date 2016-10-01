@@ -1,7 +1,6 @@
 package io.geeteshk.hyper.activity;
 
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +22,7 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ResourceAdapter;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Theme;
 
 /**
  * Activity to list resources of a certain project
@@ -41,10 +40,7 @@ public class ResourcesActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
-
+        setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resources);
 

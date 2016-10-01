@@ -19,22 +19,51 @@ import java.util.List;
 
 import io.geeteshk.hyper.R;
 
+/**
+ * Adapter to display git logs
+ */
 public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHolder> {
 
+    /**
+     * Adapter context
+     */
     private Context mContext;
+
+    /**
+     * Git logs
+     */
     private List<RevCommit> mLogs;
 
+    /**
+     * public Constructor
+     *
+     * @param context adapter context
+     * @param logs git logs as list
+     */
     public GitLogsAdapter(Context context, List<RevCommit> logs) {
         mContext = context;
         mLogs = logs;
     }
 
+    /**
+     * When view holder is created
+     *
+     * @param parent parent view
+     * @param viewType type of view
+     * @return GitLogsAdapter.ViewHolder
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_git_log, parent, false);
         return new ViewHolder(view);
     }
 
+    /**
+     * Called when item is bound to position
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final RevCommit commit = mLogs.get(position);
@@ -76,6 +105,11 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
         holder.mCommitHash.setText(commit.getId().getName());
     }
 
+    /**
+     * Gets log count
+     *
+     * @return list size
+     */
     @Override
     public int getItemCount() {
         if (mLogs != null) {
@@ -85,12 +119,22 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * View holder class for logs
+     */
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mCommitName, mCommitDate, mCommitAuthor, mCommitHash;
-        public View mView;
+        /**
+         * View holder views
+         */
+        TextView mCommitName, mCommitDate, mCommitAuthor, mCommitHash;
+        View mView;
 
-        public ViewHolder(View v) {
+        /**
+         * Constructor
+         * @param v view for holder
+         */
+        ViewHolder(View v) {
             super(v);
             mView = v;
             mCommitName = (TextView) v.findViewById(R.id.commit_name);

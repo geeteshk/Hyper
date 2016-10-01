@@ -1,11 +1,9 @@
 package io.geeteshk.hyper.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,22 +24,38 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
-import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Theme;
 
+/**
+ * Activity used to login to Firebase
+ */
 public class LoginActivity extends AppCompatActivity {
 
+    /**
+     * FirebaseAuth class to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
 
+    /**
+     * Credential input fields
+     */
     private EditText inputEmail, inputPassword;
+
+    /**
+     * Dummy progress
+     */
     private ProgressBar progressBar;
 
+    /**
+     * Method called when activity is created
+     *
+     * @param savedInstanceState previously stored state
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
-
+        setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         Decor.setStatusBarColor(this, -1);
@@ -116,12 +130,13 @@ public class LoginActivity extends AppCompatActivity {
                                         Project.deleteDirectory(LoginActivity.this, projectDir);
                                     }
 
-                                    projectDir.mkdir();
-                                    Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    finish();
+                                    if (projectDir.mkdir()) {
+                                        Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }
                         });

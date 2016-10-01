@@ -41,23 +41,44 @@ import io.geeteshk.hyper.helper.Project;
  */
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHolder> {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = ProjectAdapter.class.getSimpleName();
 
     /**
      * Context used for various purposes such as loading files and inflating layouts
      */
-    Context mContext;
+    private Context mContext;
 
     /**
      * Array of objects to fill list
      */
-    String[] mObjects;
+    private String[] mObjects;
 
-    boolean mImprove;
+    /**
+     * Whether this adapter is used in
+     * either ImproveFragment if true
+     * of PilotFragment if false
+     */
+    private boolean mImprove;
 
-    FirebaseAuth mAuth;
-    FirebaseStorage mStorage;
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
+    private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
 
+    /**
+     * public Constructor
+     *
+     * @param context loading files and inflating etc
+     * @param objects objects to fill list
+     * @param improve see mImprove above
+     * @param auth FirebaseAuth
+     * @param storage FirebaseStorage
+     */
     public ProjectAdapter(Context context, String[] objects, boolean improve, FirebaseAuth auth, FirebaseStorage storage) {
         this.mContext = context;
         this.mObjects = objects;
@@ -66,6 +87,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         this.mStorage = storage;
     }
 
+    /**
+     * When view holder is created
+     *
+     * @param parent parent view
+     * @param viewType type of view
+     * @return ProjectAdapter.ViewHolder
+     */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -73,6 +101,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         return new MyViewHolder(itemView);
     }
 
+    /**
+     * Called when item is bound to position
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         int color = Color.parseColor(Jason.getProjectProperty(mObjects[position], "color"));
@@ -203,18 +237,34 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
     }
 
+    /**
+     * Gets number of projects
+     *
+     * @return array size
+     */
     @Override
     public int getItemCount() {
         return mObjects.length;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * View holder class for logs
+     */
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTitle, mDescription;
-        public ImageView mFavicon, mRepo;
-        public View mColor;
+        /**
+         * Views for view holder
+         */
+        TextView mTitle, mDescription;
+        ImageView mFavicon, mRepo;
+        View mColor;
 
-        public MyViewHolder(View view) {
+        /**
+         * public Constructor
+         *
+         * @param view root view
+         */
+        MyViewHolder(View view) {
             super(view);
 
             mTitle = (TextView) view.findViewById(R.id.title);

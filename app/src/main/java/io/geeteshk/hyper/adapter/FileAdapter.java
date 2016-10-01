@@ -1,11 +1,7 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +12,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.fragment.EditorFragment;
-import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Decor;
 
 /**
@@ -28,14 +22,12 @@ public class FileAdapter extends ArrayAdapter<String> {
     /**
      * Names of main files to edit
      */
-    List<String> mFiles;
+    private List<String> mFiles;
 
     /**
      * Name of currently opened project
      */
-    String mProject;
-
-    Context mContext;
+    private String mProject;
 
     /**
      * Public constructor for adapter
@@ -44,19 +36,34 @@ public class FileAdapter extends ArrayAdapter<String> {
         super(context, android.R.layout.simple_list_item_1, files);
         mFiles = files;
         mProject = project;
-        mContext = context;
     }
 
+    /**
+     * View is created
+     *
+     * @param position item position
+     * @param convertView reuseable view
+     * @param parent parent view
+     * @return view to display
+     */
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView textView = (TextView) super.getView(position, convertView, parent);
         textView.setText(getPageTitle(position));
         return textView;
     }
 
+    /**
+     * Dropdown view is created
+     *
+     * @param position item position
+     * @param convertView reuseable view
+     * @param parent parent view
+     * @return view to display in dropdown
+     */
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         View rootView;
         if (convertView == null) {
             rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file_project, parent, false);
@@ -73,6 +80,12 @@ public class FileAdapter extends ArrayAdapter<String> {
         return rootView;
     }
 
+    /**
+     * Method to remove folder name from file
+     *
+     * @param position item position
+     * @return new page title
+     */
     private CharSequence getPageTitle(int position) {
         if (mFiles.get(position).startsWith("css")) {
             return mFiles.get(position).substring(4);
@@ -85,6 +98,11 @@ public class FileAdapter extends ArrayAdapter<String> {
         return mFiles.get(position);
     }
 
+    /**
+     * Gets count of files open
+     *
+     * @return array size
+     */
     @Override
     public int getCount() {
         return mFiles.size();

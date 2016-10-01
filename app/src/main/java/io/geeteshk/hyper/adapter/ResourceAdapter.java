@@ -13,6 +13,10 @@ import java.util.List;
 
 import io.geeteshk.hyper.R;
 
+/**
+ * Adapter to display files to be able to delete
+ * TODO: Get rid of this horrible class
+ */
 public class ResourceAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;

@@ -2,12 +2,7 @@ package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,31 +28,34 @@ import java.util.ArrayList;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.text.HtmlCompat;
+import io.geeteshk.hyper.helper.Theme;
 
 /**
  * Activity to test projects
  */
 public class WebActivity extends AppCompatActivity {
 
+    /**
+     * WebView to display project
+     */
     private WebView mWebView;
+
+    /**
+     * ArrayList for JavaScript logs
+     */
     private ArrayList<String> mLogs;
 
     /**
-     * Called when the activity is created
+     * Method called when activity is created
      *
-     * @param savedInstanceState restored when onResume is called
+     * @param savedInstanceState previously stored state
      */
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
-
+        setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
@@ -95,6 +92,13 @@ public class WebActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Dirty workaround to display icons in menu
+     *
+     * @param view options panel
+     * @param menu menu to work with
+     * @return whether preparation is handled correctly
+     */
     @Override
     protected boolean onPrepareOptionsPanel(View view, Menu menu) {
         if (menu != null) {
@@ -112,6 +116,9 @@ public class WebActivity extends AppCompatActivity {
         return super.onPrepareOptionsPanel(view, menu);
     }
 
+    /**
+     * Called when activity is destroyed
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -120,6 +127,12 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when menu is created
+     *
+     * @param menu object that holds menu
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -127,6 +140,12 @@ public class WebActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Called when menu item is selected
+     *
+     * @param item selected menu item
+     * @return true if handled
+     */
     @SuppressLint("InflateParams")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

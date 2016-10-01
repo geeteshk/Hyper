@@ -6,9 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,10 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -37,9 +32,6 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -79,62 +71,97 @@ import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.polymer.CatalogActivity;
 import io.geeteshk.hyper.polymer.Element;
 import io.geeteshk.hyper.polymer.ElementsHolder;
 
 /**
- * Activity to list projects
+ * Activity to work on selected project
  */
 public class ProjectActivity extends AppCompatActivity {
 
+    /**
+     * Request code when a file is changed
+     */
     public static final int FILES_CHANGED = 201;
+
+    /**
+     * Log TAG
+     */
     private static final String TAG = ProjectActivity.class.getSimpleName();
+
     /**
      * Intent code to import image
      */
     private static final int IMPORT_IMAGE = 101;
+
     /**
      * Intent code to import font
      */
     private static final int IMPORT_FONT = 102;
+
     /**
      * Intent code to import css
      */
     private static final int IMPORT_CSS = 103;
+
     /**
      * Intent code to import js
      */
     private static final int IMPORT_JS = 104;
+
+    /**
+     * Request code used to open ResourcesActivity
+     */
     private static final int OPEN_RESOURCES = 105;
+
+    /**
+     * Code used to add Polymer elements
+     */
     private static final int POLYMER_ADD_CODE = 300;
+
+    /**
+     * Currently open files
+     */
     private List<String> mFiles;
+
+    /**
+     * Spinner and Adapter to handle files
+     */
     private Spinner mSpinner;
     private ArrayAdapter<String> mFileAdapter;
 
+    /**
+     * Drawer related stuffs
+     */
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawer;
 
+    /**
+     * Project definitions
+     */
     private String mProject;
-
     private File mProjectFile;
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
 
     /**
-     * Called when the activity is created
+     * Method called when activity is created
      *
-     * @param savedInstanceState restored when onResume is called
+     * @param savedInstanceState previously stored state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
+        setTheme(Theme.getThemeInt(this));
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
@@ -251,6 +278,12 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Open file when selected by setting the correct fragment
+     *
+     * @param file file to open
+     * @param add whether to add to adapter
+     */
     private void setFragment(String file, boolean add) {
         if (add) {
             mFileAdapter.add(file);
@@ -263,6 +296,12 @@ public class ProjectActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * Method to get the type of fragment dependent on the file type
+     *
+     * @param title file name
+     * @return fragment to be committed
+     */
     public Fragment getFragment(String title) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", mFileAdapter.getCount());
@@ -279,6 +318,12 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets up menu with project structure
+     *
+     * @param project project to work on
+     * @param menu menu to setup
+     */
     private void setupMenu(String project, @Nullable SubMenu menu) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
@@ -306,6 +351,13 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Used to enable/disable certain git functions
+     * based on whether project is a git repo
+     *
+     * @param menu menu to work with
+     * @return whether preparation is handled correctly
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
@@ -319,6 +371,13 @@ public class ProjectActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Dirty workaround to display icons in menu
+     *
+     * @param view options panel
+     * @param menu menu to work with
+     * @return whether preparation is handled correctly
+     */
     @Override
     protected boolean onPrepareOptionsPanel(View view, Menu menu) {
         if (menu != null) {
@@ -370,6 +429,10 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when activity is destroyed
+     * to stop web server
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -592,7 +655,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_log:
                 List<RevCommit> commits = Giiit.getCommits(ProjectActivity.this, mProjectFile);
-                View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
+                @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
                 if (Pref.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
@@ -609,7 +672,7 @@ public class ProjectActivity extends AppCompatActivity {
                 dialogLog.show();
                 return true;
             case R.id.action_git_status:
-                View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
+                @SuppressLint("InflateParams") View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
                 if (Pref.get(this, "dark_theme", false)) {
                     layoutStatus.setBackgroundColor(0xFF333333);
                 }
@@ -638,7 +701,7 @@ public class ProjectActivity extends AppCompatActivity {
                 editText5.setHint("Branch name");
                 LinearLayout layout = new LinearLayout(this);
                 final CheckBox checkBox = new CheckBox(this);
-                checkBox.setText("Checkout?");
+                checkBox.setText(R.string.checkout);
                 layout.addView(editText5);
                 layout.addView(checkBox);
                 gitBranch.setView(layout);
@@ -753,6 +816,11 @@ public class ProjectActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Show file ending warning/message
+     *
+     * @param image whether to show warning or message
+     */
     private void showToast(boolean image) {
         if (!image) {
             Toast.makeText(this, R.string.file_ending_warn, Toast.LENGTH_SHORT).show();
@@ -761,6 +829,13 @@ public class ProjectActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handle different results from intents
+     *
+     * @param requestCode code used to start intent
+     * @param resultCode result given by intent
+     * @param data data given by intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -945,6 +1020,9 @@ public class ProjectActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Method to update menu items
+     */
     private void refreshMenu() {
         mDrawer.getMenu().clear();
         setupMenu(mProject, null);

@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TextInputLayout;
@@ -26,16 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,10 +40,8 @@ import io.geeteshk.hyper.fragment.HelpFragment;
 import io.geeteshk.hyper.fragment.ImproveFragment;
 import io.geeteshk.hyper.fragment.PilotFragment;
 import io.geeteshk.hyper.fragment.SettingsFragment;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Theme;
 
 /**
  * Main activity to show all main content
@@ -57,27 +49,45 @@ import io.geeteshk.hyper.helper.Project;
 @SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Context of Activity
+     */
     private static Context mContext;
+
+    /**
+     * Fragment manager to handle file changes
+     */
     private static FragmentManager mManager;
 
     /**
      * Layout that holds NavigationDrawer
      */
     private static DrawerLayout mDrawerLayout;
+
     /**
      * Toolbar object for activity
      */
     private static Toolbar mToolbar;
+
     /**
      * Items to be listed in drawer
      */
     private static String[] mItems;
+
+    /**
+     * The drawer itself
+     */
     private static NavigationView mDrawer;
+
     /**
      * Drawer toggle displayed on toolbar
      */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
 
@@ -141,6 +151,10 @@ public class MainActivity extends AppCompatActivity {
         activity.recreate();
     }
 
+    /**
+     * Listener class to handle connection changes
+     * or sudden sign-in state changes
+     */
     FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
         @Override
         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -155,18 +169,15 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /**
-     * Called when the activity is first created
+     * Method called when activity is created
      *
-     * @param savedInstanceState restore when onResume is called
+     * @param savedInstanceState previously stored state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
-
-        if (Pref.get(this, "dark_theme", false)) {
-            setTheme(R.style.Hyper_Dark);
-        }
+        setTheme(Theme.getThemeInt(this));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -206,12 +217,18 @@ public class MainActivity extends AppCompatActivity {
         update(this, getSupportFragmentManager(), Pref.get(this, "last_fragment", 0));
     }
 
+    /**
+     * Called when Activity is started to set listener
+     */
     @Override
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(authListener);
     }
 
+    /**
+     * Called when Activity is stopped to remove listener
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -263,6 +280,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handle different results from intents
+     *
+     * @param requestCode code used to start intent
+     * @param resultCode result given by intent
+     * @param data data given by intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {

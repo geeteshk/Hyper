@@ -19,24 +19,55 @@ import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Jason;
 
+/**
+ * Adapter to display frequently asked questions
+ */
 public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = FAQAdapter.class.getSimpleName();
 
+    /**
+     * Array that holds each FAQ item
+     */
     private JSONArray mArray;
+
+    /**
+     * Adapter context
+     */
     private Context mContext;
 
+    /**
+     * public Constructor
+     *
+     * @param context adapter context
+     */
     public FAQAdapter(Context context) {
         mContext = context;
         mArray = Jason.getFAQs(context);
     }
 
+    /**
+     * When view holder is created
+     *
+     * @param parent parent view
+     * @param viewType type of view
+     * @return FAQAdapter.ViewHolder
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.item_faq, parent, false);
         return new ViewHolder(layout);
     }
 
+    /**
+     * Called when item is bound to position
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
@@ -56,11 +87,21 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         }
     }
 
+    /**
+     * Gets FAQ item count
+     *
+     * @return array size
+     */
     @Override
     public int getItemCount() {
         return mArray.length();
     }
 
+    /**
+     * Launches app details for reset
+     *
+     * @param packageName Constants.PACKAGE
+     */
     private void showInstalledAppDetails(String packageName) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -69,13 +110,24 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         mContext.startActivity(intent);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * View holder class for FAQ
+     */
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RelativeLayout mLayout;
-        public TextView mTitle;
-        public TextView mContent;
+        /**
+         * View holder views
+         */
+        RelativeLayout mLayout;
+        TextView mTitle;
+        TextView mContent;
 
-        public ViewHolder(RelativeLayout layout) {
+        /**
+         * Constructor
+         *
+         * @param layout layout of holder
+         */
+        ViewHolder(RelativeLayout layout) {
             super(layout);
             mLayout = layout;
             mTitle = (TextView) layout.findViewById(R.id.faq_title);
