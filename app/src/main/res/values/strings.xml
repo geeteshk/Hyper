@@ -228,4 +228,6 @@ SOFTWARE.</string>
     <string name="forgot_password_msg">Password reset instructions will be sent to your registered e-mail.</string>
     <string name="firebase_account">My Account</string>
     <string name="firebase_account_desc">Reset credentials or sign out of your account.</string>
+    <string name="file_problem">There was a problem reading this file.</string>
+    <string name="creating_files">Creating project files…</string>
 </resources>

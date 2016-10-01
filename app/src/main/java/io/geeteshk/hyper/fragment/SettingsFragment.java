@@ -26,12 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.AccountActivity;
 import io.geeteshk.hyper.activity.EncryptActivity;
 import io.geeteshk.hyper.activity.MainActivity;
-import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Pref;
 
@@ -40,21 +40,24 @@ import io.geeteshk.hyper.helper.Pref;
  */
 public class SettingsFragment extends Fragment {
 
+    /**
+     * TextView to display pin
+     */
     TextView setPin;
 
     /**
-     * Default empty constructor
+     * public Constructor
      */
     public SettingsFragment() {
     }
 
     /**
-     * Method used to inflate and setup view
+     * Called when fragment view is created
      *
-     * @param inflater           used to inflate layout
-     * @param container          parent view
-     * @param savedInstanceState restores state onResume
-     * @return fragment view that is created
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
      */
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -63,7 +66,10 @@ public class SettingsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         TextView firebaseAccount = (TextView) rootView.findViewById(R.id.firebase_account);
-        firebaseAccount.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && user.getEmail() != null) {
+            firebaseAccount.setText(user.getEmail());
+        }
 
         RelativeLayout firebaseAccountLayout = (RelativeLayout) rootView.findViewById(R.id.firebase_account_layout);
         firebaseAccountLayout.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +159,9 @@ public class SettingsFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Method to replace PIN with new one
+     */
     private void updatePin() {
         if (Pref.get(getActivity(), "pin", "").equals("")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

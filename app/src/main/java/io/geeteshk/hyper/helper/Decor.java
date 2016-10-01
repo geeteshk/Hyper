@@ -1,9 +1,7 @@
 package io.geeteshk.hyper.helper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -11,17 +9,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 
+/**
+ * Helper class used for decor related functions
+ */
 public class Decor {
 
+    /**
+     * Sets the status bar color for API 21 and higher
+     *
+     * @param activity activity to set status bar color
+     * @param color color to set to
+     */
     public static void setStatusBarColor(AppCompatActivity activity, int color) {
         if (Build.VERSION.SDK_INT > 20) {
             if (color == -1) {
@@ -32,6 +35,13 @@ public class Decor {
         }
     }
 
+    /**
+     * Gets icon based on file type
+     *
+     * @param name file name
+     * @param project project name
+     * @return drawable resource int
+     */
     public static int getIcon(String name, String project) {
         switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
             case "html":
@@ -51,11 +61,21 @@ public class Decor {
         }
     }
 
+    /**
+     * Utility method to convert from dp to pixels
+     *
+     * @param context context to get resources
+     * @param dp to convert
+     * @return value in px
+     */
     public static int dpToPx(Context context, int dp) {
         Resources r = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
+    /**
+     * Item decoration for projects view
+     */
     public static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;

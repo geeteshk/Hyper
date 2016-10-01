@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -18,9 +17,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.widget.Editor;
 
@@ -29,6 +27,9 @@ import io.geeteshk.hyper.widget.Editor;
  */
 public class EditorFragment extends Fragment {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = EditorFragment.class.getSimpleName();
 
     /**
@@ -37,26 +38,26 @@ public class EditorFragment extends Fragment {
     String mProject, mFilename;
 
     /**
-     * Default empty constructor
+     * public Constructor
      */
     public EditorFragment() {
         setRetainInstance(true);
     }
 
     /**
-     * Method used to inflate and setup view
+     * Called when fragment view is created
      *
-     * @param inflater           used to inflate layout
-     * @param container          parent view
-     * @param savedInstanceState restores state onResume
-     * @return fragment view that is created
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (!new File(Constants.HYPER_ROOT + File.separator + mProject, mFilename).exists()) {
             TextView textView = new TextView(getActivity());
-            textView.setText("There was a problem reading this file.");
+            textView.setText(R.string.file_problem);
             return textView;
         }
 
@@ -120,11 +121,25 @@ public class EditorFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Method to set symbol
+     *
+     * @param editor editor to set for
+     * @param button which button to set to
+     * @param symbol which symbol to set
+     */
     private void setSymbol(Editor editor, Button button, String symbol) {
         button.setText(symbol);
         button.setOnClickListener(new SymbolClickListener(editor, symbol));
     }
 
+    /**
+     * Method to set symbol
+     *
+     * @param editor editor to set for
+     * @param button which image button to set to
+     * @param symbol which symbol to set
+     */
     private void setSymbol(Editor editor, ImageButton button, String symbol) {
         button.setOnClickListener(new SymbolClickListener(editor, symbol));
     }
@@ -132,7 +147,7 @@ public class EditorFragment extends Fragment {
     /**
      * Method used to get contents of files
      *
-     * @param project  name of project
+     * @param project name of project
      * @param filename name of file
      * @return contents of file
      */
@@ -174,16 +189,37 @@ public class EditorFragment extends Fragment {
         this.mFilename = filename;
     }
 
+    /**
+     * Listener to add symbol to text
+     */
     private class SymbolClickListener implements View.OnClickListener {
 
+        /**
+         * Editor to add symbol to
+         */
         private Editor mEditor;
+
+        /**
+         * Symbol to add to editor
+         */
         private String mSymbol;
 
-        public SymbolClickListener(Editor editor, String symbol) {
+        /**
+         * Constructor
+         *
+         * @param editor see mEditor
+         * @param symbol see mSymbol
+         */
+        SymbolClickListener(Editor editor, String symbol) {
             mEditor = editor;
             mSymbol = symbol;
         }
 
+        /**
+         * Called when view is clicked
+         *
+         * @param v view that is clicked
+         */
         @Override
         public void onClick(View v) {
             int start = Math.max(mEditor.getSelectionStart(), 0);

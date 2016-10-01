@@ -17,10 +17,26 @@ import java.io.FilenameFilter;
 
 import io.geeteshk.hyper.R;
 
+/**
+ * Helper class to fix broken projects
+ */
 public class FirstAid {
 
+    /**
+     * Status array to identify errors
+     */
     private static int[] mStatus = new int[]{0, 0, 0, 0, 0, 0};
 
+    /**
+     * Repair project
+     *
+     * @param context context to copy files
+     * @param name project title
+     * @param author project author
+     * @param description project description
+     * @param keywords project keywords separated by commas
+     * @return true if successfully repaired
+     */
     private static boolean repair(Context context, String name, String author, String description, String keywords) {
         boolean success = true;
         if (mStatus[0] == 1) {
@@ -58,6 +74,11 @@ public class FirstAid {
         return success;
     }
 
+    /**
+     * Repair all projects with given context
+     *
+     * @param context to copy files
+     */
     public static void repairAll(final Context context) {
         final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
@@ -138,6 +159,12 @@ public class FirstAid {
         choiceBuilder.create().show();
     }
 
+    /**
+     * Check if project is broken
+     *
+     * @param string project title
+     * @return true if project is broken
+     */
     public static boolean isBroken(String string) {
         boolean out = false;
         if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + string + ".hyper").exists()

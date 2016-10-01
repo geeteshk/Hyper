@@ -1,7 +1,6 @@
 package io.geeteshk.hyper.polymer;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +13,26 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 
+/**
+ * Activity to browse polymer catalog
+ */
 public class CatalogActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
+    /**
+     * Press when done
+     */
     FloatingActionButton mFinishCreate;
+
+    /**
+     * Grid to display items
+     */
     GridView mCatalog;
 
+    /**
+     * Method called when activity is created
+     *
+     * @param savedInstanceState previously stored state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Pref.get(this, "dark_theme", false)) {
@@ -43,6 +57,14 @@ public class CatalogActivity extends AppCompatActivity implements AdapterView.On
         mCatalog.setOnItemClickListener(this);
     }
 
+    /**
+     * When grid item is clicked
+     *
+     * @param parent parent view
+     * @param view view
+     * @param position position of view
+     * @param id view id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent elementsIntent = new Intent(CatalogActivity.this, ElementsActivity.class);
@@ -50,6 +72,11 @@ public class CatalogActivity extends AppCompatActivity implements AdapterView.On
         startActivity(elementsIntent);
     }
 
+    /**
+     * When FAB is clicked
+     *
+     * @param v FAB
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

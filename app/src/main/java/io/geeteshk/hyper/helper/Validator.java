@@ -11,7 +11,7 @@ import java.util.Iterator;
 import io.geeteshk.hyper.R;
 
 /**
- * Utility class to validate project creation
+ * Helper class to validate project creation
  */
 public class Validator {
 
@@ -54,6 +54,11 @@ public class Validator {
         return true;
     }
 
+    /**
+     * Removes broken projects from list
+     *
+     * @param objectsList to remove projects from
+     */
     public static void removeBroken(ArrayList objectsList) {
         for (Iterator iterator = objectsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();

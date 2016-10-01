@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.widget;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -20,7 +21,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,8 +28,6 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
@@ -693,7 +691,7 @@ public class Editor extends MultiAutoCompleteTextView {
                 case 1:
                     String selected = getSelectedString();
                     LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-                    View layout = inflater.inflate(R.layout.dialog_refactor, null);
+                    @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_refactor, null);
 
                     final EditText replaceFrom = (EditText) layout.findViewById(R.id.replace_from);
                     final EditText replaceTo = (EditText) layout.findViewById(R.id.replace_to);

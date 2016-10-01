@@ -2,7 +2,6 @@ package io.geeteshk.hyper.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -31,8 +30,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
-import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
@@ -44,14 +43,21 @@ import io.geeteshk.hyper.helper.Validator;
  */
 public class PilotFragment extends Fragment {
 
+    /**
+     * Stuff related to projects
+     */
     ArrayList<String> mObjectsList;
     ProjectAdapter mProjectAdapter;
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
 
     /**
-     * Default empty constructor
+     * public Constructor
      */
     public PilotFragment() {
         mAuth = FirebaseAuth.getInstance();
@@ -59,12 +65,12 @@ public class PilotFragment extends Fragment {
     }
 
     /**
-     * Method used to inflate and setup view
+     * Called when fragment view is created
      *
-     * @param inflater           used to inflate layout
-     * @param container          parent view
-     * @param savedInstanceState restores state onResume
-     * @return fragment view that is created
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
      */
     @Nullable
     @Override

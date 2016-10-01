@@ -8,18 +8,31 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Constants;
 
+/**
+ * Fragment to display LICENSE and link to GitHub
+ */
 public class AssistFragment extends Fragment {
 
+    /**
+     * public Constructor
+     */
     public AssistFragment() {
     }
 
+    /**
+     * Called when fragment view is created
+     *
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

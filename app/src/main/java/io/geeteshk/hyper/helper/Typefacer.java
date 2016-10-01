@@ -11,6 +11,9 @@ import java.lang.reflect.Field;
  */
 public final class Typefacer {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = Typefacer.class.getSimpleName();
 
     /**
@@ -31,7 +34,7 @@ public final class Typefacer {
      * @param staticTypefaceFieldName name of typeface
      * @param newTypeface             new typeface
      */
-    protected static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
+    private static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
         try {
             final Field StaticField = Typeface.class.getDeclaredField(staticTypefaceFieldName);
             StaticField.setAccessible(true);

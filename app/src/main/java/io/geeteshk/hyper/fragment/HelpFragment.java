@@ -18,18 +18,18 @@ import io.geeteshk.hyper.adapter.FAQAdapter;
 public class HelpFragment extends Fragment {
 
     /**
-     * Default empty constructor
+     * public Constructor
      */
     public HelpFragment() {
     }
 
     /**
-     * Method used to inflate and setup view
+     * Called when fragment view is created
      *
-     * @param inflater           used to inflate layout
-     * @param container          parent view
-     * @param savedInstanceState restores state onResume
-     * @return fragment view that is created
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
      */
     @Nullable
     @Override

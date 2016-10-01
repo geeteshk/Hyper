@@ -18,7 +18,7 @@ import java.util.Arrays;
 import io.geeteshk.hyper.R;
 
 /**
- * Utility class to handle all project related tasks
+ * Helper class to handle all project related tasks
  */
 public class Project {
 
@@ -42,14 +42,20 @@ public class Project {
             "    <h1>Hello World!</h1>\n" +
             "  </body>\n" +
             "</html>";
+
     /**
      * Empty Style
      */
     public static final String STYLE = "/* Add all your styles here */";
+
     /**
      * Empty Script
      */
     public static final String MAIN = "// Add all your JS here";
+
+    /**
+     * Log TAG
+     */
     private static final String TAG = Project.class.getSimpleName();
 
     /**
@@ -163,7 +169,7 @@ public class Project {
      * @param name of project
      * @return true if successfully create
      */
-    public static boolean createDirectory(String name) {
+    static boolean createDirectory(String name) {
         return new File(Constants.HYPER_ROOT + File.separator + name).mkdirs();
     }
 
@@ -195,7 +201,7 @@ public class Project {
      * @param name of projects
      * @return true if successfully copied
      */
-    public static boolean copyIcon(Context context, String name) {
+    static boolean copyIcon(Context context, String name) {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");
@@ -243,15 +249,17 @@ public class Project {
     }
 
     /**
-     *  Guess whether given file is binary. Just checks for anything under 0x09.
+     *  Guess whether given file is binary
+     *  Just checks for anything under 0x09
      */
     public static boolean isBinaryFile(File f) {
+        int result = 0;
         try {
             FileInputStream in = new FileInputStream(f);
             int size = in.available();
             if (size > 1024) size = 1024;
             byte[] data = new byte[size];
-            in.read(data);
+            result = in.read(data);
             in.close();
 
             int ascii = 0;
@@ -268,12 +276,18 @@ public class Project {
             return other != 0 && 100 * other / (ascii + other) > 95;
 
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, e.getMessage() + String.valueOf(result));
         }
 
         return true;
     }
 
+    /**
+     * Check if file is an image
+     *
+     * @param f file to check
+     * @return true if file is an image
+     */
     public static boolean isImageFile(File f) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

@@ -9,18 +9,43 @@ import java.io.InputStream;
 
 import fi.iki.elonen.NanoHTTPD;
 
+/**
+ * Web server class using NanoHTTPD
+ */
 public class Hyperion extends NanoHTTPD {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = Hyperion.class.getSimpleName();
+
+    /**
+     * File types and respective mimes
+     */
     private final String[] mTypes = {"css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt"};
     private final String[] mMimes = {"text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt"};
+
+    /**
+     * Project to host web server for
+     */
     private String mProject;
 
+    /**
+     * public Constructor
+     *
+     * @param project to host server for
+     */
     public Hyperion(String project) {
         super(8080);
         mProject = project;
     }
 
+    /**
+     * Serving files on server
+     *
+     * @param session not sure what this is
+     * @return response
+     */
     @Override
     public Response serve(IHTTPSession session) {
         String uri = session.getUri();
@@ -40,6 +65,12 @@ public class Hyperion extends NanoHTTPD {
         return new Response(Response.Status.OK, mimeType, inputStream);
     }
 
+    /**
+     * Get mimetype from uri
+     *
+     * @param uri of file
+     * @return file mimetype
+     */
     private String getMimeType(String uri) {
         for (int i = 0; i < mTypes.length; i++) {
             if (uri.endsWith("." + mTypes[i])) {

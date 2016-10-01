@@ -14,30 +14,62 @@ import android.widget.TextView;
 
 import java.io.File;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
 
+/**
+ * Fragment to view image
+ */
 public class ImageFragment extends Fragment {
 
+    /**
+     * Location of image within project
+     */
     private String mLocation;
+
+    /**
+     * Project containing image
+     */
     private String mProject;
 
+    /**
+     * public Constructor
+     */
     public ImageFragment() {}
 
+    /**
+     * Setter for location
+     *
+     * @param location see mLocation
+     */
     public void setFilename(String location) {
         mLocation = location;
     }
 
+    /**
+     * Setter for project
+     *
+     * @param project see mProject
+     */
     public void setProject(String project) {
         mProject = project;
     }
 
+    /**
+     * Called when fragment view is created
+     *
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final File file = new File(Constants.HYPER_ROOT + File.separator + mProject, mLocation);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
-            textView.setText("There was a problem reading this file.");
+            textView.setText(R.string.file_problem);
             return textView;
         }
 
@@ -64,6 +96,12 @@ public class ImageFragment extends Fragment {
         return imageView;
     }
 
+    /**
+     * Gets file size
+     *
+     * @param f file to get size
+     * @return string containing file size and measurement
+     */
     private String getSize(File f) {
         long size = f.length() / 1024;
         if (size >= 1024) {

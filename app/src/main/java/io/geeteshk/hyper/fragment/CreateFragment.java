@@ -3,7 +3,6 @@ package io.geeteshk.hyper.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -33,8 +32,8 @@ import com.pavelsikun.vintagechroma.colormode.ColorMode;
 
 import java.io.InputStream;
 
-import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
@@ -49,42 +48,57 @@ public class CreateFragment extends Fragment {
      * Intent code for selecting an icon
      */
     public static final int SELECT_ICON = 100;
+
+    /**
+     * Log TAG
+     */
     private static final String TAG = CreateFragment.class.getSimpleName();
+
     /**
      * Input fields for project parameters
      */
     TextInputLayout mNameLayout, mAuthorLayout, mDescriptionLayout, mKeywordsLayout;
+
     /**
      * Options to choose favicon
      */
     RadioButton mDefaultIcon, mChooseIcon;
+
     /**
      * Favicon preview
      */
     ImageView mIcon;
+
     /**
      * InputStream to read image from strorage
      */
     InputStream mStream;
 
+    /**
+     * Text to display color
+     */
     TextView mColor;
 
+    /**
+     * Firebase class(es) to get user information
+     * and perform specific Firebase functions
+     */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
 
     /**
-     * Default empty constructor
+     * public Constructor
      */
     public CreateFragment() {
     }
 
     /**
-     * Method used to inflate and setup view
+     * Called when fragment view is created
      *
-     * @param inflater           used to inflate layout
-     * @param container          parent view
-     * @param savedInstanceState restores state onResume
-     * @return fragment view that is created
+     * @param inflater used to inflate layout resource
+     * @param container parent view
+     * @param savedInstanceState state to be restored
+     * @return inflated view
      */
     @Nullable
     @Override
@@ -199,8 +213,8 @@ public class CreateFragment extends Fragment {
      * Called when returning from an external activity
      *
      * @param requestCode code used to request intent
-     * @param resultCode  code returned from activity
-     * @param data        data returned from activity
+     * @param resultCode code returned from activity
+     * @param data data returned from activity
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

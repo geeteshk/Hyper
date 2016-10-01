@@ -23,10 +23,22 @@ import java.util.Set;
 
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 
+/**
+ * Helper class to handle git functions
+ */
 public class Giiit {
 
+    /**
+     * Log TAG
+     */
     private static final String TAG = Giiit.class.getSimpleName();
 
+    /**
+     * git init
+     *
+     * @param context context to make toast
+     * @param repo repo to init
+     */
     public static void init(Context context, File repo) {
         try {
             Git git = Git.init()
@@ -39,6 +51,12 @@ public class Giiit {
         }
     }
 
+    /**
+     * git add -A
+     *
+     * @param context context to make toast
+     * @param repo repo to stage files
+     */
     public static void add(Context context, File repo) {
         try {
             Git git = Git.open(repo);
@@ -52,10 +70,24 @@ public class Giiit {
         }
     }
 
+    /**
+     * git commit -m 'message'
+     *
+     * @param context context to make toast
+     * @param repo repo to commit to
+     * @param message git commit message
+     */
     public static void commit(Context context, File repo, String message) {
         new CommitTask(context, repo).execute(message);
     }
 
+    /**
+     * git status
+     *
+     * @param context context to make toast
+     * @param repo repo to view status of
+     * @param t text views to set status to
+     */
     public static void status(Context context, File repo, TextView... t) {
         try {
             Git git = Git.open(repo);
@@ -130,6 +162,13 @@ public class Giiit {
         }
     }
 
+    /**
+     * git log
+     *
+     * @param context context to make toast
+     * @param repo to get commits from
+     * @return list of commits
+     */
     public static List<RevCommit> getCommits(Context context, File repo) {
         Iterable<RevCommit> log;
         List<RevCommit> revCommits = new ArrayList<>();
@@ -150,6 +189,13 @@ public class Giiit {
         return revCommits;
     }
 
+    /**
+     * git branch
+     *
+     * @param context context to make toast
+     * @param repo repo to get branches from
+     * @return list of branches
+     */
     public static List<Ref> getBranches(Context context, File repo) {
         List<Ref> branches;
         try {
@@ -164,14 +210,22 @@ public class Giiit {
         return branches;
     }
 
-    public static void createBranch(Context context, File repo, String branch, boolean checked) {
+    /**
+     * git branch branchName
+     *
+     * @param context context to make toast
+     * @param repo to create branch
+     * @param branchName name of branch
+     * @param checked switch to branch if it exists
+     */
+    public static void createBranch(Context context, File repo, String branchName, boolean checked) {
         if (checked) {
-            new CheckoutTask(context, repo).execute(String.valueOf(true), branch);
+            new CheckoutTask(context, repo).execute(String.valueOf(true), branchName);
         } else {
             try {
                 Git git = Git.open(repo);
                 git.branchCreate()
-                        .setName(branch)
+                        .setName(branchName)
                         .call();
             } catch (IOException | GitAPIException e) {
                 Log.e(TAG, e.getMessage());
@@ -180,6 +234,13 @@ public class Giiit {
         }
     }
 
+    /**
+     * git branch -d branches
+     *
+     * @param context context to make toast
+     * @param repo to delete branches from
+     * @param branches to delete
+     */
     public static void deleteBranch(Context context, File repo, String... branches) {
         try {
             Git git = Git.open(repo);
@@ -192,6 +253,13 @@ public class Giiit {
         }
     }
 
+    /**
+     * git checkout branch
+     *
+     * @param context context to make toast
+     * @param repo to checkout to branch
+     * @param branch to checkout to
+     */
     public static void checkout(Context context, File repo, String branch) {
         new CheckoutTask(context, repo).execute(String.valueOf(false), branch);
     }
@@ -211,6 +279,15 @@ public class Giiit {
         return branch;
     }
 
+    /**
+     * git clone remoteUrl
+     *
+     * @param context context to make toast
+     * @param repo to clone
+     * @param progressDialog to display progress
+     * @param adapter to refresh
+     * @param remoteUrl to clone from
+     */
     public static void clone(Context context, File repo, ProgressDialog progressDialog, ProjectAdapter adapter, String remoteUrl) {
         if (!repo.exists()) {
             new CloneTask(context, repo, progressDialog, adapter).execute(remoteUrl);
@@ -219,6 +296,13 @@ public class Giiit {
         }
     }
 
+    /**
+     * git clean
+     *
+     * @param context context to make toast
+     * @param repo to clean
+     * @return what has been cleaned
+     */
     public static Set<String> clean(Context context, File repo) {
         Set<String> removed = null;
         try {
@@ -234,12 +318,15 @@ public class Giiit {
         return removed;
     }
 
+    /**
+     * Task to commit repos
+     */
     private static class CommitTask extends AsyncTask<String, Void, Boolean> {
 
         private Context mContext;
         private File mRepo;
 
-        public CommitTask(Context context, File repo) {
+        CommitTask(Context context, File repo) {
             mContext = context;
             mRepo = repo;
         }
@@ -275,12 +362,15 @@ public class Giiit {
         }
     }
 
+    /**
+     * Task to switch branches
+     */
     private static class CheckoutTask extends AsyncTask<String, Void, Boolean> {
 
         private Context mContext;
         private File mRepo;
 
-        public CheckoutTask(Context context, File repo) {
+        CheckoutTask(Context context, File repo) {
             mContext = context;
             mRepo = repo;
         }
@@ -318,6 +408,9 @@ public class Giiit {
         }
     }
 
+    /**
+     * Task to clone repo
+     */
     private static class CloneTask extends AsyncTask<String, String, Boolean> {
 
         private Context mContext;
@@ -325,7 +418,7 @@ public class Giiit {
         private ProgressDialog mProgressDialog;
         private ProjectAdapter mAdapter;
 
-        public CloneTask(Context context, File repo, ProgressDialog progressDialog, ProjectAdapter adapter) {
+        CloneTask(Context context, File repo, ProgressDialog progressDialog, ProjectAdapter adapter) {
             mContext = context;
             mRepo = repo;
             mProgressDialog = progressDialog;
@@ -335,7 +428,7 @@ public class Giiit {
         @Override
         protected Boolean doInBackground(String... strings) {
             try {
-                final Git git = Git.cloneRepository()
+                Git.cloneRepository()
                         .setURI(strings[0])
                         .setDirectory(mRepo)
                         .setProgressMonitor(new BatchingProgressMonitor() {
