@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -34,10 +33,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.activity.MainActivity;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Giiit;
@@ -98,14 +96,6 @@ public class ImproveFragment extends Fragment {
         projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(getActivity(), 4), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
-
-        FloatingActionButton createButton = (FloatingActionButton) rootView.findViewById(R.id.fab_create);
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.update(getActivity(), getActivity().getSupportFragmentManager(), 0);
-            }
-        });
 
         final ProgressDialog cloneProgress = new ProgressDialog(getActivity());
         cloneProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

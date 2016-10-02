@@ -90,39 +90,14 @@
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_clone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
-        app:fab_addButtonColorNormal="?attr/colorAccent"
-        app:fab_addButtonColorPressed="#1976D2"
-        app:fab_addButtonSize="normal"
-        app:fab_labelStyle="@style/menu_labels_style"
-        app:fab_labelsPosition="left">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_create"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="?attr/colorAccent"
-            app:fab_colorPressed="#1976D2"
-            app:fab_icon="@drawable/ic_action_done"
-            app:fab_size="mini"
-            app:fab_title="@string/create_project" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_clone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_colorNormal="?attr/colorAccent"
-            app:fab_colorPressed="#1976D2"
-            app:fab_icon="@drawable/ic_repo_clone"
-            app:fab_size="mini"
-            app:fab_title="Clone repository" />
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_repo_clone" />
 
 </RelativeLayout>
