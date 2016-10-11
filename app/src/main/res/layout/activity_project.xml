@@ -9,7 +9,6 @@
     tools:context=".activity.ProjectActivity">
 
     <RelativeLayout
-        android:id="@+id/project_layout_snack"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

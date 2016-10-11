@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_create_new"
         android:title="@string/create_not_java"
         app:showAsAction="never">
 
@@ -28,7 +27,6 @@
     </item>
 
     <item
-        android:id="@+id/action_import_file"
         android:title="@string/import_not_java"
         app:showAsAction="never">
 
@@ -57,7 +55,6 @@
     </item>
 
     <item
-        android:id="@+id/action_git"
         android:title="@string/git"
         app:showAsAction="never">
 
@@ -117,6 +114,7 @@
                 android:id="@+id/action_git_clean"
                 android:title="@string/git_clean"
                 app:showAsAction="never" />
+
         </menu>
 
     </item>

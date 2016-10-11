@@ -3,34 +3,14 @@
     <string name="action_drawer_open">Open</string>
     <string name="action_drawer_close">Close</string>
     <string name="create">Create</string>
-    <string name="edit">Improve</string>
-    <string name="pilot">Pilot</string>
-    <string name="settings">Settings</string>
-    <string name="help">FAQ</string>
     <string name="hyper"><![CDATA[</hyper>]]></string>
     <string name="ok">OK</string>
 
-    <string-array name="drawer_items">
-        <item>@string/create</item>
-        <item>@string/edit</item>
-        <item>@string/pilot</item>
-        <item>@string/assist</item>
-        <item>@string/settings</item>
-        <item>@string/help</item>
-    </string-array>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="resources_images">IMAGES</string>
-    <string name="resources_fonts">FONTS</string>
-    <string name="resources_css">CSS</string>
-    <string name="resources_js">JS</string>
     <string name="about_name">Name</string>
     <string name="about_author">Author</string>
     <string name="about_desc">Description</string>
     <string name="about_keywords">Keywords</string>
-    <string name="feedback_title">Title</string>
-    <string name="feedback_content">Content</string>
     <string name="create_keywords">Keywords (separated with commas)</string>
     <string name="create_favicon">Favicon</string>
     <string name="favicon_default">Default</string>
@@ -42,16 +22,9 @@
     <string name="import_css">CSS</string>
     <string name="import_js">JS</string>
     <string name="import_html">HTML</string>
-    <string name="view_resources">Resources</string>
     <string name="about_project">About</string>
-    <string name="feedback_note">If you have a GitHub user name then please include it in the content.</string>
 
-    <string name="permission_network_rationale">Network state permission is needed to check if network is up.</string>
-    <string name="permission_internet_rationale">Internet permission is needed to test projects.</string>
     <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
-    <string name="set_pin">PIN</string>
-    <string name="set_pin_desc">Use a PIN for extra security.</string>
-    <string name="not_set">NOT SET</string>
     <string name="auto_save_freq">AutoSave Frequency</string>
     <string name="auto_save_freq_desc">Choose how long to wait before saving a file.</string>
     <string name="create_color">Colour</string>
@@ -98,42 +71,15 @@
     <string name="repair">First Aid</string>
     <string name="repair_desc">Project no longer showing in the Improve or Pilot menus? Click here to repair any broken projects.</string>
     <string name="view_logs">Logs</string>
-    <string name="donate_to_dev">Donate to the developer</string>
-    <string name="contribute_to_the_app">Contribute to the app</string>
-    <string name="assist">Assist</string>
 
-    <string name="license">The MIT License (MIT)\n\nCopyright &#169; 2016 OpenMatter\n\nPermission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</string>
     <string name="import_not_java">Import</string>
     <string name="create_not_java">New</string>
-    <string name="view_travis_builds">View Travis Builds</string>
     <string name="change_undone">This change cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="goodbye">Goodbye</string>
     <string name="oops_delete">Oops! Something went wrong while deleting</string>
     <string name="cancel">Cancel</string>
-    <string name="create_project">Create project</string>
-    <string name="submit_feedback">Submit Feedback</string>
-    <string name="submit">Submit</string>
-    <string name="error_feedback_title">Please enter a title.</string>
-    <string name="error_feedback_content">Please enter some content.</string>
-    <string name="oops_internet">Oops! Looks like you are not connected to the internet.</string>
-    <string name="feedback_thanks">Feedback sent. Thank you. :)</string>
-    <string name="pin_request">Please enter a new PIN</string>
     <string name="accept">Accept</string>
-    <string name="error_pin">The pin must consist only of 4 digits.</string>
-    <string name="current_pin">Please enter your current PIN.</string>
     <string name="repair_key">Repair</string>
     <string name="repaired">repaired</string>
     <string name="failed">failed</string>
@@ -149,10 +95,8 @@ SOFTWARE.</string>
     <string name="comment">Comment</string>
     <string name="replace">Replace</string>
     <string name="empty_field_no_no">This field cannot be empty</string>
-    <string name="project_dir_error">Could not create project directory!</string>
     <string name="new_pin">New PIN</string>
     <string name="pin_four_digits">The pin must consist only of 4 digits</string>
-    <string name="pin_snack_bar">It is recommended you set a PIN for security in the Settings.</string>
     <string name="not_text_file">The selected file is not a text or image file.</string>
     <string name="new_not_java">New</string>
     <string name="resource_name">Resource name</string>
@@ -165,13 +109,6 @@ SOFTWARE.</string>
     <string name="font_fail">There was a problem while importing this font.</string>
     <string name="js_success">Successfully imported JS file.</string>
     <string name="js_fail">There was a problem while importing this JS file.</string>
-    <string name="resources">Resources</string>
-    <string name="delete_resource">Delete Resource?</string>
-    <string name="sure">Are you sure?</string>
-    <string name="yes">YES</string>
-    <string name="delete_success">Successfully deleted.</string>
-    <string name="delete_fail">Unable to delete resource.</string>
-    <string name="nope">You can\'t delete this file!</string>
     <string name="from_line">\t— From line\t</string>
     <string name="of">\tof\t</string>
     <string name="search">Search</string>
@@ -183,7 +120,6 @@ SOFTWARE.</string>
     <string name="no_data_available">No projects!</string>
     <string name="black">#448AFF</string>
     <string name="polymer">Polymer</string>
-    <string name="add">Add</string>
     <string name="remove">Remove</string>
     <string name="about_elements">Elements</string>
     <string name="git">Git</string>
@@ -203,27 +139,14 @@ SOFTWARE.</string>
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter a minimum of 6 characters!</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up.</string>
-    <string name="change_email">Change Email</string>
-    <string name="change_password">Change Password</string>
-    <string name="send_password_reset_email">Send password reset email</string>
-    <string name="remove_user">Remove User</string>
-    <string name="new_pass">New Password</string>
-    <string name="title_activity_profile">Firebase</string>
-    <string name="title_activity_login">Sign in</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_name">Full Name</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Register now!</string>
     <string name="btn_link_to_login">Already registered? Login to Hyper!</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
     <string name="btn_back"><![CDATA[<< Back]]></string>
-    <string name="hint_new_email">New Email</string>
-    <string name="btn_change">Change</string>
-    <string name="btn_send">Send</string>
-    <string name="btn_remove">Remove</string>
-    <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">Password reset instructions will be sent to your registered e-mail.</string>
     <string name="firebase_account">My Account</string>

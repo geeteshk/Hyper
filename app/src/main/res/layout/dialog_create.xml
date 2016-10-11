@@ -6,7 +6,6 @@
     tools:context=".fragment.CreateFragment">
 
     <ScrollView
-        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +19,6 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <TextView
-                android:id="@+id/meta_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -36,7 +34,6 @@
                 android:layout_marginBottom="8dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/about_name"
@@ -51,7 +48,6 @@
                 android:layout_marginBottom="8dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/about_author"
@@ -66,7 +62,6 @@
                 android:layout_marginBottom="8dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/about_desc"
@@ -81,7 +76,6 @@
                 android:layout_marginBottom="16dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/keywords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/create_keywords"
@@ -90,7 +84,6 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:id="@+id/favicon_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -144,7 +137,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/colour_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

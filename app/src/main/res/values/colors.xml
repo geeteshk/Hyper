@@ -2,8 +2,6 @@
 <resources>
     <color name="colorPrimary">#9B26AF</color>
     <color name="colorPrimaryDark">#7A1EA1</color>
-    <color name="colorPrimaryLight">#BA68C8</color>
     <color name="colorAccent">#68EFAD</color>
     <color name="colorAccentDark">#00796B</color>
-    <color name="fabLabel">#333333</color>
 </resources>
