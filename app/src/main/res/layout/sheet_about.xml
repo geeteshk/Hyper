@@ -10,11 +10,11 @@
         android:padding="24dp">
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_name"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <TextView
@@ -25,11 +25,11 @@
             android:alpha="0.87" />
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_author"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <TextView
@@ -40,11 +40,11 @@
             android:alpha="0.87" />
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_desc"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <TextView
@@ -55,11 +55,11 @@
             android:alpha="0.87" />
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_keywords"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <TextView
@@ -70,11 +70,11 @@
             android:alpha="0.87" />
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_color"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <TextView
@@ -85,11 +85,11 @@
             android:alpha="0.87" />
 
         <TextView
-            style="@style/TextAppearance.Hyper.FloatLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/about_elements"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp" />
 
         <android.support.v7.widget.RecyclerView

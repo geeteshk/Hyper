@@ -1,13 +1,9 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,7 +11,6 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Jason;
 
@@ -76,15 +71,6 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
         }
-
-        if (position == 4) {
-            holder.mLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showInstalledAppDetails(Constants.PACKAGE);
-                }
-            });
-        }
     }
 
     /**
@@ -95,19 +81,6 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mArray.length();
-    }
-
-    /**
-     * Launches app details for reset
-     *
-     * @param packageName Constants.PACKAGE
-     */
-    private void showInstalledAppDetails(String packageName) {
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts(Constants.SCHEME, packageName, null);
-        intent.setData(uri);
-        mContext.startActivity(intent);
     }
 
     /**

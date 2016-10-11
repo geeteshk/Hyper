@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:gravity="bottom"
-    android:padding="16dp"
-    android:background="@color/colorPrimary">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/hyper_logo"
@@ -16,19 +16,17 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_launcher" />
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
         android:id="@+id/email_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:maxLines="1"
-        android:inputType="textEmailAddress"
-        android:hint="E-mail"
         android:gravity="center"
+        android:hint="E-mail"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
         android:textColor="@android:color/white"
-        android:textSize="32sp"
-        android:fontFamily="sans-serif-light"
-        android:background="@null" />
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/acc_change_email"
@@ -65,8 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:textColor="@android:color/white"
-        android:text="Sign Out" />
+        android:text="Sign Out"
+        android:textColor="@color/colorAccentDark" />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package io.geeteshk.hyper.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -85,6 +86,7 @@ public class Project {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(context, name)) {
+                ((Activity) context).recreate();
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
@@ -100,6 +102,7 @@ public class Project {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(name, stream)) {
+                ((Activity) context).recreate();
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();

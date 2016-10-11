@@ -13,8 +13,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Conflicting"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_conflicting"
@@ -26,8 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Added"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_added"
@@ -39,8 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Changed"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_changed"
@@ -52,8 +55,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Missing"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_missing"
@@ -65,8 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Modified"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_modified"
@@ -78,8 +83,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Removed"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_removed"
@@ -91,8 +97,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Uncommitted Changes"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_uncommitted"
@@ -104,8 +111,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Untracked"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_untracked"
@@ -117,8 +125,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Untracked Folders"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:typeface="serif" />
 
         <TextView
             android:id="@+id/status_untracked_folders"

@@ -14,6 +14,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +82,14 @@ public class Giiit {
         new CommitTask(context, repo).execute(message);
     }
 
+    private static String changeTextToNone(String text) {
+        if (StringUtils.isEmptyOrNull(text)) {
+            return "None\n";
+        }
+
+        return text;
+    }
+
     /**
      * git status
      *
@@ -99,63 +108,63 @@ public class Giiit {
             for (String conflict : conflicting) {
                 conflictingOut = conflictingOut + conflict + "\n";
             }
-            t[0].setText(conflictingOut);
+            t[0].setText(changeTextToNone(conflictingOut));
 
             Set<String> added = status.getAdded();
             String addedOut = "";
             for (String add : added) {
                 addedOut = addedOut + add + "\n";
             }
-            t[1].setText(addedOut);
+            t[1].setText(changeTextToNone(addedOut));
 
             Set<String> changed = status.getChanged();
             String changedOut = "";
             for (String change : changed) {
                 changedOut = changedOut + change + "\n";
             }
-            t[2].setText(changedOut);
+            t[2].setText(changeTextToNone(changedOut));
 
             Set<String> missing = status.getMissing();
             String missingOut = "";
             for (String miss : missing) {
                 missingOut = missingOut + miss + "\n";
             }
-            t[3].setText(missingOut);
+            t[3].setText(changeTextToNone(missingOut));
 
             Set<String> modified = status.getModified();
             String modifiedOut = "";
             for (String mod : modified) {
                 modifiedOut = modifiedOut + mod + "\n";
             }
-            t[4].setText(modifiedOut);
+            t[4].setText(changeTextToNone(modifiedOut));
 
             Set<String> removed = status.getRemoved();
             String removedOut = "";
             for (String remove : removed) {
                 removedOut = removedOut + remove + "\n";
             }
-            t[5].setText(removedOut);
+            t[5].setText(changeTextToNone(removedOut));
 
             Set<String> uncommitted = status.getUncommittedChanges();
             String uncommittedOut = "";
             for (String uncom : uncommitted) {
                 uncommittedOut = uncommittedOut + uncom + "\n";
             }
-            t[6].setText(uncommittedOut);
+            t[6].setText(changeTextToNone(uncommittedOut));
 
             Set<String> untracked = status.getUntracked();
             String untrackedOut = "";
             for (String untrack : untracked) {
                 untrackedOut = untrackedOut + untrack + "\n";
             }
-            t[7].setText(untrackedOut);
+            t[7].setText(changeTextToNone(untrackedOut));
 
             Set<String> untrackedFolders = status.getUntrackedFolders();
             String untrackedFoldersOut = "";
             for (String untrackedf : untrackedFolders) {
                 untrackedFoldersOut = untrackedFoldersOut + untrackedf + "\n";
             }
-            t[8].setText(untrackedFoldersOut);
+            t[8].setText(changeTextToNone(untrackedFoldersOut));
         } catch (GitAPIException | IOException e) {
             Log.e(TAG, e.getMessage());
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();

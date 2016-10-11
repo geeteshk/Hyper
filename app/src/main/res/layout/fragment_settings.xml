@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/toolbar_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="@drawable/toolbar_shadow" />
-
     <RelativeLayout
         android:id="@+id/firebase_account_layout"
         android:layout_width="match_parent"
@@ -29,7 +23,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:text="@string/firebase_account"
                 android:textSize="15sp"
                 android:typeface="serif" />
@@ -38,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:alpha="0.54"
+                android:alpha="0.87"
                 android:text="@string/firebase_account_desc" />
 
         </LinearLayout>
@@ -70,7 +63,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:text="@string/dark_theme"
                 android:textSize="15sp"
                 android:typeface="serif" />
@@ -79,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:alpha="0.54"
+                android:alpha="0.87"
                 android:text="@string/dark_theme_desc" />
 
         </LinearLayout>
@@ -90,49 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/set_pin_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:padding="16dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            tools:ignore="RelativeOverlap">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.87"
-                android:text="@string/set_pin"
-                android:textSize="15sp"
-                android:typeface="serif" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:alpha="0.54"
-                android:text="@string/set_pin_desc" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/set_pin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/not_set"
-            android:typeface="sans" />
 
     </RelativeLayout>
 
@@ -152,7 +101,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:text="@string/auto_save_freq"
                 android:textSize="15sp"
                 android:typeface="serif" />
@@ -161,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:alpha="0.54"
+                android:alpha="0.87"
                 android:text="@string/auto_save_freq_desc" />
 
             <android.support.v4.widget.Space
@@ -207,7 +155,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:text="@string/repair"
                 android:textSize="15sp"
                 android:typeface="serif" />
@@ -216,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:alpha="0.54"
+                android:alpha="0.87"
                 android:text="@string/repair_desc" />
 
         </LinearLayout>
@@ -241,7 +188,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.87"
                 android:text="@string/file_ending_warn_title"
                 android:textSize="15sp"
                 android:typeface="serif" />
@@ -250,7 +196,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:alpha="0.54"
+                android:alpha="0.87"
                 android:text="@string/file_ending_warn_desc" />
 
         </LinearLayout>

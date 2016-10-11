@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/ic_action_help"
+        android:title="Help"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_license"
+        android:icon="@drawable/ic_action_license"
+        android:title="License"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+
+</menu>

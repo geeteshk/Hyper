@@ -5,7 +5,6 @@
     <item
         android:id="@+id/action_create_new"
         android:title="@string/create_not_java"
-        android:icon="@drawable/ic_file"
         app:showAsAction="never">
 
         <menu>
@@ -13,19 +12,16 @@
             <item
                 android:id="@+id/action_create_html"
                 android:title="@string/import_html"
-                android:icon="@drawable/ic_html"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_create_css"
                 android:title="@string/import_css"
-                android:icon="@drawable/ic_css"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_create_js"
                 android:title="@string/import_js"
-                android:icon="@drawable/ic_js"
                 app:showAsAction="never" />
         </menu>
 
@@ -34,32 +30,27 @@
     <item
         android:id="@+id/action_import_file"
         android:title="@string/import_not_java"
-        android:icon="@drawable/ic_import"
         app:showAsAction="never">
 
         <menu>
             <item
                 android:id="@+id/action_import_image"
                 android:title="@string/import_image"
-                android:icon="@drawable/ic_image"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_import_font"
                 android:title="@string/import_font"
-                android:icon="@drawable/ic_font"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_import_css"
                 android:title="@string/import_css"
-                android:icon="@drawable/ic_css"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_import_js"
                 android:title="@string/import_js"
-                android:icon="@drawable/ic_js"
                 app:showAsAction="never" />
         </menu>
 
@@ -68,44 +59,37 @@
     <item
         android:id="@+id/action_git"
         android:title="@string/git"
-        android:icon="@drawable/ic_git"
         app:showAsAction="never">
 
         <menu>
             <item
                 android:id="@+id/action_git_init"
                 android:title="@string/git_init"
-                android:icon="@drawable/ic_git_init"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_git_add"
                 android:title="@string/git_add"
-                android:icon="@drawable/ic_git_stage"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_git_commit"
                 android:title="@string/git_commit"
-                android:icon="@drawable/ic_git_commit"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_git_log"
                 android:title="@string/git_log"
-                android:icon="@drawable/ic_git_log"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_git_status"
                 android:title="@string/git_status"
-                android:icon="@drawable/ic_git_status"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/action_git_branch"
                 android:title="@string/branch"
-                android:icon="@drawable/ic_git_branch"
                 app:showAsAction="never">
 
                 <menu>
@@ -113,19 +97,16 @@
                     <item
                         android:id="@+id/action_git_branch_new"
                         android:title="@string/new_not_java"
-                        android:icon="@drawable/ic_git_branch"
                         app:showAsAction="never" />
 
                     <item
                         android:id="@+id/action_git_branch_remove"
                         android:title="@string/remove"
-                        android:icon="@drawable/ic_git_branch_remove"
                         app:showAsAction="never" />
 
                     <item
                         android:id="@+id/action_git_branch_checkout"
                         android:title="@string/checkout"
-                        android:icon="@drawable/ic_git_branch_checkout"
                         app:showAsAction="never" />
 
                 </menu>
@@ -135,7 +116,6 @@
             <item
                 android:id="@+id/action_git_clean"
                 android:title="@string/git_clean"
-                android:icon="@drawable/ic_git_clean"
                 app:showAsAction="never" />
         </menu>
 
@@ -144,25 +124,16 @@
     <item
         android:id="@+id/action_polymer_add"
         android:title="@string/polymer"
-        android:icon="@drawable/ic_action_polymer"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_run"
         android:title="@string/run_project"
-        android:icon="@drawable/ic_run"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_view_resources"
-        android:title="@string/view_resources"
-        android:icon="@drawable/ic_resources"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_about"
         android:title="@string/about_project"
-        android:icon="@drawable/ic_about"
         app:showAsAction="never" />
 
 </menu>

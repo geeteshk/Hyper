@@ -4,16 +4,15 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,19 +20,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.activity.EncryptActivity;
-import io.geeteshk.hyper.activity.MainActivity;
-import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.activity.WebActivity;
+import io.geeteshk.hyper.activity.ProjectActivity;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Firebase;
-import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Jason;
-import io.geeteshk.hyper.helper.Network;
-import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 
 /**
@@ -57,13 +50,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     private String[] mObjects;
 
     /**
-     * Whether this adapter is used in
-     * either ImproveFragment if true
-     * of PilotFragment if false
-     */
-    private boolean mImprove;
-
-    /**
      * Firebase class(es) to get user information
      * and perform specific Firebase functions
      */
@@ -75,14 +61,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      *
      * @param context loading files and inflating etc
      * @param objects objects to fill list
-     * @param improve see mImprove above
      * @param auth FirebaseAuth
      * @param storage FirebaseStorage
      */
-    public ProjectAdapter(Context context, String[] objects, boolean improve, FirebaseAuth auth, FirebaseStorage storage) {
+    public ProjectAdapter(Context context, String[] objects, FirebaseAuth auth, FirebaseStorage storage) {
         this.mContext = context;
         this.mObjects = objects;
-        this.mImprove = improve;
         this.mAuth = auth;
         this.mStorage = storage;
     }
@@ -96,6 +80,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Arrays.sort(mObjects);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_project, parent, false);
         return new MyViewHolder(itemView);
@@ -109,77 +94,89 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        int color = Color.parseColor(Jason.getProjectProperty(mObjects[position], "color"));
         final int newPos = holder.getAdapterPosition();
 
         holder.mTitle.setText(mObjects[position]);
         holder.mDescription.setText(Jason.getProjectProperty(mObjects[position], "description"));
         holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects[position]));
-        holder.mColor.setBackgroundColor(color);
 
-        if (mImprove) {
-            holder.mFavicon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent;
-                    if (Pref.get(mContext, "pin", "").equals("")) {
-                        intent = new Intent(mContext, ProjectActivity.class);
-                        intent.putExtra("project", mObjects[newPos]);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        holder.mLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ProjectActivity.class);
+                intent.putExtra("project", mObjects[newPos]);
+                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
-                        if (Build.VERSION.SDK_INT >= 21) {
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-                        }
-
-                        ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
-                    } else {
-                        intent = new Intent(mContext, EncryptActivity.class);
-                        intent.putExtra("project", mObjects[newPos]);
-                        mContext.startActivity(intent);
-                    }
+                if (Build.VERSION.SDK_INT >= 21) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                 }
-            });
-        } else {
-            holder.mFavicon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Network.setDrive(new Hyperion(mObjects[newPos]));
 
-                    try {
-                        Network.getDrive().start();
-                    } catch (IOException e) {
-                        Log.e(TAG, e.getMessage());
-                    }
+                ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
+            }
+        });
 
+        holder.mFavicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ProjectActivity.class);
+                intent.putExtra("project", mObjects[newPos]);
+                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
-                    if (Pref.get(mContext, "pin", "").equals("")) {
-                        Intent intent = new Intent(mContext, WebActivity.class);
-
-                        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-                            intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
-                        } else {
-                            intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
-                        }
-
-                        intent.putExtra("name", mObjects[newPos]);
-                        intent.putExtra("pilot", true);
-                        mContext.startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(mContext, EncryptActivity.class);
-
-                        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-                            intent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
-                        } else {
-                            intent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mObjects[newPos] + File.separator + "index.html");
-                        }
-
-                        intent.putExtra("name", mObjects[newPos]);
-                        intent.putExtra("pilot", true);
-                        mContext.startActivity(intent);
-                    }
+                if (Build.VERSION.SDK_INT >= 21) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                 }
-            });
-        }
+
+                ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
+            }
+        });
+
+        holder.mLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects[newPos] + "?");
+                builder.setMessage(R.string.change_undone);
+                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Project.deleteProject(mContext, mObjects[newPos])) {
+                            holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
+
+                                }
+                            });
+                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton(R.string.cancel, null);
+                builder.show();
+
+                return true;
+            }
+        });
 
         holder.mFavicon.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -201,14 +198,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                                 public void onAnimationEnd(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
-                                    MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
-                                    MainActivity.update(mContext, ((AppCompatActivity) mContext).getSupportFragmentManager(), 1);
                                 }
 
                                 @Override
@@ -232,7 +227,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         });
 
         if (new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").exists() && new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").isDirectory()) {
-            holder.mRepo.setVisibility(View.VISIBLE);
+            holder.mRepo.setImageResource(R.drawable.ic_repo);
         }
 
     }
@@ -257,7 +252,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
          */
         TextView mTitle, mDescription;
         ImageView mFavicon, mRepo;
-        View mColor;
+        LinearLayout mLayout;
 
         /**
          * public Constructor
@@ -271,7 +266,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             mDescription = (TextView) view.findViewById(R.id.desc);
             mRepo = (ImageView) view.findViewById(R.id.git_repo);
             mFavicon = (ImageView) view.findViewById(R.id.favicon);
-            mColor = view.findViewById(R.id.project_color);
+            mLayout = (LinearLayout) view.findViewById(R.id.project_layout);
         }
     }
 }

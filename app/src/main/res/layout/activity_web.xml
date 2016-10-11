@@ -24,18 +24,21 @@
         android:id="@+id/toolbar"
         layout="@layout/widget_toolbar" />
 
+    <TextView
+        android:id="@+id/web_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/colorAccent"
+        android:padding="16dp"
+        android:textColor="@color/colorAccentDark"
+        android:typeface="serif" />
+
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/web_address"
         android:alpha="0" />
-
-    <View
-        android:id="@+id/toolbar_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_below="@+id/toolbar"
-        android:background="@drawable/toolbar_shadow" />
 
 </RelativeLayout>

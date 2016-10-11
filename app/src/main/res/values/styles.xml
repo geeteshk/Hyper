@@ -10,13 +10,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="itemTextColor">@color/drawer_item</item>
-        <item name="itemIconTint">@color/drawer_item</item>
-    </style>
-
-    <style name="TextAppearance.Hyper.FloatLabel" parent="android:TextAppearance.Small">
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

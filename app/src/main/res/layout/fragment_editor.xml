@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <io.geeteshk.hyper.widget.Editor
+        android:id="@+id/file_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/toolbar_shadow"
-        android:orientation="vertical">
-
-        <io.geeteshk.hyper.widget.Editor
-            android:id="@+id/file_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="start"
-            android:inputType="textMultiLine|textNoSuggestions"
-            android:paddingEnd="16dp"
-            android:paddingLeft="52dp"
-            android:paddingRight="16dp"
-            android:paddingStart="32dp"
-            android:scrollbars="vertical"
-            android:privateImeOptions="nm"
-            android:textSize="14sp" />
-
-    </LinearLayout>
+        android:gravity="start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:paddingEnd="16dp"
+        android:paddingLeft="52dp"
+        android:paddingRight="16dp"
+        android:paddingStart="32dp"
+        android:privateImeOptions="nm"
+        android:scrollbars="vertical"
+        android:textSize="14sp" />
 
     <View
         android:id="@+id/toolbar_shadow"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="3dp"
         android:layout_above="@+id/symbol_layout_scroll_container"
         android:background="@drawable/toolbar_shadow"
         android:rotation="180" />
@@ -36,25 +30,25 @@
     <HorizontalScrollView
         android:id="@+id/symbol_layout_scroll_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:scrollbars="none">
+        android:background="@color/colorPrimary">
 
         <LinearLayout
             android:id="@+id/symbol_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:orientation="horizontal">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp">
 
-            <ImageButton
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/symbol_tab"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="16dp"
-                android:src="@drawable/ic_tab" />
+                android:src="@drawable/ic_tab"
+                app:fabSize="mini" />
 
             <Button
                 android:id="@+id/symbol_one"
@@ -62,8 +56,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&lt;"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_two"
@@ -71,8 +67,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="/"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_three"
@@ -81,8 +79,10 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&gt;"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_four"
@@ -90,8 +90,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&quot;"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_five"
@@ -99,8 +101,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="="
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_six"
@@ -108,8 +112,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="!"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_seven"
@@ -117,8 +123,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="-"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
             <Button
                 android:id="@+id/symbol_eight"
@@ -126,8 +134,10 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="\"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
 
         </LinearLayout>
 

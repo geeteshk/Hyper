@@ -2,6 +2,7 @@ package io.geeteshk.hyper.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,7 +65,7 @@ public class EditorFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
         final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
-        ImageButton symbolTab = (ImageButton) rootView.findViewById(R.id.symbol_tab);
+        FloatingActionButton symbolTab = (FloatingActionButton) rootView.findViewById(R.id.symbol_tab);
         Button symbolOne = (Button) rootView.findViewById(R.id.symbol_one);
         Button symbolTwo = (Button) rootView.findViewById(R.id.symbol_two);
         Button symbolThree = (Button) rootView.findViewById(R.id.symbol_three);

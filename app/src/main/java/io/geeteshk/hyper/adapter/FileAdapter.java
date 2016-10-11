@@ -1,7 +1,10 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +52,23 @@ public class FileAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        TextView textView = (TextView) super.getView(position, convertView, parent);
+        View rootView;
+        if (convertView == null) {
+            rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file_project, parent, false);
+        } else {
+            rootView = convertView;
+        }
+
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
+        TextView textView = (TextView) rootView.findViewById(R.id.file_title);
+
+        imageView.setImageResource(Decor.getIcon(getPageTitle(position).toString(), mProject));
+        imageView.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
         textView.setText(getPageTitle(position));
-        return textView;
+        textView.setTextColor(0xffffffff);
+        textView.setTypeface(Typeface.SERIF);
+
+        return rootView;
     }
 
     /**
@@ -76,6 +93,7 @@ public class FileAdapter extends ArrayAdapter<String> {
 
         imageView.setImageResource(Decor.getIcon(getPageTitle(position).toString(), mProject));
         textView.setText(getPageTitle(position));
+        textView.setTypeface(Typeface.SERIF);
 
         return rootView;
     }

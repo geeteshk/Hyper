@@ -8,7 +8,6 @@
         android:id="@+id/faq_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.87"
         android:textSize="16sp"
         android:typeface="serif" />
 
@@ -18,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/faq_title"
         android:layout_marginTop="8dp"
-        android:alpha="0.54" />
+        android:alpha="0.87" />
 
 </RelativeLayout>

@@ -1,7 +1,11 @@
 package io.geeteshk.hyper.helper;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -299,7 +303,7 @@ public class Firebase {
      * @param auth auth to get user id
      * @param storage storage to storage
      */
-    public static void syncProjects(final FirebaseAuth auth, final FirebaseStorage storage) {
+    public static void syncProjects(final Context context, final FirebaseAuth auth, final FirebaseStorage storage, final SwipeRefreshLayout layout) {
         StorageReference projectRef = null;
         if (auth.getCurrentUser() != null) {
             projectRef = getStorageRef(storage).child(auth.getCurrentUser().getUid() + File.separator + ".projects");
@@ -312,7 +316,11 @@ public class Firebase {
                     try {
                         JSONArray array = new JSONArray(new String(bytes));
                         for (int i = 0; i < array.length(); i++) {
-                            downloadProject(auth, storage, array.getString(i));
+                            if (i == array.length() - 1) {
+                                downloadProject(context, auth, storage, array.getString(i), layout);
+                            } else {
+                                downloadProject(context, auth, storage, array.getString(i), null);
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -367,7 +375,7 @@ public class Firebase {
      * @param storage storage to storage
      * @param project project to download
      */
-    private static void downloadProject(final FirebaseAuth auth, final FirebaseStorage storage, final String project) {
+    private static void downloadProject(final Context context, final FirebaseAuth auth, final FirebaseStorage storage, final String project, @Nullable final SwipeRefreshLayout layout) {
         StorageReference structureRef = null;
         if (auth.getCurrentUser() != null) {
             structureRef = getStorageRef(storage).child(auth.getCurrentUser().getUid() + File.separator + project + File.separator + ".structure");
@@ -396,6 +404,14 @@ public class Firebase {
                         }
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
+                    }
+                }
+            }).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    if (layout != null) {
+                        layout.setRefreshing(false);
+                        ((Activity) context).recreate();
                     }
                 }
             });

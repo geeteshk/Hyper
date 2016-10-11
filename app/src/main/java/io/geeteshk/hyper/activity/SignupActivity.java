@@ -124,12 +124,13 @@ public class SignupActivity extends AppCompatActivity {
                                     }
 
                                     if (projectDir.mkdir()) {
-                                        Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
-                                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                        finish();
+                                        Firebase.syncProjects(SignupActivity.this, mAuth, FirebaseStorage.getInstance(), null);
                                     }
+
+                                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             }
                         });

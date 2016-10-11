@@ -14,9 +14,5 @@
   {
     "title": "Why does feedback not work when I recompile the repo?",
     "content": "The source of Hyper is missing one file and that is Bot.java. The reason it is not included is because it contains some sensitive information (password). "
-  },
-  {
-    "title": "I forgot my PIN! How do I get it back?",
-    "content": "I am afraid that there is no way to get your PIN back without there being a security breach. You will need to click this and reset all the cache and data for this application. This will not delete your project files but will reset your preferences including your PIN."
   }
 ]

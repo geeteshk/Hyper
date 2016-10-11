@@ -131,12 +131,13 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
                                     if (projectDir.mkdir()) {
-                                        Firebase.syncProjects(mAuth, FirebaseStorage.getInstance());
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                        finish();
+                                        Firebase.syncProjects(LoginActivity.this, mAuth, FirebaseStorage.getInstance(), null);
                                     }
+
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             }
                         });

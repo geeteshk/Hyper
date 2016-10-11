@@ -7,7 +7,7 @@
     <string name="pilot">Pilot</string>
     <string name="settings">Settings</string>
     <string name="help">FAQ</string>
-    <string name="hyper"><![CDATA[<hyper/>]]></string>
+    <string name="hyper"><![CDATA[</hyper>]]></string>
     <string name="ok">OK</string>
 
     <string-array name="drawer_items">

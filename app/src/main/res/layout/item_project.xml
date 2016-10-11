@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/project_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="3dp">
-
-        <View
-            android:id="@+id/project_color"
-            android:layout_width="match_parent"
-            android:layout_height="3dp" />
+        android:layout_margin="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,7 +20,6 @@
                 android:id="@+id/favicon"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/create_favicon"
                 android:scaleType="fitCenter" />
@@ -37,9 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/favicon"
+                android:maxLines="1"
                 android:paddingBottom="4dp"
                 android:paddingTop="8dp"
-                android:maxLines="1"
                 android:textSize="18sp"
                 android:typeface="serif" />
 
@@ -55,13 +47,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="-8dp"
-                android:layout_marginEnd="-8dp"
-                android:layout_marginBottom="-8dp"
-                android:src="@drawable/ic_repo"
-                android:visibility="invisible" />
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_local" />
 
         </RelativeLayout>
 

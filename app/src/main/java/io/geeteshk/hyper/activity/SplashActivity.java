@@ -43,8 +43,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
-        Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/RobotoCondensed-BoldItalic.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
+        Typefacer.setDefaultFont(getApplicationContext(), "NORMAL", "fonts/Consolas.ttf");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);

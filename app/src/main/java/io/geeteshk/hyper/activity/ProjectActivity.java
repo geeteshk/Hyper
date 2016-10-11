@@ -13,8 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -51,7 +51,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -112,45 +111,35 @@ public class ProjectActivity extends AppCompatActivity {
     private static final int IMPORT_JS = 104;
 
     /**
-     * Request code used to open ResourcesActivity
-     */
-    private static final int OPEN_RESOURCES = 105;
-
-    /**
      * Code used to add Polymer elements
      */
     private static final int POLYMER_ADD_CODE = 300;
-
-    /**
-     * Currently open files
-     */
-    private List<String> mFiles;
-
-    /**
-     * Spinner and Adapter to handle files
-     */
-    private Spinner mSpinner;
-    private ArrayAdapter<String> mFileAdapter;
-
-    /**
-     * Drawer related stuffs
-     */
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mDrawer;
-
-    /**
-     * Project definitions
-     */
-    private String mProject;
-    private File mProjectFile;
-
     /**
      * Firebase class(es) to get user information
      * and perform specific Firebase functions
      */
     FirebaseAuth mAuth;
     FirebaseStorage mStorage;
+    /**
+     * Currently open files
+     */
+    private List<String> mFiles;
+    /**
+     * Spinner and Adapter to handle files
+     */
+    private Spinner mSpinner;
+    private ArrayAdapter<String> mFileAdapter;
+    /**
+     * Drawer related stuffs
+     */
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mDrawer;
+    /**
+     * Project definitions
+     */
+    private String mProject;
+    private File mProjectFile;
 
     /**
      * Method called when activity is created
@@ -180,20 +169,6 @@ public class ProjectActivity extends AppCompatActivity {
         mFiles.add("index.html");
         mFiles.add("css/style.css");
         mFiles.add("js/main.js");
-
-        final RelativeLayout projectLayout = (RelativeLayout) findViewById(R.id.project_layout_snack);
-        if (Pref.get(this, "pin", "").equals("")) {
-            assert projectLayout != null;
-            Snackbar snackbar = Snackbar.make(projectLayout, R.string.pin_snack_bar, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.set_pin, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            setResult(1337);
-                            finish();
-                        }
-                    });
-            snackbar.show();
-        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
@@ -239,7 +214,7 @@ public class ProjectActivity extends AppCompatActivity {
         TextView headerTitle = (TextView) headerView.findViewById(R.id.header_title);
         TextView headerDesc = (TextView) headerView.findViewById(R.id.header_desc);
 
-        headerLayout.setBackgroundColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
+        headerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         headerIcon.setImageBitmap(Project.getFavicon(mProject));
         headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
         headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
@@ -372,30 +347,6 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     /**
-     * Dirty workaround to display icons in menu
-     *
-     * @param view options panel
-     * @param menu menu to work with
-     * @return whether preparation is handled correctly
-     */
-    @Override
-    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
-        if (menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod(
-                            "setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (Exception e) {
-                    Log.e(getClass().getSimpleName(), "onMenuOpened...unable to set icons for overflow menu", e);
-                }
-            }
-        }
-        return super.onPrepareOptionsPanel(view, menu);
-    }
-
-    /**
      * Called after activity is created
      *
      * @param savedInstanceState restored when onResume is called
@@ -470,7 +421,7 @@ public class ProjectActivity extends AppCompatActivity {
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
 
                 if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-                    runIntent.putExtra("url", "http:///" + Network.getIpAddress() + ":8080");
+                    runIntent.putExtra("url", "http://" + Network.getIpAddress() + ":8080/index.html");
                 } else {
                     runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
                 }
@@ -601,11 +552,6 @@ public class ProjectActivity extends AppCompatActivity {
                 if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                     showToast(false);
                 dialog3.show();
-                return true;
-            case R.id.action_view_resources:
-                Intent resourceIntent = new Intent(ProjectActivity.this, ResourcesActivity.class);
-                resourceIntent.putExtra("project", mProject);
-                startActivityForResult(resourceIntent, OPEN_RESOURCES);
                 return true;
             case R.id.action_about:
                 showAbout();
@@ -972,10 +918,6 @@ public class ProjectActivity extends AppCompatActivity {
             if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(false);
             dialog.show();
-        }
-
-        if (requestCode == OPEN_RESOURCES && resultCode == FILES_CHANGED) {
-            refreshMenu();
         }
 
         if (requestCode == POLYMER_ADD_CODE) {
