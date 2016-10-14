@@ -35,11 +35,6 @@ import io.geeteshk.hyper.helper.Project;
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHolder> {
 
     /**
-     * Log TAG
-     */
-    private static final String TAG = ProjectAdapter.class.getSimpleName();
-
-    /**
      * Context used for various purposes such as loading files and inflating layouts
      */
     private Context mContext;

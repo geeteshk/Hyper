@@ -108,6 +108,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.geeteshk.hyper.activity.MainActivity" />
         </activity>
+        <activity android:name=".activity.IntroActivity"></activity>
     </application>
 
 </manifest>

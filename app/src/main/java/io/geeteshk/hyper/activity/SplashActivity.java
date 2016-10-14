@@ -1,12 +1,8 @@
 package io.geeteshk.hyper.activity;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -16,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Law;
+import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Typefacer;
 
 /**
@@ -67,39 +63,16 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Law.getRequiredPermissions(SplashActivity.this, mLayout);
+                Class classTo = IntroActivity.class;
+                if (Pref.get(SplashActivity.this, "intro_done", false)) {
+                    classTo = LoginActivity.class;
+                }
+
+                Intent intent = new Intent(SplashActivity.this, classTo);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         }, 1000);
-    }
-
-    /**
-     * Called when a permission request is handled
-     *
-     * @param requestCode code to request permision
-     * @param permissions array of permissions that were requested
-     * @param grantResults what the results are
-     */
-    @SuppressLint("InlinedApi")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == Law.WRITE_STORAGE_REQUEST_CODE) {
-            if (Law.checkPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Law.getPermission(SplashActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.permission_storage_rationale, Law.WRITE_STORAGE_REQUEST_CODE, mLayout);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        if (Law.checkAllPermissions(SplashActivity.this)) {
-            Class classTo = SignupActivity.class;
-            if (mAuth.getCurrentUser() != null) {
-                classTo = MainActivity.class;
-            }
-
-            Intent intent = new Intent(getApplicationContext(), classTo);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
     }
 }

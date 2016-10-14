@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView projectsList = (RecyclerView) findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 4), true));
+        projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 2), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
 
@@ -427,6 +427,7 @@ public class MainActivity extends AppCompatActivity {
                 final Notice notice = new Notice(name, url, copyright, license);
                 new LicensesDialog.Builder(this)
                         .setNotices(notice)
+                        .setThemeResourceId(Theme.getThemeInt(MainActivity.this))
                         .build()
                         .show();
                 return true;
