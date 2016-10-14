@@ -30,6 +30,3 @@ build/
 
 #NDK
 obj/
-
-# Contains secure information
-/app/src/main/java/io/geeteshk/hyper/Bot.java
