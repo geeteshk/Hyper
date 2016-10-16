@@ -34,11 +34,6 @@ public class EditorFragment extends Fragment {
     private static final String TAG = EditorFragment.class.getSimpleName();
 
     /**
-     * Strings representing project and filename
-     */
-    String mProject, mFilename;
-
-    /**
      * public Constructor
      */
     public EditorFragment() {
@@ -56,7 +51,10 @@ public class EditorFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (!new File(Constants.HYPER_ROOT + File.separator + mProject, mFilename).exists()) {
+        String location = getArguments().getString("location");
+        final String project = location.substring(0, location.indexOf(File.separator));
+        final String filename = location.substring(location.indexOf(File.separator), location.length());
+        if (!new File(Constants.HYPER_ROOT + File.separator + project, filename).exists()) {
             TextView textView = new TextView(getActivity());
             textView.setText(R.string.file_problem);
             return textView;
@@ -75,7 +73,7 @@ public class EditorFragment extends Fragment {
         Button symbolSeven = (Button) rootView.findViewById(R.id.symbol_seven);
         Button symbolEight = (Button) rootView.findViewById(R.id.symbol_eight);
 
-        if (mFilename.endsWith(".html") || mFilename.equals("imports.txt")) {
+        if (filename.endsWith(".html") || filename.equals("imports.txt")) {
             editText.setType(Editor.CodeType.HTML);
             setSymbol(editText, symbolTab, "\t\t");
             setSymbol(editText, symbolOne, "<");
@@ -86,7 +84,7 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolSix, "!");
             setSymbol(editText, symbolSeven, "-");
             setSymbol(editText, symbolEight, "/");
-        } else if (mFilename.endsWith(".css")) {
+        } else if (filename.endsWith(".css")) {
             editText.setType(Editor.CodeType.CSS);
             setSymbol(editText, symbolTab, "\t\t\t\t");
             setSymbol(editText, symbolOne, "{");
@@ -97,7 +95,7 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolSix, ".");
             setSymbol(editText, symbolSeven, ";");
             setSymbol(editText, symbolEight, "-");
-        } else if (mFilename.endsWith(".js")) {
+        } else if (filename.endsWith(".js")) {
             editText.setType(Editor.CodeType.JS);
             setSymbol(editText, symbolTab, "\t\t\t\t");
             setSymbol(editText, symbolOne, "{");
@@ -110,12 +108,12 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolEight, "?");
         }
 
-        String contents = getContents(mProject, mFilename);
+        String contents = getContents(project, filename);
         editText.setTextHighlighted(contents);
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
-                Project.createFile(mProject, mFilename, editText.getText().toString());
+                Project.createFile(project, filename, editText.getText().toString());
             }
         };
 
@@ -170,24 +168,6 @@ public class EditorFragment extends Fragment {
         }
 
         return "Unable to read file!";
-    }
-
-    /**
-     * Sets the project name
-     *
-     * @param project name of project
-     */
-    public void setProject(String project) {
-        this.mProject = project;
-    }
-
-    /**
-     * Sets the filename
-     *
-     * @param filename name of file
-     */
-    public void setFilename(String filename) {
-        this.mFilename = filename;
     }
 
     /**

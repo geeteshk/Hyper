@@ -23,37 +23,9 @@ import io.geeteshk.hyper.helper.Constants;
 public class ImageFragment extends Fragment {
 
     /**
-     * Location of image within project
-     */
-    private String mLocation;
-
-    /**
-     * Project containing image
-     */
-    private String mProject;
-
-    /**
      * public Constructor
      */
     public ImageFragment() {}
-
-    /**
-     * Setter for location
-     *
-     * @param location see mLocation
-     */
-    public void setFilename(String location) {
-        mLocation = location;
-    }
-
-    /**
-     * Setter for project
-     *
-     * @param project see mProject
-     */
-    public void setProject(String project) {
-        mProject = project;
-    }
 
     /**
      * Called when fragment view is created
@@ -66,7 +38,7 @@ public class ImageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final File file = new File(Constants.HYPER_ROOT + File.separator + mProject, mLocation);
+        File file = new File(Constants.HYPER_ROOT + File.separator + getArguments().getString("location"));
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
             textView.setText(R.string.file_problem);
@@ -75,13 +47,14 @@ public class ImageFragment extends Fragment {
 
         final BitmapDrawable drawable = new BitmapDrawable(getActivity().getResources(), file.getAbsolutePath());
         final ImageView imageView = new ImageView(getActivity());
+        final String fileSize = getSize(file);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setImageDrawable(drawable);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Snackbar snackbar = Snackbar.make(imageView, drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() + "px " + getSize(file), Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(imageView, drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() + "px " + fileSize, Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

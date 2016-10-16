@@ -9,12 +9,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,16 +25,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,11 +51,11 @@ import java.util.Set;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
+import io.geeteshk.hyper.adapter.FileBrowserAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Giiit;
 import io.geeteshk.hyper.helper.Hyperion;
@@ -79,11 +72,6 @@ import io.geeteshk.hyper.polymer.ElementsHolder;
  * Activity to work on selected project
  */
 public class ProjectActivity extends AppCompatActivity {
-
-    /**
-     * Request code when a file is changed
-     */
-    public static final int FILES_CHANGED = 201;
 
     /**
      * Log TAG
@@ -134,7 +122,9 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private NavigationView mDrawer;
+    private RecyclerView mFileBrowser;
+    private RecyclerView.Adapter mBrowserAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     /**
      * Project definitions
      */
@@ -205,21 +195,14 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        mDrawer = (NavigationView) findViewById(R.id.drawer);
-        setupMenu(mProject, null);
+        mFileBrowser = (RecyclerView) findViewById(R.id.file_browser);
+        mBrowserAdapter = new FileBrowserAdapter(mProject, mFileAdapter, mFiles, this, mSpinner, mDrawerLayout);
+        mLayoutManager = new LinearLayoutManager(this);
 
-        View headerView = mDrawer.getHeaderView(0);
-        RelativeLayout headerLayout = (RelativeLayout) headerView.findViewById(R.id.header_background);
-        ImageView headerIcon = (ImageView) headerView.findViewById(R.id.header_icon);
-        TextView headerTitle = (TextView) headerView.findViewById(R.id.header_title);
-        TextView headerDesc = (TextView) headerView.findViewById(R.id.header_desc);
+        mFileBrowser.setLayoutManager(mLayoutManager);
+        mFileBrowser.setAdapter(mBrowserAdapter);
 
-        headerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        headerIcon.setImageBitmap(Project.getFavicon(mProject));
-        headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
-        headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
-
-        mDrawer.setItemIconTintList(null);
+        /**mDrawer.setItemIconTintList(null);
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -245,7 +228,7 @@ public class ProjectActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawers();
                 return true;
             }
-        });
+        });*/
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
@@ -280,15 +263,12 @@ public class ProjectActivity extends AppCompatActivity {
     public Fragment getFragment(String title) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", mFileAdapter.getCount());
+        bundle.putString("location", mProject + File.separator + title);
         if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, title))) {
             ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
-            imageFragment.setProject(mProject);
-            imageFragment.setFilename(title);
             return imageFragment;
         } else {
             EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
-            editorFragment.setProject(mProject);
-            editorFragment.setFilename(title);
             return editorFragment;
         }
     }
@@ -299,7 +279,7 @@ public class ProjectActivity extends AppCompatActivity {
      * @param project project to work on
      * @param menu menu to setup
      */
-    private void setupMenu(String project, @Nullable SubMenu menu) {
+    /**private void setupMenu(String project, @Nullable SubMenu menu) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
         File[] files = projectDir.listFiles();
         for (File file : files) {
@@ -324,7 +304,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+     }*/
 
     /**
      * Used to enable/disable certain git functions
@@ -966,7 +946,6 @@ public class ProjectActivity extends AppCompatActivity {
      * Method to update menu items
      */
     private void refreshMenu() {
-        mDrawer.getMenu().clear();
-        setupMenu(mProject, null);
+        // TODO: Update
     }
 }
