@@ -28,10 +28,15 @@ public class IntroActivity extends AppIntro {
         addSlide(AppIntroFragment.newInstance("Git Integration", "Support for many different Git functions for version control within your projects.", R.drawable.ic_intro_git, primaryColor));
         addSlide(AppIntroFragment.newInstance("Polymer Support", "Provides support for Polymer packages in your projects.", R.drawable.ic_intro_polymer, primaryColor));
         addSlide(AppIntroFragment.newInstance("Cloud Services", "Using the Firebase API all your work is stored securely on the cloud and can be accessed from any device when signed-in.", R.drawable.ic_intro_cloud, primaryColor));
-        addSlide(AppIntroFragment.newInstance("Get Started", "You're ready to get going. Get started by registering for Hyper.", R.drawable.ic_intro_done, primaryColor));
+        addSlide(AppIntroFragment.newInstance("Get Started", "Hope those features have got you excited. Many more await you. Get started by registering for Hyper.", R.drawable.ic_intro_done, primaryColor));
 
         showSkipButton(false);
         askForPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5);
+        setIndicatorColor(R.color.whiteButNotAndroidWhite, R.color.colorAccentDark);
+        setBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+        setNavBarColor(R.color.colorAccentDark);
+        setColorDoneText(ContextCompat.getColor(this, R.color.colorAccentDark));
+        setNextArrowColor(ContextCompat.getColor(this, R.color.colorAccentDark));
     }
 
     @Override

@@ -22,7 +22,6 @@ import java.io.File;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
@@ -56,10 +55,10 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
+        Theme.setNavigationColor(this);
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_signup);
-        Decor.setStatusBarColor(this, -1);
 
         Button btnSignIn = (Button) findViewById(R.id.sign_in_button);
         Button btnSignUp = (Button) findViewById(R.id.sign_up_button);

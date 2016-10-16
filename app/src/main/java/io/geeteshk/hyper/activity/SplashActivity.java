@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Typefacer;
 
 /**
@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "NORMAL", "fonts/Consolas.ttf");
+        Theme.setNavigationColor(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -50,8 +51,6 @@ public class SplashActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
-        Decor.setStatusBarColor(this, -1);
 
         ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
         TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);

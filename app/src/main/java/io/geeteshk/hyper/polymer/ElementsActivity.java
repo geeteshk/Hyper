@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.text.HtmlCompat;
 
@@ -38,8 +37,6 @@ public class ElementsActivity extends AppCompatActivity {
         Color.colorToHSV(color, hsv);
         hsv[2] *= 0.8f;
         color = Color.HSVToColor(hsv);
-
-        Decor.setStatusBarColor(this, color);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

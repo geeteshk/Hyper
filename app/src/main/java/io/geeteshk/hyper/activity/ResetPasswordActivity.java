@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Theme;
 
 /**
@@ -49,10 +48,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
+        Theme.setNavigationColor(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-
-        Decor.setStatusBarColor(this, -1);
 
         inputEmail = (EditText) findViewById(R.id.email);
         Button btnReset = (Button) findViewById(R.id.btn_reset_password);

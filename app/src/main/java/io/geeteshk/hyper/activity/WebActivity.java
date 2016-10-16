@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Theme;
@@ -67,9 +66,7 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
 
-        Decor.setStatusBarColor(this, -1);
         mLogs = new ArrayList<>();
-
         mWebView = (WebView) findViewById(R.id.web_view);
         assert mWebView != null;
         mWebView.getSettings().setJavaScriptEnabled(true);

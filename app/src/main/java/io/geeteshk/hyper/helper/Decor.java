@@ -6,9 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
@@ -21,22 +18,6 @@ import io.geeteshk.hyper.R;
  * Helper class used for decor related functions
  */
 public class Decor {
-
-    /**
-     * Sets the status bar color for API 21 and higher
-     *
-     * @param activity activity to set status bar color
-     * @param color color to set to
-     */
-    public static void setStatusBarColor(AppCompatActivity activity, int color) {
-        if (Build.VERSION.SDK_INT > 20) {
-            if (color == -1) {
-                activity.getWindow().setStatusBarColor(ContextCompat.getColor(activity, R.color.colorPrimaryDark));
-            } else {
-                activity.getWindow().setStatusBarColor(color);
-            }
-        }
-    }
 
     /**
      * Method to prevent OOM errors when calling setImageBitmap()

@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.Theme;
 
@@ -42,11 +41,11 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
+        Theme.setNavigationColor(this);
         mAuth = FirebaseAuth.getInstance();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-        Decor.setStatusBarColor(this, -1);
 
         Button changeEmail = (Button) findViewById(R.id.acc_change_email);
         Button resetPassword = (Button) findViewById(R.id.acc_change_password);
