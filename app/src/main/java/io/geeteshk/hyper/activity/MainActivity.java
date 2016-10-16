@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
         Validator.removeBroken(mObjectsList);
-        mProjectAdapter = new ProjectAdapter(this, (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), mAuth, mStorage);
+        mProjectAdapter = new ProjectAdapter(this, mObjectsList, mAuth, mStorage);
         final RecyclerView projectsList = (RecyclerView) findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         projectsList.setLayoutManager(layoutManager);
@@ -261,6 +261,17 @@ public class MainActivity extends AppCompatActivity {
                                 createBuilder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                                createBuilder.setNegativeButton("CANCEL", null);
+                                final AlertDialog dialog1 = createBuilder.create();
+                                dialog1.show();
+
+                                dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
                                         if (Validator.validate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
                                             Pref.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
@@ -268,14 +279,12 @@ public class MainActivity extends AppCompatActivity {
                                             Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "color", nColor.getCurrentTextColor());
 
-                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), nColor.getText().toString(), mStream);
+                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), nColor.getText().toString(), mStream, mProjectAdapter);
                                             Firebase.uploadProject(mAuth, mStorage, nameLayout.getEditText().getText().toString(), false, true);
+                                            dialog1.dismiss();
                                         }
                                     }
                                 });
-
-                                createBuilder.setNegativeButton("CANCEL", null);
-                                createBuilder.create().show();
                                 break;
                             case 1:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -348,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                mProjectAdapter = new ProjectAdapter(MainActivity.this, (String[]) mObjectsList.toArray(new String[mObjectsList.size()]), mAuth, mStorage);
+                mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mAuth, mStorage);
                 projectsList.setAdapter(mProjectAdapter);
             }
         });

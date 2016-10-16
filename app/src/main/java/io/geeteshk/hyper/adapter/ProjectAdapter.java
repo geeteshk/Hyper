@@ -20,7 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.ProjectActivity;
@@ -42,7 +43,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     /**
      * Array of objects to fill list
      */
-    private String[] mObjects;
+    private List<String> mObjects;
 
     /**
      * Firebase class(es) to get user information
@@ -59,11 +60,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      * @param auth FirebaseAuth
      * @param storage FirebaseStorage
      */
-    public ProjectAdapter(Context context, String[] objects, FirebaseAuth auth, FirebaseStorage storage) {
+    public ProjectAdapter(Context context, List<String> objects, FirebaseAuth auth, FirebaseStorage storage) {
         this.mContext = context;
         this.mObjects = objects;
         this.mAuth = auth;
         this.mStorage = storage;
+    }
+
+    public void add(String project) {
+        mObjects.add(project);
+        notifyDataSetChanged();
     }
 
     /**
@@ -75,7 +81,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Arrays.sort(mObjects);
+        Collections.sort(mObjects);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_project, parent, false);
         return new MyViewHolder(itemView);
@@ -91,15 +97,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final int newPos = holder.getAdapterPosition();
 
-        holder.mTitle.setText(mObjects[position]);
-        holder.mDescription.setText(Jason.getProjectProperty(mObjects[position], "description"));
-        holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects[position]));
+        holder.mTitle.setText(mObjects.get(position));
+        holder.mDescription.setText(Jason.getProjectProperty(mObjects.get(position), "description"));
+        holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects.get(position)));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects[newPos]);
+                intent.putExtra("project", mObjects.get(newPos));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -114,7 +120,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects[newPos]);
+                intent.putExtra("project", mObjects.get(newPos));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -129,12 +135,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects[newPos] + "?");
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(newPos) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (Project.deleteProject(mContext, mObjects[newPos])) {
+                        if (Project.deleteProject(mContext, mObjects.get(newPos))) {
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -143,14 +149,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
-                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
-                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
-                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
                                 }
 
                                 @Override
@@ -158,10 +164,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 }
                             });
-                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects.get(newPos) + ".", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects.get(newPos) + ".", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -177,12 +183,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects[newPos] + "?");
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(newPos) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (Project.deleteProject(mContext, mObjects[newPos])) {
+                        if (Project.deleteProject(mContext, mObjects.get(newPos))) {
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -191,14 +197,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
-                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
-                                    Firebase.removeProject(mAuth, mStorage, mObjects[newPos]);
-                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects[newPos]);
+                                    Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
+                                    Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
                                 }
 
                                 @Override
@@ -206,10 +212,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
                                 }
                             });
-                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.goodbye) + " " + mObjects.get(newPos) + ".", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects[newPos] + ".", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.oops_delete) + " " + mObjects.get(newPos) + ".", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -221,7 +227,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             }
         });
 
-        if (new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").exists() && new File(Constants.HYPER_ROOT + File.separator + mObjects[position], ".git").isDirectory()) {
+        if (new File(Constants.HYPER_ROOT + File.separator + mObjects.get(position), ".git").exists() && new File(Constants.HYPER_ROOT + File.separator + mObjects.get(position), ".git").isDirectory()) {
             holder.mRepo.setImageResource(R.drawable.ic_repo);
         }
 
@@ -234,7 +240,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public int getItemCount() {
-        return mObjects.length;
+        return mObjects.size();
     }
 
     /**

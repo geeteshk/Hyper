@@ -1,6 +1,5 @@
 package io.geeteshk.hyper.helper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -17,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.adapter.ProjectAdapter;
 
 /**
  * Helper class to handle all project related tasks
@@ -69,7 +69,7 @@ public class Project {
      * @param keywords    about project
      * @param stream      used for importing favicon
      */
-    public static void generate(Context context, String name, String author, String description, String keywords, String color, InputStream stream) {
+    public static void generate(Context context, String name, String author, String description, String keywords, String color, InputStream stream, ProjectAdapter adapter) {
         if (Arrays.asList(new File(Constants.HYPER_ROOT).list()).contains(name)) {
             Toast.makeText(context, name + " " + context.getString(R.string.already_exists) + ".", Toast.LENGTH_SHORT).show();
             return;
@@ -86,7 +86,7 @@ public class Project {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(context, name)) {
-                ((Activity) context).recreate();
+                adapter.add(name);
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
@@ -102,7 +102,7 @@ public class Project {
                     && createFile(name, "js" + File.separator + "main.js", MAIN)
                     && Jason.createProjectFile(name, author, description, keywords, color)
                     && copyIcon(name, stream)) {
-                ((Activity) context).recreate();
+                adapter.add(name);
                 Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
