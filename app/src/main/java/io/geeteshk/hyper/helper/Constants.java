@@ -10,16 +10,6 @@ import java.io.File;
 public class Constants {
 
     /**
-     * GitHub repo url
-     */
-    public static final String GITHUB_URL = "https://github.com/geeteshk/Hyper";
-
-    /**
-     * Paypal donation url
-     */
-    public static final String PAYPAL_URL = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XFYSLYYVHVE2J";
-
-    /**
      * Hyper root directory in sdcard
      */
     public static final String HYPER_ROOT = Environment.getExternalStorageDirectory().getPath() + File.separator + "Hyper";
@@ -28,11 +18,6 @@ public class Constants {
      * Application package
      */
     public static final String PACKAGE = "io.geeteshk.hyper";
-
-    /**
-     * Scheme for app details intent
-     */
-    public static final String SCHEME = "package";
 
     /**
      * Firebase Global Storage Bucket

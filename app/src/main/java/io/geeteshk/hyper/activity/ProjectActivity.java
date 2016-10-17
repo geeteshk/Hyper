@@ -123,7 +123,7 @@ public class ProjectActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private RecyclerView mFileBrowser;
-    private RecyclerView.Adapter mBrowserAdapter;
+    private FileBrowserAdapter mBrowserAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     /**
      * Project definitions
@@ -202,34 +202,6 @@ public class ProjectActivity extends AppCompatActivity {
         mFileBrowser.setLayoutManager(mLayoutManager);
         mFileBrowser.setAdapter(mBrowserAdapter);
 
-        /**mDrawer.setItemIconTintList(null);
-        mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                String file;
-                if (item.getIntent() != null) {
-                    file = item.getIntent().getStringExtra("location") + "/" + item.getTitle();
-                } else {
-                    file = item.getTitle().toString();
-                }
-
-                if (mFiles.contains(file)) {
-                    setFragment(file, false);
-                } else {
-                    if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
-                        setFragment(file, true);
-                    } else if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + file))) {
-                        setFragment(file, true);
-                    } else {
-                        Toast.makeText(ProjectActivity.this, R.string.not_text_file, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                mDrawerLayout.closeDrawers();
-                return true;
-            }
-        });*/
-
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
             this.setTaskDescription(description);
@@ -272,39 +244,6 @@ public class ProjectActivity extends AppCompatActivity {
             return editorFragment;
         }
     }
-
-    /**
-     * Sets up menu with project structure
-     *
-     * @param project project to work on
-     * @param menu menu to setup
-     */
-    /**private void setupMenu(String project, @Nullable SubMenu menu) {
-        File projectDir = new File(Constants.HYPER_ROOT + File.separator + project);
-        File[] files = projectDir.listFiles();
-        for (File file : files) {
-            if (!file.getName().equals("bower_components") && !file.getName().equals(".git")) {
-                if (file.isDirectory()) {
-                    if (menu == null) {
-                        setupMenu(project + File.separator + file.getName(), mDrawer.getMenu().addSubMenu(file.getName()));
-                    } else {
-                        setupMenu(project + File.separator + file.getName(), menu.addSubMenu(file.getName()));
-                    }
-                } else {
-                    if (!file.getName().endsWith(".hyper")) {
-                        if (menu == null) {
-                            mDrawer.getMenu().add(file.getName()).setIcon(Decor.getIcon(file.getName(), mProject));
-                        } else {
-                            MenuItem item = menu.add(file.getName()).setIcon(Decor.getIcon(file.getName(), mProject));
-                            Intent intent = new Intent();
-                            intent.putExtra("location", menu.getItem().getTitle());
-                            item.setIntent(intent);
-                        }
-                    }
-                }
-            }
-        }
-     }*/
 
     /**
      * Used to enable/disable certain git functions
@@ -452,7 +391,6 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment(editText.getText().toString() + ".html", true);
-                            refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -484,7 +422,6 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
-                            refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -516,7 +453,6 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
-                            refreshMenu();
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -725,12 +661,6 @@ public class ProjectActivity extends AppCompatActivity {
                         AlertDialog.Builder cleanBuilder = new AlertDialog.Builder(ProjectActivity.this);
                         cleanBuilder.setTitle("Cleaned files");
                         cleanBuilder.setItems(cleanedArr, null);
-                        cleanBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialogInterface) {
-                                refreshMenu();
-                            }
-                        });
                         cleanBuilder.create().show();
                     }
                 });
@@ -781,7 +711,6 @@ public class ProjectActivity extends AppCompatActivity {
                     if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
                         setFragment(editText.getText().toString(), true);
-                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
                     }
@@ -814,7 +743,6 @@ public class ProjectActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
                         Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
-                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.font_fail, Toast.LENGTH_SHORT).show();
                     }
@@ -848,7 +776,6 @@ public class ProjectActivity extends AppCompatActivity {
                     if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
                         Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
                         setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
-                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
                     }
@@ -882,7 +809,6 @@ public class ProjectActivity extends AppCompatActivity {
                     if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
                         Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
                         setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
-                        refreshMenu();
                     } else {
                         Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
                     }
@@ -898,10 +824,6 @@ public class ProjectActivity extends AppCompatActivity {
             if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                 showToast(false);
             dialog.show();
-        }
-
-        if (requestCode == POLYMER_ADD_CODE) {
-            refreshMenu();
         }
     }
 
@@ -940,12 +862,5 @@ public class ProjectActivity extends AppCompatActivity {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(layout);
         dialog.show();
-    }
-
-    /**
-     * Method to update menu items
-     */
-    private void refreshMenu() {
-        // TODO: Update
     }
 }
