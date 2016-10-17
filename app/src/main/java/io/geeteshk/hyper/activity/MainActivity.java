@@ -551,6 +551,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 changeTheme(MainActivity.this, isChecked);
+                startActivity(new Intent(MainActivity.this,MainActivity.class));
+                finish();
             }
         });
 
