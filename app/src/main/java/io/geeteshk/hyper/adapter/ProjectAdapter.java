@@ -57,7 +57,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      *
      * @param context loading files and inflating etc
      * @param objects objects to fill list
-     * @param auth FirebaseAuth
+     * @param auth    FirebaseAuth
      * @param storage FirebaseStorage
      */
     public ProjectAdapter(Context context, List<String> objects, FirebaseAuth auth, FirebaseStorage storage) {
@@ -75,7 +75,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     /**
      * When view holder is created
      *
-     * @param parent parent view
+     * @param parent   parent view
      * @param viewType type of view
      * @return ProjectAdapter.ViewHolder
      */
@@ -90,7 +90,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     /**
      * Called when item is bound to position
      *
-     * @param holder view holder
+     * @param holder   view holder
      * @param position position of item
      */
     @Override
@@ -141,6 +141,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Project.deleteProject(mContext, mObjects.get(newPos))) {
+                            mObjects.remove(newPos);
+                            notifyDataSetChanged();
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -189,6 +191,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Project.deleteProject(mContext, mObjects.get(newPos))) {
+                            mObjects.remove(newPos);
+                            notifyDataSetChanged();
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
