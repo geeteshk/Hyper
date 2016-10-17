@@ -141,8 +141,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Project.deleteProject(mContext, mObjects.get(newPos))) {
-                            mObjects.remove(newPos);
-                            notifyDataSetChanged();
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -153,12 +151,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                                 public void onAnimationEnd(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
+                                    mObjects.remove(newPos);
+                                    notifyDataSetChanged();
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
+                                    mObjects.remove(newPos);
+                                    notifyDataSetChanged();
                                 }
 
                                 @Override
@@ -191,8 +193,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Project.deleteProject(mContext, mObjects.get(newPos))) {
-                            mObjects.remove(newPos);
-                            notifyDataSetChanged();
                             holder.itemView.animate().alpha(0).setDuration(300).setListener(new Animator.AnimatorListener() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -203,12 +203,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                                 public void onAnimationEnd(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
+                                    mObjects.remove(newPos);
+                                    notifyDataSetChanged();
                                 }
 
                                 @Override
                                 public void onAnimationCancel(Animator animation) {
                                     Firebase.removeProject(mAuth, mStorage, mObjects.get(newPos));
                                     Firebase.deleteProjectFiles(mAuth, mStorage, mObjects.get(newPos));
+                                    mObjects.remove(newPos);
+                                    notifyDataSetChanged();
                                 }
 
                                 @Override
