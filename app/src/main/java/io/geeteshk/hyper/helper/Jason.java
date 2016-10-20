@@ -34,7 +34,7 @@ public class Jason {
      * @param keywords    about the project
      * @return true if successful
      */
-    public static boolean createProjectFile(String name, String author, String description, String keywords, String color) {
+    static boolean createProjectFile(String name, String author, String description, String keywords, String color) {
         try {
             JSONObject object = new JSONObject();
             object.put("name", name);
@@ -96,7 +96,7 @@ public class Jason {
             Log.e(TAG, e.getMessage());
         }
 
-        return null;
+        return "";
     }
 
     /**
@@ -159,7 +159,7 @@ public class Jason {
         return elements;
     }
 
-    public static String generatePackages() {
+    static String generatePackages() {
         ArrayList<Element> elements = ElementsHolder.getInstance().getElements();
 
         JSONObject rootObject = new JSONObject();

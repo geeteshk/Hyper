@@ -122,9 +122,6 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private RecyclerView mFileBrowser;
-    private FileBrowserAdapter mBrowserAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     /**
      * Project definitions
      */
@@ -195,12 +192,12 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        mFileBrowser = (RecyclerView) findViewById(R.id.file_browser);
-        mBrowserAdapter = new FileBrowserAdapter(mProject, mFileAdapter, mFiles, this, mSpinner, mDrawerLayout);
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView fileBrowser = (RecyclerView) findViewById(R.id.file_browser);
+        FileBrowserAdapter browserAdapter = new FileBrowserAdapter(mProject, mFileAdapter, mFiles, this, mSpinner, mDrawerLayout);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mFileBrowser.setLayoutManager(mLayoutManager);
-        mFileBrowser.setAdapter(mBrowserAdapter);
+        fileBrowser.setLayoutManager(layoutManager);
+        fileBrowser.setAdapter(browserAdapter);
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
@@ -237,11 +234,9 @@ public class ProjectActivity extends AppCompatActivity {
         bundle.putInt("position", mFileAdapter.getCount());
         bundle.putString("location", mProject + File.separator + title);
         if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, title))) {
-            ImageFragment imageFragment = (ImageFragment) Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
-            return imageFragment;
+            return Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
         } else {
-            EditorFragment editorFragment = (EditorFragment) Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
-            return editorFragment;
+            return Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
         }
     }
 
@@ -592,14 +587,14 @@ public class ProjectActivity extends AppCompatActivity {
 
                     final boolean[] checkedItems = new boolean[itemsMultiple.length];
 
-                    final List<CharSequence> toDelete = new ArrayList<>();
+                    final List<String> toDelete = new ArrayList<>();
                     gitRemove.setMultiChoiceItems(itemsMultiple, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                             if (b) {
-                                toDelete.add(itemsMultiple[i]);
+                                toDelete.add(itemsMultiple[i].toString());
                             } else {
-                                toDelete.remove(itemsMultiple[i]);
+                                toDelete.remove(itemsMultiple[i].toString());
                             }
                         }
                     });
@@ -630,8 +625,11 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < items.length; i++) {
-                    if (Giiit.getCurrentBranch(ProjectActivity.this, mProjectFile).equals(items[i])) {
-                        checkedItem = i;
+                    String branch = Giiit.getCurrentBranch(ProjectActivity.this, mProjectFile);
+                    if (branch != null) {
+                        if (branch.equals(items[i])) {
+                            checkedItem = i;
+                        }
                     }
                 }
 
