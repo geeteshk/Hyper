@@ -75,6 +75,11 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/action_git_push"
+                android:title="Push"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/action_git_log"
                 android:title="@string/git_log"
                 app:showAsAction="never" />
@@ -111,18 +116,13 @@
             </item>
 
             <item
-                android:id="@+id/action_git_clean"
-                android:title="@string/git_clean"
+                android:id="@+id/action_git_remote"
+                android:title="@string/remote"
                 app:showAsAction="never" />
 
         </menu>
 
     </item>
-
-    <item
-        android:id="@+id/action_polymer_add"
-        android:title="@string/polymer"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_run"

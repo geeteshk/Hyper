@@ -9,18 +9,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -46,9 +45,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
 import com.pavelsikun.vintagechroma.ChromaDialog;
 import com.pavelsikun.vintagechroma.ChromaUtil;
 import com.pavelsikun.vintagechroma.IndicatorMode;
@@ -68,23 +64,24 @@ import de.psdev.licensesdialog.licenses.License;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.adapter.FAQAdapter;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Firebase;
 import io.geeteshk.hyper.helper.FirstAid;
-import io.geeteshk.hyper.helper.Giiit;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Validator;
+import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.git.GitCallback;
 
 /**
  * Main activity to show all main content
  */
 @SuppressLint("StaticFieldLeak")
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GitCallback {
+
+    private ProgressDialog mDialog;
 
     public static final int CHANGE_PIN = 101;
     /**
@@ -100,33 +97,14 @@ public class MainActivity extends AppCompatActivity {
      */
     ArrayList mObjectsList;
     ProjectAdapter mProjectAdapter;
-    /**
-     * Firebase class(es) to get user information
-     * and perform specific Firebase functions
-     */
-    FirebaseAuth mAuth;
-    FirebaseStorage mStorage;
+
     /**
      * InputStream to read image from strorage
      */
     InputStream mStream;
     ImageView mIcon;
-    /**
-     * Listener class to handle connection changes
-     * or sudden sign-in state changes
-     */
-    FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user == null) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-            }
-        }
-    };
+
+    CoordinatorLayout mLayout;
 
     /**
      * Used to change theme of application
@@ -146,9 +124,13 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
-        mStorage = FirebaseStorage.getInstance();
         setTheme(Theme.getThemeInt(this));
+
+        mDialog = new ProgressDialog(MainActivity.this);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setMax(100);
+        mDialog.setProgress(0);
+        mDialog.setCancelable(false);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -159,26 +141,20 @@ public class MainActivity extends AppCompatActivity {
         final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return dir.isDirectory() && !name.equals(".git") && !FirstAid.isBroken(name);
+                return dir.isDirectory() && !name.equals(".git") && !FirstAid.isBroken(name, true);
             }
         });
 
+        mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         mObjectsList = new ArrayList<>(Arrays.asList(objects));
         Validator.removeBroken(mObjectsList);
-        mProjectAdapter = new ProjectAdapter(this, mObjectsList, mAuth, mStorage);
+        mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout);
         final RecyclerView projectsList = (RecyclerView) findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         projectsList.setLayoutManager(layoutManager);
         projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 2), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(mProjectAdapter);
-
-        final ProgressDialog cloneProgress = new ProgressDialog(this);
-        cloneProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        cloneProgress.setTitle("Cloning repository");
-        cloneProgress.setMax(100);
-        cloneProgress.setProgress(0);
-        cloneProgress.setCancelable(false);
 
         final FloatingActionButton cloneButton = (FloatingActionButton) findViewById(R.id.fab_create);
         cloneButton.setOnClickListener(new View.OnClickListener() {
@@ -195,9 +171,6 @@ public class MainActivity extends AppCompatActivity {
                                 createBuilder.setTitle("Create a new project");
                                 View rootView = LayoutInflater.from(MainActivity.this)
                                         .inflate(R.layout.dialog_create, null, false);
-
-                                mAuth = FirebaseAuth.getInstance();
-                                mStorage = FirebaseStorage.getInstance();
 
                                 final TextInputLayout nameLayout = (TextInputLayout) rootView.findViewById(R.id.name_layout);
                                 final TextInputLayout authorLayout = (TextInputLayout) rootView.findViewById(R.id.author_layout);
@@ -220,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         if (isChecked) {
-                                            mIcon.setImageResource(R.drawable.icon);
+                                            mIcon.setImageResource(R.drawable.ic_launcher);
                                             mStream = null;
                                         }
                                     }
@@ -280,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
                                             Pref.store(MainActivity.this, "color", nColor.getCurrentTextColor());
 
                                             Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), nColor.getText().toString(), mStream, mProjectAdapter);
-                                            Firebase.uploadProject(mAuth, mStorage, nameLayout.getEditText().getText().toString(), false, true);
                                             dialog1.dismiss();
                                         }
                                     }
@@ -295,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 final TextInputEditText file = (TextInputEditText) cloneView.findViewById(R.id.clone_name);
                                 final TextInputEditText remote = (TextInputEditText) cloneView.findViewById(R.id.clone_url);
+                                final TextInputEditText username = (TextInputEditText) cloneView.findViewById(R.id.clone_username);
+                                final TextInputEditText password = (TextInputEditText) cloneView.findViewById(R.id.clone_password);
 
                                 builder.setIcon(R.drawable.ic_action_clone);
                                 builder.setView(cloneView);
@@ -302,8 +276,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
-                                        cloneProgress.show();
-                                        Giiit.clone(MainActivity.this, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), cloneProgress, mProjectAdapter, remote.getText().toString());
+                                        Giiit.clone(MainActivity.this, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), MainActivity.this, mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
                                     }
                                 });
 
@@ -357,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mAuth, mStorage);
+                mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout);
                 projectsList.setAdapter(mProjectAdapter);
             }
         });
@@ -383,22 +356,6 @@ public class MainActivity extends AppCompatActivity {
                 projectSearch.setText("");
             }
         });
-
-        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-        if (mObjectsList.isEmpty()) {
-            projectsList.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        }
-
-        final SwipeRefreshLayout layout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Firebase.syncProjects(MainActivity.this, mAuth, mStorage, layout);
-            }
-        });
-
-        layout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
     }
 
     @Override
@@ -410,24 +367,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_help:
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Help");
-
-                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                View rootView = inflater.inflate(R.layout.fragment_help, null, false);
-
-                RecyclerView faqList = (RecyclerView) rootView.findViewById(R.id.faq_list);
-                RecyclerView.LayoutManager manager = new LinearLayoutManager(MainActivity.this);
-                RecyclerView.Adapter adapter = new FAQAdapter(MainActivity.this);
-
-                faqList.setLayoutManager(manager);
-                faqList.setAdapter(adapter);
-
-                builder.setIcon(R.drawable.ic_help);
-                builder.setView(rootView);
-                builder.create().show();
-                return true;
             case R.id.action_license:
                 final String name = "Hyper";
                 final String url = "http://geeteshk.github.io/Hyper";
@@ -446,26 +385,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Called when Activity is started to set listener
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(authListener);
-    }
-
-    /**
-     * Called when Activity is stopped to remove listener
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (authListener != null) {
-            mAuth.removeAuthStateListener(authListener);
-        }
     }
 
     /**
@@ -530,20 +449,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
         View rootView = inflater.inflate(R.layout.fragment_settings, null, false);
-
-        TextView firebaseAccount = (TextView) rootView.findViewById(R.id.firebase_account);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null && user.getEmail() != null) {
-            firebaseAccount.setText(user.getEmail());
-        }
-
-        RelativeLayout firebaseAccountLayout = (RelativeLayout) rootView.findViewById(R.id.firebase_account_layout);
-        firebaseAccountLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AccountActivity.class));
-            }
-        });
 
         final SwitchCompat darkTheme = (SwitchCompat) rootView.findViewById(R.id.dark_theme);
         darkTheme.setChecked(Pref.get(MainActivity.this, "dark_theme", false));
@@ -614,6 +519,25 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Settings");
         builder.setView(rootView);
         builder.create().show();
+    }
+
+    @Override
+    public void onPreExecute(String title) {
+        mDialog.show();
+        mDialog.setTitle(title);
+    }
+
+    @Override
+    public void onProgressUpdate(String... values) {
+        mDialog.setTitle(values[0]);
+        mDialog.setMessage(values[0]);
+        mDialog.setMax(Integer.valueOf(values[2]));
+        mDialog.setProgress(Integer.valueOf(values[1]));
+    }
+
+    @Override
+    public void onPostExecute() {
+        mDialog.hide();
     }
 
     private class CreateAdapter extends ArrayAdapter<String> {

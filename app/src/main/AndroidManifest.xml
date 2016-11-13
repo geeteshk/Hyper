@@ -41,74 +41,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
-        <activity
-            android:name=".polymer.CatalogActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.ProjectActivity"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.ProjectActivity" />
-        </activity>
-        <activity
-            android:name=".polymer.ElementsActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".polymer.CatalogActivity"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
-        </activity>
-        <activity
-            android:name=".polymer.SetupActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".polymer.CatalogActivity"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.polymer.CatalogActivity" />
-        </activity>
-        <activity
-            android:name=".activity.SignupActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.SplashActivity"
-            android:theme="@style/Hyper.Dark"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.activity.SplashActivity" />
-        </activity>
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.SignupActivity"
-            android:theme="@style/Hyper.Dark"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.activity.SignupActivity" />
-        </activity>
-        <activity
-            android:name=".activity.ResetPasswordActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.LoginActivity"
-            android:theme="@style/Hyper.Dark"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.activity.LoginActivity" />
-        </activity>
-        <activity
-            android:name=".activity.AccountActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/Hyper.Dark"
-            tools:ignore="UnusedAttribute">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.geeteshk.hyper.activity.MainActivity" />
-        </activity>
-        <activity android:name=".activity.IntroActivity"></activity>
+        <activity android:name=".activity.IntroActivity" />
+        <activity android:name=".activity.RemotesActivity"
+            android:label="Remotes" />
     </application>
 
 </manifest>

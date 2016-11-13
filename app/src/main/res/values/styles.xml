@@ -12,4 +12,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Hyper.FileTree">
+        <item name="android:paddingLeft">20dp</item>
+    </style>
+
 </resources>

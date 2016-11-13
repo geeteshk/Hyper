@@ -4,7 +4,6 @@
     <string name="action_drawer_close">Close</string>
     <string name="create">Create</string>
     <string name="hyper"><![CDATA[</hyper>]]></string>
-    <string name="ok">OK</string>
 
     <string name="action_settings">Settings</string>
     <string name="about_name">Name</string>
@@ -76,8 +75,6 @@
     <string name="create_not_java">New</string>
     <string name="change_undone">This change cannot be undone.</string>
     <string name="delete">Delete</string>
-    <string name="goodbye">Goodbye</string>
-    <string name="oops_delete">Oops! Something went wrong while deleting</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="repair_key">Repair</string>
@@ -117,11 +114,8 @@
     <string name="file_ending_warn_title">Show File Ending Warning</string>
     <string name="file_ending_warn_desc">Show small warning while creating and importing project files.</string>
     <string name="loading">Loading...</string>
-    <string name="no_data_available">No projects!</string>
     <string name="black">#448AFF</string>
-    <string name="polymer">Polymer</string>
     <string name="remove">Remove</string>
-    <string name="about_elements">Elements</string>
     <string name="git">Git</string>
     <string name="git_init">Init</string>
     <string name="git_add">Add</string>
@@ -133,28 +127,7 @@
     <string name="branch">Branch</string>
     <string name="checkout">Checkout</string>
     <string name="close">Close</string>
-    <string name="git_clean">Clean</string>
 
-    <string name="action_sign_in_short">Register</string>
-    <string name="email">Email</string>
-    <string name="minimum_password">Password too short, enter a minimum of 6 characters!</string>
-    <string name="auth_failed">Authentication failed, check your email and password or sign up.</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
-    <string name="btn_login">LOGIN</string>
-    <string name="btn_link_to_register">Not a member? Register now!</string>
-    <string name="btn_link_to_login">Already registered? Login to Hyper!</string>
-    <string name="btn_forgot_password">Forgot your password?</string>
-    <string name="btn_reset_password">Reset Password</string>
-    <string name="btn_back"><![CDATA[<< Back]]></string>
-    <string name="lbl_forgot_password">Forgot password?</string>
-    <string name="forgot_password_msg">Password reset instructions will be sent to your registered e-mail.</string>
-    <string name="firebase_account">My Account</string>
-    <string name="firebase_account_desc">Reset credentials or sign out of your account.</string>
     <string name="file_problem">There was a problem reading this file.</string>
-    <string name="creating_files">Creating project files…</string>
-    <string name="downloading_components">Downloading components…</string>
-    <string name="setting_up_components">Setting up components…</string>
-    <string name="finished">Finished!</string>
-    <string name="setting_up_imports">Setting up imports…</string>
+    <string name="remote">Remote</string>
 </resources>

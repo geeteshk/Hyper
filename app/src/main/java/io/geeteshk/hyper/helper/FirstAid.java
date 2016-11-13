@@ -83,7 +83,7 @@ public class FirstAid {
         final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return dir.isDirectory() && !name.equals(".git") && isBroken(name);
+                return dir.isDirectory() && !name.equals(".git") && isBroken(name, false);
             }
         });
 
@@ -103,7 +103,7 @@ public class FirstAid {
             public void onClick(DialogInterface dialog, int which) {
                 final String object = objectToRepair[0];
                 if (object.equals("")) return;
-                if (isBroken(object)) {
+                if (isBroken(object, false)) {
                     if (mStatus[0] == 1 || mStatus[1] == 1) {
                         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                         @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_repair, null);
@@ -165,7 +165,7 @@ public class FirstAid {
      * @param string project title
      * @return true if project is broken
      */
-    public static boolean isBroken(String string) {
+    public static boolean isBroken(String string, boolean project) {
         boolean out = false;
         if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + string + ".hyper").exists()
                 || Jason.getProjectProperty(string, "name") == null
@@ -198,8 +198,12 @@ public class FirstAid {
         }
 
         if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "fonts").isDirectory()) {
-            out = true;
-            mStatus[5] = 1;
+            if (project) {
+                new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "fonts").mkdir();
+            } else {
+                out = true;
+                mStatus[5] = 1;
+            }
         }
 
         return out;

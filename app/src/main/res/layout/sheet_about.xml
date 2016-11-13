@@ -84,20 +84,6 @@
             android:layout_marginBottom="16dp"
             android:alpha="0.87" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/about_elements"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/project_elements"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
-
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

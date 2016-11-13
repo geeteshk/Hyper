@@ -444,7 +444,7 @@ public class Editor extends MultiAutoCompleteTextView {
             }
 
             if (i == cursorLine) {
-                canvas.drawRect(0, 4 + lineBounds - lineHeight, 120, lineBounds + 10, mLineShadowPaint);
+                canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, mLineShadowPaint);
             }
 
             if (i == lineCount - 1) {

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#9B26AF</color>
-    <color name="colorPrimaryDark">#7A1EA1</color>
-    <color name="colorAccent">#68EFAD</color>
-    <color name="colorAccentDark">#00796B</color>
+    <color name="colorPrimary">#00BCD4</color>
+    <color name="colorPrimaryDark">#0097A7</color>
+    <color name="colorAccent">#FF9800</color>
+    <color name="colorAccentDark">#E65100</color>
+
+    <!-- WHY IS THIS A THING??? -->
     <color name="whiteButNotAndroidWhite">#FFFFFF</color>
 </resources>

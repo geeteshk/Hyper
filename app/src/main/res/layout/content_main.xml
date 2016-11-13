@@ -10,18 +10,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_shadow"
-        android:alpha="0.56"
-        android:gravity="center"
-        android:text="@string/no_data_available"
-        android:textSize="24sp"
-        android:typeface="serif"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
@@ -80,8 +68,8 @@
         android:layout_below="@+id/search_layout"
         android:background="@drawable/toolbar_shadow" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeContainer"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_shadow">
@@ -93,16 +81,14 @@
             android:clipToPadding="false"
             android:scrollbars="vertical" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_done" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_create" />
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

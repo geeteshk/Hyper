@@ -2,6 +2,7 @@ package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -10,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,42 +39,41 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
+import com.unnamed.b.atv.model.TreeNode;
+import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.adapter.AboutElementsAdapter;
 import io.geeteshk.hyper.adapter.FileAdapter;
-import io.geeteshk.hyper.adapter.FileBrowserAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
+import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.git.GitCallback;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Firebase;
-import io.geeteshk.hyper.helper.Giiit;
+import io.geeteshk.hyper.git.Giiit;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
-import io.geeteshk.hyper.polymer.CatalogActivity;
-import io.geeteshk.hyper.polymer.Element;
-import io.geeteshk.hyper.polymer.ElementsHolder;
+import io.geeteshk.hyper.widget.FileTreeHolder;
 
 /**
  * Activity to work on selected project
  */
-public class ProjectActivity extends AppCompatActivity {
+public class ProjectActivity extends AppCompatActivity implements GitCallback {
+
+    ProgressDialog mDialog;
 
     /**
      * Log TAG
@@ -99,16 +101,6 @@ public class ProjectActivity extends AppCompatActivity {
     private static final int IMPORT_JS = 104;
 
     /**
-     * Code used to add Polymer elements
-     */
-    private static final int POLYMER_ADD_CODE = 300;
-    /**
-     * Firebase class(es) to get user information
-     * and perform specific Firebase functions
-     */
-    FirebaseAuth mAuth;
-    FirebaseStorage mStorage;
-    /**
      * Currently open files
      */
     private List<String> mFiles;
@@ -128,6 +120,9 @@ public class ProjectActivity extends AppCompatActivity {
     private String mProject;
     private File mProjectFile;
 
+    private TreeNode rootNode, cssNode, jsNode, imagesNode, fontsNode;
+    private AndroidTreeView treeView;
+
     /**
      * Method called when activity is created
      *
@@ -139,8 +134,12 @@ public class ProjectActivity extends AppCompatActivity {
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
         setTheme(Theme.getThemeInt(this));
 
-        mAuth = FirebaseAuth.getInstance();
-        mStorage = FirebaseStorage.getInstance();
+        mDialog = new ProgressDialog(ProjectActivity.this);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setMax(100);
+        mDialog.setProgress(0);
+        mDialog.setCancelable(false);
+
         Network.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
 
@@ -192,17 +191,155 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        RecyclerView fileBrowser = (RecyclerView) findViewById(R.id.file_browser);
-        FileBrowserAdapter browserAdapter = new FileBrowserAdapter(mProject, mFileAdapter, mFiles, this, mSpinner, mDrawerLayout);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayout fileBrowser = (LinearLayout) findViewById(R.id.file_browser);
+        rootNode = TreeNode.root();
+        setupFileTree(rootNode, mProjectFile);
+        treeView = new AndroidTreeView(ProjectActivity.this, rootNode);
+        treeView.setDefaultAnimation(true);
+        treeView.setDefaultViewHolder(FileTreeHolder.class);
+        treeView.setDefaultContainerStyle(R.style.TreeNodeStyle);
+        treeView.setDefaultNodeClickListener(new TreeNode.TreeNodeClickListener() {
+            @Override
+            public void onClick(TreeNode node, Object value) {
+                FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
+                if (node.isLeaf()) {
+                    if (mFiles.contains(item.path)) {
+                        setFragment(item.path, false);
+                        mDrawerLayout.closeDrawers();
+                    } else {
+                        if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path))) {
+                            setFragment(item.path, true);
+                            mDrawerLayout.closeDrawers();
+                        } else if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path))) {
+                            setFragment(item.path, true);
+                            mDrawerLayout.closeDrawers();
+                        } else {
+                            Toast.makeText(ProjectActivity.this, R.string.not_text_file, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
 
-        fileBrowser.setLayoutManager(layoutManager);
-        fileBrowser.setAdapter(browserAdapter);
+        treeView.setDefaultNodeLongClickListener(new TreeNode.TreeNodeLongClickListener() {
+            @Override
+            public boolean onLongClick(final TreeNode node, Object value) {
+                final FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
+                switch (item.text) {
+                    case "images":case "fonts":case "css":case "js":case "index.html":case "style.css":case "main.js":
+                        return false;
+                    default:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
+                        builder.setTitle(getString(R.string.delete) + " " + item.text + "?");
+                        builder.setMessage(R.string.change_undone);
+                        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final boolean[] delete = {true, false};
+                                final String file = item.text;
+                                final TreeNode parent = node.getParent();
+                                treeView.removeNode(node);
+                                removeFragment(item.path);
+
+                                final Snackbar snackbar = Snackbar.make(
+                                        mDrawerLayout,
+                                        "Deleted " + file + ".",
+                                        Snackbar.LENGTH_LONG
+                                );
+
+                                snackbar.setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        delete[0] = false;
+                                        snackbar.dismiss();
+                                    }
+                                });
+
+                                snackbar.setCallback(new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar snackbar, int event) {
+                                        super.onDismissed(snackbar, event);
+                                        if (!delete[1]) {
+                                            if (delete[0]) {
+                                                new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path).delete();
+                                            } else {
+                                                treeView.addNode(parent, node);
+                                            }
+
+                                            delete[1] = true;
+                                        }
+                                    }
+                                });
+
+                                snackbar.show();
+                            }
+                        });
+
+                        builder.setNegativeButton(R.string.cancel, null);
+                        builder.show();
+                        return true;
+                }
+            }
+        });
+
+        fileBrowser.addView(treeView.getView());
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
             this.setTaskDescription(description);
         }
+    }
+
+    private void setupFileTree(TreeNode root, File f) {
+        File[] files = f.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String name) {
+                return !name.startsWith(".") && !name.endsWith(".hyper");
+            }
+        });
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
+                if (f == mProjectFile) {
+                    switch (file.getName()) {
+                        case "css":
+                            cssNode = folderNode;
+                            setupFileTree(cssNode, file);
+                            root.addChild(cssNode);
+                            break;
+                        case "js":
+                            jsNode = folderNode;
+                            setupFileTree(jsNode, file);
+                            root.addChild(jsNode);
+                            break;
+                        case "images":
+                            imagesNode = folderNode;
+                            setupFileTree(imagesNode, file);
+                            root.addChild(imagesNode);
+                            break;
+                        case "fonts":
+                            fontsNode = folderNode;
+                            setupFileTree(fontsNode, file);
+                            root.addChild(fontsNode);
+                            break;
+                        default:
+                            setupFileTree(folderNode, file);
+                            root.addChild(folderNode);
+                            break;
+                    }
+                }
+            } else {
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file.getName(), mProject), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
+                root.addChild(fileNode);
+            }
+        }
+    }
+
+    private void removeFragment(String file) {
+        mFiles.remove(file);
+        mFileAdapter.remove(file);
+        mFileAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -252,10 +389,11 @@ public class ProjectActivity extends AppCompatActivity {
         boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
         menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_commit).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_push).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_clean).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_remote).setEnabled(isGitRepo);
 
         return true;
     }
@@ -304,8 +442,6 @@ public class ProjectActivity extends AppCompatActivity {
         if (Network.getDrive() != null) {
             Network.getDrive().stop();
         }
-
-        Firebase.updateProject(mAuth, mStorage, mProject, false);
     }
 
     /**
@@ -386,6 +522,7 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment(editText.getText().toString() + ".html", true);
+                            treeView.addNode(rootNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_html, editText.getText().toString() + ".html", editText.getText().toString() + ".html")));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -417,6 +554,7 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
+                            treeView.addNode(cssNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_css, editText2.getText().toString() + ".css", "css" + File.separator + editText2.getText().toString() + ".css")));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -448,6 +586,7 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
+                            treeView.addNode(jsNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_js, editText3.getText().toString() + ".js", "js" + File.separator + editText3.getText().toString() + ".js")));
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -467,17 +606,6 @@ public class ProjectActivity extends AppCompatActivity {
             case R.id.action_about:
                 showAbout();
                 return true;
-            case R.id.action_polymer_add:
-                Intent catalogIntent = new Intent(ProjectActivity.this, CatalogActivity.class);
-                startActivityForResult(catalogIntent, POLYMER_ADD_CODE);
-                ElementsHolder.getInstance().setProject(mProject);
-                if (!new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "packages.hyper").exists()) {
-                    ElementsHolder.getInstance().setElements(new ArrayList<Element>());
-                } else {
-                    ElementsHolder.getInstance().setElements(Jason.getPreviousElements(mProject));
-                }
-
-                return true;
             case R.id.action_git_init:
                 Giiit.init(ProjectActivity.this, mProjectFile);
                 return true;
@@ -495,7 +623,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText4.getText().toString().isEmpty()) {
-                            Giiit.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
+                            Giiit.commit(ProjectActivity.this, mProjectFile, ProjectActivity.this, editText4.getText().toString());
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -509,6 +637,35 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog4 = gitCommitBuilder.create();
                 dialog4.show();
+                return true;
+            case R.id.action_git_push:
+                AlertDialog.Builder gitPushBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                gitPushBuilder.setTitle("Push changes");
+
+                View pushView = LayoutInflater.from(ProjectActivity.this)
+                        .inflate(R.layout.dialog_push, null, false);
+
+                final Spinner spinner = (Spinner) pushView.findViewById(R.id.remotes_spinner);
+                final CheckBox dryRun = (CheckBox) pushView.findViewById(R.id.dry_run);
+                final CheckBox force = (CheckBox) pushView.findViewById(R.id.force);
+                final CheckBox thin = (CheckBox) pushView.findViewById(R.id.thin);
+                final CheckBox tags = (CheckBox) pushView.findViewById(R.id.tags);
+
+                final TextInputEditText pushUsername = (TextInputEditText) pushView.findViewById(R.id.push_username);
+                final TextInputEditText pushPassword = (TextInputEditText) pushView.findViewById(R.id.push_password);
+
+                spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(ProjectActivity.this, mProjectFile)));
+                gitPushBuilder.setView(pushView);
+                gitPushBuilder.setPositiveButton("PUSH", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        Giiit.push(ProjectActivity.this, mProjectFile, ProjectActivity.this, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
+                    }
+                });
+
+                gitPushBuilder.setNegativeButton(R.string.cancel, null);
+                gitPushBuilder.create().show();
                 return true;
             case R.id.action_git_log:
                 List<RevCommit> commits = Giiit.getCommits(ProjectActivity.this, mProjectFile);
@@ -566,7 +723,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText5.getText().toString().isEmpty()) {
-                            Giiit.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
+                            Giiit.createBranch(ProjectActivity.this, mProjectFile, ProjectActivity.this, editText5.getText().toString(), checkBox.isChecked());
                         } else {
                             Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
                         }
@@ -638,7 +795,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;
                         dialogInterface.dismiss();
-                        Giiit.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
+                        Giiit.checkout(ProjectActivity.this, mProjectFile, ProjectActivity.this, branches.get(i).getName());
                     }
                 });
 
@@ -646,24 +803,10 @@ public class ProjectActivity extends AppCompatActivity {
                 gitCheckout.setTitle("Checkout branch");
                 gitCheckout.create().show();
                 return true;
-            case R.id.action_git_clean:
-                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                confirmBuilder.setTitle("Are you sure you want to do this?");
-                confirmBuilder.setMessage("Please use git status to check which files will be deleted. This may break your project if used incorrectly.");
-                confirmBuilder.setPositiveButton(R.string.git_clean, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        Set<String> cleaned = Giiit.clean(ProjectActivity.this, mProjectFile);
-                        String[] cleanedArr = cleaned.toArray(new String[cleaned.size()]);
-                        AlertDialog.Builder cleanBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                        cleanBuilder.setTitle("Cleaned files");
-                        cleanBuilder.setItems(cleanedArr, null);
-                        cleanBuilder.create().show();
-                    }
-                });
-                confirmBuilder.setNegativeButton(R.string.cancel, null);
-                confirmBuilder.create().show();
+            case R.id.action_git_remote:
+                Intent remoteIntent = new Intent(ProjectActivity.this, RemotesActivity.class);
+                remoteIntent.putExtra("project_file", mProjectFile.getPath());
+                startActivity(remoteIntent);
                 return true;
         }
 
@@ -693,136 +836,150 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMPORT_IMAGE && resultCode == RESULT_OK) {
-            final Uri imageUri = data.getData();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.name);
-            final EditText editText = new EditText(this);
-            editText.setHint(R.string.resource_name);
-            editText.setSingleLine(true);
-            editText.setMaxLines(1);
-            builder.setView(editText);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
-                        Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
-                        setFragment(editText.getText().toString(), true);
-                    } else {
-                        Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
-                    }
+        switch (requestCode) {
+            case IMPORT_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    final Uri imageUri = data.getData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.name);
+                    final EditText editText = new EditText(this);
+                    editText.setHint(R.string.resource_name);
+                    editText.setSingleLine(true);
+                    editText.setMaxLines(1);
+                    builder.setView(editText);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
+                                Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
+                                setFragment(editText.getText().toString(), true);
+                            } else {
+                                Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AppCompatDialog dialog = builder.create();
+                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
+                        showToast(true);
+                    dialog.show();
                 }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
+
+                break;
+            case IMPORT_FONT:
+                if (resultCode == RESULT_OK) {
+                    final Uri fontUri = data.getData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.name);
+                    final EditText editText = new EditText(this);
+                    editText.setHint(R.string.resource_name);
+                    editText.setSingleLine(true);
+                    editText.setMaxLines(1);
+                    builder.setView(editText);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
+                                Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ProjectActivity.this, R.string.font_fail, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AppCompatDialog dialog = builder.create();
+                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
+                        showToast(true);
+                    dialog.show();
                 }
-            });
-            AppCompatDialog dialog = builder.create();
-            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                showToast(true);
-            dialog.show();
+
+                break;
+            case IMPORT_CSS:
+                if (resultCode == RESULT_OK) {
+                    final Uri cssUri = data.getData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Name");
+                    final EditText editText = new EditText(this);
+                    editText.setHint("Resource name");
+                    editText.setSingleLine(true);
+                    editText.setMaxLines(1);
+                    builder.setView(editText);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
+                                Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
+                                setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
+                            } else {
+                                Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AppCompatDialog dialog = builder.create();
+                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
+                        showToast(false);
+                    dialog.show();
+                }
+
+                break;
+            case IMPORT_JS:
+                if (resultCode == RESULT_OK) {
+                    final Uri jsUri = data.getData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.name);
+                    final EditText editText = new EditText(this);
+                    editText.setHint(R.string.resource_name);
+                    editText.setSingleLine(true);
+                    editText.setMaxLines(1);
+                    builder.setView(editText);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
+                                Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
+                                setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
+                            } else {
+                                Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AppCompatDialog dialog = builder.create();
+                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
+                        showToast(false);
+                    dialog.show();
+                }
+
+                break;
         }
 
-        if (requestCode == IMPORT_FONT && resultCode == RESULT_OK) {
-            final Uri fontUri = data.getData();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.name);
-            final EditText editText = new EditText(this);
-            editText.setHint(R.string.resource_name);
-            editText.setSingleLine(true);
-            editText.setMaxLines(1);
-            builder.setView(editText);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
-                        Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ProjectActivity.this, R.string.font_fail, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AppCompatDialog dialog = builder.create();
-            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                showToast(true);
-            dialog.show();
-        }
-
-        if (requestCode == IMPORT_CSS && resultCode == RESULT_OK) {
-            final Uri cssUri = data.getData();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Name");
-            final EditText editText = new EditText(this);
-            editText.setHint("Resource name");
-            editText.setSingleLine(true);
-            editText.setMaxLines(1);
-            builder.setView(editText);
-            builder.setCancelable(false);
-            builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
-                        Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
-                        setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
-                    } else {
-                        Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AppCompatDialog dialog = builder.create();
-            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                showToast(false);
-            dialog.show();
-        }
-
-        if (requestCode == IMPORT_JS && resultCode == RESULT_OK) {
-            final Uri jsUri = data.getData();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.name);
-            final EditText editText = new EditText(this);
-            editText.setHint(R.string.resource_name);
-            editText.setSingleLine(true);
-            editText.setMaxLines(1);
-            builder.setView(editText);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
-                        Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
-                        setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
-                    } else {
-                        Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AppCompatDialog dialog = builder.create();
-            if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                showToast(false);
-            dialog.show();
-        }
+        setupFileTree(rootNode, mProjectFile);
+        treeView.setRoot(rootNode);
     }
 
     /**
@@ -839,19 +996,12 @@ public class ProjectActivity extends AppCompatActivity {
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
         TextView color = (TextView) layout.findViewById(R.id.project_color);
 
-        RecyclerView elementsView = (RecyclerView) layout.findViewById(R.id.project_elements);
-        RecyclerView.Adapter adapter = new AboutElementsAdapter(mProject);
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-
         name.setText(Jason.getProjectProperty(mProject, "name"));
         author.setText(Jason.getProjectProperty(mProject, "author"));
         description.setText(Jason.getProjectProperty(mProject, "description"));
         keywords.setText(Jason.getProjectProperty(mProject, "keywords"));
         color.setText(Jason.getProjectProperty(mProject, "color"));
         color.setTextColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
-
-        elementsView.setAdapter(adapter);
-        elementsView.setLayoutManager(manager);
 
         if (Pref.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);
@@ -860,5 +1010,24 @@ public class ProjectActivity extends AppCompatActivity {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(layout);
         dialog.show();
+    }
+
+    @Override
+    public void onPreExecute(String title) {
+        mDialog.show();
+        mDialog.setTitle(title);
+    }
+
+    @Override
+    public void onProgressUpdate(String... values) {
+        mDialog.setTitle(values[0]);
+        mDialog.setMessage(values[0]);
+        mDialog.setMax(Integer.valueOf(values[2]));
+        mDialog.setProgress(Integer.valueOf(values[1]));
+    }
+
+    @Override
+    public void onPostExecute() {
+        mDialog.hide();
     }
 }

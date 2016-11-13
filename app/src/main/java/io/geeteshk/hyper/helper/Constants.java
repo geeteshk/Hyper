@@ -22,10 +22,10 @@ public class Constants {
     /**
      * Firebase Global Storage Bucket
      */
-    static final String GS_BUCKET = "gs://hyper-a0ee4.appspot.com";
+    public static final String GS_BUCKET = "gs://hyper-a0ee4.appspot.com";
 
     /**
      * Literally in the name
      */
-    static final int ONE_MEGABYTE = 1024 * 1024;
+    public static final int ONE_MEGABYTE = 1024 * 1024;
 }

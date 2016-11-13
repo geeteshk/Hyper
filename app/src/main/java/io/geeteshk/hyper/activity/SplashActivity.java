@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Theme;
@@ -26,12 +24,6 @@ public class SplashActivity extends AppCompatActivity {
     CoordinatorLayout mLayout;
 
     /**
-     * Firebase class(es) to get user information
-     * and perform specific Firebase functions
-     */
-    FirebaseAuth mAuth;
-
-    /**
      * Method called when activity is created
      *
      * @param savedInstanceState previously stored state
@@ -45,8 +37,6 @@ public class SplashActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        mAuth = FirebaseAuth.getInstance();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -64,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 Class classTo = IntroActivity.class;
                 if (Pref.get(SplashActivity.this, "intro_done", false)) {
-                    classTo = LoginActivity.class;
+                    classTo = MainActivity.class;
                 }
 
                 Intent intent = new Intent(SplashActivity.this, classTo);

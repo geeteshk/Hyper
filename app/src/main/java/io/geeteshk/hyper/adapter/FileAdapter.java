@@ -62,8 +62,14 @@ public class FileAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
         TextView textView = (TextView) rootView.findViewById(R.id.file_title);
 
-        imageView.setImageResource(Decor.getIcon(getPageTitle(position).toString(), mProject));
-        imageView.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        int resource = Decor.getIcon(getPageTitle(position).toString(), mProject);
+        imageView.setImageResource(resource);
+        switch (resource) {
+            case R.drawable.ic_font:case R.drawable.ic_file:case R.drawable.ic_folder:case R.drawable.ic_image:
+                imageView.setColorFilter(ContextCompat.getColor(getContext(), R.color.whiteButNotAndroidWhite), PorterDuff.Mode.SRC_ATOP);
+                break;
+        }
+
         textView.setText(getPageTitle(position));
         textView.setTextColor(0xffffffff);
         textView.setTypeface(Typeface.SERIF);

@@ -42,13 +42,6 @@
             android:orientation="horizontal"
             android:paddingLeft="8dp">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/symbol_tab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_tab"
-                app:fabSize="mini" />
-
             <Button
                 android:id="@+id/symbol_one"
                 android:layout_width="60dp"
@@ -141,5 +134,18 @@
         </LinearLayout>
 
     </HorizontalScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/symbol_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_tab"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:fabSize="mini" />
 
 </RelativeLayout>
