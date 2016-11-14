@@ -137,7 +137,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        mObjectsList = new ArrayList<>(Arrays.asList(objects));
+        if(objects != null)
+            mObjectsList = new ArrayList<>(Arrays.asList(objects));
+        else
+            mObjectsList = new ArrayList<>();
         Validator.removeBroken(mObjectsList);
         mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout);
         final RecyclerView projectsList = (RecyclerView) findViewById(R.id.project_list);

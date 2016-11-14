@@ -70,7 +70,9 @@ public class Project {
      * @param stream      used for importing favicon
      */
     public static void generate(Context context, String name, String author, String description, String keywords, String color, InputStream stream, ProjectAdapter adapter) {
-        if (Arrays.asList(new File(Constants.HYPER_ROOT).list()).contains(name)) {
+        String[] projects = new File(Constants.HYPER_ROOT).list();
+
+        if (projects != null && Arrays.asList(projects).contains(name)) {
             Toast.makeText(context, name + " " + context.getString(R.string.already_exists) + ".", Toast.LENGTH_SHORT).show();
             return;
         }
