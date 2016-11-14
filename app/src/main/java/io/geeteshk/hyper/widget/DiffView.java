@@ -13,6 +13,8 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.geeteshk.hyper.helper.Decor;
+
 public class DiffView extends TextView {
 
     private static final Pattern INFO_CHANGES = Pattern.compile("/\\**?\\*/|diff.*");
@@ -42,7 +44,7 @@ public class DiffView extends TextView {
         setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Consolas.ttf"));
         setBackgroundColor(0xff333333);
         setTextColor(0xffffffff);
-        setTextSize(16);
+        setTextSize(Decor.dpToPx(context, 4));
 
         mRectPaint = new Paint();
         mRectPaint.setColor(0xff444444);

@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 
 /**
@@ -184,8 +185,8 @@ public class Editor extends MultiAutoCompleteTextView {
         mNumberPaint = new Paint();
         mNumberPaint.setStyle(Paint.Style.FILL);
         mNumberPaint.setColor(0x80FFFFFF);
-        mNumberPaint.setAntiAlias(false);
-        mNumberPaint.setTextSize(48);
+        mNumberPaint.setAntiAlias(true);
+        mNumberPaint.setTextSize(Decor.dpToPx(mContext, 14));
         mNumberPaint.setTextAlign(Paint.Align.RIGHT);
         mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
 
