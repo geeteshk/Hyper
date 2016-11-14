@@ -16,9 +16,10 @@ public class PushTask extends GitTask {
     private static final String TAG = PushTask.class.getSimpleName();
     private boolean[] mOptions;
 
-    public PushTask(Context context, File repo, GitCallback callback, String[] values, boolean[] options) {
-        super(context, repo, callback, values);
+    public PushTask(Context context, File repo, String[] values, boolean[] options) {
+        super(context, repo, values);
         mOptions = options;
+        id = 6;
     }
 
     @Override
@@ -88,7 +89,6 @@ public class PushTask extends GitTask {
                 }
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
-                Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
                 return false;
             }
 

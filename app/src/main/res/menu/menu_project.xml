@@ -85,6 +85,11 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/action_git_diff"
+                android:title="Diff"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/action_git_status"
                 android:title="@string/git_status"
                 app:showAsAction="never" />

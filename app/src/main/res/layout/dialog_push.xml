@@ -14,26 +14,26 @@
         android:id="@+id/dry_run"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dry run?" />
+        android:text="Dry run" />
 
     <CheckBox
         android:id="@+id/force"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Force?" />
+        android:text="Force" />
 
     <CheckBox
         android:id="@+id/thin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thin?" />
+        android:text="Thin" />
 
     <CheckBox
         android:id="@+id/tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Push tags?" />
+        android:text="Push tags" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

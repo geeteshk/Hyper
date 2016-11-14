@@ -73,15 +73,12 @@ import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Validator;
 import io.geeteshk.hyper.git.Giiit;
-import io.geeteshk.hyper.git.GitCallback;
 
 /**
  * Main activity to show all main content
  */
 @SuppressLint("StaticFieldLeak")
-public class MainActivity extends AppCompatActivity implements GitCallback {
-
-    private ProgressDialog mDialog;
+public class MainActivity extends AppCompatActivity {
 
     public static final int CHANGE_PIN = 101;
     /**
@@ -125,12 +122,6 @@ public class MainActivity extends AppCompatActivity implements GitCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
-
-        mDialog = new ProgressDialog(MainActivity.this);
-        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mDialog.setMax(100);
-        mDialog.setProgress(0);
-        mDialog.setCancelable(false);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -276,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements GitCallback {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
-                                        Giiit.clone(MainActivity.this, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), MainActivity.this, mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
+                                        Giiit.clone(MainActivity.this, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
                                     }
                                 });
 
@@ -519,25 +510,6 @@ public class MainActivity extends AppCompatActivity implements GitCallback {
         builder.setTitle("Settings");
         builder.setView(rootView);
         builder.create().show();
-    }
-
-    @Override
-    public void onPreExecute(String title) {
-        mDialog.show();
-        mDialog.setTitle(title);
-    }
-
-    @Override
-    public void onProgressUpdate(String... values) {
-        mDialog.setTitle(values[0]);
-        mDialog.setMessage(values[0]);
-        mDialog.setMax(Integer.valueOf(values[2]));
-        mDialog.setProgress(Integer.valueOf(values[1]));
-    }
-
-    @Override
-    public void onPostExecute() {
-        mDialog.hide();
     }
 
     private class CreateAdapter extends ArrayAdapter<String> {

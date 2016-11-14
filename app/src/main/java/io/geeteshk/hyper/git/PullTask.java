@@ -15,8 +15,9 @@ public class PullTask extends GitTask {
 
     private static final String TAG = PullTask.class.getSimpleName();
 
-    public PullTask(Context context, File repo, GitCallback callback, String[] values) {
-        super(context, repo, callback, values);
+    public PullTask(Context context, File repo, String[] values) {
+        super(context, repo, values);
+        id = 5;
     }
 
     @Override
@@ -51,7 +52,6 @@ public class PullTask extends GitTask {
                         .call();
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
-                Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
                 return false;
             }
 

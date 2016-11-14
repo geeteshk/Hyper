@@ -1,6 +1,12 @@
 package io.geeteshk.hyper.git;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -8,18 +14,31 @@ import android.widget.Toast;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.EditList;
+import org.eclipse.jgit.diff.HistogramDiff;
+import org.eclipse.jgit.diff.RawText;
+import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.util.StringUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.adapter.ProjectAdapter;
+import io.geeteshk.hyper.widget.DiffView;
 
 /**
  * Helper class to handle git functions
@@ -77,8 +96,8 @@ public class Giiit {
      * @param repo repo to commit to
      * @param message git commit message
      */
-    public static void commit(Context context, File repo, GitCallback callback, String message) {
-        new CommitTask(context, repo, callback, new String[] {"Committing changes", "Committed successfully.", "Unable to commit files."}).execute(message);
+    public static void commit(Context context, File repo, String message) {
+        new CommitTask(context, repo, new String[] {"Committing changes", "Committed successfully.", "Unable to commit files."}).execute(message);
     }
 
     private static String changeTextToNone(String text) {
@@ -235,9 +254,9 @@ public class Giiit {
      * @param branchName name of branch
      * @param checked switch to branch if it exists
      */
-    public static void createBranch(Context context, File repo, GitCallback callback, String branchName, boolean checked) {
+    public static void createBranch(Context context, File repo, String branchName, boolean checked) {
         if (checked) {
-            new CheckoutTask(context, repo, callback, new String[] {"Creating new branch", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(true), branchName);
+            new CheckoutTask(context, repo, new String[] {"Creating new branch", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(true), branchName);
         } else {
             try {
                 Git git = getGit(context, repo);
@@ -281,8 +300,8 @@ public class Giiit {
      * @param repo to checkout to branch
      * @param branch to checkout to
      */
-    public static void checkout(Context context, File repo, GitCallback callback, String branch) {
-        new CheckoutTask(context, repo, callback, new String[] {"Checking out", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(false), branch);
+    public static void checkout(Context context, File repo, String branch) {
+        new CheckoutTask(context, repo, new String[] {"Checking out", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(false), branch);
     }
 
     public static String getCurrentBranch(Context context, File repo) {
@@ -310,44 +329,20 @@ public class Giiit {
      * @param adapter to refresh
      * @param remoteUrl to clone from
      */
-    public static void clone(Context context, File repo, GitCallback callback, ProjectAdapter adapter, String remoteUrl, String username, String password) {
+    public static void clone(Context context, File repo, ProjectAdapter adapter, String remoteUrl, String username, String password) {
         if (!repo.exists()) {
-            new CloneTask(context, repo, callback, adapter).execute(remoteUrl, username, password);
+            new CloneTask(context, repo, adapter).execute(remoteUrl, username, password);
         } else {
             Toast.makeText(context, "The folder already exists.", Toast.LENGTH_LONG).show();
         }
     }
 
-    public static void push(Context context, File repo, GitCallback callback, String remoteUrl, boolean[] options, String username, String password) {
-        new PushTask(context, repo, callback, new String[] {"Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."}, options).execute(remoteUrl, username, password);
+    public static void push(Context context, File repo, String remoteUrl, boolean[] options, String username, String password) {
+        new PushTask(context, repo, new String[] {"Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."}, options).execute(remoteUrl, username, password);
     }
 
-    public static void pull(Context context, File repo, GitCallback callback, String remote, String username, String password) {
-        new PullTask(context, repo, callback, new String[] {"Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits."}).execute(remote, username, password);
-    }
-
-    /**
-     * git clean
-     *
-     * @param context context to make toast
-     * @param repo to clean
-     * @return what has been cleaned
-     */
-    public static Set<String> clean(Context context, File repo) {
-        Set<String> removed = null;
-        try {
-            Git git = getGit(context, repo);
-            if (git != null) {
-                removed = git.clean()
-                        .setCleanDirectories(false)
-                        .call();
-            }
-        } catch (GitAPIException e) {
-            Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-        }
-
-        return removed;
+    public static void pull(Context context, File repo, String remote, String username, String password) {
+        new PullTask(context, repo, new String[] {"Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits."}).execute(remote, username, password);
     }
 
     public static Git getGit(Context context, File repo) {
@@ -414,5 +409,43 @@ public class Giiit {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public static boolean canCommit(Context context, File repo) {
+        try {
+            Git git = getGit(context, repo);
+            if (git != null) {
+                return git.getRepository().getRepositoryState().canCommit()
+                        && git.status().call().hasUncommittedChanges();
+            }
+        } catch (GitAPIException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static boolean canCheckout(Context context, File repo) {
+        Git git = getGit(context, repo);
+        return git != null && git.getRepository().getRepositoryState().canCheckout();
+
+    }
+
+    public static SpannableString diff(Context context, File repo, ObjectId hash1, ObjectId hash2) {
+        SpannableString string = null;
+        Git git = getGit(context, repo);
+        try {
+            if (git != null) {
+                OutputStream out = new ByteArrayOutputStream();
+                DiffFormatter formatter = new DiffFormatter(out);
+                formatter.setRepository(git.getRepository());
+                formatter.format(hash1, hash2);
+                string = new SpannableString(out.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return string;
     }
 }

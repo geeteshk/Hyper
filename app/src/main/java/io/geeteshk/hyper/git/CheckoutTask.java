@@ -14,8 +14,9 @@ public class CheckoutTask extends GitTask {
 
     private static final String TAG = CheckoutTask.class.getSimpleName();
 
-    public CheckoutTask(Context context, File repo, GitCallback callback, String[] values) {
-        super(context, repo, callback, values);
+    public CheckoutTask(Context context, File repo, String[] values) {
+        super(context, repo, values);
+        id = 2;
     }
 
     @Override
@@ -30,7 +31,6 @@ public class CheckoutTask extends GitTask {
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
             return false;
         }
 

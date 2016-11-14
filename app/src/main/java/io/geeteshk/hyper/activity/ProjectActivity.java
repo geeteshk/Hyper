@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,7 +56,6 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.git.GitCallback;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Constants;
@@ -66,14 +66,13 @@ import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.FileTreeHolder;
 
 /**
  * Activity to work on selected project
  */
-public class ProjectActivity extends AppCompatActivity implements GitCallback {
-
-    ProgressDialog mDialog;
+public class ProjectActivity extends AppCompatActivity {
 
     /**
      * Log TAG
@@ -133,12 +132,6 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
         setTheme(Theme.getThemeInt(this));
-
-        mDialog = new ProgressDialog(ProjectActivity.this);
-        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mDialog.setMax(100);
-        mDialog.setProgress(0);
-        mDialog.setCancelable(false);
 
         Network.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
@@ -387,13 +380,21 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
+        boolean canCommit = false;
+        boolean canCheckout = false;
+        if (isGitRepo) {
+            canCommit = Giiit.canCommit(ProjectActivity.this, mProjectFile);
+            canCheckout = Giiit.canCheckout(ProjectActivity.this, mProjectFile);
+        }
+
         menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
-        menu.findItem(R.id.action_git_commit).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_commit).setEnabled(canCommit);
         menu.findItem(R.id.action_git_push).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_remote).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_branch_checkout).setEnabled(canCheckout);
 
         return true;
     }
@@ -465,7 +466,7 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        LayoutInflater inflater = LayoutInflater.from(ProjectActivity.this);
+        final LayoutInflater inflater = LayoutInflater.from(ProjectActivity.this);
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
@@ -623,7 +624,7 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText4.getText().toString().isEmpty()) {
-                            Giiit.commit(ProjectActivity.this, mProjectFile, ProjectActivity.this, editText4.getText().toString());
+                            Giiit.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -660,7 +661,7 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.push(ProjectActivity.this, mProjectFile, ProjectActivity.this, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
+                        Giiit.push(ProjectActivity.this, mProjectFile, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
                     }
                 });
 
@@ -684,6 +685,48 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
                 BottomSheetDialog dialogLog = new BottomSheetDialog(this);
                 dialogLog.setContentView(layoutLog);
                 dialogLog.show();
+                return true;
+            case R.id.action_git_diff:
+                final int[] chosen = {-1, -1};
+                final List<RevCommit> commitsToDiff = Giiit.getCommits(ProjectActivity.this, mProjectFile);
+                final CharSequence[] commitNames = new CharSequence[commitsToDiff.size()];
+                for (int i = 0; i < commitNames.length; i++) {
+                    commitNames[i] = commitsToDiff.get(i).getShortMessage();
+                }
+
+                AlertDialog.Builder firstCommit = new AlertDialog.Builder(ProjectActivity.this);
+                firstCommit.setTitle("Choose first commit");
+                firstCommit.setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        chosen[0] = i;
+                        AlertDialog.Builder secondCommit = new AlertDialog.Builder(ProjectActivity.this);
+                        secondCommit.setTitle("Choose second commit");
+                        secondCommit.setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (i == chosen[0]) {
+                                    Toast.makeText(ProjectActivity.this, "You can't diff the same commit!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    dialogInterface.cancel();
+                                    chosen[1] = i;
+                                    AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                                    SpannableString string = Giiit.diff(ProjectActivity.this, mProjectFile, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
+                                    View rootView = inflater.inflate(R.layout.dialog_diff, null, false);
+                                    DiffView diffView = (DiffView) rootView.findViewById(R.id.diff_view);
+                                    diffView.setDiffText(string);
+                                    diffBuilder.setView(rootView);
+                                    diffBuilder.create().show();
+                                }
+                            }
+                        });
+
+                        secondCommit.create().show();
+                    }
+                });
+
+                firstCommit.create().show();
                 return true;
             case R.id.action_git_status:
                 @SuppressLint("InflateParams") View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
@@ -723,7 +766,7 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText5.getText().toString().isEmpty()) {
-                            Giiit.createBranch(ProjectActivity.this, mProjectFile, ProjectActivity.this, editText5.getText().toString(), checkBox.isChecked());
+                            Giiit.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
                         } else {
                             Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
                         }
@@ -795,7 +838,7 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;
                         dialogInterface.dismiss();
-                        Giiit.checkout(ProjectActivity.this, mProjectFile, ProjectActivity.this, branches.get(i).getName());
+                        Giiit.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
                     }
                 });
 
@@ -1010,24 +1053,5 @@ public class ProjectActivity extends AppCompatActivity implements GitCallback {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(layout);
         dialog.show();
-    }
-
-    @Override
-    public void onPreExecute(String title) {
-        mDialog.show();
-        mDialog.setTitle(title);
-    }
-
-    @Override
-    public void onProgressUpdate(String... values) {
-        mDialog.setTitle(values[0]);
-        mDialog.setMessage(values[0]);
-        mDialog.setMax(Integer.valueOf(values[2]));
-        mDialog.setProgress(Integer.valueOf(values[1]));
-    }
-
-    @Override
-    public void onPostExecute() {
-        mDialog.hide();
     }
 }

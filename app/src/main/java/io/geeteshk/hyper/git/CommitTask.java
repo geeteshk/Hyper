@@ -13,8 +13,9 @@ public class CommitTask extends GitTask {
 
     private static final String TAG = CommitTask.class.getSimpleName();
 
-    public CommitTask(Context context, File repo, GitCallback callback, String[] values) {
-        super(context, repo, callback, values);
+    public CommitTask(Context context, File repo, String[] values) {
+        super(context, repo, values);
+        id = 4;
     }
 
     @Override
@@ -28,7 +29,6 @@ public class CommitTask extends GitTask {
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
             return false;
         }
 

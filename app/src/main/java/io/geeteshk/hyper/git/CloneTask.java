@@ -19,9 +19,10 @@ public class CloneTask extends GitTask {
     private static final String TAG = CloneTask.class.getSimpleName();
     private ProjectAdapter mAdapter;
 
-    public CloneTask(Context context, File repo, GitCallback callback, ProjectAdapter adapter) {
-        super(context, repo, callback, new String[]{"Cloning repository", "", ""});
+    public CloneTask(Context context, File repo, ProjectAdapter adapter) {
+        super(context, repo, new String[]{"Cloning repository", "", ""});
         mAdapter = adapter;
+        id = 3;
     }
 
     @Override
@@ -55,7 +56,6 @@ public class CloneTask extends GitTask {
                     .call();
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
             return false;
         }
 
