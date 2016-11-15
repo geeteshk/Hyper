@@ -80,6 +80,11 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/action_git_pull"
+                android:title="Pull"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/action_git_log"
                 android:title="@string/git_log"
                 app:showAsAction="never" />

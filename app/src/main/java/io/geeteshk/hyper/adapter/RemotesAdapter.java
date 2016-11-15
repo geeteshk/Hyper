@@ -2,17 +2,21 @@ package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.git.Giiit;
 
 public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesHolder> {
@@ -34,9 +38,38 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
     }
 
     @Override
-    public void onBindViewHolder(final RemotesHolder holder, int position) {
+    public void onBindViewHolder(final RemotesHolder holder, final int position) {
         holder.mName.setText(mRemotes.get(position));
         holder.mUrl.setText(Giiit.getRemoteUrl(mContext, mRepo, mRemotes.get(position)));
+        holder.mRootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(mContext);
+                gitPullBuilder.setTitle("Fetch from remote");
+
+                View pullView = LayoutInflater.from(mContext)
+                        .inflate(R.layout.dialog_pull, null, false);
+
+                final Spinner spinner1 = (Spinner) pullView.findViewById(R.id.remotes_spinner);
+
+                final TextInputEditText pullUsername = (TextInputEditText) pullView.findViewById(R.id.pull_username);
+                final TextInputEditText pullPassword = (TextInputEditText) pullView.findViewById(R.id.pull_password);
+
+                spinner1.setAdapter(new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, mRemotes));
+                gitPullBuilder.setView(pullView);
+                gitPullBuilder.setPositiveButton("FETCH", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        Giiit.fetch(mContext, mRepo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                    }
+                });
+
+                gitPullBuilder.setNegativeButton(R.string.cancel, null);
+                gitPullBuilder.create().show();
+            }
+        });
+
         holder.mRootView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

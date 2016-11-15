@@ -345,6 +345,10 @@ public class Giiit {
         new PullTask(context, repo, new String[] {"Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits."}).execute(remote, username, password);
     }
 
+    public static void fetch(Context context, File repo, String remote, String username, String password) {
+        new FetchTask(context, repo, new String[] {"Fetching remote " + remote, "Successfully fetched from " + remote + ".", "There was a problem while fetching from " + remote + "."}).execute(remote, username, password);
+    }
+
     public static Git getGit(Context context, File repo) {
         try {
             return Git.open(repo);

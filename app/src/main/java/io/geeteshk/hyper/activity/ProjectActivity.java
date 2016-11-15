@@ -359,14 +359,18 @@ public class ProjectActivity extends AppCompatActivity {
         boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
         boolean canCommit = false;
         boolean canCheckout = false;
+        boolean hasRemotes = false;
         if (isGitRepo) {
             canCommit = Giiit.canCommit(ProjectActivity.this, mProjectFile);
             canCheckout = Giiit.canCheckout(ProjectActivity.this, mProjectFile);
+            hasRemotes = Giiit.getRemotes(ProjectActivity.this, mProjectFile) != null &&
+                    Giiit.getRemotes(ProjectActivity.this, mProjectFile).size() > 0;
         }
 
         menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_commit).setEnabled(canCommit);
-        menu.findItem(R.id.action_git_push).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_push).setEnabled(hasRemotes);
+        menu.findItem(R.id.action_git_pull).setEnabled(hasRemotes);
         menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_diff).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
@@ -651,6 +655,30 @@ public class ProjectActivity extends AppCompatActivity {
                 gitPushBuilder.setNegativeButton(R.string.cancel, null);
                 gitPushBuilder.create().show();
                 return true;
+            case R.id.action_git_pull:
+                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                gitPullBuilder.setTitle("Push changes");
+
+                View pullView = LayoutInflater.from(ProjectActivity.this)
+                        .inflate(R.layout.dialog_pull, null, false);
+
+                final Spinner spinner1 = (Spinner) pullView.findViewById(R.id.remotes_spinner);
+
+                final TextInputEditText pullUsername = (TextInputEditText) pullView.findViewById(R.id.pull_username);
+                final TextInputEditText pullPassword = (TextInputEditText) pullView.findViewById(R.id.pull_password);
+
+                spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(ProjectActivity.this, mProjectFile)));
+                gitPullBuilder.setView(pullView);
+                gitPullBuilder.setPositiveButton("PULL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        Giiit.pull(ProjectActivity.this, mProjectFile, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                    }
+                });
+
+                gitPullBuilder.setNegativeButton(R.string.cancel, null);
+                gitPullBuilder.create().show();
             case R.id.action_git_log:
                 List<RevCommit> commits = Giiit.getCommits(ProjectActivity.this, mProjectFile);
                 @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
