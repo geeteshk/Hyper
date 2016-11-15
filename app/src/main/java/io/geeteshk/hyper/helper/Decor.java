@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -65,6 +66,7 @@ public class Decor {
      * @return drawable resource int
      */
     public static int getIcon(String name, String project) {
+
         switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
             case "html":
                 return R.drawable.ic_html;
