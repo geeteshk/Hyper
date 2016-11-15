@@ -12,8 +12,8 @@ import io.geeteshk.hyper.R;
 
 public abstract class GitTask extends AsyncTask<String, String, Boolean> {
 
-    private NotificationManager mManager;
-    private NotificationCompat.Builder mBuilder;
+    public NotificationManager mManager;
+    public NotificationCompat.Builder mBuilder;
     public int id = 1;
 
     public Context mContext;

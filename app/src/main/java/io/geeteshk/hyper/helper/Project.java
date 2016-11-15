@@ -113,6 +113,22 @@ public class Project {
     }
 
     /**
+     * Check if project is valid
+     *
+     * @param string project title
+     * @return true if project is valid
+     */
+    public static boolean isValid(String string) {
+        return new File(Constants.HYPER_ROOT + File.separator + string + File.separator + ".hyperProps").exists()
+                && new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "index.html").exists()
+                && Jason.getProjectProperty(string, "name") != null
+                && Jason.getProjectProperty(string, "author") != null
+                && Jason.getProjectProperty(string, "description") != null
+                && Jason.getProjectProperty(string, "keywords") != null
+                && Jason.getProjectProperty(string, "color") != null;
+    }
+
+    /**
      * Method used to delete a project
      *
      * @param name of project

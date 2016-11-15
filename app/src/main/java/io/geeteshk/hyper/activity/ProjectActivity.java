@@ -119,7 +119,7 @@ public class ProjectActivity extends AppCompatActivity {
     private String mProject;
     private File mProjectFile;
 
-    private TreeNode rootNode, cssNode, jsNode, imagesNode, fontsNode;
+    private TreeNode rootNode;
     private AndroidTreeView treeView;
 
     /**
@@ -146,8 +146,6 @@ public class ProjectActivity extends AppCompatActivity {
 
         mFiles = new ArrayList<>();
         mFiles.add("index.html");
-        mFiles.add("css/style.css");
-        mFiles.add("js/main.js");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
@@ -219,7 +217,7 @@ public class ProjectActivity extends AppCompatActivity {
             public boolean onLongClick(final TreeNode node, Object value) {
                 final FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
                 switch (item.text) {
-                    case "images":case "fonts":case "css":case "js":case "index.html":case "style.css":case "main.js":
+                    case "index.html":
                         return false;
                     default:
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
@@ -254,7 +252,12 @@ public class ProjectActivity extends AppCompatActivity {
                                         super.onDismissed(snackbar, event);
                                         if (!delete[1]) {
                                             if (delete[0]) {
-                                                new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path).delete();
+                                                File toDel = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path);
+                                                if (toDel.isDirectory()) {
+                                                    Project.deleteDirectory(ProjectActivity.this, toDel);
+                                                } else {
+                                                    toDel.delete();
+                                                }
                                             } else {
                                                 treeView.addNode(parent, node);
                                             }
@@ -287,41 +290,15 @@ public class ProjectActivity extends AppCompatActivity {
         File[] files = f.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String name) {
-                return !name.startsWith(".") && !name.endsWith(".hyper");
+                return !name.startsWith(".");
             }
         });
 
         for (File file : files) {
             if (file.isDirectory()) {
                 TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
-                if (f == mProjectFile) {
-                    switch (file.getName()) {
-                        case "css":
-                            cssNode = folderNode;
-                            setupFileTree(cssNode, file);
-                            root.addChild(cssNode);
-                            break;
-                        case "js":
-                            jsNode = folderNode;
-                            setupFileTree(jsNode, file);
-                            root.addChild(jsNode);
-                            break;
-                        case "images":
-                            imagesNode = folderNode;
-                            setupFileTree(imagesNode, file);
-                            root.addChild(imagesNode);
-                            break;
-                        case "fonts":
-                            fontsNode = folderNode;
-                            setupFileTree(fontsNode, file);
-                            root.addChild(fontsNode);
-                            break;
-                        default:
-                            setupFileTree(folderNode, file);
-                            root.addChild(folderNode);
-                            break;
-                    }
-                }
+                setupFileTree(folderNode, file);
+                root.addChild(folderNode);
             } else {
                 TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
                 root.addChild(fileNode);
@@ -391,6 +368,7 @@ public class ProjectActivity extends AppCompatActivity {
         menu.findItem(R.id.action_git_commit).setEnabled(canCommit);
         menu.findItem(R.id.action_git_push).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_log).setEnabled(isGitRepo);
+        menu.findItem(R.id.action_git_diff).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_status).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_branch).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_remote).setEnabled(isGitRepo);
@@ -523,7 +501,8 @@ public class ProjectActivity extends AppCompatActivity {
                         if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment(editText.getText().toString() + ".html", true);
-                            treeView.addNode(rootNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_html, editText.getText().toString() + ".html", editText.getText().toString() + ".html")));
+                            setupFileTree(rootNode, mProjectFile);
+                            treeView.setRoot(rootNode);
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -552,10 +531,12 @@ public class ProjectActivity extends AppCompatActivity {
                 builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        createResourceDirExists("css");
                         if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
-                            treeView.addNode(cssNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_css, editText2.getText().toString() + ".css", "css" + File.separator + editText2.getText().toString() + ".css")));
+                            setupFileTree(rootNode, mProjectFile);
+                            treeView.setRoot(rootNode);
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -584,10 +565,12 @@ public class ProjectActivity extends AppCompatActivity {
                 builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        createResourceDirExists("js");
                         if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
                             Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
                             setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
-                            treeView.addNode(jsNode, new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_js, editText3.getText().toString() + ".js", "js" + File.separator + editText3.getText().toString() + ".js")));
+                            setupFileTree(rootNode, mProjectFile);
+                            treeView.setRoot(rootNode);
                         } else {
                             Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
                         }
@@ -856,6 +839,13 @@ public class ProjectActivity extends AppCompatActivity {
         return false;
     }
 
+    private void createResourceDirExists(String res) {
+        File resDir = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + res);
+        if (!resDir.exists() && !resDir.isDirectory()) {
+            resDir.mkdirs();
+        }
+    }
+
     /**
      * Show file ending warning/message
      *
@@ -894,6 +884,7 @@ public class ProjectActivity extends AppCompatActivity {
                     builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            createResourceDirExists("images");
                             if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
                                 Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
                                 setFragment(editText.getText().toString(), true);
@@ -929,6 +920,7 @@ public class ProjectActivity extends AppCompatActivity {
                     builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            createResourceDirExists("fonts");
                             if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
                                 Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
                             } else {
@@ -963,6 +955,7 @@ public class ProjectActivity extends AppCompatActivity {
                     builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            createResourceDirExists("css");
                             if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
                                 Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
                                 setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
@@ -998,6 +991,7 @@ public class ProjectActivity extends AppCompatActivity {
                     builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            createResourceDirExists("js");
                             if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
                                 Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
                                 setFragment("js" + File.separator + editText.getText().toString() + ".js", true);

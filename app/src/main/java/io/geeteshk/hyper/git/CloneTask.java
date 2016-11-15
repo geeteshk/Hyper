@@ -12,7 +12,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import java.io.File;
 
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.helper.FirstAid;
+import io.geeteshk.hyper.helper.Project;
 
 public class CloneTask extends GitTask {
 
@@ -65,14 +65,17 @@ public class CloneTask extends GitTask {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         if (aBoolean) {
-            if (FirstAid.isBroken(mRepo.getName(), true)) {
-                Toast.makeText(mContext, "The repo was successfully cloned but it doesn't sem to be a Hyper project. If it is then please run First Aid from Settings in order to repair it.", Toast.LENGTH_SHORT).show();
+            if (!Project.isValid(mRepo.getName())) {
+                mBuilder.setContentText("The repo was successfully cloned but it doesn't seem to be a Hyper project.");
             } else {
-                mAdapter.add(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/"), mRepo.getPath().length()));
-                Toast.makeText(mContext, "Successfully cloned.", Toast.LENGTH_SHORT).show();
+                mAdapter.add(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/") + 1, mRepo.getPath().length()));
+                mBuilder.setContentText("Successfully cloned.");
             }
         } else {
-            Toast.makeText(mContext, "Unable to clone repo.", Toast.LENGTH_LONG).show();
+            mBuilder.setContentText("Unable to clone repo.");
         }
+
+        mBuilder.setProgress(0, 0, false);
+        mManager.notify(id, mBuilder.build());
     }
 }

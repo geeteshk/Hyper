@@ -40,7 +40,7 @@ public class Jason {
             object.put("keywords", keywords);
             object.put("color", color);
 
-            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + name + ".hyper"));
+            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + ".hyperProps"));
             stream.write(object.toString(4).getBytes());
             stream.close();
         } catch (Exception e) {
@@ -59,7 +59,7 @@ public class Jason {
      */
     private static String getProjectJSON(String name) {
         try {
-            InputStream inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + name + ".hyper");
+            InputStream inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + ".hyperProps");
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             StringBuilder builder = new StringBuilder();

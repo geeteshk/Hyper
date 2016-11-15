@@ -1,7 +1,6 @@
 package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,7 +66,6 @@ import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.FirstAid;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return dir.isDirectory() && !name.equals(".git") && !FirstAid.isBroken(name, true);
+                return dir.isDirectory() && !name.equals(".git") && Project.isValid(name);
             }
         });
 
@@ -482,14 +480,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-            }
-        });
-
-        RelativeLayout repairLayout = (RelativeLayout) rootView.findViewById(R.id.repair_layout);
-        repairLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirstAid.repairAll(MainActivity.this);
             }
         });
 

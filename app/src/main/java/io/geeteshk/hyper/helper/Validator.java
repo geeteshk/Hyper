@@ -62,12 +62,7 @@ public class Validator {
     public static void removeBroken(ArrayList objectsList) {
         for (Iterator iterator = objectsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();
-            if (!new File(Constants.HYPER_ROOT + File.separator + string + File.separator + string + ".hyper").exists() ||
-                    !new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "index.html").exists() ||
-                    !new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "js" + File.separator + "main.js").exists() ||
-                    !new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "css" + File.separator + "style.css").exists() ||
-                    !new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "images" + File.separator + "favicon.ico").exists() ||
-                    !new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "fonts").isDirectory()) {
+            if (!Project.isValid(string)) {
                 iterator.remove();
             }
         }
