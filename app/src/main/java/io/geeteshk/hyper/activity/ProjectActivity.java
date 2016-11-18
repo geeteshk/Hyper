@@ -91,11 +91,6 @@ import io.geeteshk.hyper.widget.FileTreeHolder;
 public class ProjectActivity extends AppCompatActivity {
 
     /**
-     * Log TAG
-     */
-    private static final String TAG = ProjectActivity.class.getSimpleName();
-
-    /**
      * Intent code to import image
      */
     private static final int IMPORT_IMAGE = 101;
@@ -148,16 +143,7 @@ public class ProjectActivity extends AppCompatActivity {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
         setTheme(Theme.getThemeInt(this));
-
-        Network.setDrive(new Hyperion(mProject));
         super.onCreate(savedInstanceState);
-
-        try {
-            Network.getDrive().start();
-        } catch (IOException e) {
-            Log.e(TAG, e.toString());
-        }
-
         setContentView(R.layout.activity_project);
 
         mFiles = new ArrayList<>();
@@ -238,7 +224,6 @@ public class ProjectActivity extends AppCompatActivity {
                     default:
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
                         builder.setTitle(getString(R.string.delete) + " " + item.text + "?");
-                        builder.setMessage(R.string.change_undone);
                         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -468,13 +453,7 @@ public class ProjectActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
-
-                if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-                    runIntent.putExtra("url", "http://" + Network.getIpAddress() + ":8080/index.html");
-                } else {
-                    runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
-                }
-
+                runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
                 runIntent.putExtra("name", mProject);
                 startActivity(runIntent);
                 return true;

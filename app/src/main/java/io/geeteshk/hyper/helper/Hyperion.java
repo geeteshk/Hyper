@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -41,6 +43,8 @@ public class Hyperion extends NanoHTTPD {
     private final String[] mTypes = {"css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt"};
     private final String[] mMimes = {"text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt"};
 
+    private List<String> logs = new ArrayList<>();
+
     /**
      * Project to host web server for
      */
@@ -51,9 +55,10 @@ public class Hyperion extends NanoHTTPD {
      *
      * @param project to host server for
      */
-    public Hyperion(String project) {
+    public Hyperion(String project, List<String> logs) {
         super(8080);
         mProject = project;
+        this.logs = logs;
     }
 
     /**
@@ -75,7 +80,7 @@ public class Hyperion extends NanoHTTPD {
         try {
             inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + mProject + uri);
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            logs.add(e.getMessage());
         }
 
         return new Response(Response.Status.OK, mimeType, inputStream);

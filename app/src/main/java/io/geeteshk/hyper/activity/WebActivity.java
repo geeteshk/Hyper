@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,10 +39,12 @@ import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
+import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Theme;
@@ -69,8 +72,17 @@ public class WebActivity extends AppCompatActivity {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mLogs = new ArrayList<>();
+        Network.setDrive(new Hyperion(getIntent().getStringExtra("name"), mLogs));
         setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
+
+        try {
+            Network.getDrive().start();
+        } catch (IOException e) {
+            mLogs.add(e.toString());
+        }
+
         setContentView(R.layout.activity_web);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -82,11 +94,16 @@ public class WebActivity extends AppCompatActivity {
         toolbar.setTitle(getIntent().getStringExtra("name"));
         setSupportActionBar(toolbar);
 
-        mLogs = new ArrayList<>();
         mWebView = (WebView) findViewById(R.id.web_view);
         assert mWebView != null;
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.loadUrl(getIntent().getStringExtra("url"));
+
+        String url = getIntent().getStringExtra("url");
+        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
+            url = "http://" + Network.getIpAddress() + ":8080/index.html";
+        }
+
+        mWebView.loadUrl(url);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
@@ -103,7 +120,7 @@ public class WebActivity extends AppCompatActivity {
         });
 
         TextView textView = (TextView) findViewById(R.id.web_address);
-        textView.setText(getIntent().getStringExtra("url"));
+        textView.setText(url);
     }
 
     /**
