@@ -66,42 +66,8 @@ import io.geeteshk.hyper.helper.Pref;
  */
 public class Editor extends MultiAutoCompleteTextView {
 
-    /**
-     * Different colours for different parts of code
-     */
-    private static final int COLOR_KEYWORD = 0xfff92672;
-    private static final int COLOR_PARAMS = 0xff64cbf4;
-    private static final int COLOR_ENDING = 0xff9a79dd;
-    private static final int COLOR_FUNCTIONS = 0xffed5c00;
-    /**
-     * Various patterns for detecting words in code
-     */
-    private static final Pattern KEYWORDS = Pattern.compile(
-            "\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|del|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b");
-    private static final Pattern BUILTINS = Pattern.compile(
-            "\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controls|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b");
-    private static final Pattern PARAMS = Pattern.compile(
-            "\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b");
-    private static final Pattern COMMENTS = Pattern.compile(
-            "/\\**?\\*/|<!--.*");
-    private static final Pattern OTHER_COMMENTS = Pattern.compile(
-            "/\\*(?:.|[\\n\\r])*?\\*/|//.*");
-    private static final Pattern ENDINGS = Pattern.compile(
-            "(em|rem|px|pt|%)");
-    private static final Pattern DATATYPES = Pattern.compile(
-            "\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b");
-    private static final Pattern SYMBOLS = Pattern.compile(
-            "(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|finally|do|!|finally|default|case|switch|native|let|super|throws|return)");
-    private static final Pattern FUNCTIONS = Pattern.compile("n\\((.*?)\\)");
-    private static final Pattern NUMBERS = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
-    private static final Pattern BOOLEANS = Pattern.compile("\\b(true|false)\\b");
-    private static final String TAG = Editor.class.getSimpleName();
-    /**
-     * Different colours for parts of code
-     */
-    private static int COLOR_BUILTIN = 0xffa6e22e;
-    private static int COLOR_COMMENT = 0xff75715e;
-    private static int COLOR_STRINGS = 0xffe6db74;
+    private final String TAG = Editor.class.getSimpleName();
+
     /**
      * Handler used to update colours when code is changed
      */
@@ -114,6 +80,7 @@ public class Editor extends MultiAutoCompleteTextView {
      * Delay used to update code
      */
     public int mUpdateDelay = 1000;
+
     int mLine = 0;
     int mLineDiff = 0;
     /**
@@ -151,6 +118,9 @@ public class Editor extends MultiAutoCompleteTextView {
             }
         }
     };
+
+    private Colors mColors;
+    private Patterns mPatterns;
 
     /**
      * Public constructor
@@ -192,38 +162,25 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
+        mColors = new Colors(!Pref.get(mContext, "dark_theme", false));
+        mPatterns = new Patterns();
         mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
 
         mLineShadowPaint = new Paint();
         mLineShadowPaint.setStyle(Paint.Style.FILL);
+        mLineShadowPaint.setColor(mColors.getColorLineShadow());
 
         mNumberPaint = new Paint();
         mNumberPaint.setStyle(Paint.Style.FILL);
-        mNumberPaint.setColor(0x80FFFFFF);
         mNumberPaint.setAntiAlias(true);
         mNumberPaint.setTextSize(Decor.dpToPx(mContext, 14));
         mNumberPaint.setTextAlign(Paint.Align.RIGHT);
         mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
+        mNumberPaint.setColor(mColors.getColorNumber());
 
-        if (!Pref.get(mContext, "dark_theme", false)) {
-            COLOR_BUILTIN = 0xff72b000;
-            COLOR_STRINGS = 0xffed5c00;
-            COLOR_COMMENT = 0xffa0a0a0;
-            setBackgroundColor(0xfff8f8f8);
-            setTextColor(0xff222222);
-            mNumberPaint.setColor(0xffa0a0a0);
-            mLineShadowPaint.setColor(0x10000000);
-        } else {
-            COLOR_BUILTIN = 0xffa6e22e;
-            COLOR_COMMENT = 0xff75715e;
-            COLOR_STRINGS = 0xffe6db74;
-            setBackgroundColor(0xff222222);
-            setTextColor(0xfff8f8f8);
-            mNumberPaint.setColor(0xffd3d3d3);
-            mLineShadowPaint.setColor(0x10FFFFFF);
-        }
-
+        setBackgroundColor(mColors.getColorBackground());
+        setTextColor(mColors.getColorText());
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/Consolas.ttf"));
         setHorizontallyScrolling(true);
         setCustomSelectionActionModeCallback(new EditorCallback());
@@ -276,69 +233,68 @@ public class Editor extends MultiAutoCompleteTextView {
         mHighlightStarted = true;
 
         try {
-            clearSpans(e);
-
             if (e.length() == 0) return e;
+            if (hasSpans(e)) clearSpans(e);
 
             int counter;
             switch (mType) {
                 case HTML:
-                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
+                    for (Matcher m = mPatterns.getPatternKeywords().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
-                    for (Matcher m = BUILTINS.matcher(e); m.find(); ) {
+                    for (Matcher m = mPatterns.getPatternBuiltins().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == ' ' && e.toString().charAt(m.end()) == '=') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
                     counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
                         if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
 
-                    for (Matcher m = COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternComments().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
                 case CSS:
-                    for (Matcher m = KEYWORDS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternKeywords().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = PARAMS.matcher(e); m.find(); ) {
+                    for (Matcher m = mPatterns.getPatternParams().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.end()) == ':') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
                     for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = ENDINGS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternEndings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
                         if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
@@ -347,47 +303,47 @@ public class Editor extends MultiAutoCompleteTextView {
                     counter = 0;
                     for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
                         if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
 
-                    for (Matcher m = OTHER_COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
                 case JS:
-                    for (Matcher m = DATATYPES.matcher(e); m.find(); ) {
+                    for (Matcher m = mPatterns.getPatternDatatypes().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.end()) == ' ') {
-                            e.setSpan(new ForegroundColorSpan(COLOR_PARAMS), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
-                    for (Matcher m = FUNCTIONS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_FUNCTIONS), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternFunctions().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorFunctions()), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = SYMBOLS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_KEYWORD), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternSymbols().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("null"); index >= 0; index = e.toString().indexOf("null", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_ENDING), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = NUMBERS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternNumbers().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (Matcher m = BOOLEANS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_BUILTIN), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternBooleans().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     counter = 0;
                     for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
                         if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
@@ -396,14 +352,14 @@ public class Editor extends MultiAutoCompleteTextView {
                     counter = 0;
                     for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
                         if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(COLOR_STRINGS), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
                         counter++;
                     }
 
-                    for (Matcher m = OTHER_COMMENTS.matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(COLOR_COMMENT), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (Matcher m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
             }
@@ -436,6 +392,10 @@ public class Editor extends MultiAutoCompleteTextView {
         }
     }
 
+    private boolean hasSpans(Editable e) {
+        return e.getSpans(0, e.length(), ForegroundColorSpan.class).length > 0;
+    }
+
     /**
      * Method used to draw line numbers onto code
      *
@@ -447,10 +407,11 @@ public class Editor extends MultiAutoCompleteTextView {
         int lineBounds;
         int lineHeight = getLineHeight();
         int lineCount = getLineCount();
+        List<CharSequence> lines = getLines();
 
         for (int i = 0; i < lineCount; i++) {
             lineBounds = getLineBounds(i - mLineDiff, mRect);
-            if (getLines().get(i).toString().endsWith("\n") || i == lineCount - 1) {
+            if (lines.get(i).toString().endsWith("\n") || i == lineCount - 1) {
                 canvas.drawText(String.valueOf(mLine + 1), 100, lineBounds, mNumberPaint);
                 mLine += 1;
                 mLineDiff = 0;
@@ -576,7 +537,7 @@ public class Editor extends MultiAutoCompleteTextView {
     }
 
     private void setupAutoComplete() {
-        String[] items = KEYWORDS.pattern().substring(2, KEYWORDS.pattern().length() - 2).split("\\|");
+        String[] items = mPatterns.getPatternKeywords().pattern().substring(2, mPatterns.getPatternKeywords().pattern().length() - 2).split("\\|");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, items);
         setAdapter(adapter);
 
@@ -590,7 +551,6 @@ public class Editor extends MultiAutoCompleteTextView {
                     i--;
                 }
 
-                //Check if token really started with @, else we don't have a valid token
                 if (i < 1 || text.charAt(i - 1) != '<') {
                     return cursor;
                 }
@@ -611,7 +571,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     }
                 }
 
-                return len;
+                return i;
             }
 
             @Override
@@ -670,13 +630,6 @@ public class Editor extends MultiAutoCompleteTextView {
                 mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
             }
         });
-    }
-
-    /**
-     * Determines the type of code that is being handled
-     */
-    public enum CodeType {
-        HTML, CSS, JS
     }
 
     /**
@@ -752,8 +705,8 @@ public class Editor extends MultiAutoCompleteTextView {
                             endComment = " -->";
                             break;
                         case CSS:
-                            startComment = "/*  ";
-                            endComment = "*/";
+                            startComment = "/* ";
+                            endComment = " */";
                             break;
                         case JS:
                             startComment = "/** ";
@@ -775,6 +728,143 @@ public class Editor extends MultiAutoCompleteTextView {
 
         private String getSelectedString() {
             return getText().toString().substring(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    public enum CodeType {
+        HTML, CSS, JS
+    }
+
+    class Colors {
+        private final int colorKeyword = 0xfff92672;
+        private final int colorParams = 0xff64cbf4;
+        private final int colorEnding = 0xff9a79dd;
+        private final int colorFunctions = 0xffed5c00;
+
+        private final int colorBuiltin = 0xff72b000;
+        private final int colorComment = 0xffa0a0a0;
+        private final int colorStrings = 0xffed5c00;
+
+        private final int colorBuiltinDark = 0xffa6e22e;
+        private final int colorCommentDark = 0xff75715e;
+        private final int colorStringsDark = 0xffe6db74;
+
+        private final int colorLineShadow = 0x10000000;
+        private final int colorNumber = 0xffa0a0a0;
+        private final int colorBackground = 0xfff8f8f8;
+        private final int colorText = 0xff222222;
+
+        private final int colorLineShadowDark = 0x10FFFFFF;
+        private final int colorNumberDark = 0xffd3d3d3;
+        private final int colorBackgroundDark = 0xff222222;
+        private final int colorTextDark = 0xfff8f8f8;
+
+        private boolean darkTheme;
+
+        Colors(boolean darkTheme) {
+            this.darkTheme = darkTheme;
+        }
+
+        int getColorKeyword() {
+            return colorKeyword;
+        }
+
+        int getColorParams() {
+            return colorParams;
+        }
+
+        int getColorEnding() {
+            return colorEnding;
+        }
+
+        int getColorFunctions() {
+            return colorFunctions;
+        }
+
+        int getColorBuiltin() {
+            return darkTheme ? colorBuiltin : colorBuiltinDark;
+        }
+
+        int getColorComment() {
+            return darkTheme ? colorComment : colorCommentDark;
+        }
+
+        int getColorStrings() {
+            return darkTheme ? colorStrings : colorStringsDark;
+        }
+
+        int getColorLineShadow() {
+            return darkTheme ? colorLineShadow : colorLineShadowDark;
+        }
+
+        int getColorNumber() {
+            return darkTheme ? colorNumber : colorNumberDark;
+        }
+
+        int getColorBackground() {
+            return darkTheme ? colorBackground : colorBackgroundDark;
+        }
+
+        int getColorText() {
+            return darkTheme ? colorText : colorTextDark;
+        }
+    }
+
+    class Patterns {
+        private final Pattern patternKeywords = Pattern.compile("\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|del|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b");
+        private final Pattern patternBuiltins = Pattern.compile("\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controls|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b");
+        private final Pattern patternParams = Pattern.compile("\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b");
+        private final Pattern patternComments = Pattern.compile("/\\**?\\*/|<!--.*");
+        private final Pattern patternCommentsOther = Pattern.compile("/\\*(?:.|[\\n\\r])*?\\*/|//.*");
+        private final Pattern patternEndings = Pattern.compile("(em|rem|px|pt|%)");
+        private final Pattern patternDatatypes = Pattern.compile("\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b");
+        private final Pattern patternSymbols = Pattern.compile("(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|finally|do|!|finally|default|case|switch|native|let|super|throws|return)");
+        private final Pattern patternFunctions = Pattern.compile("n\\((.*?)\\)");
+        private final Pattern patternNumbers = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
+        private final Pattern patternBooleans = Pattern.compile("\\b(true|false)\\b");
+
+        Pattern getPatternKeywords() {
+            return patternKeywords;
+        }
+
+        Pattern getPatternBuiltins() {
+            return patternBuiltins;
+        }
+
+        Pattern getPatternParams() {
+            return patternParams;
+        }
+
+        Pattern getPatternComments() {
+            return patternComments;
+        }
+
+        Pattern getPatternCommentsOther() {
+            return patternCommentsOther;
+        }
+
+        Pattern getPatternEndings() {
+            return patternEndings;
+        }
+
+        Pattern getPatternDatatypes() {
+            return patternDatatypes;
+        }
+
+        Pattern getPatternSymbols() {
+            return patternSymbols;
+        }
+
+        Pattern getPatternFunctions() {
+            return patternFunctions;
+        }
+
+        Pattern getPatternNumbers() {
+            return patternNumbers;
+        }
+
+        Pattern getPatternBooleans() {
+            return patternBooleans;
         }
     }
 }
