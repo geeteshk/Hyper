@@ -129,7 +129,7 @@ public class WebActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (getIntent().getBooleanExtra("pilot", false) && Network.getDrive() != null) {
+        if (Network.getDrive() != null) {
             Network.getDrive().stop();
         }
     }

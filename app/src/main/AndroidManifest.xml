@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    Copyright 2016 Geetesh Kalakoti <kalakotig@gmail.com>
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="io.geeteshk.hyper">
@@ -57,8 +56,10 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity android:name=".activity.IntroActivity" />
-        <activity android:name=".activity.RemotesActivity"
+        <activity
+            android:name=".activity.RemotesActivity"
             android:label="Remotes" />
+        <activity android:name=".activity.ViewActivity"></activity>
     </application>
 
 </manifest>

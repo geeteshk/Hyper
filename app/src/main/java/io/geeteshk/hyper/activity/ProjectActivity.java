@@ -61,6 +61,10 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -84,6 +88,7 @@ import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.FileTreeHolder;
+import io.geeteshk.hyper.wysiwyg.TagTreeHolder;
 
 /**
  * Activity to work on selected project
@@ -361,6 +366,7 @@ public class ProjectActivity extends AppCompatActivity {
         boolean canCommit = false;
         boolean canCheckout = false;
         boolean hasRemotes = false;
+        boolean isHtml = ((String) mSpinner.getSelectedItem()).endsWith(".html");
         if (isGitRepo) {
             canCommit = Giiit.canCommit(ProjectActivity.this, mProjectFile);
             canCheckout = Giiit.canCheckout(ProjectActivity.this, mProjectFile);
@@ -368,6 +374,7 @@ public class ProjectActivity extends AppCompatActivity {
                     Giiit.getRemotes(ProjectActivity.this, mProjectFile).size() > 0;
         }
 
+        menu.findItem(R.id.action_view).setEnabled(isHtml);
         menu.findItem(R.id.action_git_add).setEnabled(isGitRepo);
         menu.findItem(R.id.action_git_commit).setEnabled(canCommit);
         menu.findItem(R.id.action_git_push).setEnabled(hasRemotes);
@@ -417,18 +424,6 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when activity is destroyed
-     * to stop web server
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (Network.getDrive() != null) {
-            Network.getDrive().stop();
-        }
-    }
-
-    /**
      * Called when menu is created
      *
      * @param menu object that holds menu
@@ -456,6 +451,11 @@ public class ProjectActivity extends AppCompatActivity {
                 runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
                 runIntent.putExtra("name", mProject);
                 startActivity(runIntent);
+                return true;
+            case R.id.action_view:
+                Intent viewIntent = new Intent(ProjectActivity.this, ViewActivity.class);
+                viewIntent.putExtra("html_path", Constants.HYPER_ROOT + File.separator + mProject + File.separator + mSpinner.getSelectedItem());
+                startActivity(viewIntent);
                 return true;
             case R.id.action_import_image:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
