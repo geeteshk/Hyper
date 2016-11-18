@@ -224,6 +224,7 @@ public class Editor extends MultiAutoCompleteTextView {
             mLineShadowPaint.setColor(0x10FFFFFF);
         }
 
+        setTextSize(Decor.dpToPx(mContext, 24));
         setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/Consolas.ttf"));
         setHorizontallyScrolling(true);
         setCustomSelectionActionModeCallback(new EditorCallback());
