@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
-        Typefacer.setDefaultFont(getApplicationContext(), "NORMAL", "fonts/Consolas.ttf");
+        Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
         Theme.setNavigationColor(this);
 
         super.onCreate(savedInstanceState);

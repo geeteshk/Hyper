@@ -66,7 +66,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_two"
@@ -77,7 +77,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_three"
@@ -89,7 +89,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_four"
@@ -100,7 +100,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_five"
@@ -111,7 +111,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_six"
@@ -122,7 +122,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_seven"
@@ -133,7 +133,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_eight"
@@ -144,7 +144,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
+                android:typeface="monospace" />
 
         </LinearLayout>
 
