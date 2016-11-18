@@ -119,17 +119,6 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout mLayout;
 
     /**
-     * Used to change theme of application
-     *
-     * @param activity that is being changed
-     * @param dark     theme
-     */
-    public void changeTheme(AppCompatActivity activity, boolean dark) {
-        Pref.store(activity, "dark_theme", dark);
-        activity.recreate();
-    }
-
-    /**
      * Method called when activity is created
      *
      * @param savedInstanceState previously stored state
@@ -461,14 +450,6 @@ public class MainActivity extends AppCompatActivity {
 
         final SwitchCompat darkTheme = (SwitchCompat) rootView.findViewById(R.id.dark_theme);
         darkTheme.setChecked(Pref.get(MainActivity.this, "dark_theme", false));
-        darkTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                changeTheme(MainActivity.this, isChecked);
-                startActivity(new Intent(MainActivity.this,MainActivity.class));
-                finish();
-            }
-        });
 
         RelativeLayout darkThemeLayout = (RelativeLayout) rootView.findViewById(R.id.dark_theme_layout);
         darkThemeLayout.setOnClickListener(new View.OnClickListener() {
@@ -519,7 +500,20 @@ public class MainActivity extends AppCompatActivity {
         builder.setIcon(R.drawable.ic_settings);
         builder.setTitle("Settings");
         builder.setView(rootView);
-        builder.create().show();
+
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        darkTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dialog.dismiss();
+                Pref.store(MainActivity.this, "dark_theme", isChecked);
+                startActivity(new Intent(MainActivity.this,MainActivity.class));
+                finish();
+            }
+        });
     }
 
     private class CreateAdapter extends ArrayAdapter<String> {
