@@ -150,46 +150,20 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final boolean[] delete = {true, false};
-                        final String project = mObjects.get(newPos);
+                        String project = mObjects.get(newPos);
+                        Project.deleteProject(mContext, project);
                         remove(newPos);
 
-                        final Snackbar snackbar = Snackbar.make(
+                        Snackbar.make(
                                 mLayout,
                                 "Deleted " + project + ".",
                                 Snackbar.LENGTH_LONG
-                        );
-
-                        snackbar.setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                delete[0] = false;
-                                snackbar.dismiss();
-                            }
-                        });
-
-                        snackbar.setCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                super.onDismissed(snackbar, event);
-                                if (!delete[1]) {
-                                    if (delete[0]) {
-                                        Project.deleteProject(mContext, project);
-                                    } else {
-                                        add(project);
-                                    }
-
-                                    delete[1] = true;
-                                }
-                            }
-                        });
-
-                        snackbar.show();
+                        ).show();
                     }
                 });
 
                 builder.setNegativeButton(R.string.cancel, null);
-                builder.show();
+                builder.create().show();
 
                 return true;
             }
@@ -204,46 +178,20 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final boolean[] delete = {true, false};
-                        final String project = mObjects.get(newPos);
+                        String project = mObjects.get(newPos);
+                        Project.deleteProject(mContext, project);
                         remove(newPos);
 
-                        final Snackbar snackbar = Snackbar.make(
+                        Snackbar.make(
                                 mLayout,
                                 "Deleted " + project + ".",
                                 Snackbar.LENGTH_LONG
-                        );
-
-                        snackbar.setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                delete[0] = false;
-                                snackbar.dismiss();
-                            }
-                        });
-
-                        snackbar.setCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                super.onDismissed(snackbar, event);
-                                if (!delete[1]) {
-                                    if (delete[0]) {
-                                        Project.deleteProject(mContext, project);
-                                    } else {
-                                        add(project);
-                                    }
-
-                                    delete[1] = true;
-                                }
-                            }
-                        });
-
-                        snackbar.show();
+                        ).show();
                     }
                 });
 
                 builder.setNegativeButton(R.string.cancel, null);
-                builder.show();
+                builder.create().show();
 
                 return true;
             }
