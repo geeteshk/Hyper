@@ -83,8 +83,6 @@
     <string name="replace_from">Replace From</string>
     <string name="replace_to">Replace To</string>
     <string name="default_auto_save_freq">1s</string>
-    <string name="repair">First Aid</string>
-    <string name="repair_desc">Project no longer showing in the Improve or Pilot menus? Click here to repair any broken projects.</string>
     <string name="view_logs">Logs</string>
 
     <string name="import_not_java">Import</string>
@@ -93,9 +91,6 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
-    <string name="repair_key">Repair</string>
-    <string name="repaired">repaired</string>
-    <string name="failed">failed</string>
     <string name="already_exists">already exists</string>
     <string name="project_success">Your project has been successfully created!</string>
     <string name="project_fail">It seems something went wrong while creating the project.</string>
