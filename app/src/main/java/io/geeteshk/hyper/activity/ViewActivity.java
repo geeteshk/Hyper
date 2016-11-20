@@ -16,46 +16,57 @@
 
 package io.geeteshk.hyper.activity;
 
+import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.AttrsAdapter;
+import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
-import io.geeteshk.hyper.text.HtmlCompat;
-import io.geeteshk.hyper.widget.FileTreeHolder;
-import io.geeteshk.hyper.wysiwyg.TagTreeHolder;
+import io.geeteshk.hyper.widget.TagTreeHolder;
 
 public class ViewActivity extends AppCompatActivity {
 
     Document document;
+    String mProject, mFilename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view);
+
+        mProject = getIntent().getStringExtra("project");
         String htmlPath = getIntent().getStringExtra("html_path");
         File html = new File(htmlPath);
+        mFilename = html.getName();
         TreeNode rootNode = TreeNode.root();
         try {
             setupViewTree(rootNode, html);
@@ -63,45 +74,35 @@ public class ViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        LinearLayout viewLayout = (LinearLayout) findViewById(R.id.view_layout);
         AndroidTreeView treeView = new AndroidTreeView(ViewActivity.this, rootNode);
         treeView.setDefaultAnimation(true);
         treeView.setDefaultViewHolder(TagTreeHolder.class);
         treeView.setDefaultContainerStyle(R.style.TreeNodeStyle);
-        treeView.setDefaultNodeLongClickListener(new TreeNode.TreeNodeLongClickListener() {
-            @Override
-            public boolean onLongClick(TreeNode node, Object value) {
-                Element element = ((TagTreeHolder.TagTreeItem) value).element;
-                ArrayList<Attribute> attributes = new ArrayList<>();
-                for (Attribute attribute : element.attributes()) {
-                    attributes.add(attribute);
-                }
+        viewLayout.addView(treeView.getView());
+    }
 
-                View rootView = LayoutInflater.from(ViewActivity.this).inflate(R.layout.dialog_element_info, null, false);
-                RecyclerView elementAttrs = (RecyclerView) rootView.findViewById(R.id.element_attrs);
-                AttrsAdapter adapter = new AttrsAdapter(attributes);
-                LinearLayoutManager manager = new LinearLayoutManager(ViewActivity.this);
-                TextView elementTag = (TextView) rootView.findViewById(R.id.element_tag);
-                TextView elementText = (TextView) rootView.findViewById(R.id.element_text);
-                AlertDialog.Builder builder = new AlertDialog.Builder(ViewActivity.this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_view, menu);
+        return true;
+    }
 
-                elementAttrs.setLayoutManager(manager);
-                elementAttrs.setHasFixedSize(true);
-                elementAttrs.setAdapter(adapter);
-                elementTag.setText(element.tagName());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                Project.createFile(mProject, mFilename, document.outerHtml());
+                setResult(RESULT_OK);
+                Toast.makeText(ViewActivity.this, "Saved file.", Toast.LENGTH_SHORT).show();
+                break;
+        }
 
-                if (!element.ownText().isEmpty()) {
-                    elementText.setText(element.ownText());
-                } else {
-                    elementText.setText("...");
-                }
-
-                builder.setView(rootView);
-                builder.create().show();
-                return true;
-            }
-        });
-
-        setContentView(treeView.getView());
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupViewTree(TreeNode root, File html) throws IOException {
@@ -125,5 +126,28 @@ public class ViewActivity extends AppCompatActivity {
             setupElementTree(elementNode, child);
             root.addChild(elementNode);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewActivity.this);
+        builder.setTitle("Save changes?");
+        builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Project.createFile(mProject, mFilename, document.outerHtml());
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("DISCARD", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+
+        builder.create().show();
     }
 }

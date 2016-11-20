@@ -537,7 +537,7 @@ public class Editor extends MultiAutoCompleteTextView {
     }
 
     private void setupAutoComplete() {
-        String[] items = mPatterns.getPatternKeywords().pattern().substring(2, mPatterns.getPatternKeywords().pattern().length() - 2).split("\\|");
+        String[] items = mPatterns.getPatternKeywords().pattern().replace("(", "").replace(")", "").substring(2, mPatterns.getPatternKeywords().pattern().length() - 2).split("\\|");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, items);
         setAdapter(adapter);
 

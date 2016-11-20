@@ -18,7 +18,6 @@ package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -40,7 +39,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,14 +59,9 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,20 +73,20 @@ import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.git.Giiit;
-import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Jason;
-import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.FileTreeHolder;
-import io.geeteshk.hyper.wysiwyg.TagTreeHolder;
 
 /**
  * Activity to work on selected project
  */
 public class ProjectActivity extends AppCompatActivity {
+
+
+    private static final int VIEW_CODE = 99;
 
     /**
      * Intent code to import image
@@ -118,7 +111,7 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Currently open files
      */
-    private List<String> mFiles;
+    private ArrayList<String> mFiles;
     /**
      * Spinner and Adapter to handle files
      */
@@ -151,8 +144,12 @@ public class ProjectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
 
-        mFiles = new ArrayList<>();
-        mFiles.add("index.html");
+        if (getIntent().hasExtra("files")) {
+            mFiles = getIntent().getStringArrayListExtra("files");
+        } else {
+            mFiles = new ArrayList<>();
+            mFiles.add("index.html");
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
@@ -454,8 +451,9 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_view:
                 Intent viewIntent = new Intent(ProjectActivity.this, ViewActivity.class);
+                viewIntent.putExtra("project", mProject);
                 viewIntent.putExtra("html_path", Constants.HYPER_ROOT + File.separator + mProject + File.separator + mSpinner.getSelectedItem());
-                startActivity(viewIntent);
+                startActivityForResult(viewIntent, VIEW_CODE);
                 return true;
             case R.id.action_import_image:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -1033,6 +1031,17 @@ public class ProjectActivity extends AppCompatActivity {
                     if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
                         showToast(false);
                     dialog.show();
+                }
+
+                break;
+            case VIEW_CODE:
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent(ProjectActivity.this, ProjectActivity.class);
+                    intent.putExtras(getIntent().getExtras());
+                    intent.addFlags(getIntent().getFlags());
+                    intent.putStringArrayListExtra("files", mFiles);
+                    startActivity(intent);
+                    finish();
                 }
 
                 break;
