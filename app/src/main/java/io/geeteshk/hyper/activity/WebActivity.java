@@ -119,8 +119,7 @@ public class WebActivity extends AppCompatActivity {
             }
         });
 
-        TextView textView = (TextView) findViewById(R.id.web_address);
-        textView.setText(url);
+        getSupportActionBar().setSubtitle(url);
     }
 
     /**

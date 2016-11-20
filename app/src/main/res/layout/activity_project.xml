@@ -27,22 +27,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/widget_toolbar" />
-
-        <View
-            android:id="@+id/toolbar_shadow"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_below="@+id/toolbar"
-            android:background="@drawable/toolbar_shadow" />
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <include android:id="@+id/toolbar"
+                layout="@layout/widget_toolbar" />
+
+        </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/editor_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar_shadow" />
+            android:layout_below="@+id/appbar" />
 
     </RelativeLayout>
 
