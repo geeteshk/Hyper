@@ -170,7 +170,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                     @Override
                     public void onClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle("Change element tag");
+                        builder.setTitle("Change element text");
                         final EditText editText = new EditText(context);
                         editText.setHint("Value");
                         editText.setSingleLine(true);
