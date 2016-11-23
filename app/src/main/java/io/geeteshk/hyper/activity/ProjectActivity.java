@@ -295,14 +295,12 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         fileBrowser.addView(treeView.getView());
-
-        Random random = new Random();
         RelativeLayout headerBackground = (RelativeLayout) findViewById(R.id.header_background);
         ImageView headerIcon = (ImageView) findViewById(R.id.header_icon);
         TextView headerTitle = (TextView) findViewById(R.id.header_title);
         TextView headerDesc = (TextView) findViewById(R.id.header_desc);
 
-        headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[random.nextInt((8 - 1) + 1) + 1]);
+        headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(int) (Math.random() * 8)]);
         headerIcon.setImageBitmap(Project.getFavicon(mProject));
         headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
         headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
