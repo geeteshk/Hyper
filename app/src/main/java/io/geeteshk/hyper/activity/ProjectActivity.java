@@ -308,7 +308,7 @@ public class ProjectActivity extends AppCompatActivity {
         headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject));
             this.setTaskDescription(description);
         }
     }

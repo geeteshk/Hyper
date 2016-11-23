@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/favicon"
                 android:maxLines="1"
+                android:ellipsize="marquee"
                 android:paddingBottom="4dp"
                 android:paddingTop="8dp"
                 android:textSize="18sp"
@@ -55,7 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:ellipsize="marquee" />
 
         </RelativeLayout>
 

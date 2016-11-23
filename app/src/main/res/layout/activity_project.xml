@@ -80,6 +80,8 @@
                 android:textStyle="bold"
                 android:gravity="start"
                 android:paddingBottom="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_above="@+id/header_desc"
                 android:layout_alignLeft="@+id/header_icon"
                 android:layout_alignStart="@+id/header_icon" />
@@ -92,6 +94,8 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="14sp"
                 android:textColor="#fff"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_alignParentBottom="true"
                 android:layout_alignLeft="@+id/header_title"
                 android:layout_alignStart="@+id/header_title" />
