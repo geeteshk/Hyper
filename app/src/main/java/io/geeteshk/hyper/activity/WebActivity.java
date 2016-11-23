@@ -64,6 +64,8 @@ public class WebActivity extends AppCompatActivity {
      */
     private ArrayList<String> mLogs;
 
+    String url;
+
     /**
      * Method called when activity is created
      *
@@ -98,7 +100,7 @@ public class WebActivity extends AppCompatActivity {
         assert mWebView != null;
         mWebView.getSettings().setJavaScriptEnabled(true);
 
-        String url = getIntent().getStringExtra("url");
+        url = getIntent().getStringExtra("url");
         if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
             url = "http://" + Network.getIpAddress() + ":8080/index.html";
         }
@@ -158,7 +160,7 @@ public class WebActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         switch (item.getItemId()) {
             case R.id.web_browser:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getIntent().getStringExtra("url")));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
                 return true;
             case R.id.web_logs:
