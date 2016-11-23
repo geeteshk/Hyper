@@ -142,4 +142,34 @@
     <string name="file_problem">There was a problem reading this file.</string>
     <string name="remote">Remote</string>
     <string name="action_search">Search</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT!</string>
+
+    <string name="slide_1_title">Hyper!</string>
+    <string name="slide_1_desc">An intuitive web development IDE.</string>
+
+    <string name="slide_2_title">Code Editor</string>
+    <string name="slide_2_desc">Containing features such as line numbers, code refactoring, color formatting, auto indentation, auto completion and more.</string>
+
+    <string name="slide_3_title">Git Integration</string>
+    <string name="slide_3_desc">Support for many different Git functions for version control within your projects.</string>
+
+    <string name="slide_4_title">Get Started</string>
+    <string name="slide_4_desc">Hope those features have got you excited. Many more await you. Get started by creating a project!</string>
+
+    <array name="slide_titles">
+        <item>@string/slide_1_title</item>
+        <item>@string/slide_2_title</item>
+        <item>@string/slide_3_title</item>
+        <item>@string/slide_4_title</item>
+    </array>
+
+    <array name="slide_desc">
+        <item>@string/slide_1_desc</item>
+        <item>@string/slide_2_desc</item>
+        <item>@string/slide_3_desc</item>
+        <item>@string/slide_4_desc</item>
+    </array>
+
 </resources>

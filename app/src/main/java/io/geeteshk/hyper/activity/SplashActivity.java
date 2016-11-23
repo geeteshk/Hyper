@@ -16,10 +16,18 @@
 
 package io.geeteshk.hyper.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +42,8 @@ import io.geeteshk.hyper.helper.Typefacer;
  * Activity for application splash
  */
 public class SplashActivity extends AppCompatActivity {
+
+    private static final int WRITE_PERMISSION_REQUEST = 0;
 
     /**
      * Layout to handle snackbars
@@ -68,6 +78,54 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                setupPermissions();
+            }
+        }, 1000);
+    }
+
+    private void setupPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                final Snackbar snackbar = Snackbar.make(mLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("GRANT", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, WRITE_PERMISSION_REQUEST);
+                    }
+                });
+
+                snackbar.show();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        WRITE_PERMISSION_REQUEST);
+            }
+        } else {
+            Class classTo = IntroActivity.class;
+            if (Pref.get(SplashActivity.this, "intro_done", false)) {
+                classTo = MainActivity.class;
+            }
+
+            Intent intent = new Intent(SplashActivity.this, classTo);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == WRITE_PERMISSION_REQUEST) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Class classTo = IntroActivity.class;
                 if (Pref.get(SplashActivity.this, "intro_done", false)) {
                     classTo = MainActivity.class;
@@ -78,6 +136,28 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 1000);
+        } else {
+            final Snackbar snackbar = Snackbar.make(mLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("GRANT", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    snackbar.dismiss();
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent, WRITE_PERMISSION_REQUEST);
+                }
+            });
+
+            snackbar.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == WRITE_PERMISSION_REQUEST) {
+            setupPermissions();
+        }
     }
 }
