@@ -17,8 +17,9 @@
 package io.geeteshk.hyper.git;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -35,8 +36,8 @@ public class CloneTask extends GitTask {
     private static final String TAG = CloneTask.class.getSimpleName();
     private ProjectAdapter mAdapter;
 
-    public CloneTask(Context context, File repo, ProjectAdapter adapter) {
-        super(context, repo, new String[]{"Cloning repository", "", ""});
+    public CloneTask(Context context, View view, File repo, ProjectAdapter adapter) {
+        super(context, view, repo, new String[]{"Cloning repository", "", ""});
         mAdapter = adapter;
         id = 3;
     }
@@ -72,6 +73,7 @@ public class CloneTask extends GitTask {
                     .call();
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
+            Snackbar.make(mView, e.toString(), Snackbar.LENGTH_LONG).show();
             return false;
         }
 

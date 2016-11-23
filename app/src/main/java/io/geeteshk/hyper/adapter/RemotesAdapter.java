@@ -39,11 +39,13 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
 
     private ArrayList<String> mRemotes;
     private Context mContext;
+    private View mView;
     private File mRepo;
 
-    public RemotesAdapter(Context context, File repo) {
-        mRemotes = Giiit.getRemotes(context, repo);
+    public RemotesAdapter(Context context, View view, File repo) {
+        mRemotes = Giiit.getRemotes(view, repo);
         mContext = context;
+        mView = view;
         mRepo = repo;
     }
 
@@ -56,7 +58,7 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
     @Override
     public void onBindViewHolder(final RemotesHolder holder, final int position) {
         holder.mName.setText(mRemotes.get(position));
-        holder.mUrl.setText(Giiit.getRemoteUrl(mContext, mRepo, mRemotes.get(position)));
+        holder.mUrl.setText(Giiit.getRemoteUrl(mView, mRepo, mRemotes.get(position)));
         holder.mRootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +79,7 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.fetch(mContext, mRepo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                        Giiit.fetch(mContext, mView, mRepo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
                     }
                 });
 
@@ -96,7 +98,7 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
                 builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Giiit.removeRemote(mContext, mRepo, mRemotes.get(newPos));
+                        Giiit.removeRemote(mView, mRepo, mRemotes.get(newPos));
                         mRemotes.remove(mRemotes.get(newPos));
                         notifyDataSetChanged();
                     }
@@ -115,7 +117,7 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
     }
 
     public void add(String remote, String url) {
-        Giiit.addRemote(mContext, mRepo, remote, url);
+        Giiit.addRemote(mView, mRepo, remote, url);
         mRemotes.add(remote);
         notifyDataSetChanged();
     }

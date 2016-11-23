@@ -18,7 +18,6 @@ package io.geeteshk.hyper.widget;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,20 +30,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.unnamed.b.atv.model.TreeNode;
 
 import org.jsoup.nodes.Element;
 
-import java.io.File;
-
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.activity.ViewActivity;
 import io.geeteshk.hyper.adapter.AttrsAdapter;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.text.HtmlCompat;
 
 public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.TagTreeItem> {

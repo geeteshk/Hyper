@@ -17,30 +17,20 @@
 package io.geeteshk.hyper.git;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.app.AlertDialog;
-import android.text.Spannable;
+import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.EditList;
-import org.eclipse.jgit.diff.HistogramDiff;
-import org.eclipse.jgit.diff.RawText;
-import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -50,11 +40,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.widget.DiffView;
 
 /**
  * Helper class to handle git functions
@@ -72,15 +60,15 @@ public class Giiit {
      * @param context context to make toast
      * @param repo repo to init
      */
-    public static void init(Context context, File repo) {
+    public static void init(Context context, File repo, View view) {
         try {
             Git git = Git.init()
                     .setDirectory(repo)
                     .call();
-            Toast.makeText(context, "Initialized repository at: " + git.getRepository().getDirectory(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, context.getString(R.string.repo_init) + git.getRepository().getDirectory(), Snackbar.LENGTH_LONG).show();
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -90,18 +78,18 @@ public class Giiit {
      * @param context context to make toast
      * @param repo repo to stage files
      */
-    public static void add(Context context, File repo) {
+    public static void add(View view, File repo) {
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 git.add()
                         .addFilepattern(".")
                         .call();
-                Toast.makeText(context, "Added all files to stage.", Toast.LENGTH_LONG).show();
+                Snackbar.make(view, R.string.added_to_stage, Snackbar.LENGTH_LONG).show();
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -112,8 +100,8 @@ public class Giiit {
      * @param repo repo to commit to
      * @param message git commit message
      */
-    public static void commit(Context context, File repo, String message) {
-        new CommitTask(context, repo, new String[] {"Committing changes", "Committed successfully.", "Unable to commit files."}).execute(message);
+    public static void commit(Context context, View view, File repo, String message) {
+        new CommitTask(context, view, repo, new String[] {"Committing changes", "Committed successfully.", "Unable to commit files."}).execute(message);
     }
 
     private static String changeTextToNone(String text) {
@@ -131,9 +119,9 @@ public class Giiit {
      * @param repo repo to view status of
      * @param t text views to set status to
      */
-    public static void status(Context context, File repo, TextView... t) {
+    public static void status(View view, File repo, TextView... t) {
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 Status status = git.status()
                         .call();
@@ -203,7 +191,7 @@ public class Giiit {
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -214,18 +202,18 @@ public class Giiit {
      * @param repo to get commits from
      * @return list of commits
      */
-    public static List<RevCommit> getCommits(Context context, File repo) {
+    public static List<RevCommit> getCommits(View view, File repo) {
         Iterable<RevCommit> log = null;
         List<RevCommit> revCommits = new ArrayList<>();
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 log = git.log()
                         .call();
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             return null;
         }
 
@@ -245,17 +233,17 @@ public class Giiit {
      * @param repo repo to get branches from
      * @return list of branches
      */
-    public static List<Ref> getBranches(Context context, File repo) {
+    public static List<Ref> getBranches(View view, File repo) {
         List<Ref> branches = null;
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 branches = git.branchList()
                         .call();
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             return null;
         }
 
@@ -270,12 +258,12 @@ public class Giiit {
      * @param branchName name of branch
      * @param checked switch to branch if it exists
      */
-    public static void createBranch(Context context, File repo, String branchName, boolean checked) {
+    public static void createBranch(Context context, View view, File repo, String branchName, boolean checked) {
         if (checked) {
-            new CheckoutTask(context, repo, new String[] {"Creating new branch", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(true), branchName);
+            new CheckoutTask(context, view, repo, new String[] {"Creating new branch", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(true), branchName);
         } else {
             try {
-                Git git = getGit(context, repo);
+                Git git = getGit(view, repo);
                 if (git != null) {
                     git.branchCreate()
                             .setName(branchName)
@@ -283,7 +271,7 @@ public class Giiit {
                 }
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
-                Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -295,9 +283,9 @@ public class Giiit {
      * @param repo to delete branches from
      * @param branches to delete
      */
-    public static void deleteBranch(Context context, File repo, String... branches) {
+    public static void deleteBranch(View view, File repo, String... branches) {
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 git.branchDelete()
                         .setBranchNames(branches)
@@ -305,7 +293,7 @@ public class Giiit {
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -316,21 +304,21 @@ public class Giiit {
      * @param repo to checkout to branch
      * @param branch to checkout to
      */
-    public static void checkout(Context context, File repo, String branch) {
-        new CheckoutTask(context, repo, new String[] {"Checking out", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(false), branch);
+    public static void checkout(Context context, View view, File repo, String branch) {
+        new CheckoutTask(context, view, repo, new String[] {"Checking out", "Checked out successfully.", "Unable to checkout."}).execute(String.valueOf(false), branch);
     }
 
-    public static String getCurrentBranch(Context context, File repo) {
+    public static String getCurrentBranch(View view, File repo) {
         String branch = "";
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 branch = git.getRepository()
                         .getFullBranch();
             }
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             return null;
         }
 
@@ -345,39 +333,39 @@ public class Giiit {
      * @param adapter to refresh
      * @param remoteUrl to clone from
      */
-    public static void clone(Context context, File repo, ProjectAdapter adapter, String remoteUrl, String username, String password) {
+    public static void clone(Context context, View view, File repo, ProjectAdapter adapter, String remoteUrl, String username, String password) {
         if (!repo.exists()) {
-            new CloneTask(context, repo, adapter).execute(remoteUrl, username, password);
+            new CloneTask(context, view, repo, adapter).execute(remoteUrl, username, password);
         } else {
-            Toast.makeText(context, "The folder already exists.", Toast.LENGTH_LONG).show();
+            Snackbar.make(view, R.string.folder_exists, Snackbar.LENGTH_LONG).show();
         }
     }
 
-    public static void push(Context context, File repo, String remoteUrl, boolean[] options, String username, String password) {
-        new PushTask(context, repo, new String[] {"Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."}, options).execute(remoteUrl, username, password);
+    public static void push(Context context, View view, File repo, String remoteUrl, boolean[] options, String username, String password) {
+        new PushTask(context, view, repo, new String[] {"Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."}, options).execute(remoteUrl, username, password);
     }
 
-    public static void pull(Context context, File repo, String remote, String username, String password) {
-        new PullTask(context, repo, new String[] {"Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits."}).execute(remote, username, password);
+    public static void pull(Context context, View view, File repo, String remote, String username, String password) {
+        new PullTask(context, view, repo, new String[] {"Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits."}).execute(remote, username, password);
     }
 
-    public static void fetch(Context context, File repo, String remote, String username, String password) {
-        new FetchTask(context, repo, new String[] {"Fetching remote " + remote, "Successfully fetched from " + remote + ".", "There was a problem while fetching from " + remote + "."}).execute(remote, username, password);
+    public static void fetch(Context context, View view, File repo, String remote, String username, String password) {
+        new FetchTask(context, view, repo, new String[] {"Fetching remote " + remote, "Successfully fetched from " + remote + ".", "There was a problem while fetching from " + remote + "."}).execute(remote, username, password);
     }
 
-    public static Git getGit(Context context, File repo) {
+    public static Git getGit(View view, File repo) {
         try {
             return Git.open(repo);
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
 
         return null;
     }
 
-    private static StoredConfig getConfig(Context context, File repo) {
-        Git git = getGit(context, repo);
+    private static StoredConfig getConfig(View view, File repo) {
+        Git git = getGit(view, repo);
         if (git != null) {
             return git.getRepository().getConfig();
         }
@@ -385,9 +373,9 @@ public class Giiit {
         return null;
     }
 
-    public static String getRemoteUrl(Context context, File repo, String remote) {
+    public static String getRemoteUrl(View view, File repo, String remote) {
         String url = "";
-        StoredConfig config = getConfig(context, repo);
+        StoredConfig config = getConfig(view, repo);
         if (config != null) {
             url = config.getString("remote", remote, "url");
         }
@@ -395,9 +383,9 @@ public class Giiit {
         return url;
     }
 
-    public static ArrayList<String> getRemotes(Context context, File repo) {
+    public static ArrayList<String> getRemotes(View view, File repo) {
         ArrayList<String> remotes = null;
-        StoredConfig config = getConfig(context, repo);
+        StoredConfig config = getConfig(view, repo);
         if (config != null) {
             remotes = new ArrayList<>(config.getSubsections("remote"));
         }
@@ -405,55 +393,55 @@ public class Giiit {
         return remotes;
     }
 
-    public static void addRemote(Context context, File repo, String remote, String url) {
-        StoredConfig config = getConfig(context, repo);
+    public static void addRemote(View view, File repo, String remote, String url) {
+        StoredConfig config = getConfig(view, repo);
         if (config != null) {
             config.setString("remote", remote, "url", url);
             try {
                 config.save();
             } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, e.toString());
+                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             }
         }
     }
 
-    public static void removeRemote(Context context, File repo, String remote) {
-        StoredConfig config = getConfig(context, repo);
+    public static void removeRemote(View view, File repo, String remote) {
+        StoredConfig config = getConfig(view, repo);
         if (config != null) {
             config.unsetSection("remote", remote);
             try {
                 config.save();
             } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, e.toString());
+                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
             }
         }
     }
 
-    public static boolean canCommit(Context context, File repo) {
+    public static boolean canCommit(View view, File repo) {
         try {
-            Git git = getGit(context, repo);
+            Git git = getGit(view, repo);
             if (git != null) {
                 return git.getRepository().getRepositoryState().canCommit()
                         && git.status().call().hasUncommittedChanges();
             }
         } catch (GitAPIException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
 
         return false;
     }
 
-    public static boolean canCheckout(Context context, File repo) {
-        Git git = getGit(context, repo);
+    public static boolean canCheckout(View view, File repo) {
+        Git git = getGit(view, repo);
         return git != null && git.getRepository().getRepositoryState().canCheckout();
-
     }
 
-    public static SpannableString diff(Context context, File repo, ObjectId hash1, ObjectId hash2) {
+    public static SpannableString diff(View view, File repo, ObjectId hash1, ObjectId hash2) {
         SpannableString string = null;
-        Git git = getGit(context, repo);
+        Git git = getGit(view, repo);
         try {
             if (git != null) {
                 OutputStream out = new ByteArrayOutputStream();
@@ -463,7 +451,8 @@ public class Giiit {
                 string = new SpannableString(out.toString());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show();
         }
 
         return string;

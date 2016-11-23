@@ -17,7 +17,9 @@
 package io.geeteshk.hyper.git;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -30,14 +32,14 @@ public class FetchTask extends GitTask {
 
     private static final String TAG = PullTask.class.getSimpleName();
 
-    public FetchTask(Context context, File repo, String[] values) {
-        super(context, repo, values);
+    public FetchTask(Context context, View view, File repo, String[] values) {
+        super(context, view, repo, values);
         id = 5;
     }
 
     @Override
     protected Boolean doInBackground(String... params) {
-        Git git = Giiit.getGit(mContext, mRepo);
+        Git git = Giiit.getGit(mView, mRepo);
         if (git != null) {
             try {
                 git.fetch()
@@ -68,6 +70,7 @@ public class FetchTask extends GitTask {
                         .call();
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
+                Snackbar.make(mView, e.toString(), Snackbar.LENGTH_LONG).show();
                 return false;
             }
 

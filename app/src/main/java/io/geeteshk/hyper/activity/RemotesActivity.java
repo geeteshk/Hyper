@@ -17,6 +17,7 @@
 package io.geeteshk.hyper.activity;
 
 import android.content.DialogInterface;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
@@ -38,18 +39,21 @@ import io.geeteshk.hyper.helper.Theme;
 
 public class RemotesActivity extends AppCompatActivity {
 
+    CoordinatorLayout mLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remotes);
 
+        mLayout = (CoordinatorLayout) findViewById(R.id.remotes_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final File repo = new File(getIntent().getStringExtra("project_file"));
         RecyclerView remotesList = (RecyclerView) findViewById(R.id.remotes_list);
-        final RemotesAdapter remotesAdapter = new RemotesAdapter(this, repo);
+        final RemotesAdapter remotesAdapter = new RemotesAdapter(this, mLayout, repo);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(remotesList.getContext(),
@@ -76,7 +80,7 @@ public class RemotesActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.git_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Giiit.addRemote(RemotesActivity.this, repo, file.getText().toString(), remote.getText().toString());
+                        Giiit.addRemote(mLayout, repo, file.getText().toString(), remote.getText().toString());
                         remotesAdapter.add(file.getText().toString(), remote.getText().toString());
                     }
                 });

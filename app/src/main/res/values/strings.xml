@@ -157,6 +157,14 @@
 
     <string name="slide_4_title">Get Started</string>
     <string name="slide_4_desc">Hope those features have got you excited. Many more await you. Get started by creating a project!</string>
+    <string name="css_import_success">Successfully imported CSS file.</string>
+    <string name="css_import_problem">There was a problem while importing this CSS file.</string>
+    <string name="branch_name_empty">Please enter a branch name.</string>
+    <string name="save_changes_done">Saved changes.</string>
+    <string name="commit_hash_copy">Commit hash copied.</string>
+    <string name="added_to_stage">Added all files to stage.</string>
+    <string name="repo_init">"Initialized repository at: "</string>
+    <string name="folder_exists">The folder already exists.</string>
 
     <array name="slide_titles">
         <item>@string/slide_1_title</item>

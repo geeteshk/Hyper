@@ -17,23 +17,15 @@
 package io.geeteshk.hyper.activity;
 
 import android.content.DialogInterface;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputEditText;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
@@ -47,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.adapter.AttrsAdapter;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.widget.TagTreeHolder;
@@ -56,6 +47,8 @@ public class ViewActivity extends AppCompatActivity {
 
     Document document;
     String mProject, mFilename;
+
+    LinearLayout viewLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +70,7 @@ public class ViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        LinearLayout viewLayout = (LinearLayout) findViewById(R.id.view_layout);
+        viewLayout = (LinearLayout) findViewById(R.id.view_layout);
         AndroidTreeView treeView = new AndroidTreeView(ViewActivity.this, rootNode);
         treeView.setDefaultAnimation(true);
         treeView.setDefaultViewHolder(TagTreeHolder.class);
@@ -98,7 +91,7 @@ public class ViewActivity extends AppCompatActivity {
             case R.id.action_save:
                 Project.createFile(mProject, mFilename, document.outerHtml());
                 setResult(RESULT_OK);
-                Toast.makeText(ViewActivity.this, "Saved file.", Toast.LENGTH_SHORT).show();
+                Snackbar.make(viewLayout, R.string.save_changes_done, Snackbar.LENGTH_SHORT).show();
                 break;
         }
 

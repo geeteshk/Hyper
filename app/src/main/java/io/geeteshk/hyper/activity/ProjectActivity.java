@@ -21,7 +21,6 @@ import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,7 +53,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
@@ -66,16 +64,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
-import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
@@ -222,7 +219,7 @@ public class ProjectActivity extends AppCompatActivity {
                             setFragment(item.path, true);
                             mDrawerLayout.closeDrawers();
                         } else {
-                            Toast.makeText(ProjectActivity.this, R.string.not_text_file, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.not_text_file, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -387,10 +384,10 @@ public class ProjectActivity extends AppCompatActivity {
         boolean hasRemotes = false;
         boolean isHtml = ((String) mSpinner.getSelectedItem()).endsWith(".html");
         if (isGitRepo) {
-            canCommit = Giiit.canCommit(ProjectActivity.this, mProjectFile);
-            canCheckout = Giiit.canCheckout(ProjectActivity.this, mProjectFile);
-            hasRemotes = Giiit.getRemotes(ProjectActivity.this, mProjectFile) != null &&
-                    Giiit.getRemotes(ProjectActivity.this, mProjectFile).size() > 0;
+            canCommit = Giiit.canCommit(mDrawerLayout, mProjectFile);
+            canCheckout = Giiit.canCheckout(mDrawerLayout, mProjectFile);
+            hasRemotes = Giiit.getRemotes(mDrawerLayout, mProjectFile) != null &&
+                    Giiit.getRemotes(mDrawerLayout, mProjectFile).size() > 0;
         }
 
         menu.findItem(R.id.action_view).setEnabled(isHtml);
@@ -518,12 +515,12 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
-                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
                             setFragment(editText.getText().toString() + ".html", true);
                             setupFileTree(rootNode, mProjectFile);
                             treeView.setRoot(rootNode);
                         } else {
-                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -535,7 +532,7 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog = builder.create();
                 if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(false);
+                    showSnack(false);
                 dialog.show();
                 return true;
             case R.id.action_create_css:
@@ -552,12 +549,12 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         createResourceDirExists("css");
                         if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
-                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
                             setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
                             setupFileTree(rootNode, mProjectFile);
                             treeView.setRoot(rootNode);
                         } else {
-                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -569,7 +566,7 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog2 = builder2.create();
                 if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(false);
+                    showSnack(false);
                 dialog2.show();
                 return true;
             case R.id.action_create_js:
@@ -586,12 +583,12 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         createResourceDirExists("js");
                         if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
-                            Toast.makeText(ProjectActivity.this, R.string.file_success, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
                             setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
                             setupFileTree(rootNode, mProjectFile);
                             treeView.setRoot(rootNode);
                         } else {
-                            Toast.makeText(ProjectActivity.this, R.string.file_fail, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -603,17 +600,17 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 AppCompatDialog dialog3 = builder3.create();
                 if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showToast(false);
+                    showSnack(false);
                 dialog3.show();
                 return true;
             case R.id.action_about:
                 showAbout();
                 return true;
             case R.id.action_git_init:
-                Giiit.init(ProjectActivity.this, mProjectFile);
+                Giiit.init(ProjectActivity.this, mProjectFile, mDrawerLayout);
                 return true;
             case R.id.action_git_add:
-                Giiit.add(ProjectActivity.this, mProjectFile);
+                Giiit.add(mDrawerLayout, mProjectFile);
                 return true;
             case R.id.action_git_commit:
                 AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
@@ -625,11 +622,7 @@ public class ProjectActivity extends AppCompatActivity {
                 gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText4.getText().toString().isEmpty()) {
-                            Giiit.commit(ProjectActivity.this, mProjectFile, editText4.getText().toString());
-                        } else {
-                            Toast.makeText(ProjectActivity.this, R.string.commit_message_empty, Toast.LENGTH_SHORT).show();
-                        }
+
                     }
                 });
                 gitCommitBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -638,8 +631,19 @@ public class ProjectActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                AppCompatDialog dialog4 = gitCommitBuilder.create();
+                final AlertDialog dialog4 = gitCommitBuilder.create();
                 dialog4.show();
+                dialog4.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!editText4.getText().toString().isEmpty()) {
+                            Giiit.commit(ProjectActivity.this, mDrawerLayout, mProjectFile, editText4.getText().toString());
+                            dialog4.dismiss();
+                        } else {
+                            editText4.setError(getString(R.string.commit_message_empty));
+                        }
+                    }
+                });
                 return true;
             case R.id.action_git_push:
                 AlertDialog.Builder gitPushBuilder = new AlertDialog.Builder(ProjectActivity.this);
@@ -657,13 +661,13 @@ public class ProjectActivity extends AppCompatActivity {
                 final TextInputEditText pushUsername = (TextInputEditText) pushView.findViewById(R.id.push_username);
                 final TextInputEditText pushPassword = (TextInputEditText) pushView.findViewById(R.id.push_password);
 
-                spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(ProjectActivity.this, mProjectFile)));
+                spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(mDrawerLayout, mProjectFile)));
                 gitPushBuilder.setView(pushView);
                 gitPushBuilder.setPositiveButton("PUSH", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.push(ProjectActivity.this, mProjectFile, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
+                        Giiit.push(ProjectActivity.this, mDrawerLayout, mProjectFile, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
                     }
                 });
 
@@ -682,20 +686,20 @@ public class ProjectActivity extends AppCompatActivity {
                 final TextInputEditText pullUsername = (TextInputEditText) pullView.findViewById(R.id.pull_username);
                 final TextInputEditText pullPassword = (TextInputEditText) pullView.findViewById(R.id.pull_password);
 
-                spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(ProjectActivity.this, mProjectFile)));
+                spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(mDrawerLayout, mProjectFile)));
                 gitPullBuilder.setView(pullView);
                 gitPullBuilder.setPositiveButton("PULL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.pull(ProjectActivity.this, mProjectFile, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                        Giiit.pull(ProjectActivity.this, mDrawerLayout, mProjectFile, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
                     }
                 });
 
                 gitPullBuilder.setNegativeButton(R.string.cancel, null);
                 gitPullBuilder.create().show();
             case R.id.action_git_log:
-                List<RevCommit> commits = Giiit.getCommits(ProjectActivity.this, mProjectFile);
+                List<RevCommit> commits = Giiit.getCommits(mDrawerLayout, mProjectFile);
                 @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
                 if (Pref.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
@@ -714,7 +718,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_diff:
                 final int[] chosen = {-1, -1};
-                final List<RevCommit> commitsToDiff = Giiit.getCommits(ProjectActivity.this, mProjectFile);
+                final List<RevCommit> commitsToDiff = Giiit.getCommits(mDrawerLayout, mProjectFile);
                 final CharSequence[] commitNames = new CharSequence[commitsToDiff.size()];
                 for (int i = 0; i < commitNames.length; i++) {
                     commitNames[i] = commitsToDiff.get(i).getShortMessage();
@@ -732,19 +736,15 @@ public class ProjectActivity extends AppCompatActivity {
                         secondCommit.setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                if (i == chosen[0]) {
-                                    Toast.makeText(ProjectActivity.this, "You can't diff the same commit!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    dialogInterface.cancel();
-                                    chosen[1] = i;
-                                    AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                                    SpannableString string = Giiit.diff(ProjectActivity.this, mProjectFile, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
-                                    View rootView = inflater.inflate(R.layout.dialog_diff, null, false);
-                                    DiffView diffView = (DiffView) rootView.findViewById(R.id.diff_view);
-                                    diffView.setDiffText(string);
-                                    diffBuilder.setView(rootView);
-                                    diffBuilder.create().show();
-                                }
+                                dialogInterface.cancel();
+                                chosen[1] = i;
+                                AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                                SpannableString string = Giiit.diff(mDrawerLayout, mProjectFile, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
+                                View rootView = inflater.inflate(R.layout.dialog_diff, null, false);
+                                DiffView diffView = (DiffView) rootView.findViewById(R.id.diff_view);
+                                diffView.setDiffText(string);
+                                diffBuilder.setView(rootView);
+                                diffBuilder.create().show();
                             }
                         });
 
@@ -771,7 +771,7 @@ public class ProjectActivity extends AppCompatActivity {
                 untracked = (TextView) layoutStatus.findViewById(R.id.status_untracked);
                 untrackedFolders = (TextView) layoutStatus.findViewById(R.id.status_untracked_folders);
 
-                Giiit.status(ProjectActivity.this, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
+                Giiit.status(mDrawerLayout, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
 
                 BottomSheetDialog dialogStatus = new BottomSheetDialog(this);
                 dialogStatus.setContentView(layoutStatus);
@@ -791,20 +791,27 @@ public class ProjectActivity extends AppCompatActivity {
                 gitBranch.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!editText5.getText().toString().isEmpty()) {
-                            Giiit.createBranch(ProjectActivity.this, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
-                        } else {
-                            Toast.makeText(ProjectActivity.this, "Please enter a branch name.", Toast.LENGTH_SHORT).show();
-                        }
+
                     }
                 });
                 gitBranch.setNegativeButton(R.string.cancel, null);
-                AppCompatDialog dialog5 = gitBranch.create();
+                final AlertDialog dialog5 = gitBranch.create();
                 dialog5.show();
+                dialog5.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!editText5.getText().toString().isEmpty()) {
+                            Giiit.createBranch(ProjectActivity.this, mDrawerLayout, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
+                            dialog5.dismiss();
+                        } else {
+                            editText5.setError(getString(R.string.branch_name_empty));
+                        }
+                    }
+                });
                 return true;
             case R.id.action_git_branch_remove:
                 AlertDialog.Builder gitRemove = new AlertDialog.Builder(this);
-                final List<Ref> branchesList = Giiit.getBranches(ProjectActivity.this, mProjectFile);
+                final List<Ref> branchesList = Giiit.getBranches(mDrawerLayout, mProjectFile);
                 if (branchesList != null) {
                     final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
                     for (int i = 0; i < itemsMultiple.length; i++) {
@@ -828,7 +835,7 @@ public class ProjectActivity extends AppCompatActivity {
                     gitRemove.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Giiit.deleteBranch(ProjectActivity.this, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
+                            Giiit.deleteBranch(mDrawerLayout, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
                             dialogInterface.dismiss();
                         }
                     });
@@ -840,7 +847,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_checkout:
                 AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
-                final List<Ref> branches = Giiit.getBranches(ProjectActivity.this, mProjectFile);
+                final List<Ref> branches = Giiit.getBranches(mDrawerLayout, mProjectFile);
                 int checkedItem = -1;
                 CharSequence[] items = new CharSequence[0];
                 if (branches != null) {
@@ -851,7 +858,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < items.length; i++) {
-                    String branch = Giiit.getCurrentBranch(ProjectActivity.this, mProjectFile);
+                    String branch = Giiit.getCurrentBranch(mDrawerLayout, mProjectFile);
                     if (branch != null) {
                         if (branch.equals(items[i])) {
                             checkedItem = i;
@@ -864,7 +871,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;
                         dialogInterface.dismiss();
-                        Giiit.checkout(ProjectActivity.this, mProjectFile, branches.get(i).getName());
+                        Giiit.checkout(ProjectActivity.this, mDrawerLayout, mProjectFile, branches.get(i).getName());
                     }
                 });
 
@@ -894,11 +901,11 @@ public class ProjectActivity extends AppCompatActivity {
      *
      * @param image whether to show warning or message
      */
-    private void showToast(boolean image) {
+    private void showSnack(boolean image) {
         if (!image) {
-            Toast.makeText(this, R.string.file_ending_warn, Toast.LENGTH_SHORT).show();
+            Snackbar.make(mDrawerLayout, R.string.file_ending_warn, Snackbar.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, R.string.file_ending_warn_image, Toast.LENGTH_SHORT).show();
+            Snackbar.make(mDrawerLayout, R.string.file_ending_warn_image, Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -929,10 +936,10 @@ public class ProjectActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             createResourceDirExists("images");
                             if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
-                                Toast.makeText(ProjectActivity.this, R.string.image_success, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.image_success, Snackbar.LENGTH_SHORT).show();
                                 setFragment(editText.getText().toString(), true);
                             } else {
-                                Toast.makeText(ProjectActivity.this, R.string.image_fail, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.image_fail, Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -944,7 +951,7 @@ public class ProjectActivity extends AppCompatActivity {
                     });
                     AppCompatDialog dialog = builder.create();
                     if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showToast(true);
+                        showSnack(true);
                     dialog.show();
                 }
 
@@ -965,9 +972,9 @@ public class ProjectActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             createResourceDirExists("fonts");
                             if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
-                                Toast.makeText(ProjectActivity.this, R.string.font_success, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.font_success, Snackbar.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ProjectActivity.this, R.string.font_fail, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.font_fail, Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -979,7 +986,7 @@ public class ProjectActivity extends AppCompatActivity {
                     });
                     AppCompatDialog dialog = builder.create();
                     if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showToast(true);
+                        showSnack(true);
                     dialog.show();
                 }
 
@@ -1000,10 +1007,10 @@ public class ProjectActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             createResourceDirExists("css");
                             if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
-                                Toast.makeText(ProjectActivity.this, "Successfully imported CSS file.", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.css_import_success, Snackbar.LENGTH_SHORT).show();
                                 setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
                             } else {
-                                Toast.makeText(ProjectActivity.this, "There was a problem while importing this CSS file.", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.css_import_problem, Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -1015,7 +1022,7 @@ public class ProjectActivity extends AppCompatActivity {
                     });
                     AppCompatDialog dialog = builder.create();
                     if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showToast(false);
+                        showSnack(false);
                     dialog.show();
                 }
 
@@ -1036,10 +1043,10 @@ public class ProjectActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             createResourceDirExists("js");
                             if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
-                                Toast.makeText(ProjectActivity.this, R.string.js_success, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.js_success, Snackbar.LENGTH_SHORT).show();
                                 setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
                             } else {
-                                Toast.makeText(ProjectActivity.this, R.string.js_fail, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mDrawerLayout, R.string.js_fail, Snackbar.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -1051,7 +1058,7 @@ public class ProjectActivity extends AppCompatActivity {
                     });
                     AppCompatDialog dialog = builder.create();
                     if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showToast(false);
+                        showSnack(false);
                     dialog.show();
                 }
 

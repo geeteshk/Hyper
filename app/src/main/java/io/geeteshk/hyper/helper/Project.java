@@ -21,8 +21,9 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,11 +85,11 @@ public class Project {
      * @param keywords    about project
      * @param stream      used for importing favicon
      */
-    public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream, ProjectAdapter adapter) {
+    public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream, ProjectAdapter adapter, View view) {
         String[] projects = new File(Constants.HYPER_ROOT).list();
 
         if (projects != null && Arrays.asList(projects).contains(name)) {
-            Toast.makeText(context, name + " " + context.getString(R.string.already_exists) + ".", Toast.LENGTH_SHORT).show();
+            Snackbar.make(view, name + " " + context.getString(R.string.already_exists) + ".", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -104,9 +105,9 @@ public class Project {
                     && Jason.createProjectFile(name, author, description, keywords)
                     && copyIcon(context, name)) {
                 adapter.add(name);
-                Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
             }
         } else {
             if (createDirectory(name)
@@ -120,9 +121,9 @@ public class Project {
                     && Jason.createProjectFile(name, author, description, keywords)
                     && copyIcon(name, stream)) {
                 adapter.add(name);
-                Toast.makeText(context, R.string.project_success, Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, R.string.project_fail, Toast.LENGTH_SHORT).show();
+                Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
             }
         }
     }

@@ -20,6 +20,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -27,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -109,7 +109,7 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
                 ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("hash", commit.getId().getName());
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(mContext, "Commit hash copied.", Toast.LENGTH_SHORT).show();
+                Snackbar.make(holder.mView, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show();
                 return true;
             }
         });

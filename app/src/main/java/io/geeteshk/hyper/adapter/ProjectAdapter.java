@@ -31,16 +31,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Project;
 

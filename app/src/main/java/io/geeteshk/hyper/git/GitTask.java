@@ -20,7 +20,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.NotificationCompat;
-import android.widget.Toast;
+import android.view.View;
 
 import java.io.File;
 
@@ -33,11 +33,13 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
     public int id = 1;
 
     public Context mContext;
+    public View mView;
     public File mRepo;
     public String[] mValues;
 
-    public GitTask(Context context, File repo, String[] values) {
+    public GitTask(Context context, View view, File repo, String[] values) {
         mContext = context;
+        mView = view;
         mRepo = repo;
         mValues = values;
         mManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

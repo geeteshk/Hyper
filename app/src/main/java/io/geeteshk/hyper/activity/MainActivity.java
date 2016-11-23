@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
 
-                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter);
+                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout);
                                             dialog1.dismiss();
                                         }
                                     }
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
-                                        Giiit.clone(MainActivity.this, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
+                                        Giiit.clone(MainActivity.this, mLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
                                     }
                                 });
 
