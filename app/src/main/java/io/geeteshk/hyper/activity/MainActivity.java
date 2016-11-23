@@ -88,11 +88,13 @@ import io.geeteshk.hyper.helper.Validator;
 @SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    public static final int CHANGE_PIN = 101;
     /**
      * Intent code for selecting an icon
      */
     public static final int SELECT_ICON = 100;
+
+    public static final int SETTINGS_CODE = 101;
+
     /**
      * Project related stuff
      */
@@ -310,7 +312,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                showSettings();
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(settingsIntent, SETTINGS_CODE);
                 return true;
         }
 
@@ -340,112 +343,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 }
 
                 break;
-            case CHANGE_PIN:
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle(R.string.new_pin);
-                EditText editText = new EditText(MainActivity.this);
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                editText.setPadding(60, 14, 60, 24);
-                final TextInputLayout layout = new TextInputLayout(MainActivity.this);
-                layout.addView(editText);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(60, 16, 60, 16);
-                layout.setLayoutParams(params);
-                builder.setView(layout);
-                builder.setPositiveButton(R.string.accept, null);
-                final AppCompatDialog dialog = builder.create();
-                dialog.show();
-
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        assert layout.getEditText() != null;
-                        String newPin = layout.getEditText().getText().toString();
-                        if (newPin.length() != 4) {
-                            layout.setError(getString(R.string.pin_four_digits));
-                        } else {
-                            Pref.store(MainActivity.this, "pin", newPin);
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
+            case SETTINGS_CODE:
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
                 break;
         }
-    }
-
-    public void showSettings() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-        View rootView = inflater.inflate(R.layout.fragment_settings, null, false);
-
-        final SwitchCompat darkTheme = (SwitchCompat) rootView.findViewById(R.id.dark_theme);
-        darkTheme.setChecked(Pref.get(MainActivity.this, "dark_theme", false));
-
-        RelativeLayout darkThemeLayout = (RelativeLayout) rootView.findViewById(R.id.dark_theme_layout);
-        darkThemeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                darkTheme.setChecked(!darkTheme.isChecked());
-            }
-        });
-
-        final TextView autoSave = (TextView) rootView.findViewById(R.id.auto_save_freq_text);
-        autoSave.setText(String.valueOf(Pref.get(MainActivity.this, "auto_save_freq", 2)) + "s");
-        AppCompatSeekBar seekBar = (AppCompatSeekBar) rootView.findViewById(R.id.auto_save_freq);
-        seekBar.setProgress(Pref.get(MainActivity.this, "auto_save_freq", 2) - 1);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Pref.store(MainActivity.this, "auto_save_freq", progress + 1);
-                autoSave.setText(String.valueOf(progress + 1) + "s");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        RelativeLayout disableFileLayout = (RelativeLayout) rootView.findViewById(R.id.disable_file_ending_warn_layout);
-        final SwitchCompat disableFile = (SwitchCompat) rootView.findViewById(R.id.disable_file_ending_warn);
-        disableFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Pref.store(MainActivity.this, "show_toast_file_ending", b);
-            }
-        });
-
-        disableFileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                disableFile.setChecked(!disableFile.isChecked());
-            }
-        });
-
-        builder.setIcon(R.drawable.ic_settings);
-        builder.setTitle("Settings");
-        builder.setView(rootView);
-
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
-        darkTheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dialog.dismiss();
-                Pref.store(MainActivity.this, "dark_theme", isChecked);
-                startActivity(new Intent(MainActivity.this,MainActivity.class));
-                finish();
-            }
-        });
     }
 
     @Override

@@ -59,7 +59,9 @@
         <activity
             android:name=".activity.RemotesActivity"
             android:label="Remotes" />
-        <activity android:name=".activity.ViewActivity"></activity>
+        <activity android:name=".activity.ViewActivity" />
+        <activity android:name=".activity.SettingsActivity"
+            android:label="@string/action_settings" />
     </application>
 
 </manifest>

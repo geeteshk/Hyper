@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "io.geeteshk.hyper"
-        minSdkVersion 12
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -56,4 +56,6 @@ dependencies {
     }
 
     compile 'org.jsoup:jsoup:1.10.1'
+    compile 'com.pavelsikun:material-seekbar-preference:2.3.0'
+    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
 }

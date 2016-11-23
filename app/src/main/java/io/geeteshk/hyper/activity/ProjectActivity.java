@@ -532,8 +532,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog = builder.create();
-                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showSnack(false);
+                showSnack(false);
                 dialog.show();
                 return true;
             case R.id.action_create_css:
@@ -566,8 +565,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog2 = builder2.create();
-                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showSnack(false);
+                showSnack(false);
                 dialog2.show();
                 return true;
             case R.id.action_create_js:
@@ -600,8 +598,7 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 });
                 AppCompatDialog dialog3 = builder3.create();
-                if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                    showSnack(false);
+                showSnack(false);
                 dialog3.show();
                 return true;
             case R.id.action_about:
@@ -903,10 +900,12 @@ public class ProjectActivity extends AppCompatActivity {
      * @param image whether to show warning or message
      */
     private void showSnack(boolean image) {
-        if (!image) {
-            Snackbar.make(mDrawerLayout, R.string.file_ending_warn, Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(mDrawerLayout, R.string.file_ending_warn_image, Snackbar.LENGTH_SHORT).show();
+        if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true)) {
+            if (!image) {
+                Snackbar.make(mDrawerLayout, R.string.file_ending_warn, Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(mDrawerLayout, R.string.file_ending_warn_image, Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -951,8 +950,7 @@ public class ProjectActivity extends AppCompatActivity {
                         }
                     });
                     AppCompatDialog dialog = builder.create();
-                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showSnack(true);
+                    showSnack(false);
                     dialog.show();
                 }
 
@@ -986,8 +984,7 @@ public class ProjectActivity extends AppCompatActivity {
                         }
                     });
                     AppCompatDialog dialog = builder.create();
-                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showSnack(true);
+                    showSnack(false);
                     dialog.show();
                 }
 
@@ -1022,8 +1019,7 @@ public class ProjectActivity extends AppCompatActivity {
                         }
                     });
                     AppCompatDialog dialog = builder.create();
-                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showSnack(false);
+                    showSnack(false);
                     dialog.show();
                 }
 
@@ -1058,8 +1054,7 @@ public class ProjectActivity extends AppCompatActivity {
                         }
                     });
                     AppCompatDialog dialog = builder.create();
-                    if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true))
-                        showSnack(false);
+                    showSnack(false);
                     dialog.show();
                 }
 

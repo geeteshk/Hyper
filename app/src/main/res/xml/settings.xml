@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/app_name">
+
+        <SwitchPreference
+            android:key="dark_theme"
+            android:title="@string/dark_theme"
+            android:summary="@string/dark_theme_desc"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/slide_2_title">
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="auto_save_freq"
+            android:title="@string/auto_save_freq"
+            android:summary="@string/auto_save_freq_desc"
+            android:defaultValue="1"
+            app:msbp_minValue="1"
+            app:msbp_maxValue="5"
+            app:msbp_interval="1"
+            app:msbp_measurementUnit="s"
+            app:msbp_dialogEnabled="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/label_misc">
+
+        <SwitchPreference
+            android:key="show_toast_file_ending"
+            android:title="@string/file_ending_warn_title"
+            android:summary="@string/file_ending_warn_desc"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/label_legal">
+
+        <Preference
+            android:key="notices"
+            android:title="@string/notices" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

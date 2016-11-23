@@ -33,10 +33,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.psdev.licensesdialog.LicenseResolver;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Typefacer;
+import io.geeteshk.hyper.license.EclipseDistributionLicense10;
 
 /**
  * Activity for application splash
@@ -57,6 +59,7 @@ public class SplashActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LicenseResolver.registerLicense(new EclipseDistributionLicense10());
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
