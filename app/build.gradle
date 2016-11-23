@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "io.geeteshk.hyper"
-        minSdkVersion 16
+        minSdkVersion 11
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
