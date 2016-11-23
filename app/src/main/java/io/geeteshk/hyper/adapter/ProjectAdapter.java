@@ -109,7 +109,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final int newPos = holder.getAdapterPosition();
 
-        holder.mTitle.setText(mObjects.get(position));
+        holder.mTitle.setText(Jason.getProjectProperty(mObjects.get(position), "name"));
         holder.mDescription.setText(Jason.getProjectProperty(mObjects.get(position), "description"));
         holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects.get(position)));
 
