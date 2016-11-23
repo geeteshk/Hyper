@@ -40,33 +40,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import com.pavelsikun.vintagechroma.ChromaDialog;
-import com.pavelsikun.vintagechroma.ChromaUtil;
-import com.pavelsikun.vintagechroma.IndicatorMode;
-import com.pavelsikun.vintagechroma.OnColorSelectedListener;
-import com.pavelsikun.vintagechroma.colormode.ColorMode;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -78,13 +67,13 @@ import java.util.Locale;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
+import io.geeteshk.hyper.git.Giiit;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Validator;
-import io.geeteshk.hyper.git.Giiit;
 
 /**
  * Main activity to show all main content
@@ -179,14 +168,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 RadioButton defaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
                                 RadioButton chooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
                                 mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
-                                final TextView nColor = (TextView) rootView.findViewById(R.id.color);
 
                                 nameLayout.getEditText().setText(Pref.get(MainActivity.this, "name", ""));
                                 authorLayout.getEditText().setText(Pref.get(MainActivity.this, "author", ""));
                                 descriptionLayout.getEditText().setText(Pref.get(MainActivity.this, "description", ""));
                                 keywordsLayout.getEditText().setText(Pref.get(MainActivity.this, "keywords", ""));
-                                nColor.setText(ChromaUtil.getFormattedColorString(Pref.get(MainActivity.this, "color", ContextCompat.getColor(MainActivity.this, R.color.colorAccent)), false));
-                                nColor.setTextColor(Pref.get(MainActivity.this, "color", ContextCompat.getColor(MainActivity.this, R.color.colorAccent)));
 
                                 defaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
@@ -206,25 +192,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             intent.setType("image/*");
                                             startActivityForResult(intent, SELECT_ICON);
                                         }
-                                    }
-                                });
-
-                                nColor.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        new ChromaDialog.Builder()
-                                                .initialColor(nColor.getCurrentTextColor())
-                                                .colorMode(ColorMode.RGB)
-                                                .indicatorMode(IndicatorMode.HEX)
-                                                .onColorSelected(new OnColorSelectedListener() {
-                                                    @Override
-                                                    public void onColorSelected(@ColorInt int color) {
-                                                        nColor.setText(ChromaUtil.getFormattedColorString(color, false));
-                                                        nColor.setTextColor(color);
-                                                    }
-                                                })
-                                                .create()
-                                                .show(MainActivity.this.getSupportFragmentManager(), "Choose a colour for this project");
                                     }
                                 });
 
@@ -249,9 +216,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                            Pref.store(MainActivity.this, "color", nColor.getCurrentTextColor());
 
-                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), nColor.getText().toString(), mStream, mProjectAdapter);
+                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter);
                                             dialog1.dismiss();
                                         }
                                     }

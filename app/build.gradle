@@ -50,7 +50,6 @@ dependencies {
     compile 'com.github.bmelnychuk:atv:1.2.9'
     compile 'com.github.paolorotolo:appintro:4.1.0'
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
-    compile 'com.pavelsikun:vintage-chroma:1.5'
     compile ('org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r') {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'

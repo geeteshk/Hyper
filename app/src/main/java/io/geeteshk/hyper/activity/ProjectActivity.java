@@ -1063,14 +1063,11 @@ public class ProjectActivity extends AppCompatActivity {
         TextView author = (TextView) layout.findViewById(R.id.project_author);
         TextView description = (TextView) layout.findViewById(R.id.project_description);
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
-        TextView color = (TextView) layout.findViewById(R.id.project_color);
 
         name.setText(Jason.getProjectProperty(mProject, "name"));
         author.setText(Jason.getProjectProperty(mProject, "author"));
         description.setText(Jason.getProjectProperty(mProject, "description"));
         keywords.setText(Jason.getProjectProperty(mProject, "keywords"));
-        color.setText(Jason.getProjectProperty(mProject, "color"));
-        color.setTextColor(Color.parseColor(Jason.getProjectProperty(mProject, "color")));
 
         if (Pref.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);
