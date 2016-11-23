@@ -49,7 +49,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +66,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.FileAdapter;
@@ -131,6 +134,17 @@ public class ProjectActivity extends AppCompatActivity {
     private TreeNode rootNode;
     private AndroidTreeView treeView;
 
+    private final int[] MATERIAL_BACKGROUNDS = {
+            R.drawable.material_bg_1,
+            R.drawable.material_bg_2,
+            R.drawable.material_bg_3,
+            R.drawable.material_bg_4,
+            R.drawable.material_bg_5,
+            R.drawable.material_bg_6,
+            R.drawable.material_bg_7,
+            R.drawable.material_bg_8
+    };
+
     /**
      * Method called when activity is created
      *
@@ -181,7 +195,6 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -282,6 +295,17 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         fileBrowser.addView(treeView.getView());
+
+        Random random = new Random();
+        RelativeLayout headerBackground = (RelativeLayout) findViewById(R.id.header_background);
+        ImageView headerIcon = (ImageView) findViewById(R.id.header_icon);
+        TextView headerTitle = (TextView) findViewById(R.id.header_title);
+        TextView headerDesc = (TextView) findViewById(R.id.header_desc);
+
+        headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[random.nextInt((8 - 1) + 1) + 1]);
+        headerIcon.setImageBitmap(Project.getFavicon(mProject));
+        headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
+        headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject), Color.parseColor(Jason.getProjectProperty(mProject, "color")));
