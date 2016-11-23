@@ -48,7 +48,6 @@ public class IntroActivity extends AppIntro {
         askForPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         setIndicatorColor(R.color.whiteButNotAndroidWhite, R.color.colorAccentDark);
         setBarColor(ContextCompat.getColor(this, R.color.colorAccent));
-        setNavBarColor(R.color.colorAccentDark);
         setColorDoneText(ContextCompat.getColor(this, R.color.colorAccentDark));
         setNextArrowColor(ContextCompat.getColor(this, R.color.colorAccentDark));
     }

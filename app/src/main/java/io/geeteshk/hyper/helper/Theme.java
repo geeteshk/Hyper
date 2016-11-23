@@ -41,10 +41,4 @@ public class Theme {
             return R.style.Hyper;
         }
     }
-
-    public static void setNavigationColor(Activity activity) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            activity.getWindow().setNavigationBarColor(ContextCompat.getColor(activity, R.color.colorPrimaryDark));
-        }
-    }
 }

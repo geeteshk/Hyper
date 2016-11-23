@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,7 +50,6 @@ public class SplashActivity extends AppCompatActivity {
         Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
         Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
-        Theme.setNavigationColor(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
