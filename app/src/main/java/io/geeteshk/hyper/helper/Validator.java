@@ -18,6 +18,7 @@ package io.geeteshk.hyper.helper;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class Validator {
      * @param keywords    about project
      * @return true if valid
      */
-    public static boolean validate(Context context, @Nullable TextInputLayout name, TextInputLayout author, TextInputLayout description, TextInputLayout keywords) {
+    public static boolean validateCreate(Context context, @Nullable TextInputLayout name, TextInputLayout author, TextInputLayout description, TextInputLayout keywords) {
         if (name != null) {
             assert name.getEditText() != null;
             if (name.getEditText().getText().toString().isEmpty()) {
@@ -64,6 +65,20 @@ public class Validator {
         assert keywords.getEditText() != null;
         if (keywords.getEditText().getText().toString().isEmpty()) {
             keywords.setError(context.getString(R.string.keywords_error));
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateClone(Context context, TextInputEditText name, TextInputEditText remote) {
+        if (name.getText().toString().isEmpty()) {
+            name.setError(context.getString(R.string.name_error));
+            return false;
+        }
+
+        if (remote.getText().toString().isEmpty()) {
+            remote.setError(context.getString(R.string.remote_error));
             return false;
         }
 

@@ -165,6 +165,7 @@
     <string name="added_to_stage">Added all files to stage.</string>
     <string name="repo_init">"Initialized repository at: "</string>
     <string name="folder_exists">The folder already exists.</string>
+    <string name="remote_error">Please enter a remote</string>
 
     <array name="slide_titles">
         <item>@string/slide_1_title</item>

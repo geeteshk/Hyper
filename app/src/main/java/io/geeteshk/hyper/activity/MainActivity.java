@@ -40,7 +40,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Selection;
+import android.text.SpanWatcher;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -207,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (Validator.validate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                        if (Validator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
                                             Pref.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
@@ -231,18 +238,39 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 final TextInputEditText username = (TextInputEditText) cloneView.findViewById(R.id.clone_username);
                                 final TextInputEditText password = (TextInputEditText) cloneView.findViewById(R.id.clone_password);
 
+                                file.setText(Pref.get(MainActivity.this, "clone_name", ""));
+                                remote.setText(Pref.get(MainActivity.this, "remote", ""));
+
                                 builder.setIcon(R.drawable.ic_action_clone);
                                 builder.setView(cloneView);
                                 builder.setPositiveButton("CLONE", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                        Giiit.clone(MainActivity.this, mLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remote.getText().toString(), username.getText().toString(), password.getText().toString());
+
                                     }
                                 });
 
                                 builder.setNegativeButton(R.string.cancel, null);
-                                builder.create().show();
+                                final AlertDialog dialog2 = builder.create();
+                                dialog2.show();
+                                dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (Validator.validateClone(MainActivity.this, file, remote)) {
+                                            String remoteStr = remote.getText().toString();
+                                            if (!remoteStr.contains("://")) {
+                                                remoteStr = "https://" + remoteStr;
+                                            }
+
+                                            Pref.store(MainActivity.this, "clone_name", file.getText().toString());
+                                            Pref.store(MainActivity.this, "remote", remoteStr);
+
+                                            Giiit.clone(MainActivity.this, mLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remoteStr, username.getText().toString(), password.getText().toString());
+                                            dialog2.dismiss();
+                                        }
+                                    }
+                                });
+
                                 break;
                         }
                     }
