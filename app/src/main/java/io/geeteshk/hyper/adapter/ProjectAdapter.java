@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     /**
      * Array of objects to fill list
      */
-    private List<String> mObjects;
+    private ArrayList<String> mObjects;
 
     private CoordinatorLayout mLayout;
 
@@ -66,15 +67,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      * @param context loading files and inflating etc
      * @param objects objects to fill list
      */
-    public ProjectAdapter(Context context, List<String> objects, CoordinatorLayout layout) {
+    public ProjectAdapter(Context context, ArrayList<String> objects, CoordinatorLayout layout) {
         this.mContext = context;
         this.mObjects = objects;
         this.mLayout = layout;
     }
 
     public void add(String project) {
-        mObjects.add(project);
-        notifyItemInserted(mObjects.indexOf(project));
+        int end = mObjects.size() - 1;
+        mObjects.add(end, project);
+        notifyItemInserted(end);
     }
 
     public void remove(int position) {

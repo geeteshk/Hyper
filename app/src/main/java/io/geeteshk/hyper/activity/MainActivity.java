@@ -87,14 +87,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
      */
     public static final int SELECT_ICON = 100;
     /**
-     * Toolbar object for activity
-     */
-    private static Toolbar mToolbar;
-    /**
      * Project related stuff
      */
     String[] mObjects;
-    ArrayList mObjectsList;
+    ArrayList<String> mObjectsList;
     ProjectAdapter mProjectAdapter;
     RecyclerView mProjectsList;
 
@@ -118,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         mObjects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
