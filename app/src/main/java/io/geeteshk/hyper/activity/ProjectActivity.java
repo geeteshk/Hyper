@@ -207,15 +207,16 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(TreeNode node, Object value) {
                 FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
-                if (node.isLeaf()) {
+                File file = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path);
+                if (node.isLeaf() && file.isFile()) {
                     if (mFiles.contains(item.path)) {
                         setFragment(item.path, false);
                         mDrawerLayout.closeDrawers();
                     } else {
-                        if (!Project.isBinaryFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path))) {
+                        if (!Project.isBinaryFile(file)) {
                             setFragment(item.path, true);
                             mDrawerLayout.closeDrawers();
-                        } else if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path))) {
+                        } else if (Project.isImageFile(file)) {
                             setFragment(item.path, true);
                             mDrawerLayout.closeDrawers();
                         } else {
