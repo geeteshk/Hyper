@@ -29,6 +29,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
@@ -36,6 +37,7 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -74,11 +76,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
-import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.License;
-import de.psdev.licensesdialog.licenses.MITLicense;
-import de.psdev.licensesdialog.model.Notice;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.helper.Constants;
@@ -93,7 +90,7 @@ import io.geeteshk.hyper.git.Giiit;
  * Main activity to show all main content
  */
 @SuppressLint("StaticFieldLeak")
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     public static final int CHANGE_PIN = 101;
     /**
@@ -107,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Project related stuff
      */
+    String[] mObjects;
     ArrayList mObjectsList;
     ProjectAdapter mProjectAdapter;
+    RecyclerView mProjectsList;
 
     /**
      * InputStream to read image from strorage
@@ -133,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        final String[] objects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
+        mObjects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return dir.isDirectory() && !name.equals(".git") && Project.isValid(name);
@@ -141,18 +140,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        if(objects != null)
-            mObjectsList = new ArrayList<>(Arrays.asList(objects));
-        else
+        if (mObjects != null) {
+            mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
+        } else {
             mObjectsList = new ArrayList<>();
+        }
+        
         Validator.removeBroken(mObjectsList);
         mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout);
-        final RecyclerView projectsList = (RecyclerView) findViewById(R.id.project_list);
+        mProjectsList = (RecyclerView) findViewById(R.id.project_list);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 2), true));
-        projectsList.setItemAnimator(new DefaultItemAnimator());
-        projectsList.setAdapter(mProjectAdapter);
+        mProjectsList.setLayoutManager(layoutManager);
+        mProjectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 2), true));
+        mProjectsList.setItemAnimator(new DefaultItemAnimator());
+        mProjectsList.setAdapter(mProjectAdapter);
 
         final FloatingActionButton cloneButton = (FloatingActionButton) findViewById(R.id.fab_create);
         cloneButton.setOnClickListener(new View.OnClickListener() {
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        projectsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mProjectsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -304,79 +305,20 @@ public class MainActivity extends AppCompatActivity {
                 if (dy > 0 || dy < 0 && cloneButton.isShown()) cloneButton.hide();
             }
         });
-
-        final EditText projectSearch = (EditText) findViewById(R.id.project_search);
-        projectSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mObjectsList = new ArrayList<>(Arrays.asList(objects));
-                Validator.removeBroken(mObjectsList);
-                for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
-                    String string = (String) iterator.next();
-                    if (!string.toLowerCase(Locale.getDefault()).startsWith(s.toString())) {
-                        iterator.remove();
-                    }
-                }
-
-                mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout);
-                projectsList.setAdapter(mProjectAdapter);
-            }
-        });
-
-        projectSearch.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(projectSearch.getApplicationWindowToken(), 0);
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
-
-        ImageButton clearSearch = (ImageButton) findViewById(R.id.clear_search);
-        clearSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                projectSearch.setText("");
-            }
-        });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_license:
-                final String name = "Hyper";
-                final String url = "http://geeteshk.github.io/Hyper";
-                final String copyright = "Copyright (c) 2016 Geetesh Kalakoti <kalakotig@gmail.com>";
-                final License license = new ApacheSoftwareLicense20();
-                final Notice notice = new Notice(name, url, copyright, license);
-                new LicensesDialog.Builder(this)
-                        .setNotices(notice)
-                        .setThemeResourceId(Theme.getThemeInt(MainActivity.this))
-                        .build()
-                        .show();
-                return true;
             case R.id.action_settings:
                 showSettings();
                 return true;
@@ -514,6 +456,38 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
+        Validator.removeBroken(mObjectsList);
+        for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
+            String string = (String) iterator.next();
+            if (!string.toLowerCase(Locale.getDefault()).startsWith(query)) {
+                iterator.remove();
+            }
+        }
+
+        mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout);
+        mProjectsList.setAdapter(mProjectAdapter);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
+        Validator.removeBroken(mObjectsList);
+        for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
+            String string = (String) iterator.next();
+            if (!string.toLowerCase(Locale.getDefault()).startsWith(newText)) {
+                iterator.remove();
+            }
+        }
+
+        mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout);
+        mProjectsList.setAdapter(mProjectAdapter);
+        return false;
     }
 
     private class CreateAdapter extends ArrayAdapter<String> {

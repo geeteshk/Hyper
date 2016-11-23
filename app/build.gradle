@@ -51,7 +51,6 @@ dependencies {
     compile 'com.github.paolorotolo:appintro:4.1.0'
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile 'com.pavelsikun:vintage-chroma:1.5'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile ('org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r') {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'

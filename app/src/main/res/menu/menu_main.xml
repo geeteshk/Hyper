@@ -17,11 +17,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_license"
-        android:icon="@drawable/ic_action_license"
-        android:title="License"
-        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_search"
+        android:title="@string/action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_settings"

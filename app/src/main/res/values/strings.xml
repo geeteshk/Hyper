@@ -141,4 +141,5 @@
 
     <string name="file_problem">There was a problem reading this file.</string>
     <string name="remote">Remote</string>
+    <string name="action_search">Search</string>
 </resources>
