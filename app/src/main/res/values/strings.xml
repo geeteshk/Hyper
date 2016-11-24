@@ -32,11 +32,6 @@
     <string name="favicon_choose">Choose</string>
     <string name="dark_theme">Night Mode</string>
     <string name="dark_theme_desc">Put a little less stress on your eyes.</string>
-    <string name="import_image">Image</string>
-    <string name="import_font">Font</string>
-    <string name="import_css">CSS</string>
-    <string name="import_js">JS</string>
-    <string name="import_html">HTML</string>
     <string name="about_project">About</string>
 
     <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
@@ -80,15 +75,12 @@
     <string name="web_settings">Settings</string>
     <string name="replace_from">Replace From</string>
     <string name="replace_to">Replace To</string>
-    <string name="default_auto_save_freq">1s</string>
     <string name="view_logs">Logs</string>
 
     <string name="import_not_java">Import</string>
-    <string name="create_not_java">New</string>
     <string name="change_undone">This change cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-    <string name="accept">Accept</string>
     <string name="already_exists">already exists</string>
     <string name="project_success">Your project has been successfully created!</string>
     <string name="project_fail">It seems something went wrong while creating the project.</string>
@@ -101,24 +93,13 @@
     <string name="comment">Comment</string>
     <string name="replace">Replace</string>
     <string name="empty_field_no_no">This field cannot be empty</string>
-    <string name="new_pin">New PIN</string>
-    <string name="pin_four_digits">The pin must consist only of 4 digits</string>
     <string name="not_text_file">The selected file is not a text or image file.</string>
     <string name="new_not_java">New</string>
-    <string name="resource_name">Resource name</string>
     <string name="file_success">Successfully created file.</string>
     <string name="file_fail">There was a problem while creating this file.</string>
     <string name="name">Name</string>
-    <string name="image_success">Successfully imported image.</string>
-    <string name="image_fail">There was a problem while importing this image.</string>
-    <string name="font_success">Successfully imported font.</string>
-    <string name="font_fail">There was a problem while importing this font.</string>
-    <string name="js_success">Successfully imported JS file.</string>
-    <string name="js_fail">There was a problem while importing this JS file.</string>
     <string name="from_line">\t— From line\t</string>
     <string name="of">\tof\t</string>
-    <string name="file_ending_warn">File endings will be added automatically.</string>
-    <string name="file_ending_warn_image">Please enter a file ending when importing images or fonts.</string>
     <string name="file_ending_warn_title">Show File Ending Warning</string>
     <string name="file_ending_warn_desc">Show small warning while creating and importing project files.</string>
     <string name="loading">Loading...</string>
@@ -153,8 +134,6 @@
 
     <string name="slide_4_title">Get Started</string>
     <string name="slide_4_desc">Hope those features have got you excited. Many more await you. Get started by creating a project!</string>
-    <string name="css_import_success">Successfully imported CSS file.</string>
-    <string name="css_import_problem">There was a problem while importing this CSS file.</string>
     <string name="branch_name_empty">Please enter a branch name.</string>
     <string name="save_changes_done">Saved changes.</string>
     <string name="commit_hash_copy">Commit hash copied.</string>

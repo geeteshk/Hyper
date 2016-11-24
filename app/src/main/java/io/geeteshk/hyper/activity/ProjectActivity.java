@@ -308,7 +308,7 @@ public class ProjectActivity extends AppCompatActivity {
                 setupFileTree(folderNode, file);
                 root.addChild(folderNode);
             } else {
-                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
                 root.addChild(fileNode);
             }
         }

@@ -61,7 +61,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_file_browser, null, false);
         final TextView nodeFile = (TextView) view.findViewById(R.id.file_browser_name);
-        ImageView fileIcon = (ImageView) view.findViewById(R.id.file_browser_icon);
+        final ImageView fileIcon = (ImageView) view.findViewById(R.id.file_browser_icon);
         arrow = (ImageView) view.findViewById(R.id.file_browser_arrow);
         final ImageButton overflow = (ImageButton) view.findViewById(R.id.file_browser_options);
 
@@ -129,7 +129,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                             Snackbar.make(value.view, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
                                             String newFilePath = newFile.getPath().substring(newFile.getPath().indexOf(value.project + "/") + value.project.length(), newFile.getPath().length());
-                                            TreeNode newFileNode = new TreeNode(new FileTreeItem(Decor.getIcon(fileStr, value.project), fileStr, newFilePath, value.project, value.view));
+                                            TreeNode newFileNode = new TreeNode(new FileTreeItem(Decor.getIcon(newFile), fileStr, newFilePath, value.project, value.view));
                                             node.addChild(newFileNode);
                                             arrow.setVisibility(View.VISIBLE);
                                             tView.expandNode(node);
@@ -219,7 +219,9 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                                             Snackbar.make(value.view, "Renamed " + value.text + " to " + renameStr + ".", Snackbar.LENGTH_SHORT).show();
                                             value.path = value.path.replace(value.text, renameStr);
                                             value.text = renameStr;
+                                            value.icon = Decor.getIcon(rename);
                                             nodeFile.setText(value.text);
+                                            fileIcon.setImageResource(value.icon);
                                         }
                                     }
                                 });
@@ -262,7 +264,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                                         Snackbar.make(value.view, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
                                         File copyFile = new File(file, currentFile.getName());
                                         String copyPath = copyFile.getPath().substring(copyFile.getPath().indexOf(value.project + "/") + value.project.length(), copyFile.getPath().length());
-                                        TreeNode copyNode = new TreeNode(new FileTreeItem(currentItem.icon, currentItem.text, copyPath, currentItem.project, currentItem.view));
+                                        TreeNode copyNode = new TreeNode(new FileTreeItem(Decor.getIcon(copyFile), currentItem.text, copyPath, currentItem.project, currentItem.view));
                                         node.addChild(copyNode);
                                         arrow.setVisibility(View.VISIBLE);
                                         tView.expandNode(node);
@@ -288,7 +290,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                                         Clippy.getInstance().setCurrentFile(null);
                                         File cutFile = new File(file, currentFile.getName());
                                         String cutPath = cutFile.getPath().substring(cutFile.getPath().indexOf(value.project + "/") + value.project.length(), cutFile.getPath().length());
-                                        TreeNode cutNode = new TreeNode(new FileTreeItem(currentItem.icon, currentItem.text, cutPath, currentItem.project, currentItem.view));
+                                        TreeNode cutNode = new TreeNode(new FileTreeItem(Decor.getIcon(cutFile), currentItem.text, cutPath, currentItem.project, currentItem.view));
                                         node.addChild(cutNode);
                                         arrow.setVisibility(View.VISIBLE);
                                         tView.expandNode(node);

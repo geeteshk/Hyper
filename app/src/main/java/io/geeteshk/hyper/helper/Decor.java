@@ -74,31 +74,16 @@ public class Decor {
         }
     }
 
-    /**
-     * Gets icon based on file type
-     *
-     * @param name file name
-     * @param project project name
-     * @return drawable resource int
-     */
-    public static int getIcon(String name, String project) {
-
-        switch (name.substring(name.lastIndexOf(".") + 1, name.length())) {
-            case "html":
-                return R.drawable.ic_html;
-            case "css":
-                return R.drawable.ic_css;
-            case "js":
-                return R.drawable.ic_js;
-            case "woff":case "ttf":case "otf":case "woff2":case "fnt":
-                return R.drawable.ic_font;
-            default:
-                if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + project, name))) {
-                    return R.drawable.ic_image;
-                } else {
-                    return R.drawable.ic_file;
-                }
-        }
+    public static int getIcon(File file) {
+        String fileName = file.getName();
+        if (file.isDirectory()) return R.drawable.ic_folder;
+        if (Project.isImageFile(file)) return R.drawable.ic_image;
+        if (Project.isBinaryFile(file)) return R.drawable.ic_binary;
+        if (fileName.endsWith(".html")) return R.drawable.ic_html;
+        if (fileName.endsWith(".css")) return R.drawable.ic_css;
+        if (fileName.endsWith(".js")) return R.drawable.ic_js;
+        if (fileName.endsWith(".woff") || fileName.endsWith(".ttf") || fileName.endsWith(".otf") || fileName.endsWith(".woff2") || fileName.endsWith(".fnt")) return R.drawable.ic_font;
+        return R.drawable.ic_file;
     }
 
     /**
