@@ -91,22 +91,7 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Intent code to import image
      */
-    private static final int IMPORT_IMAGE = 101;
-
-    /**
-     * Intent code to import font
-     */
-    private static final int IMPORT_FONT = 102;
-
-    /**
-     * Intent code to import css
-     */
-    private static final int IMPORT_CSS = 103;
-
-    /**
-     * Intent code to import js
-     */
-    private static final int IMPORT_JS = 104;
+    private static final int IMPORT_FILE = 101;
 
     /**
      * Currently open files
@@ -319,11 +304,11 @@ public class ProjectActivity extends AppCompatActivity {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
+                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
                 setupFileTree(folderNode, file);
                 root.addChild(folderNode);
             } else {
-                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length())));
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
                 root.addChild(fileNode);
             }
         }
@@ -475,131 +460,12 @@ public class ProjectActivity extends AppCompatActivity {
                 viewIntent.putExtra("html_path", Constants.HYPER_ROOT + File.separator + mProject + File.separator + mSpinner.getSelectedItem());
                 startActivityForResult(viewIntent, VIEW_CODE);
                 return true;
-            case R.id.action_import_image:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, IMPORT_IMAGE);
-                }
-                return true;
-            case R.id.action_import_font:
+            case R.id.action_import_file:
                 Intent fontIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 fontIntent.setType("file/*");
                 if (fontIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(fontIntent, IMPORT_FONT);
+                    startActivityForResult(fontIntent, IMPORT_FILE);
                 }
-                return true;
-            case R.id.action_import_css:
-                Intent cssIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                cssIntent.setType("text/css");
-                if (cssIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(cssIntent, IMPORT_CSS);
-                }
-                return true;
-            case R.id.action_import_js:
-                Intent jsIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                jsIntent.setType("text/javascript");
-                if (jsIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(jsIntent, IMPORT_JS);
-                }
-                return true;
-            case R.id.action_create_html:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.new_not_java);
-                final EditText editText = new EditText(this);
-                editText.setHint(R.string.resource_name);
-                editText.setSingleLine(true);
-                editText.setMaxLines(1);
-                builder.setView(editText);
-                builder.setCancelable(false);
-                builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!editText.getText().toString().isEmpty() && Project.createFile(mProject, editText.getText().toString() + ".html", Project.INDEX.replace("@name", Jason.getProjectProperty(mProject, "name")).replace("author", Jason.getProjectProperty(mProject, "author")).replace("@description", Jason.getProjectProperty(mProject, "description")).replace("@keywords", Jason.getProjectProperty(mProject, "keywords")).replace("@color", Jason.getProjectProperty(mProject, "color")))) {
-                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
-                            setFragment(editText.getText().toString() + ".html", true);
-                            setupFileTree(rootNode, mProjectFile);
-                            treeView.setRoot(rootNode);
-                        } else {
-                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AppCompatDialog dialog = builder.create();
-                showSnack(false);
-                dialog.show();
-                return true;
-            case R.id.action_create_css:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle(R.string.new_not_java);
-                final EditText editText2 = new EditText(this);
-                editText2.setHint(R.string.resource_name);
-                editText2.setSingleLine(true);
-                editText2.setMaxLines(1);
-                builder2.setView(editText2);
-                builder2.setCancelable(false);
-                builder2.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        createResourceDirExists("css");
-                        if (!editText2.getText().toString().isEmpty() && Project.createFile(mProject, "css" + File.separator + editText2.getText().toString() + ".css", Project.STYLE)) {
-                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
-                            setFragment("css" + File.separator + editText2.getText().toString() + ".css", true);
-                            setupFileTree(rootNode, mProjectFile);
-                            treeView.setRoot(rootNode);
-                        } else {
-                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                builder2.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AppCompatDialog dialog2 = builder2.create();
-                showSnack(false);
-                dialog2.show();
-                return true;
-            case R.id.action_create_js:
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
-                builder3.setTitle(R.string.new_not_java);
-                final EditText editText3 = new EditText(this);
-                editText3.setHint(R.string.resource_name);
-                editText3.setSingleLine(true);
-                editText3.setMaxLines(1);
-                builder3.setView(editText3);
-                builder3.setCancelable(false);
-                builder3.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        createResourceDirExists("js");
-                        if (!editText3.getText().toString().isEmpty() && Project.createFile(mProject, "js" + File.separator + editText3.getText().toString() + ".js", Project.MAIN)) {
-                            Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
-                            setFragment("js" + File.separator + editText3.getText().toString() + ".js", true);
-                            setupFileTree(rootNode, mProjectFile);
-                            treeView.setRoot(rootNode);
-                        } else {
-                            Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                builder3.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AppCompatDialog dialog3 = builder3.create();
-                showSnack(false);
-                dialog3.show();
                 return true;
             case R.id.action_about:
                 showAbout();
@@ -887,28 +753,6 @@ public class ProjectActivity extends AppCompatActivity {
         return false;
     }
 
-    private void createResourceDirExists(String res) {
-        File resDir = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + res);
-        if (!resDir.exists() && !resDir.isDirectory()) {
-            resDir.mkdirs();
-        }
-    }
-
-    /**
-     * Show file ending warning/message
-     *
-     * @param image whether to show warning or message
-     */
-    private void showSnack(boolean image) {
-        if (Pref.get(ProjectActivity.this, "show_toast_file_ending", true)) {
-            if (!image) {
-                Snackbar.make(mDrawerLayout, R.string.file_ending_warn, Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(mDrawerLayout, R.string.file_ending_warn_image, Snackbar.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     /**
      * Handle different results from intents
      *
@@ -920,142 +764,40 @@ public class ProjectActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case IMPORT_IMAGE:
+            case IMPORT_FILE:
                 if (resultCode == RESULT_OK) {
-                    final Uri imageUri = data.getData();
+                    final Uri fileUri = data.getData();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.name);
-                    final EditText editText = new EditText(this);
-                    editText.setHint(R.string.resource_name);
-                    editText.setSingleLine(true);
-                    editText.setMaxLines(1);
+                    View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                    final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.input_text);
+                    editText.setHint(R.string.file_name);
                     builder.setView(editText);
                     builder.setCancelable(false);
-                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            createResourceDirExists("images");
-                            if (!editText.getText().toString().isEmpty() && Project.importImage(ProjectActivity.this, mProject, imageUri, editText.getText().toString())) {
-                                Snackbar.make(mDrawerLayout, R.string.image_success, Snackbar.LENGTH_SHORT).show();
-                                setFragment(editText.getText().toString(), true);
-                            } else {
-                                Snackbar.make(mDrawerLayout, R.string.image_fail, Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+                    builder.setPositiveButton(R.string.import_not_java, null);
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
-                    AppCompatDialog dialog = builder.create();
-                    showSnack(false);
+                    final AlertDialog dialog = builder.create();
                     dialog.show();
-                }
-
-                break;
-            case IMPORT_FONT:
-                if (resultCode == RESULT_OK) {
-                    final Uri fontUri = data.getData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.name);
-                    final EditText editText = new EditText(this);
-                    editText.setHint(R.string.resource_name);
-                    editText.setSingleLine(true);
-                    editText.setMaxLines(1);
-                    builder.setView(editText);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            createResourceDirExists("fonts");
-                            if (!editText.getText().toString().isEmpty() && Project.importFont(ProjectActivity.this, mProject, fontUri, editText.getText().toString())) {
-                                Snackbar.make(mDrawerLayout, R.string.font_success, Snackbar.LENGTH_SHORT).show();
+                        public void onClick(View view) {
+                            if (editText.getText().toString().isEmpty()) {
+                                editText.setError("Please enter a name");
                             } else {
-                                Snackbar.make(mDrawerLayout, R.string.font_fail, Snackbar.LENGTH_LONG).show();
+                                dialog.dismiss();
+                                if (Project.importFile(ProjectActivity.this, mProject, fileUri, editText.getText().toString())) {
+                                    Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
+                                } else {
+                                    Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
+                                }
                             }
                         }
                     });
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    AppCompatDialog dialog = builder.create();
-                    showSnack(false);
-                    dialog.show();
-                }
-
-                break;
-            case IMPORT_CSS:
-                if (resultCode == RESULT_OK) {
-                    final Uri cssUri = data.getData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Name");
-                    final EditText editText = new EditText(this);
-                    editText.setHint("Resource name");
-                    editText.setSingleLine(true);
-                    editText.setMaxLines(1);
-                    builder.setView(editText);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            createResourceDirExists("css");
-                            if (!editText.getText().toString().isEmpty() && Project.importCss(ProjectActivity.this, mProject, cssUri, editText.getText().toString() + ".css")) {
-                                Snackbar.make(mDrawerLayout, R.string.css_import_success, Snackbar.LENGTH_SHORT).show();
-                                setFragment("css" + File.separator + editText.getText().toString() + ".css", true);
-                            } else {
-                                Snackbar.make(mDrawerLayout, R.string.css_import_problem, Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    AppCompatDialog dialog = builder.create();
-                    showSnack(false);
-                    dialog.show();
-                }
-
-                break;
-            case IMPORT_JS:
-                if (resultCode == RESULT_OK) {
-                    final Uri jsUri = data.getData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.name);
-                    final EditText editText = new EditText(this);
-                    editText.setHint(R.string.resource_name);
-                    editText.setSingleLine(true);
-                    editText.setMaxLines(1);
-                    builder.setView(editText);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton(R.string.import_not_java, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            createResourceDirExists("js");
-                            if (!editText.getText().toString().isEmpty() && Project.importJs(ProjectActivity.this, mProject, jsUri, editText.getText().toString() + ".js")) {
-                                Snackbar.make(mDrawerLayout, R.string.js_success, Snackbar.LENGTH_SHORT).show();
-                                setFragment("js" + File.separator + editText.getText().toString() + ".js", true);
-                            } else {
-                                Snackbar.make(mDrawerLayout, R.string.js_fail, Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    AppCompatDialog dialog = builder.create();
-                    showSnack(false);
-                    dialog.show();
                 }
 
                 break;

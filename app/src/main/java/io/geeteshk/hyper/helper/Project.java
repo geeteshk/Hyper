@@ -331,20 +331,10 @@ public class Project {
         return options.outWidth != -1 && options.outHeight != -1;
     }
 
-
-    /**
-     * Method used for importing images into project
-     *
-     * @param context used to getContentResolver
-     * @param name of project
-     * @param imageUri of chosen image
-     * @param imageName of chosen image
-     * @return true if successfully imported
-     */
-    public static boolean importImage(Context context, String name, Uri imageUri, String imageName) {
+    public static boolean importFile(Context context, String name, Uri fileUri, String fileName) {
         try {
-            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + imageName);
+            InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + fileName);
             byte[] buffer = new byte[1024];
             int read;
             while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
@@ -353,101 +343,6 @@ public class Project {
             if (inputStream != null) {
                 inputStream.close();
             }
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Method used for importing fonts into project
-     *
-     * @param context used to getContentResolver
-     * @param name of project
-     * @param fontUri of chosen font
-     * @param fontName of chosen font
-     * @return true if successfully imported
-     */
-    public static boolean importFont(Context context, String name, Uri fontUri, String fontName) {
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(fontUri);
-            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "fonts" + File.separator + fontName);
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
-                outputStream.write(buffer, 0, read);
-            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Method used for importing CSS files into project
-     *
-     * @param context used to getContentResolver
-     * @param name of project
-     * @param cssUri of chosen CSS file
-     * @param cssName of chosen CSS file
-     * @return true if successfully imported
-     */
-    public static boolean importCss(Context context, String name, Uri cssUri, String cssName) {
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(cssUri);
-            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "css" + File.separator + cssName);
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
-                outputStream.write(buffer, 0, read);
-            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Method used for importing JS files into project
-     *
-     * @param context used to getContentResolver
-     * @param name    of project
-     * @param jsUri   of chosen JS file
-     * @param jsName  of chosen JS file
-     * @return true if successfully imported
-     */
-    public static boolean importJs(Context context, String name, Uri jsUri, String jsName) {
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(jsUri);
-            OutputStream outputStream = new FileOutputStream(Constants.HYPER_ROOT + File.separator + name + File.separator + "js" + File.separator + jsName);
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = inputStream != null ? inputStream.read(buffer) : -1) != -1) {
-                outputStream.write(buffer, 0, read);
-            }
-
-            if (inputStream != null) {
-                inputStream.close();
-            }
-
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {

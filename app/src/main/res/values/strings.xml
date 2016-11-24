@@ -165,6 +165,9 @@
     <string name="label_misc">Miscellaneous</string>
     <string name="label_legal">Legal</string>
     <string name="notices">Notices</string>
+    <string name="file_name">File name</string>
+    <string name="folder_name">Folder name</string>
+    <string name="new_name">New name</string>
 
     <array name="slide_titles">
         <item>@string/slide_1_title</item>
