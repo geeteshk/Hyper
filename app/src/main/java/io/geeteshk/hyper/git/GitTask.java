@@ -16,9 +16,11 @@
 
 package io.geeteshk.hyper.git;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 import android.view.View;
 
@@ -50,7 +52,9 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
     protected void onPreExecute() {
         super.onPreExecute();
         mBuilder.setContentTitle(mValues[0])
-            .setSmallIcon(R.drawable.ic_git_small);
+                .setSmallIcon(R.drawable.ic_git_small)
+                .setAutoCancel(false)
+                .setOngoing(true);
     }
 
     @Override
@@ -58,7 +62,7 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
         super.onProgressUpdate(values);
         mBuilder.setContentText(values[0])
                 .setProgress(Integer.valueOf(values[2]), Integer.valueOf(values[1]), false);
-
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(values[0]));
         mManager.notify(id, mBuilder.build());
     }
 
@@ -71,7 +75,9 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
             mBuilder.setContentText(mValues[2]);
         }
 
-        mBuilder.setProgress(0, 0, false);
+        mBuilder.setProgress(0, 0, false)
+                .setAutoCancel(true)
+                .setOngoing(false);
         mManager.notify(id, mBuilder.build());
     }
 }
