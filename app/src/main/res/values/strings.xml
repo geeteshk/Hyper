@@ -162,4 +162,7 @@
         <item>@string/slide_4_desc</item>
     </array>
 
+    <string name="dark_theme_editor">Dark Coding Theme</string>
+    <string name="dark_theme_editor_desc">Less stress on your eyes… while coding!</string>
+
 </resources>

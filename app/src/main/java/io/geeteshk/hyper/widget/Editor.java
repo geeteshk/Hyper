@@ -162,7 +162,7 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
-        mColors = new Colors(!Pref.get(mContext, "dark_theme", false));
+        mColors = new Colors(!Pref.get(mContext, "dark_theme_editor", false));
         mPatterns = new Patterns();
         mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();

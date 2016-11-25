@@ -23,7 +23,7 @@
         android:id="@+id/file_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/toolbar_shadow"
+        android:layout_above="@+id/symbol_layout_scroll_container"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
         android:paddingEnd="16dp"
@@ -33,14 +33,6 @@
         android:privateImeOptions="nm"
         android:scrollbars="vertical"
         android:textSize="14sp" />
-
-    <View
-        android:id="@+id/toolbar_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_above="@+id/symbol_layout_scroll_container"
-        android:background="@drawable/toolbar_shadow"
-        android:rotation="180" />
 
     <HorizontalScrollView
         android:id="@+id/symbol_layout_scroll_container"

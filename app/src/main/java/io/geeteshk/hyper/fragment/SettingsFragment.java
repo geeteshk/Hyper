@@ -40,6 +40,15 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        SwitchPreference darkThemeEditor = (SwitchPreference) getPreferenceManager().findPreference("dark_theme_editor");
+        darkThemeEditor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                Pref.store(getActivity(), "dark_theme_editor", (boolean) o);
+                return true;
+            }
+        });
+
         Preference preference = getPreferenceManager().findPreference("notices");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
