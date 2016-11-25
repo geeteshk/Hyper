@@ -36,6 +36,16 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="Misc">
+
+        <Preference
+            android:key="factory_reset"
+            android:title="Factory Reset"
+            android:summary="This will delete all of your projects! Use with caution." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/label_legal">
 
         <Preference
