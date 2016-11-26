@@ -25,11 +25,15 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import io.geeteshk.hyper.R;
@@ -93,39 +97,41 @@ public class Project {
             return;
         }
 
-        if (stream == null) {
-            if (createDirectory(name)
-                    && createDirectory(name + File.separator + "images")
-                    && createDirectory(name + File.separator + "fonts")
-                    && createDirectory(name + File.separator + "css")
-                    && createDirectory(name + File.separator + "js")
-                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(name, "css" + File.separator + "style.css", STYLE)
-                    && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && Jason.createProjectFile(name, author, description, keywords)
-                    && copyIcon(context, name)) {
-                adapter.add(name);
-                Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
+        File projectFile = new File(Constants.HYPER_ROOT + File.separator + name);
+        File cssFile = new File(projectFile, "css");
+        File jsFile = new File(projectFile, "js");
+        try {
+            // Create project tree
+            FileUtils.forceMkdir(projectFile);
+            FileUtils.forceMkdir(new File(projectFile, "images"));
+            FileUtils.forceMkdir(new File(projectFile, "fonts"));
+            FileUtils.forceMkdir(cssFile);
+            FileUtils.forceMkdir(jsFile);
+
+            // Create necessary files
+            FileUtils.writeStringToFile(new File(projectFile, "index.html"), getIndex(name, author, description, keywords), Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(cssFile, "style.css"), STYLE, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(jsFile, "main.js"), MAIN, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(projectFile, ".hyperProps"), Jason.createProjectFile(name, author, description, keywords), Charset.defaultCharset());
+
+            // Copy icon
+            if (stream == null) {
+                copyIcon(context, name);
             } else {
-                Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
+                copyIcon(name, stream);
             }
-        } else {
-            if (createDirectory(name)
-                    && createDirectory(name + File.separator + "images")
-                    && createDirectory(name + File.separator + "fonts")
-                    && createDirectory(name + File.separator + "css")
-                    && createDirectory(name + File.separator + "js")
-                    && createFile(name, "index.html", INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords))
-                    && createFile(name, "css" + File.separator + "style.css", STYLE)
-                    && createFile(name, "js" + File.separator + "main.js", MAIN)
-                    && Jason.createProjectFile(name, author, description, keywords)
-                    && copyIcon(name, stream)) {
-                adapter.add(name);
-                Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
-            }
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
+            return;
         }
+
+        adapter.add(name);
+        Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private static String getIndex(String name, String author, String description, String keywords) {
+        return INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords);
     }
 
     /**
@@ -149,44 +155,16 @@ public class Project {
      * @param name of project
      * @return true if successfully deleted
      */
-    public static boolean deleteProject(Context context, String name) {
+    public static boolean deleteProject(String name) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + name);
-        File[] files = projectDir.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                deleteDirectory(context, file);
-            } else {
-                if (!file.delete()) {
-                    Log.e(TAG, context.getString(R.string.cannot_delete) + " " + file.getPath());
-                }
-            }
+        try {
+            FileUtils.deleteDirectory(projectDir);
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+            return false;
         }
 
-        return projectDir.delete();
-    }
-
-    /**
-     * Method used to delete directory
-     *
-     * @param directory to delete
-     * @return true if successfully deleted
-     */
-    public static boolean deleteDirectory(Context context, File directory) {
-        if (directory.exists()) {
-            File[] files = directory.listFiles();
-            if (null != files) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        deleteDirectory(context, file);
-                    } else {
-                        if (!file.delete()) {
-                            Log.e(TAG, context.getString(R.string.cannot_delete) + " " + file.getPath());
-                        }
-                    }
-                }
-            }
-        }
-        return (directory.delete());
+        return true;
     }
 
     /**
@@ -196,38 +174,11 @@ public class Project {
      * @return bitmap object of favicon
      */
     public static Bitmap getFavicon(String name) {
-        return BitmapFactory.decodeFile(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
-    }
-
-    /**
-     * Method used to create directory
-     *
-     * @param name of project
-     * @return true if successfully create
-     */
-    static boolean createDirectory(String name) {
-        return new File(Constants.HYPER_ROOT + File.separator + name).mkdirs();
-    }
-
-    /**
-     * Method used for creation of files
-     *
-     * @param parent name of project
-     * @param name of file
-     * @param contents of file
-     * @return true if successfully created
-     */
-    public static boolean createFile(String parent, String name, String contents) {
-        try {
-            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + parent + File.separator + name));
-            stream.write(contents.getBytes());
-            stream.close();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            return false;
+        if (new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico").exists()) {
+            return BitmapFactory.decodeFile(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
+        } else {
+            return Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
         }
-
-        return true;
     }
 
     /**
@@ -237,7 +188,7 @@ public class Project {
      * @param name of projects
      * @return true if successfully copied
      */
-    static boolean copyIcon(Context context, String name) {
+    private static boolean copyIcon(Context context, String name) {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");

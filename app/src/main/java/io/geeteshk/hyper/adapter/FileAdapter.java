@@ -47,17 +47,11 @@ public class FileAdapter extends ArrayAdapter<String> {
     private List<String> mFiles;
 
     /**
-     * Name of currently opened project
-     */
-    private String mProject;
-
-    /**
      * Public constructor for adapter
      */
-    public FileAdapter(Context context, String project, List<String> files) {
+    public FileAdapter(Context context, List<String> files) {
         super(context, android.R.layout.simple_list_item_1, files);
         mFiles = files;
-        mProject = project;
     }
 
     /**
@@ -81,7 +75,7 @@ public class FileAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
         TextView textView = (TextView) rootView.findViewById(R.id.file_title);
 
-        int resource = Decor.getIcon(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + mFiles.get(position)));
+        int resource = Decor.getIcon(new File(mFiles.get(position)));
         imageView.setImageResource(resource);
         switch (resource) {
             case R.drawable.ic_font:case R.drawable.ic_file:case R.drawable.ic_folder:case R.drawable.ic_image:
@@ -116,7 +110,7 @@ public class FileAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
         TextView textView = (TextView) rootView.findViewById(R.id.file_title);
 
-        imageView.setImageResource(Decor.getIcon(new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + mFiles.get(position))));
+        imageView.setImageResource(Decor.getIcon(new File(mFiles.get(position))));
         textView.setText(getPageTitle(position));
         textView.setTypeface(Typeface.SERIF);
 
@@ -130,15 +124,7 @@ public class FileAdapter extends ArrayAdapter<String> {
      * @return new page title
      */
     private CharSequence getPageTitle(int position) {
-        if (mFiles.get(position).startsWith("css")) {
-            return mFiles.get(position).substring(4);
-        } else if (mFiles.get(position).startsWith("js")) {
-            return mFiles.get(position).substring(3);
-        } else if (mFiles.get(position).startsWith("images")) {
-            return mFiles.get(position).substring(7);
-        }
-
-        return mFiles.get(position);
+        return new File(mFiles.get(position)).getName();
     }
 
     /**

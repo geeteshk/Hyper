@@ -22,6 +22,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import android.widget.LinearLayout;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,16 +39,20 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.widget.TagTreeHolder;
 
 public class ViewActivity extends AppCompatActivity {
 
+    private static final String TAG = ViewActivity.class.getSimpleName();
+
     Document document;
-    String mProject, mFilename;
+    File mFile;
 
     LinearLayout viewLayout;
 
@@ -56,15 +62,13 @@ public class ViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 
-        mProject = getIntent().getStringExtra("project");
         String htmlPath = getIntent().getStringExtra("html_path");
-        File html = new File(htmlPath);
-        mFilename = html.getName();
+        mFile = new File(htmlPath);
         TreeNode rootNode = TreeNode.root();
         try {
-            setupViewTree(rootNode, html);
+            setupViewTree(rootNode, mFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -89,7 +93,12 @@ public class ViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                Project.createFile(mProject, mFilename, document.outerHtml());
+                try {
+                    FileUtils.writeStringToFile(mFile, document.outerHtml(), Charset.defaultCharset(), false);
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                }
+
                 setResult(RESULT_OK);
                 Snackbar.make(viewLayout, R.string.save_changes_done, Snackbar.LENGTH_SHORT).show();
                 break;
@@ -128,7 +137,12 @@ public class ViewActivity extends AppCompatActivity {
         builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Project.createFile(mProject, mFilename, document.outerHtml());
+                try {
+                    FileUtils.writeStringToFile(mFile, document.outerHtml(), Charset.defaultCharset(), false);
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                }
+
                 setResult(RESULT_OK);
                 finish();
             }

@@ -28,11 +28,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
@@ -68,9 +72,9 @@ public class EditorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String location = getArguments().getString("location");
-        final String project = location.substring(0, location.indexOf(File.separator));
-        final String filename = location.substring(location.indexOf(File.separator), location.length());
-        if (!new File(Constants.HYPER_ROOT + File.separator + project, filename).exists()) {
+        assert location != null;
+        final File file = new File(location);
+        if (!file.exists()) {
             TextView textView = new TextView(getActivity());
             textView.setText(R.string.file_problem);
             return textView;
@@ -89,6 +93,7 @@ public class EditorFragment extends Fragment {
         Button symbolSeven = (Button) rootView.findViewById(R.id.symbol_seven);
         Button symbolEight = (Button) rootView.findViewById(R.id.symbol_eight);
 
+        String filename = file.getName();
         if (filename.endsWith(".html") || filename.equals("imports.txt")) {
             editText.setType(Editor.CodeType.HTML);
             setSymbol(editText, symbolTab, "\t\t");
@@ -124,12 +129,16 @@ public class EditorFragment extends Fragment {
             setSymbol(editText, symbolEight, "?");
         }
 
-        String contents = getContents(project, filename);
+        String contents = getContents(location);
         editText.setTextHighlighted(contents);
         editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
-                Project.createFile(project, filename, editText.getText().toString());
+                try {
+                    FileUtils.writeStringToFile(file, editText.getText().toString(), Charset.defaultCharset(), false);
+                } catch (IOException e) {
+                    Log.wtf(TAG, e.toString());
+                }
             }
         };
 
@@ -159,16 +168,9 @@ public class EditorFragment extends Fragment {
         button.setOnClickListener(new SymbolClickListener(editor, symbol));
     }
 
-    /**
-     * Method used to get contents of files
-     *
-     * @param project name of project
-     * @param filename name of file
-     * @return contents of file
-     */
-    private String getContents(String project, String filename) {
+    private String getContents(String location) {
         try {
-            InputStream inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + project + File.separator + filename);
+            InputStream inputStream = new FileInputStream(location);
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
             StringBuilder builder = new StringBuilder();

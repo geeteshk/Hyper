@@ -38,6 +38,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,11 +58,13 @@ import android.widget.TextView;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +88,7 @@ import io.geeteshk.hyper.widget.FileTreeHolder;
  */
 public class ProjectActivity extends AppCompatActivity {
 
+    private static final String TAG = ProjectActivity.class.getSimpleName();
 
     private static final int VIEW_CODE = 99;
 
@@ -144,12 +148,12 @@ public class ProjectActivity extends AppCompatActivity {
             mFiles = getIntent().getStringArrayListExtra("files");
         } else {
             mFiles = new ArrayList<>();
-            mFiles.add("index.html");
+            mFiles.add(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
-        mFileAdapter = new FileAdapter(this, mProject, mFiles);
+        mFileAdapter = new FileAdapter(this, mFiles);
         mSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mSpinner.setAdapter(mFileAdapter);
         toolbar.addView(mSpinner);
@@ -192,17 +196,16 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(TreeNode node, Object value) {
                 FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
-                File file = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path);
-                if (node.isLeaf() && file.isFile()) {
-                    if (mFiles.contains(item.path)) {
-                        setFragment(item.path, false);
+                if (node.isLeaf() && item.file.isFile()) {
+                    if (mFiles.contains(item.file.getPath())) {
+                        setFragment(item.file.getPath(), false);
                         mDrawerLayout.closeDrawers();
                     } else {
-                        if (!Project.isBinaryFile(file)) {
-                            setFragment(item.path, true);
+                        if (!Project.isBinaryFile(item.file)) {
+                            setFragment(item.file.getPath(), true);
                             mDrawerLayout.closeDrawers();
-                        } else if (Project.isImageFile(file)) {
-                            setFragment(item.path, true);
+                        } else if (Project.isImageFile(item.file)) {
+                            setFragment(item.file.getPath(), true);
                             mDrawerLayout.closeDrawers();
                         } else {
                             Snackbar.make(mDrawerLayout, R.string.not_text_file, Snackbar.LENGTH_SHORT).show();
@@ -216,20 +219,20 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(final TreeNode node, Object value) {
                 final FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
-                switch (item.text) {
+                switch (item.file.getName()) {
                     case "index.html":
                         return false;
                     default:
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
-                        builder.setTitle(getString(R.string.delete) + " " + item.text + "?");
+                        builder.setTitle(getString(R.string.delete) + " " + item.file.getName() + "?");
                         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final boolean[] delete = {true, false};
-                                final String file = item.text;
+                                final String file = item.file.getName();
                                 final TreeNode parent = node.getParent();
                                 treeView.removeNode(node);
-                                removeFragment(item.path);
+                                removeFragment(item.file.getPath());
 
                                 final Snackbar snackbar = Snackbar.make(
                                         mDrawerLayout,
@@ -251,11 +254,14 @@ public class ProjectActivity extends AppCompatActivity {
                                         super.onDismissed(snackbar, event);
                                         if (!delete[1]) {
                                             if (delete[0]) {
-                                                File toDel = new File(Constants.HYPER_ROOT + File.separator + mProject + File.separator + item.path);
-                                                if (toDel.isDirectory()) {
-                                                    Project.deleteDirectory(ProjectActivity.this, toDel);
+                                                if (item.file.isDirectory()) {
+                                                    try {
+                                                        FileUtils.deleteDirectory(item.file);
+                                                    } catch (IOException e) {
+                                                        Log.e(TAG, e.toString());
+                                                    }
                                                 } else {
-                                                    toDel.delete();
+                                                    item.file.delete();
                                                 }
                                             } else {
                                                 treeView.addNode(parent, node);
@@ -304,11 +310,11 @@ public class ProjectActivity extends AppCompatActivity {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
+                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file, mDrawerLayout));
                 setupFileTree(folderNode, file);
                 root.addChild(folderNode);
             } else {
-                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file), file.getName(), file.getPath().substring(file.getPath().indexOf(mProject) + mProject.length() + 1, file.getPath().length()), mProject, mDrawerLayout));
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file), file, mDrawerLayout));
                 root.addChild(fileNode);
             }
         }
@@ -347,8 +353,8 @@ public class ProjectActivity extends AppCompatActivity {
     public Fragment getFragment(String title) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", mFileAdapter.getCount());
-        bundle.putString("location", mProject + File.separator + title);
-        if (Project.isImageFile(new File(Constants.HYPER_ROOT + File.separator + mProject, title))) {
+        bundle.putString("location", title);
+        if (Project.isImageFile(new File(title))) {
             return Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
         } else {
             return Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
@@ -456,8 +462,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_view:
                 Intent viewIntent = new Intent(ProjectActivity.this, ViewActivity.class);
-                viewIntent.putExtra("project", mProject);
-                viewIntent.putExtra("html_path", Constants.HYPER_ROOT + File.separator + mProject + File.separator + mSpinner.getSelectedItem());
+                viewIntent.putExtra("html_path", mFiles.get(mSpinner.getSelectedItemPosition()));
                 startActivityForResult(viewIntent, VIEW_CODE);
                 return true;
             case R.id.action_import_file:

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -47,23 +48,18 @@ public class Jason {
      * @param keywords    about the project
      * @return true if successful
      */
-    static boolean createProjectFile(String name, String author, String description, String keywords) {
+    static String createProjectFile(String name, String author, String description, String keywords) {
+        JSONObject object = new JSONObject();
         try {
-            JSONObject object = new JSONObject();
             object.put("name", name);
             object.put("author", author);
             object.put("description", description);
             object.put("keywords", keywords);
-
-            OutputStream stream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + ".hyperProps"));
-            stream.write(object.toString(4).getBytes());
-            stream.close();
-        } catch (Exception e) {
+            return object.toString(4);
+        } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
-            return false;
+            return "";
         }
-
-        return true;
     }
 
     /**

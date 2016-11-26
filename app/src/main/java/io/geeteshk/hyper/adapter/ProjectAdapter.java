@@ -70,7 +70,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     }
 
     public void add(String project) {
-        int end = mObjects.size() - 1;
+        int end = mObjects.size() > 0 ? mObjects.size() - 1 : 0;
         mObjects.add(end, project);
         notifyItemInserted(end);
     }
@@ -149,7 +149,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String project = mObjects.get(newPos);
-                        Project.deleteProject(mContext, project);
+                        Project.deleteProject(project);
                         remove(newPos);
 
                         Snackbar.make(
@@ -177,7 +177,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String project = mObjects.get(newPos);
-                        Project.deleteProject(mContext, project);
+                        Project.deleteProject(project);
                         remove(newPos);
 
                         Snackbar.make(
