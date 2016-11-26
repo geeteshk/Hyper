@@ -17,6 +17,7 @@
 package io.geeteshk.hyper.activity;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -74,16 +75,39 @@ public class SplashActivity extends AppCompatActivity {
         ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
         TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);
         logo.animate().alpha(1).setDuration(800);
-        logoText.animate().alpha(1).setDuration(800);
+        logoText.animate().alpha(1).setDuration(800).setStartDelay(400).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setupPermissions();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setupPermissions();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
 
         mLayout = (CoordinatorLayout) findViewById(R.id.splash_layout);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setupPermissions();
-            }
-        }, 1000);
     }
 
     private void setupPermissions() {
