@@ -56,11 +56,11 @@ public class Project {
             "    <meta name=\"description\" content=\"@description\">\n" +
             "    <meta name=\"keywords\" content=\"@keywords\">\n" +
             "    <link rel=\"shortcut icon\" href=\"images/favicon.ico\" type=\"image/vnd.microsoft.icon\">\n" +
-            "    <link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\">\n" +
-            "    <script src=\"js/main.js\" type=\"text/javascript\"></script>\n" +
+            "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" +
             "  </head>\n" +
             "  <body>\n" +
             "    <h1>Hello World!</h1>\n" +
+            "    <script src=\"js/main.js\"></script>\n" +
             "  </body>\n" +
             "</html>";
 
