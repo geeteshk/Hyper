@@ -80,4 +80,10 @@
         <copyright>Copyright 2002-2012 The Apache Software Foundation</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>Roboto Fonts</name>
+        <url>https://fonts.google.com/specimen/Roboto</url>
+        <copyright>Font data copyright Google 2012</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>
