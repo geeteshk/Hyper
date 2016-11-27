@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package io.geeteshk.hyper.widget;
+package io.geeteshk.hyper.widget.holder;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -40,11 +39,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.helper.Clippy;
-import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Project;
 
 public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.FileTreeItem> {
 

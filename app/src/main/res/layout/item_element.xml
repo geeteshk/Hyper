@@ -39,33 +39,13 @@
         android:typeface="monospace" />
 
     <ImageButton
-        android:id="@+id/element_add"
+        android:id="@+id/element_overflow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
-        android:src="@drawable/ic_add_attr"
-        android:background="?attr/selectableItemBackgroundBorderless" />
-
-    <ImageButton
-        android:id="@+id/element_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_edit_attr"
-        android:background="?attr/selectableItemBackgroundBorderless" />
-
-    <ImageButton
-        android:id="@+id/element_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_delete_attr"
+        android:src="@drawable/ic_overflow"
         android:background="?attr/selectableItemBackgroundBorderless" />
 
 </LinearLayout>

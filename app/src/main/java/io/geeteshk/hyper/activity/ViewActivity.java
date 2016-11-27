@@ -42,10 +42,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
-import io.geeteshk.hyper.widget.TagTreeHolder;
+import io.geeteshk.hyper.widget.holder.TagTreeHolder;
 
 public class ViewActivity extends AppCompatActivity {
 
