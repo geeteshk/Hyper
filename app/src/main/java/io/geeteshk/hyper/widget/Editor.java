@@ -249,7 +249,6 @@ public class Editor extends MultiAutoCompleteTextView {
             if (e.length() == 0) return e;
             if (hasSpans(e)) clearSpans(e);
 
-            int counter;
             Matcher m;
             switch (mType) {
                 case HTML:
@@ -265,13 +264,8 @@ public class Editor extends MultiAutoCompleteTextView {
                         }
                     }
 
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
+                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (m = mPatterns.getPatternComments().matcher(e); m.find(); ) {
@@ -305,22 +299,8 @@ public class Editor extends MultiAutoCompleteTextView {
                         e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
+                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
@@ -354,22 +334,8 @@ public class Editor extends MultiAutoCompleteTextView {
                         e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\""); index >= 0; index = e.toString().indexOf("\"", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\"", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
-                    }
-
-                    counter = 0;
-                    for (int index = e.toString().indexOf("\'"); index >= 0; index = e.toString().indexOf("\'", index + 1)) {
-                        if (counter % 2 == 0) {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), index, e.toString().indexOf("\'", index + 1) + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
-
-                        counter++;
+                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
@@ -438,7 +404,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     if (mLineNumbers) {
                         canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, mLineShadowPaint);
                     } else {
-                        
+
                     }
                 }
 
@@ -850,6 +816,7 @@ public class Editor extends MultiAutoCompleteTextView {
         private final Pattern patternFunctions = Pattern.compile("n\\((.*?)\\)");
         private final Pattern patternNumbers = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
         private final Pattern patternBooleans = Pattern.compile("\\b(true|false)\\b");
+        private final Pattern patternStrings = Pattern.compile("([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
 
         Pattern getPatternKeywords() {
             return patternKeywords;
@@ -893,6 +860,10 @@ public class Editor extends MultiAutoCompleteTextView {
 
         Pattern getPatternBooleans() {
             return patternBooleans;
+        }
+
+        Pattern getPatternStrings() {
+            return patternStrings;
         }
     }
 }
