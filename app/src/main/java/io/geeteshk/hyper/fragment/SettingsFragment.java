@@ -62,6 +62,24 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        SeekBarPreference autoSaveFreq = (SeekBarPreference) getPreferenceManager().findPreference("auto_save_freq");
+        autoSaveFreq.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                Pref.store(getActivity(), "auto_save_freq", ((SeekBarPreference) preference).getCurrentValue());
+                return true;
+            }
+        });
+
+        final SwitchPreference lineNumbers = (SwitchPreference) getPreferenceManager().findPreference("show_line_numbers");
+        lineNumbers.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                Pref.store(getActivity(), "show_line_numbers", (boolean) o);
+                return true;
+            }
+        });
+
         final Preference factoryReset = getPreferenceManager().findPreference("factory_reset");
         factoryReset.setEnabled(new File(Constants.HYPER_ROOT).list().length > 0);
         factoryReset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

@@ -29,7 +29,7 @@
         android:paddingEnd="16dp"
         android:paddingLeft="52dp"
         android:paddingRight="16dp"
-        android:paddingStart="32dp"
+        android:paddingStart="52dp"
         android:privateImeOptions="nm"
         android:scrollbars="vertical"
         android:textSize="14sp" />

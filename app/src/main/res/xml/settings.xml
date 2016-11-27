@@ -33,6 +33,12 @@
             app:msbp_measurementUnit="s"
             app:msbp_dialogEnabled="false" />
 
+        <SwitchPreference
+            android:key="show_line_numbers"
+            android:title="Show Line Numbers"
+            android:summary="Display line numbers next to Editor."
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

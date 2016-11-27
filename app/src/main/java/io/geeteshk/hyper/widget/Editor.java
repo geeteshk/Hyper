@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -122,6 +123,8 @@ public class Editor extends MultiAutoCompleteTextView {
     private Colors mColors;
     private Patterns mPatterns;
 
+    private boolean mLineNumbers;
+
     /**
      * Public constructor
      *
@@ -166,18 +169,28 @@ public class Editor extends MultiAutoCompleteTextView {
         mPatterns = new Patterns();
         mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
+        mLineNumbers = Pref.get(mContext, "show_line_numbers", true);
 
         mLineShadowPaint = new Paint();
         mLineShadowPaint.setStyle(Paint.Style.FILL);
         mLineShadowPaint.setColor(mColors.getColorLineShadow());
 
-        mNumberPaint = new Paint();
-        mNumberPaint.setStyle(Paint.Style.FILL);
-        mNumberPaint.setAntiAlias(true);
-        mNumberPaint.setTextSize(Decor.dpToPx(mContext, 14));
-        mNumberPaint.setTextAlign(Paint.Align.RIGHT);
-        mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
-        mNumberPaint.setColor(mColors.getColorNumber());
+        if (mLineNumbers) {
+            mNumberPaint = new Paint();
+            mNumberPaint.setStyle(Paint.Style.FILL);
+            mNumberPaint.setAntiAlias(true);
+            mNumberPaint.setTextSize(Decor.dpToPx(mContext, 14));
+            mNumberPaint.setTextAlign(Paint.Align.RIGHT);
+            mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
+            mNumberPaint.setColor(mColors.getColorNumber());
+        } else {
+            int padding = Decor.dpToPx(mContext, 8);
+            if (Build.VERSION.SDK_INT > 15) {
+                setPaddingRelative(padding, padding, padding, 0);
+            } else {
+                setPadding(padding, padding, padding, 0);
+            }
+        }
 
         setBackgroundColor(mColors.getColorBackground());
         setTextColor(mColors.getColorText());
@@ -404,30 +417,43 @@ public class Editor extends MultiAutoCompleteTextView {
      */
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-        int cursorLine = getCurrentCursorLine();
-        int lineBounds;
-        int lineHeight = getLineHeight();
-        int lineCount = getLineCount();
-        List<CharSequence> lines = getLines();
+        if (mLineNumbers) {
+            int cursorLine = getCurrentCursorLine();
+            int lineBounds;
+            int lineHeight = getLineHeight();
+            int lineCount = getLineCount();
+            List<CharSequence> lines = getLines();
 
-        for (int i = 0; i < lineCount; i++) {
-            lineBounds = getLineBounds(i - mLineDiff, mRect);
-            if (lines.get(i).toString().endsWith("\n") || i == lineCount - 1) {
-                canvas.drawText(String.valueOf(mLine + 1), 100, lineBounds, mNumberPaint);
-                mLine += 1;
-                mLineDiff = 0;
-            } else {
-                mLineDiff += 1;
-            }
+            for (int i = 0; i < lineCount; i++) {
+                lineBounds = getLineBounds(i - mLineDiff, mRect);
+                if (lines.get(i).toString().endsWith("\n") || i == lineCount - 1) {
+                    if (mLineNumbers) canvas.drawText(String.valueOf(mLine + 1), 100, lineBounds, mNumberPaint);
+                    mLine += 1;
+                    mLineDiff = 0;
+                } else {
+                    mLineDiff += 1;
+                }
 
-            if (i == cursorLine) {
-                canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, mLineShadowPaint);
-            }
+                if (i == cursorLine) {
+                    if (mLineNumbers) {
+                        canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, mLineShadowPaint);
+                    } else {
+                        
+                    }
+                }
 
-            if (i == lineCount - 1) {
-                mLine = 0;
-                mLineDiff = 0;
+                if (i == lineCount - 1) {
+                    mLine = 0;
+                    mLineDiff = 0;
+                }
             }
+        } else {
+            int cursorLine = getCurrentCursorLine();
+            int lineBounds;
+            int lineHeight = getLineHeight();
+
+            lineBounds = getLineBounds(cursorLine - mLineDiff, mRect);
+            canvas.drawRect(0, 8 + lineBounds - lineHeight, getWidth(), lineBounds + 12, mLineShadowPaint);
         }
 
         super.onDraw(canvas);
