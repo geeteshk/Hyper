@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -37,7 +36,6 @@ import android.widget.TextView;
 import de.psdev.licensesdialog.LicenseResolver;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.helper.Typefacer;
 import io.geeteshk.hyper.license.EclipseDistributionLicense10;
 
@@ -74,8 +72,8 @@ public class SplashActivity extends AppCompatActivity {
 
         ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
         TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);
-        logo.animate().alpha(1).setDuration(800);
-        logoText.animate().alpha(1).setDuration(800).setStartDelay(400).setListener(new Animator.AnimatorListener() {
+        logo.animate().alpha(1).setDuration(1000);
+        logoText.animate().alpha(1).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -83,22 +81,12 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setupPermissions();
-                    }
-                }, 1000);
+                setupPermissions();
             }
 
             @Override
             public void onAnimationCancel(Animator animator) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setupPermissions();
-                    }
-                }, 1000);
+                setupPermissions();
             }
 
             @Override
