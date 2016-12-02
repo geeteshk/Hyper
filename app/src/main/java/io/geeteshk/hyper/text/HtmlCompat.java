@@ -16,6 +16,7 @@
 
 package io.geeteshk.hyper.text;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
