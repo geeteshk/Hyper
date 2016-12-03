@@ -22,7 +22,7 @@ android:
   - extra-google-m2repository
 script:
 - "./opt/src/cute_ghosts"
-- "./gradlew assemble jacocoTestReport"
+- "./gradlew assemble test"
 notifications:
   email: false
 after_success:
