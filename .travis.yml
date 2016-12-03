@@ -20,6 +20,6 @@ before_script:
 - chmod +x cute_ghosts
 script:
 - ./cute_ghosts
-- ./gradlew assembleDebug
+- ./gradlew build
 notifications:
   email: false
