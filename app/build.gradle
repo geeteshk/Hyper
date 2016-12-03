@@ -64,10 +64,3 @@ dependencies {
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile 'commons-io:commons-io:2.5'
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
