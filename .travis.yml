@@ -21,13 +21,13 @@ android:
   - extra-android-m2repository
   - extra-google-m2repository
 before_script:
-- chmod +x bin/src/cute_ghosts
+- chmod +x opt/src/cute_ghosts
 - chmod +x gradlew
 script:
-- "./bin/src/cute_ghosts"
+- "./opt/src/cute_ghosts"
 - "./gradlew assemble"
 notifications:
   email: false
 after_success:
-- chmod +x bin/src/update_apk
-- "./bin/src/update_apk"
+- chmod +x opt/src/update_apk
+- "./opt/src/update_apk"
