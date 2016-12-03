@@ -9,10 +9,12 @@ echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
 git add -A
 git commit --signoff -F- <<EOF
-Travis: Updated apk from latest build
+Travis CI: Updated apk from latest build
 Apk: opt/apk/latest.apk
 Last commit: $(git log -1 --pretty=%B)
 Date: $(date)
+
+[ci skip]
 EOF
 
 git push origin master
