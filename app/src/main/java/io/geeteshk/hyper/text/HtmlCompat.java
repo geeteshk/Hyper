@@ -31,9 +31,9 @@ public class HtmlCompat {
      * @param html to get spanned from
      * @return spanned html text
      */
+    @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html) {
         if (Build.VERSION.SDK_INT < 24) {
-            //noinspection deprecation
             return Html.fromHtml(html);
         } else {
             return Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT);
