@@ -2,11 +2,11 @@ language: android
 jdk: oraclejdk8
 env:
   matrix:
-    - ADB_INSTALL_TIMEOUT=15 ANDROID_BUILD_TOOLS_VERSION=25.0.1 ANDROID_API_LEVEL=25 ANDROID_ABI=armeabi-v7a ANDROID_TAG=google_apis
+    - ANDROID_BUILD_TOOLS_VERSION=25.0.1 ANDROID_API_LEVEL=25
     
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
   
 cache:
   directories:
@@ -19,23 +19,16 @@ android:
   - tools
   - build-tools-$ANDROID_BUILD_TOOLS_VERSION
   - android-$ANDROID_API_LEVEL
-  - addon-$ANDROID_TAG-google-$ANDROID_API_LEVEL
   - extra-android-m2repository
   - extra-google-m2repository
-  - sys-img-$ANDROID_ABI-$ANDROID_TAG-$ANDROID_API_LEVEL
   
 before_script:
-  - chmod +x gradlew
   - chmod +x cute_ghosts
+  - chmod +x gradlew
 
 script:
   - ./cute_ghosts
-  - ./gradlew assembleDebug
-  - echo no | android create avd --force -n test -t "android-$ANDROID_API_LEVEL" --abi $ANDROID_ABI --tag $ANDROID_TAG
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
-  - ./gradlew connectedCheck
+  - ./gradlew assemble
 
 notifications:
   email: false
