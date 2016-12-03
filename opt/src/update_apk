@@ -18,4 +18,7 @@ Date: $(date)
 [ci skip]
 EOF
 
+git branch apk-update
+git checkout master
+git merge apk-update
 git push origin master
