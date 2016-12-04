@@ -22,10 +22,9 @@ android:
   - extra-google-m2repository
 script:
 - "./opt/src/cute_ghosts"
-- "./gradlew assemble jacocoTestReport"
+- "./gradlew assemble"
 notifications:
   email: false
 after_success:
-- bash <(curl -s https://codecov.io/bash)
 - "./opt/src/cute_ghosts"
 - "./opt/src/update_apk"

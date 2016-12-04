@@ -51,6 +51,8 @@ public class SplashActivity extends AppCompatActivity {
      */
     CoordinatorLayout mLayout;
 
+    boolean isAppetize;
+
     /**
      * Method called when activity is created
      *
@@ -66,6 +68,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        isAppetize = getIntent().getBooleanExtra("isAppetize", false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -81,12 +84,20 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                setupPermissions();
+                if (isAppetize) {
+                    startIntro();
+                } else {
+                    setupPermissions();
+                }
             }
 
             @Override
             public void onAnimationCancel(Animator animator) {
-                setupPermissions();
+                if (isAppetize) {
+                    startIntro();
+                } else {
+                    setupPermissions();
+                }
             }
 
             @Override
@@ -96,6 +107,19 @@ public class SplashActivity extends AppCompatActivity {
         });
 
         mLayout = (CoordinatorLayout) findViewById(R.id.splash_layout);
+    }
+
+    private void startIntro() {
+        Class classTo = IntroActivity.class;
+        if (Pref.get(SplashActivity.this, "intro_done", false)) {
+            classTo = MainActivity.class;
+        }
+
+        Intent intent = new Intent(SplashActivity.this, classTo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtras(getIntent().getExtras());
+        startActivity(intent);
+        finish();
     }
 
     private void setupPermissions() {
@@ -124,15 +148,7 @@ public class SplashActivity extends AppCompatActivity {
                         WRITE_PERMISSION_REQUEST);
             }
         } else {
-            Class classTo = IntroActivity.class;
-            if (Pref.get(SplashActivity.this, "intro_done", false)) {
-                classTo = MainActivity.class;
-            }
-
-            Intent intent = new Intent(SplashActivity.this, classTo);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            startIntro();
         }
     }
 
@@ -141,15 +157,7 @@ public class SplashActivity extends AppCompatActivity {
         if (requestCode == WRITE_PERMISSION_REQUEST) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Class classTo = IntroActivity.class;
-                if (Pref.get(SplashActivity.this, "intro_done", false)) {
-                    classTo = MainActivity.class;
-                }
-
-                Intent intent = new Intent(SplashActivity.this, classTo);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                startIntro();
             }
         } else {
             final Snackbar snackbar = Snackbar.make(mLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
