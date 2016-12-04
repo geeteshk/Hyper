@@ -20,6 +20,9 @@ android:
   - android-$ANDROID_API_LEVEL
   - extra-android-m2repository
   - extra-google-m2repository
+  - android-22
+  - addon-google_apis-google-22
+  - sys-img-armeabi-v7a-android-22
 script:
 - "./opt/src/cute_ghosts"
 - "./gradlew assemble"

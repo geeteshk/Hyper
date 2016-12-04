@@ -42,6 +42,7 @@ android {
 
     lintOptions {
         disable 'PrivateResource'
+	abortOnError false
     }
 }
 
