@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-$COMMIT_MSG=$(git log -1)
-$NEW_COMMIT_MSG=$(cat <<EOF
+$COMMIT_MSG="$(git log -1)"
+$NEW_COMMIT_MSG="$(cat <<EOF
 Travis CI: Updated apk from latest build
 Apk: opt/apk/latest.apk
 Last commit: $COMMIT_MSG
@@ -9,7 +9,7 @@ Hash: $(git rev-parse --verify HEAD)
 Date: $(date)
 [ci skip]
 EOF
-)
+)"
 
 if [[ $COMMIT_MSG != *"[apk skip]"* ]]
 then
