@@ -25,7 +25,7 @@ then
   cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
 
   git add -A
-  git commit -m $NEW_COMMIT_MSG
+  git commit -F- $NEW_COMMIT_MSG
 
   git branch apk-update
   git checkout master
