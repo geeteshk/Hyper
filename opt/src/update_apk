@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
 $COMMIT_MSG=$(git log -1)
-$COMMIT_HASH=$(git rev-parse --verify HEAD)
+$NEW_COMMIT_MSG=$(cat <<EOF
+Travis CI: Updated apk from latest build
+Apk: opt/apk/latest.apk
+Last commit: $COMMIT_MSG
+Hash: $(git rev-parse --verify HEAD)
+Date: $(date)
+[ci skip]
+EOF
+)
 
 if [[ $COMMIT_MSG != *"[apk skip]"* ]]
 then
@@ -17,14 +25,7 @@ then
   cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
 
   git add -A
-  git commit --signoff -F- <<EOF
-  Travis CI: Updated apk from latest build
-  Apk: opt/apk/latest.apk
-  Last commit: $COMMIT_MSG
-  Hash: $COMMIT_HASH
-  Date: $(date)
-  [ci skip]
-  EOF
+  git commit -m $NEW_COMMIT_MSG
 
   git branch apk-update
   git checkout master
