@@ -17,12 +17,15 @@
 package io.geeteshk.hyper.fragment;
 
 
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,7 @@ import java.io.File;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Constants;
+import io.geeteshk.hyper.helper.Decor;
 
 /**
  * Fragment to view image
@@ -60,6 +64,11 @@ public class ImageFragment extends Fragment {
         File file = new File(location);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
+            int padding = Decor.dpToPx(getActivity(), 48);
+            textView.setPadding(padding, padding, padding, padding);
+            textView.setGravity(Gravity.CENTER);
+            textView.setTypeface(Typeface.SERIF);
+            textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alert_error, 0, 0, 0);
             textView.setText(R.string.file_problem);
             return textView;
         }

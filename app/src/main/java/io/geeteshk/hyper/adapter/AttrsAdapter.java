@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.eclipse.jgit.util.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
@@ -18,6 +19,7 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -35,8 +37,19 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
     public AttrsAdapter(Context context, Element element) {
         this.context = context;
         this.element = element;
-        allAttributes = Arrays.asList(patternBuiltins.pattern().replace("(", "").replace(")", "").substring(2, patternBuiltins.pattern().length() - 2).split("\\|"));
+        allAttributes = new LinkedList<>(Arrays.asList(patternBuiltins.pattern().replace("(", "").replace(")", "").substring(2, patternBuiltins.pattern().length() - 2).split("\\|")));
         Collections.sort(allAttributes);
+        sortByPriority(allAttributes);
+    }
+
+    private void sortByPriority(List<String> attributes) {
+        for (int i = 0; i < attributes.size(); i++) {
+            String attribute = attributes.get(i);
+            if (!StringUtils.isEmptyOrNull(element.attr(attribute))) {
+                attributes.remove(attribute);
+                attributes.add(0, attribute);
+            }
+        }
     }
 
     @Override
