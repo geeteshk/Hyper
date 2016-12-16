@@ -1,7 +1,20 @@
 #!/usr/bin/env bash
 
 $COMMIT_MSG="$(git log -1)"
-$NEW_COMMIT_MSG="$(cat <<EOF
+
+if [[ $COMMIT_MSG != *"[apk skip]"* ]]
+then
+git config --global user.email "noreply@travis.com"
+git config --global user.name "Travis CI"
+
+git config credential.helper "store --file=.git/credentials"
+echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+
+mkdir -p opt/apk
+cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
+
+git add -A
+git commit -F- <<EOF
 Travis CI: Updated apk from latest build
 Apk: opt/apk/latest.apk
 Last commit: $COMMIT_MSG
@@ -9,28 +22,11 @@ Hash: $(git rev-parse --verify HEAD)
 Date: $(date)
 [ci skip]
 EOF
-)"
 
-if [[ $COMMIT_MSG != *"[apk skip]"* ]]
-then
-  git config --global user.email "noreply@travis.com"
-  git config --global user.name "Travis CI"
-
-  git config credential.helper "store --file=.git/credentials"
-  echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-  
-  git fetch
-
-  mkdir -p opt/apk
-  cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
-
-  git add -A
-  git commit -F- $NEW_COMMIT_MSG
-
-  git branch apk-update
-  git checkout master
-  git merge apk-update
-  git push origin master
+git branch apk-update
+git checkout master
+git merge apk-update
+git push origin master
 else
-  echo "[apk skip] found in commit message. Skipping APK upload."
+echo "[apk skip] found in commit message. Skipping APK upload."
 fi
