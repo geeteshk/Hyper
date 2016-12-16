@@ -13,13 +13,10 @@ echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 mkdir -p opt/apk
 cp -R app/build/outputs/apk/app-debug.apk opt/apk/latest.apk
 
-git add -A
+git add opt/apk/latest.apk
 git commit -F- <<EOF
 Travis CI: Updated apk from latest build
-Apk: opt/apk/latest.apk
-Last commit: $COMMIT_MSG
-Hash: $(git rev-parse --verify HEAD)
-Date: $(date)
+$COMMIT_MSG
 [ci skip]
 EOF
 
