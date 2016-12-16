@@ -1,5 +1,8 @@
 language: android
 jdk: oraclejdk8
+branches:
+  only:
+  - master
 env:
   matrix:
   - ANDROID_BUILD_TOOLS_VERSION=25.0.2 ANDROID_API_LEVEL=25
