@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-$COMMIT_MSG="$(git log -1)"
+COMMIT_MSG="$(git log -1)"
 
 if [[ $COMMIT_MSG != *"[apk skip]"* ]]
 then
