@@ -369,17 +369,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
-        Validator.removeBroken(mObjectsList);
-        for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
-            String string = (String) iterator.next();
-            if (!string.toLowerCase(Locale.getDefault()).startsWith(newText)) {
-                iterator.remove();
-            }
-        }
-
-        mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout);
-        mProjectsList.setAdapter(mProjectAdapter);
         return false;
     }
 
