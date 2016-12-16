@@ -117,7 +117,7 @@ public class SplashActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SplashActivity.this, classTo);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtras(getIntent().getExtras());
+        intent.putExtra("isAppetize", isAppetize);
         startActivity(intent);
         finish();
     }
