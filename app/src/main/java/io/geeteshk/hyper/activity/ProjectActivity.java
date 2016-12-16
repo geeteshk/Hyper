@@ -482,10 +482,11 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_commit:
                 AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.input_text);
                 gitCommitBuilder.setTitle(R.string.git_commit);
-                final EditText editText4 = new EditText(this);
-                editText4.setHint(R.string.commit_message);
-                gitCommitBuilder.setView(editText4);
+                editText.setHint(R.string.commit_message);
+                gitCommitBuilder.setView(view);
                 gitCommitBuilder.setCancelable(false);
                 gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
                     @Override
@@ -504,11 +505,11 @@ public class ProjectActivity extends AppCompatActivity {
                 dialog4.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!editText4.getText().toString().isEmpty()) {
-                            Giiit.commit(ProjectActivity.this, mDrawerLayout, mProjectFile, editText4.getText().toString());
+                        if (!editText.getText().toString().isEmpty()) {
+                            Giiit.commit(ProjectActivity.this, mDrawerLayout, mProjectFile, editText.getText().toString());
                             dialog4.dismiss();
                         } else {
-                            editText4.setError(getString(R.string.commit_message_empty));
+                            editText.setError(getString(R.string.commit_message_empty));
                         }
                     }
                 });
@@ -647,15 +648,12 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_new:
                 AlertDialog.Builder gitBranch = new AlertDialog.Builder(ProjectActivity.this);
+                View branchView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_git_branch, null, false);
                 gitBranch.setTitle("New branch");
-                final EditText editText5 = new EditText(this);
-                editText5.setHint("Branch name");
-                LinearLayout layout = new LinearLayout(this);
-                final CheckBox checkBox = new CheckBox(this);
+                final EditText editText5 = (EditText) branchView.findViewById(R.id.branch_name);
+                final CheckBox checkBox = (CheckBox) branchView.findViewById(R.id.checkout);
                 checkBox.setText(R.string.checkout);
-                layout.addView(editText5);
-                layout.addView(checkBox);
-                gitBranch.setView(layout);
+                gitBranch.setView(branchView);
                 gitBranch.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -776,7 +774,7 @@ public class ProjectActivity extends AppCompatActivity {
                     View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
                     final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.input_text);
                     editText.setHint(R.string.file_name);
-                    builder.setView(editText);
+                    builder.setView(view);
                     builder.setCancelable(false);
                     builder.setPositiveButton(R.string.import_not_java, null);
                     builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

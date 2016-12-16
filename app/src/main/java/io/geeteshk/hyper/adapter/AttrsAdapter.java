@@ -2,6 +2,7 @@ package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.ProjectActivity;
 
 public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder> {
 
@@ -52,13 +54,14 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                View attrsView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                final TextInputEditText editText = (TextInputEditText) attrsView.findViewById(R.id.input_text);
                 builder.setTitle(allAttributes.get(newPos));
-                final EditText editText = new EditText(context);
                 editText.setHint("Value");
                 editText.setSingleLine(true);
                 editText.setMaxLines(1);
                 editText.setText(element.attr(allAttributes.get(newPos)));
-                builder.setView(editText);
+                builder.setView(attrsView);
                 builder.setPositiveButton("SET", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

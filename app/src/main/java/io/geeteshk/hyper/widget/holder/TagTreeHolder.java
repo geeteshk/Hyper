@@ -38,6 +38,7 @@ import com.unnamed.b.atv.model.TreeNode;
 import org.jsoup.nodes.Element;
 
 import io.geeteshk.hyper.R;
+import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.adapter.AttrsAdapter;
 import io.geeteshk.hyper.text.HtmlCompat;
 
@@ -51,7 +52,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
 
     @Override
     public View createNodeView(final TreeNode node, final TagTreeItem value) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_element, null, false);
         TextView tagName = (TextView) view.findViewById(R.id.element_name);
         arrow = (ImageView) view.findViewById(R.id.element_arrow);
@@ -88,7 +89,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                             case R.id.action_tag_add:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setTitle("Add to " + value.element.tagName());
-                                View rootView = LayoutInflater.from(context).inflate(R.layout.dialog_element_add, null, false);
+                                View rootView = inflater.inflate(R.layout.dialog_element_add, null, false);
                                 final TextInputEditText nameText = (TextInputEditText) rootView.findViewById(R.id.element_name_text);
                                 final TextInputEditText textText = (TextInputEditText) rootView.findViewById(R.id.element_text_text);
                                 builder.setView(rootView);
@@ -116,7 +117,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 return true;
                             case R.id.action_tag_edit:
                                 final Element element = value.element;
-                                View rootView2 = LayoutInflater.from(context).inflate(R.layout.dialog_element_info, null, false);
+                                View rootView2 = inflater.inflate(R.layout.dialog_element_info, null, false);
                                 RecyclerView elementAttrs = (RecyclerView) rootView2.findViewById(R.id.element_attrs);
                                 AttrsAdapter adapter = new AttrsAdapter(context, element);
                                 LinearLayoutManager manager = new LinearLayoutManager(context);
@@ -133,13 +134,14 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                     @Override
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
+                                        final TextInputEditText editText = (TextInputEditText) viewElement.findViewById(R.id.input_text);
                                         builder.setTitle("Change element tag");
-                                        final EditText editText = new EditText(context);
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
                                         editText.setMaxLines(1);
                                         editText.setText(element.tagName());
-                                        builder.setView(editText);
+                                        builder.setView(viewElement);
                                         builder.setPositiveButton("CHANGE", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -173,13 +175,14 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                     @Override
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
+                                        final TextInputEditText editText = (TextInputEditText) viewElement.findViewById(R.id.input_text);
                                         builder.setTitle("Change element text");
-                                        final EditText editText = new EditText(context);
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
                                         editText.setMaxLines(1);
                                         editText.setText(element.ownText());
-                                        builder.setView(editText);
+                                        builder.setView(viewElement);
                                         builder.setPositiveButton("CHANGE", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {

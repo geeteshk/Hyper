@@ -72,6 +72,10 @@ public class ViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setTitle(mFile.getName());
+        getSupportActionBar().setSubtitle(mFile.getPath().substring(mFile.getPath().indexOf("Hyper/") + 6));
+
         viewLayout = (LinearLayout) findViewById(R.id.view_layout);
         AndroidTreeView treeView = new AndroidTreeView(ViewActivity.this, rootNode);
         treeView.setDefaultAnimation(true);
@@ -132,6 +136,7 @@ public class ViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewActivity.this);
         builder.setTitle("Save changes?");
+        builder.setMessage("This will append any changes to the html file.");
         builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
