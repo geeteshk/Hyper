@@ -80,7 +80,7 @@ public class Editor extends MultiAutoCompleteTextView {
     /**
      * Delay used to update code
      */
-    public int mUpdateDelay = 1000;
+    public int mUpdateDelay = 2000;
 
     int mLine = 0;
     int mLineDiff = 0;
@@ -167,7 +167,6 @@ public class Editor extends MultiAutoCompleteTextView {
     private void init() {
         mColors = new Colors(!Pref.get(mContext, "dark_theme_editor", false));
         mPatterns = new Patterns();
-        mUpdateDelay = 1000 * (Pref.get(mContext, "auto_save_freq", 1) + 1);
         mRect = new Rect();
         mLineNumbers = Pref.get(mContext, "show_line_numbers", true);
 

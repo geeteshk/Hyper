@@ -3,6 +3,8 @@ package io.geeteshk.hyper.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -11,8 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.pavelsikun.seekbarpreference.SeekBarPreference;
 
 import org.apache.commons.io.FileUtils;
 
@@ -58,15 +58,6 @@ public class SettingsFragment extends PreferenceFragment {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
                 Pref.store(getActivity(), "dark_theme_editor", (boolean) o);
-                return true;
-            }
-        });
-
-        SeekBarPreference autoSaveFreq = (SeekBarPreference) getPreferenceManager().findPreference("auto_save_freq");
-        autoSaveFreq.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-                Pref.store(getActivity(), "auto_save_freq", ((SeekBarPreference) preference).getCurrentValue());
                 return true;
             }
         });

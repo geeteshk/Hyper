@@ -64,11 +64,6 @@
         <license>MIT License</license>
     </notice>
     <notice>
-        <name>MaterialSeekBarPreference</name>
-        <url>https://github.com/MrBIMC/MaterialSeekBarPreference</url>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
         <name>LicensesDialog</name>
         <url>https://github.com/PSDev/LicensesDialog</url>
         <copyright>Copyright 2013-2016 Philip Schiffer</copyright>

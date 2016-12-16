@@ -35,8 +35,6 @@
     <string name="about_project">About</string>
 
     <string name="permission_storage_rationale">Storage permission is needed to create and edit projects.</string>
-    <string name="auto_save_freq">AutoSave Frequency</string>
-    <string name="auto_save_freq_desc">Choose how long to wait before saving a file.</string>
     <string name="open_in_web_browser">Web Browser</string>
     <string name="run_project">Run</string>
 

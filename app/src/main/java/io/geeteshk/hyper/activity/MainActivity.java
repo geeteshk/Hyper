@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -143,9 +144,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Validator.removeBroken(mObjectsList);
         mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout);
         mProjectsList = (RecyclerView) findViewById(R.id.project_list);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        boolean orientation = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        int numColumns = 2;
+        if (isTablet) {
+            if (orientation) {
+                numColumns = 6;
+            } else {
+                numColumns = 4;
+            }
+        } else {
+            if (orientation) {
+                numColumns = 3;
+            }
+        }
+
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         mProjectsList.setLayoutManager(layoutManager);
-        mProjectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(2, Decor.dpToPx(this, 2), true));
+        mProjectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(numColumns, Decor.dpToPx(this, 2), true));
         mProjectsList.setItemAnimator(new DefaultItemAnimator());
         mProjectsList.setAdapter(mProjectAdapter);
 
