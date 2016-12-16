@@ -17,6 +17,7 @@ git add opt/apk/latest.apk
 git commit -F- <<EOF
 Travis CI: Updated apk from latest build
 $COMMIT_MSG
+
 [ci skip]
 EOF
 
