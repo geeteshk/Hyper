@@ -63,6 +63,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
@@ -186,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 final TextInputLayout descriptionLayout = (TextInputLayout) rootView.findViewById(R.id.description_layout);
                                 final TextInputLayout keywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
 
+                                final Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.type_spinner);
+                                typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, Project.TYPES));
+                                typeSpinner.setSelection(Pref.get(MainActivity.this, "type", 0));
+
                                 RadioButton defaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
                                 RadioButton chooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
                                 mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
@@ -237,8 +242,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
                                             Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
+                                            Pref.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
 
-                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout);
+                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout, typeSpinner.getSelectedItemPosition());
                                             dialog1.dismiss();
                                         }
                                     }

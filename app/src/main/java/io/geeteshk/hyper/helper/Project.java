@@ -44,6 +44,8 @@ import io.geeteshk.hyper.adapter.ProjectAdapter;
  */
 public class Project {
 
+    public static final String[] TYPES = {"Default"};
+
     /**
      * HTML BareBones Template
      */
@@ -90,7 +92,7 @@ public class Project {
      * @param keywords    about project
      * @param stream      used for importing favicon
      */
-    public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream, ProjectAdapter adapter, View view) {
+    public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream, ProjectAdapter adapter, View view, int type) {
         String[] projects = new File(Constants.HYPER_ROOT).list();
 
         if (projects != null && Arrays.asList(projects).contains(name)) {
@@ -98,6 +100,22 @@ public class Project {
             return;
         }
 
+        boolean status = false;
+        switch (type) {
+            case 0:
+                status = generateDefault(context, name, author, description, keywords, stream, view, type);
+                break;
+        }
+
+        if (status) {
+            adapter.add(name);
+            Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private static boolean generateDefault(Context context, String name, String author, String description, String keywords, InputStream stream, View view, int type) {
         File projectFile = new File(Constants.HYPER_ROOT + File.separator + name);
         File cssFile = new File(projectFile, "css");
         File jsFile = new File(projectFile, "js");
@@ -113,7 +131,7 @@ public class Project {
             FileUtils.writeStringToFile(new File(projectFile, "index.html"), getIndex(name, author, description, keywords), Charset.defaultCharset());
             FileUtils.writeStringToFile(new File(cssFile, "style.css"), STYLE, Charset.defaultCharset());
             FileUtils.writeStringToFile(new File(jsFile, "main.js"), MAIN, Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(projectFile, ".hyperProps"), Jason.createProjectFile(name, author, description, keywords), Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(projectFile, ".hyperProps"), Jason.createProjectFile(name, author, description, keywords, type), Charset.defaultCharset());
 
             // Copy icon
             if (stream == null) {
@@ -123,12 +141,10 @@ public class Project {
             }
         } catch (IOException e) {
             Log.e(TAG, e.toString());
-            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        adapter.add(name);
-        Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
+        return true;
     }
 
     private static String getIndex(String name, String author, String description, String keywords) {
@@ -147,7 +163,8 @@ public class Project {
                 && Jason.getProjectProperty(string, "name") != null
                 && Jason.getProjectProperty(string, "author") != null
                 && Jason.getProjectProperty(string, "description") != null
-                && Jason.getProjectProperty(string, "keywords") != null;
+                && Jason.getProjectProperty(string, "keywords") != null
+                && Jason.getProjectProperty(string, "type") != null;
     }
 
     /**

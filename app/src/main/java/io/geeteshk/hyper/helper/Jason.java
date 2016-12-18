@@ -48,13 +48,14 @@ public class Jason {
      * @param keywords    about the project
      * @return true if successful
      */
-    static String createProjectFile(String name, String author, String description, String keywords) {
+    static String createProjectFile(String name, String author, String description, String keywords, int type) {
         JSONObject object = new JSONObject();
         try {
             object.put("name", name);
             object.put("author", author);
             object.put("description", description);
             object.put("keywords", keywords);
+            object.put("type", type);
             return object.toString(4);
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
