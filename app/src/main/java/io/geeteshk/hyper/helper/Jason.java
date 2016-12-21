@@ -107,4 +107,16 @@ public class Jason {
 
         return "";
     }
+
+    public static int getProjectPropertyInt(String name, String prop) {
+        try {
+            String json = getProjectJSON(name);
+            JSONObject object = new JSONObject(json);
+            return object.getInt(prop);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return -1;
+    }
 }

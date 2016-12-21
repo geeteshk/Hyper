@@ -93,22 +93,22 @@ public class Project {
      * @param stream      used for importing favicon
      */
     public static void generate(Context context, String name, String author, String description, String keywords, InputStream stream, ProjectAdapter adapter, View view, int type) {
-        String[] projects = new File(Constants.HYPER_ROOT).list();
-
-        if (projects != null && Arrays.asList(projects).contains(name)) {
-            Snackbar.make(view, name + " " + context.getString(R.string.already_exists) + ".", Snackbar.LENGTH_SHORT).show();
-            return;
+        String nameNew = name;
+        int counter = 1;
+        while (new File(Constants.HYPER_ROOT + File.separator + nameNew).exists()) {
+            nameNew = name + "(" + counter + ")";
+            counter++;
         }
 
         boolean status = false;
         switch (type) {
             case 0:
-                status = generateDefault(context, name, author, description, keywords, stream, view, type);
+                status = generateDefault(context, nameNew, author, description, keywords, stream, view, type);
                 break;
         }
 
         if (status) {
-            adapter.add(name);
+            adapter.insert(nameNew);
             Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
@@ -147,6 +147,36 @@ public class Project {
         return true;
     }
 
+    public static void _import(String fileStr, String name, String author, String description, String keywords, int type, ProjectAdapter adapter, View view) {
+        File file = new File(fileStr);
+        String nameNew = file.getName();
+        int counter = 1;
+        while (new File(Constants.HYPER_ROOT + File.separator + nameNew).exists()) {
+            nameNew = file.getName() + "(" + counter + ")";
+            counter++;
+        }
+
+        File outFile = new File(Constants.HYPER_ROOT + File.separator + nameNew);
+        try {
+            FileUtils.forceMkdir(outFile);
+            FileUtils.copyDirectory(file, outFile);
+            if (!new File(outFile, ".hyperProps").exists()) {
+                FileUtils.writeStringToFile(new File(outFile, ".hyperProps"), Jason.createProjectFile(nameNew, author, description, keywords, type), Charset.defaultCharset());
+            }
+
+            if (!new File(outFile, "index.html").exists()) {
+                FileUtils.writeStringToFile(new File(outFile, "index.html"), getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
+            }
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        adapter.insert(nameNew);
+        Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
+    }
+
     private static String getIndex(String name, String author, String description, String keywords) {
         return INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords);
     }
@@ -164,7 +194,7 @@ public class Project {
                 && Jason.getProjectProperty(string, "author") != null
                 && Jason.getProjectProperty(string, "description") != null
                 && Jason.getProjectProperty(string, "keywords") != null
-                && Jason.getProjectProperty(string, "type") != null;
+                && Jason.getProjectPropertyInt(string, "type") != -1;
     }
 
     /**

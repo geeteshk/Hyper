@@ -19,6 +19,7 @@ package io.geeteshk.hyper.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -57,22 +58,26 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
     private CoordinatorLayout mLayout;
 
+    private RecyclerView mRecyclerView;
+
     /**
      * public Constructor
      *
      * @param context loading files and inflating etc
      * @param objects objects to fill list
      */
-    public ProjectAdapter(Context context, ArrayList<String> objects, CoordinatorLayout layout) {
+    public ProjectAdapter(Context context, ArrayList<String> objects, CoordinatorLayout layout, RecyclerView recyclerView) {
         this.mContext = context;
         this.mObjects = objects;
         this.mLayout = layout;
+        this.mRecyclerView = recyclerView;
     }
 
-    public void add(String project) {
-        int end = mObjects.size() > 0 ? mObjects.size() - 1 : 0;
-        mObjects.add(end, project);
-        notifyItemInserted(end);
+    public void insert(String project) {
+        mObjects.add(project);
+        int position = mObjects.indexOf(project);
+        notifyItemInserted(position);
+        mRecyclerView.scrollToPosition(position);
     }
 
     public void remove(int position) {
@@ -103,17 +108,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final int newPos = holder.getAdapterPosition();
-
-        holder.mTitle.setText(Jason.getProjectProperty(mObjects.get(position), "name"));
-        holder.mDescription.setText(Jason.getProjectProperty(mObjects.get(position), "description"));
-        holder.mFavicon.setImageBitmap(Project.getFavicon(mObjects.get(position)));
+        holder.setTitle(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "name"));
+        holder.setDescription(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "description"));
+        holder.setIcon(Project.getFavicon(mObjects.get(holder.getAdapterPosition())));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects.get(newPos));
+                intent.putExtra("project", mObjects.get(holder.getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -128,7 +131,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects.get(newPos));
+                intent.putExtra("project", mObjects.get(holder.getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -143,14 +146,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(newPos) + "?");
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(holder.getAdapterPosition()) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String project = mObjects.get(newPos);
+                        String project = mObjects.get(holder.getAdapterPosition());
                         Project.deleteProject(project);
-                        remove(newPos);
+                        remove(holder.getAdapterPosition());
 
                         Snackbar.make(
                                 mLayout,
@@ -171,14 +174,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(newPos) + "?");
+                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(holder.getAdapterPosition()) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String project = mObjects.get(newPos);
+                        String project = mObjects.get(holder.getAdapterPosition());
                         Project.deleteProject(project);
-                        remove(newPos);
+                        remove(holder.getAdapterPosition());
 
                         Snackbar.make(
                                 mLayout,
@@ -230,6 +233,18 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             mDescription = (TextView) view.findViewById(R.id.desc);
             mFavicon = (ImageView) view.findViewById(R.id.favicon);
             mLayout = (LinearLayout) view.findViewById(R.id.project_layout);
+        }
+
+        public void setTitle(String title) {
+            mTitle.setText(title);
+        }
+
+        public void setDescription(String description) {
+            mDescription.setText(description);
+        }
+
+        public void setIcon(Bitmap bitmap) {
+            mFavicon.setImageBitmap(bitmap);
         }
     }
 }

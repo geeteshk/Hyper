@@ -86,7 +86,7 @@ public class CloneTask extends GitTask {
             if (!Project.isValid(mRepo.getName())) {
                 mBuilder.setContentText("The repo was successfully cloned but it doesn't seem to be a Hyper project.");
             } else {
-                mAdapter.add(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/") + 1, mRepo.getPath().length()));
+                mAdapter.insert(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/") + 1, mRepo.getPath().length()));
                 mBuilder.setContentText("Successfully cloned.");
             }
         } else {
