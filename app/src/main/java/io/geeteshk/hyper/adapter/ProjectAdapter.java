@@ -110,7 +110,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         holder.setTitle(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "name"));
         holder.setDescription(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "description"));
-        holder.setIcon(Project.getFavicon(mObjects.get(holder.getAdapterPosition())));
+        holder.setIcon(Project.getFavicon(mContext, mObjects.get(holder.getAdapterPosition())));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -289,12 +289,12 @@ public class ProjectActivity extends AppCompatActivity {
         TextView headerDesc = (TextView) findViewById(R.id.header_desc);
 
         headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(int) (Math.random() * 8)]);
-        headerIcon.setImageBitmap(Project.getFavicon(mProject));
+        headerIcon.setImageBitmap(Project.getFavicon(ProjectActivity.this, mProject));
         headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
         headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(mProject));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(ProjectActivity.this, mProject));
             this.setTaskDescription(description);
         }
     }

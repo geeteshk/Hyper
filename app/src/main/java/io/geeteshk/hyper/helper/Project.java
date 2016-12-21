@@ -26,6 +26,10 @@ import android.util.Log;
 import android.view.View;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +39,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
@@ -180,17 +185,28 @@ public class Project {
         return true;
     }
 
+    private static File getFaviconFile(File dir) {
+        IOFileFilter filter = new NameFileFilter("favicon.ico", IOCase.INSENSITIVE);
+        Iterator<File> iterator = FileUtils.iterateFiles(dir, filter, DirectoryFileFilter.DIRECTORY);
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+
+        return null;
+    }
+
     /**
      * Method to get Favicon as Bitmap
      *
      * @param name of project
      * @return bitmap object of favicon
      */
-    public static Bitmap getFavicon(String name) {
-        if (new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico").exists()) {
-            return BitmapFactory.decodeFile(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico");
+    public static Bitmap getFavicon(Context context, String name) {
+        File faviconFile = getFaviconFile(new File(Constants.HYPER_ROOT + File.separator + name));
+        if (faviconFile != null) {
+            return BitmapFactory.decodeFile(faviconFile.getPath());
         } else {
-            return Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
         }
     }
 
