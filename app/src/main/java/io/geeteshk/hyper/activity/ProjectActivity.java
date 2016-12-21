@@ -75,9 +75,9 @@ import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.git.Giiit;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Pref;
 import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Soup;
 import io.geeteshk.hyper.helper.Theme;
 import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.holder.FileTreeHolder;
@@ -130,6 +130,9 @@ public class ProjectActivity extends AppCompatActivity {
             R.drawable.material_bg_8
     };
 
+    private String[] mProperties;
+    private TextView headerTitle, headerDesc;
+
     /**
      * Method called when activity is created
      *
@@ -149,6 +152,8 @@ public class ProjectActivity extends AppCompatActivity {
             mFiles = new ArrayList<>();
             mFiles.add(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
         }
+
+        mProperties = Soup.getProperties(mProject);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
@@ -182,6 +187,30 @@ public class ProjectActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                mProperties = Soup.getProperties(mProject);
+                headerTitle.setText(mProperties[0]);
+                headerDesc.setText(mProperties[1]);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         LinearLayout fileBrowser = (LinearLayout) findViewById(R.id.file_browser);
@@ -285,13 +314,13 @@ public class ProjectActivity extends AppCompatActivity {
         fileBrowser.addView(treeView.getView());
         RelativeLayout headerBackground = (RelativeLayout) findViewById(R.id.header_background);
         ImageView headerIcon = (ImageView) findViewById(R.id.header_icon);
-        TextView headerTitle = (TextView) findViewById(R.id.header_title);
-        TextView headerDesc = (TextView) findViewById(R.id.header_desc);
+        headerTitle = (TextView) findViewById(R.id.header_title);
+        headerDesc = (TextView) findViewById(R.id.header_desc);
 
         headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(int) (Math.random() * 8)]);
         headerIcon.setImageBitmap(Project.getFavicon(ProjectActivity.this, mProject));
-        headerTitle.setText(Jason.getProjectProperty(mProject, "name"));
-        headerDesc.setText(Jason.getProjectProperty(mProject, "description"));
+        headerTitle.setText(mProperties[0]);
+        headerDesc.setText(mProperties[1]);
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(ProjectActivity.this, mProject));
@@ -825,6 +854,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
+        mProperties = Soup.getProperties(mProject);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.sheet_about, null);
 
@@ -833,10 +863,10 @@ public class ProjectActivity extends AppCompatActivity {
         TextView description = (TextView) layout.findViewById(R.id.project_description);
         TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
 
-        name.setText(Jason.getProjectProperty(mProject, "name"));
-        author.setText(Jason.getProjectProperty(mProject, "author"));
-        description.setText(Jason.getProjectProperty(mProject, "description"));
-        keywords.setText(Jason.getProjectProperty(mProject, "keywords"));
+        name.setText(mProperties[0]);
+        author.setText(mProperties[1]);
+        description.setText(mProperties[2]);
+        keywords.setText(mProperties[3]);
 
         if (Pref.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);

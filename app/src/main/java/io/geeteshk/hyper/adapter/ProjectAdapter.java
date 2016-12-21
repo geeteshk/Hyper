@@ -38,8 +38,8 @@ import java.util.Collections;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.helper.Jason;
 import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.Soup;
 
 /**
  * Adapter to list all projects
@@ -108,8 +108,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        holder.setTitle(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "name"));
-        holder.setDescription(Jason.getProjectProperty(mObjects.get(holder.getAdapterPosition()), "description"));
+        String[] properties = Soup.getProperties(mObjects.get(holder.getAdapterPosition()));
+        holder.setTitle(properties[0]);
+        holder.setDescription(properties[2]);
         holder.setIcon(Project.getFavicon(mContext, mObjects.get(holder.getAdapterPosition())));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {

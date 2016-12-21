@@ -105,7 +105,6 @@ public class Project {
             FileUtils.writeStringToFile(new File(projectFile, "index.html"), Files.Default.getIndex(name, author, description, keywords), Charset.defaultCharset());
             FileUtils.writeStringToFile(new File(cssFile, "style.css"), Files.Default.STYLE, Charset.defaultCharset());
             FileUtils.writeStringToFile(new File(jsFile, "main.js"), Files.Default.MAIN, Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(projectFile, ".hyperProps"), Jason.createProjectFile(name, author, description, keywords, type), Charset.defaultCharset());
 
             // Copy icon
             if (stream == null) {
@@ -134,10 +133,6 @@ public class Project {
         try {
             FileUtils.forceMkdir(outFile);
             FileUtils.copyDirectory(file, outFile);
-            if (!new File(outFile, ".hyperProps").exists()) {
-                FileUtils.writeStringToFile(new File(outFile, ".hyperProps"), Jason.createProjectFile(nameNew, author, description, keywords, type), Charset.defaultCharset());
-            }
-
             if (!new File(outFile, "index.html").exists()) {
                 FileUtils.writeStringToFile(new File(outFile, "index.html"), Files.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
             }
@@ -158,13 +153,7 @@ public class Project {
      * @return true if project is valid
      */
     public static boolean isValid(String string) {
-        return new File(Constants.HYPER_ROOT + File.separator + string + File.separator + ".hyperProps").exists()
-                && new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "index.html").exists()
-                && Jason.getProjectProperty(string, "name") != null
-                && Jason.getProjectProperty(string, "author") != null
-                && Jason.getProjectProperty(string, "description") != null
-                && Jason.getProjectProperty(string, "keywords") != null
-                && Jason.getProjectPropertyInt(string, "type") != -1;
+        return new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "index.html").exists();
     }
 
     /**
