@@ -47,37 +47,6 @@ public class Project {
     public static final String[] TYPES = {"Default"};
 
     /**
-     * HTML BareBones Template
-     */
-    private static final String INDEX = "<!doctype html>\n" +
-            "<html>\n" +
-            "  <head>\n" +
-            "    <meta charset=\"UTF-8\">\n" +
-            "    <title>@name</title>\n" +
-            "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-            "    <meta name=\"author\" content=\"@author\">\n" +
-            "    <meta name=\"description\" content=\"@description\">\n" +
-            "    <meta name=\"keywords\" content=\"@keywords\">\n" +
-            "    <link rel=\"shortcut icon\" href=\"images/favicon.ico\" type=\"image/vnd.microsoft.icon\">\n" +
-            "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" +
-            "  </head>\n" +
-            "  <body>\n" +
-            "    <h1>Hello World!</h1>\n" +
-            "    <script src=\"js/main.js\"></script>\n" +
-            "  </body>\n" +
-            "</html>";
-
-    /**
-     * Empty Style
-     */
-    private static final String STYLE = "/* Add all your styles here */";
-
-    /**
-     * Empty Script
-     */
-    private static final String MAIN = "// Add all your JS here";
-
-    /**
      * Log TAG
      */
     private static final String TAG = Project.class.getSimpleName();
@@ -103,7 +72,7 @@ public class Project {
         boolean status = false;
         switch (type) {
             case 0:
-                status = generateDefault(context, nameNew, author, description, keywords, stream, view, type);
+                status = generateDefault(context, nameNew, author, description, keywords, stream, type);
                 break;
         }
 
@@ -115,7 +84,7 @@ public class Project {
         }
     }
 
-    private static boolean generateDefault(Context context, String name, String author, String description, String keywords, InputStream stream, View view, int type) {
+    private static boolean generateDefault(Context context, String name, String author, String description, String keywords, InputStream stream, int type) {
         File projectFile = new File(Constants.HYPER_ROOT + File.separator + name);
         File cssFile = new File(projectFile, "css");
         File jsFile = new File(projectFile, "js");
@@ -128,9 +97,9 @@ public class Project {
             FileUtils.forceMkdir(jsFile);
 
             // Create necessary files
-            FileUtils.writeStringToFile(new File(projectFile, "index.html"), getIndex(name, author, description, keywords), Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(cssFile, "style.css"), STYLE, Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(jsFile, "main.js"), MAIN, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(projectFile, "index.html"), Files.Default.getIndex(name, author, description, keywords), Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(cssFile, "style.css"), Files.Default.STYLE, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(jsFile, "main.js"), Files.Default.MAIN, Charset.defaultCharset());
             FileUtils.writeStringToFile(new File(projectFile, ".hyperProps"), Jason.createProjectFile(name, author, description, keywords, type), Charset.defaultCharset());
 
             // Copy icon
@@ -149,7 +118,7 @@ public class Project {
 
     public static void _import(String fileStr, String name, String author, String description, String keywords, int type, ProjectAdapter adapter, View view) {
         File file = new File(fileStr);
-        String nameNew = file.getName();
+        String nameNew = name;
         int counter = 1;
         while (new File(Constants.HYPER_ROOT + File.separator + nameNew).exists()) {
             nameNew = file.getName() + "(" + counter + ")";
@@ -165,7 +134,7 @@ public class Project {
             }
 
             if (!new File(outFile, "index.html").exists()) {
-                FileUtils.writeStringToFile(new File(outFile, "index.html"), getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
+                FileUtils.writeStringToFile(new File(outFile, "index.html"), Files.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
             }
         } catch (IOException e) {
             Log.e(TAG, e.toString());
@@ -175,10 +144,6 @@ public class Project {
 
         adapter.insert(nameNew);
         Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show();
-    }
-
-    private static String getIndex(String name, String author, String description, String keywords) {
-        return INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords);
     }
 
     /**
