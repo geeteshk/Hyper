@@ -81,12 +81,11 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                 if (file.isFile()) {
                     menu.getMenu().findItem(R.id.action_new).setVisible(false);
                     menu.getMenu().findItem(R.id.action_paste).setVisible(false);
+                    if (file.getName().equals("index.html")) {
+                        menu.getMenu().findItem(R.id.action_rename).setVisible(false);
+                    }
                 } else {
                     menu.getMenu().findItem(R.id.action_paste).setEnabled(Clippy.getInstance().getCurrentFile() != null);
-                }
-
-                if (file.getName().equals("index.html") && file.isFile()) {
-                    menu.getMenu().findItem(R.id.action_rename).setVisible(false);
                 }
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

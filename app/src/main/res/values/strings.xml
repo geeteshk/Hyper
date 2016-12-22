@@ -79,10 +79,8 @@
     <string name="change_undone">This change cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-    <string name="already_exists">already exists</string>
     <string name="project_success">Your project has been successfully created!</string>
     <string name="project_fail">It seems something went wrong while creating the project.</string>
-    <string name="cannot_delete">Cannot delete</string>
     <string name="name_error">Please enter a name</string>
     <string name="author_error">Please enter an author</string>
     <string name="desc_error">Please enter a description</string>
@@ -98,8 +96,6 @@
     <string name="name">Name</string>
     <string name="from_line">\t— From line\t</string>
     <string name="of">\tof\t</string>
-    <string name="file_ending_warn_title">Show File Ending Warning</string>
-    <string name="file_ending_warn_desc">Show small warning while creating and importing project files.</string>
     <string name="loading">Loading...</string>
     <string name="remove">Remove</string>
     <string name="git">Git</string>
@@ -139,7 +135,6 @@
     <string name="repo_init">"Initialized repository at: "</string>
     <string name="folder_exists">The folder already exists.</string>
     <string name="remote_error">Please enter a remote</string>
-    <string name="label_misc">Miscellaneous</string>
     <string name="label_legal">Legal</string>
     <string name="notices">Notices</string>
     <string name="file_name">File name</string>
