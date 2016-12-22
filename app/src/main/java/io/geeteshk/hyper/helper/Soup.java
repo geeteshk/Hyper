@@ -16,7 +16,7 @@ public class Soup {
 
     private static Document getSoup(String name) {
         try {
-            return Jsoup.parse(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "index.html"), "UTF-8");
+            return Jsoup.parse(Project.getIndexFile(name), "UTF-8");
         } catch (IOException e) {
             Log.e(TAG, e.toString());
             return null;

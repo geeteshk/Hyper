@@ -73,7 +73,10 @@ public class Hyperion extends NanoHTTPD {
         String mimeType = getMimeType(uri);
 
         if (uri.equals("/")) {
-            uri = "/index.html";
+            File indexFile = Project.getIndexFile(mProject);
+            String indexStr = indexFile.getPath();
+            indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + mProject).getPath(), "");
+            uri = File.separator + indexStr;
         }
 
         InputStream inputStream = null;

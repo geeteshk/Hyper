@@ -114,7 +114,7 @@ public class ProjectActivity extends AppCompatActivity {
      * Project definitions
      */
     private String mProject;
-    private File mProjectFile;
+    private File mProjectFile, mIndexFile;
 
     private TreeNode rootNode;
     private AndroidTreeView treeView;
@@ -142,6 +142,8 @@ public class ProjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
+        mIndexFile = Project.getIndexFile(mProject);
+
         setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
@@ -150,7 +152,7 @@ public class ProjectActivity extends AppCompatActivity {
             mFiles = getIntent().getStringArrayListExtra("files");
         } else {
             mFiles = new ArrayList<>();
-            mFiles.add(Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
+            mFiles.add(mIndexFile.getPath());
         }
 
         mProperties = Soup.getProperties(mProject);
@@ -484,7 +486,7 @@ public class ProjectActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
-                runIntent.putExtra("url", "file:///" + Constants.HYPER_ROOT + File.separator + mProject + File.separator + "index.html");
+                runIntent.putExtra("url", "file:///" + mIndexFile.getPath());
                 runIntent.putExtra("name", mProject);
                 startActivity(runIntent);
                 return true;

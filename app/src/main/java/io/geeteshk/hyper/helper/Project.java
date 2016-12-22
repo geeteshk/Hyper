@@ -153,7 +153,7 @@ public class Project {
      * @return true if project is valid
      */
     public static boolean isValid(String string) {
-        return new File(Constants.HYPER_ROOT + File.separator + string + File.separator + "index.html").exists();
+        return getIndexFile(string) != null;
     }
 
     /**
@@ -177,6 +177,16 @@ public class Project {
     private static File getFaviconFile(File dir) {
         IOFileFilter filter = new NameFileFilter("favicon.ico", IOCase.INSENSITIVE);
         Iterator<File> iterator = FileUtils.iterateFiles(dir, filter, DirectoryFileFilter.DIRECTORY);
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+
+        return null;
+    }
+
+    public static File getIndexFile(String project) {
+        IOFileFilter filter = new NameFileFilter("index.html", IOCase.INSENSITIVE);
+        Iterator<File> iterator = FileUtils.iterateFiles(new File(Constants.HYPER_ROOT + File.separator + project), filter, DirectoryFileFilter.DIRECTORY);
         if (iterator.hasNext()) {
             return iterator.next();
         }

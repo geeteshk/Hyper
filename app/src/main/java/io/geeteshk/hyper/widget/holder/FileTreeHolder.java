@@ -86,7 +86,6 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                 }
 
                 if (file.getName().equals("index.html") && file.isFile()) {
-                    menu.getMenu().findItem(R.id.action_cut).setVisible(false);
                     menu.getMenu().findItem(R.id.action_rename).setVisible(false);
                 }
 

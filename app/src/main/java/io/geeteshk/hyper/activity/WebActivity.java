@@ -19,6 +19,7 @@ package io.geeteshk.hyper.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,14 +40,17 @@ import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
+import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Hyperion;
 import io.geeteshk.hyper.helper.Network;
 import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Project;
 import io.geeteshk.hyper.helper.Theme;
 
 /**
@@ -74,8 +78,9 @@ public class WebActivity extends AppCompatActivity {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String project = getIntent().getStringExtra("name");
         mLogs = new ArrayList<>();
-        Network.setDrive(new Hyperion(getIntent().getStringExtra("name"), mLogs));
+        Network.setDrive(new Hyperion(project, mLogs));
         setTheme(Theme.getThemeInt(this));
         super.onCreate(savedInstanceState);
 
@@ -87,13 +92,16 @@ public class WebActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_web);
 
+        File indexFile = Project.getIndexFile(project);
+        String indexStr = indexFile.getPath();
+        indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         assert toolbar != null;
         if (Pref.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
-        toolbar.setTitle(getIntent().getStringExtra("name"));
+        toolbar.setTitle(project);
         setSupportActionBar(toolbar);
 
         mWebView = (WebView) findViewById(R.id.web_view);
@@ -102,7 +110,7 @@ public class WebActivity extends AppCompatActivity {
 
         url = getIntent().getStringExtra("url");
         if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-            url = "http://" + Network.getIpAddress() + ":8080/index.html";
+            url = "http://" + Network.getIpAddress() + ":8080" + File.separator + indexStr;
         }
 
         mWebView.loadUrl(url);
@@ -206,8 +214,6 @@ public class WebActivity extends AppCompatActivity {
 
                 allowContentAccess.setChecked(mWebView.getSettings().getAllowContentAccess());
                 allowFileAccess.setChecked(mWebView.getSettings().getAllowFileAccess());
-                allowFileAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowFileAccessFromFileURLs());
-                allowUniversalAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowUniversalAccessFromFileURLs());
                 blockNetworkImage.setChecked(mWebView.getSettings().getBlockNetworkImage());
                 blockNetworkLoads.setChecked(mWebView.getSettings().getBlockNetworkLoads());
                 builtInZoomControls.setChecked(mWebView.getSettings().getBuiltInZoomControls());
@@ -232,20 +238,6 @@ public class WebActivity extends AppCompatActivity {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         mWebView.getSettings().setAllowFileAccess(isChecked);
-                    }
-                });
-
-                allowFileAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setAllowFileAccessFromFileURLs(isChecked);
-                    }
-                });
-
-                allowUniversalAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setAllowUniversalAccessFromFileURLs(isChecked);
                     }
                 });
 
@@ -332,6 +324,27 @@ public class WebActivity extends AppCompatActivity {
                         mWebView.getSettings().setUseWideViewPort(isChecked);
                     }
                 });
+
+                if (Build.VERSION.SDK_INT < 16) {
+                    allowFileAccessFromFileURLs.setVisibility(View.GONE);
+                    allowUniversalAccessFromFileURLs.setVisibility(View.GONE);
+                } else {
+                    allowFileAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowFileAccessFromFileURLs());
+                    allowUniversalAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowUniversalAccessFromFileURLs());
+                    allowFileAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            mWebView.getSettings().setAllowFileAccessFromFileURLs(isChecked);
+                        }
+                    });
+
+                    allowUniversalAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            mWebView.getSettings().setAllowUniversalAccessFromFileURLs(isChecked);
+                        }
+                    });
+                }
 
                 BottomSheetDialog dialog = new BottomSheetDialog(this);
                 dialog.setContentView(layout);
