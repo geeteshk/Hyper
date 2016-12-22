@@ -52,6 +52,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:orientation="vertical"
+        android:clickable="true"
         android:background="?android:attr/windowBackground">
 
         <RelativeLayout
@@ -99,6 +100,16 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignLeft="@+id/header_title"
                 android:layout_alignStart="@+id/header_title" />
+
+            <ImageButton
+                android:id="@+id/root_overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_overflow_root"
+                android:background="?attr/selectableItemBackgroundBorderless" />
 
         </RelativeLayout>
 

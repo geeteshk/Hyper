@@ -48,8 +48,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -64,6 +66,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +76,7 @@ import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.helper.Clippy;
 import io.geeteshk.hyper.helper.Constants;
 import io.geeteshk.hyper.helper.Decor;
 import io.geeteshk.hyper.helper.Pref;
@@ -316,6 +320,7 @@ public class ProjectActivity extends AppCompatActivity {
         fileBrowser.addView(treeView.getView());
         RelativeLayout headerBackground = (RelativeLayout) findViewById(R.id.header_background);
         ImageView headerIcon = (ImageView) findViewById(R.id.header_icon);
+        final ImageButton headerOverflow = (ImageButton) findViewById(R.id.root_overflow);
         headerTitle = (TextView) findViewById(R.id.header_title);
         headerDesc = (TextView) findViewById(R.id.header_desc);
 
@@ -323,6 +328,164 @@ public class ProjectActivity extends AppCompatActivity {
         headerIcon.setImageBitmap(Project.getFavicon(ProjectActivity.this, mProject));
         headerTitle.setText(mProperties[0]);
         headerDesc.setText(mProperties[1]);
+
+        headerOverflow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(ProjectActivity.this, headerOverflow);
+                menu.getMenuInflater().inflate(R.menu.menu_file_options, menu.getMenu());
+                menu.getMenu().findItem(R.id.action_copy).setVisible(false);
+                menu.getMenu().findItem(R.id.action_cut).setVisible(false);
+                menu.getMenu().findItem(R.id.action_rename).setVisible(false);
+                menu.getMenu().findItem(R.id.action_paste).setEnabled(Clippy.getInstance().getCurrentFile() != null);
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.action_new_file:
+                                AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                                View newFileRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                                final TextInputEditText fileName = (TextInputEditText) newFileRootView.findViewById(R.id.input_text);
+                                fileName.setHint(R.string.file_name);
+
+                                newFileBuilder.setTitle("New file");
+                                newFileBuilder.setView(newFileRootView);
+                                newFileBuilder.setPositiveButton(R.string.create, null);
+                                newFileBuilder.setNegativeButton(R.string.cancel, null);
+
+                                final AlertDialog newFileDialog = newFileBuilder.create();
+                                newFileDialog.show();
+                                newFileDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (fileName.getText().toString().isEmpty()) {
+                                            fileName.setError("Please enter a file name");
+                                        } else {
+                                            newFileDialog.dismiss();
+                                            String fileStr = fileName.getText().toString();
+                                            File newFile = new File(mProjectFile, fileStr);
+                                            try {
+                                                FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset());
+                                            } catch (IOException e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+
+                                            Snackbar.make(mDrawerLayout, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
+                                            TreeNode newFileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(newFile), newFile, mDrawerLayout));
+                                            rootNode.addChild(newFileNode);
+                                            treeView.setRoot(rootNode);
+                                            treeView.addNode(rootNode, newFileNode);
+                                        }
+                                    }
+                                });
+
+                                return true;
+                            case R.id.action_new_folder:
+                                AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(ProjectActivity.this);
+                                View newFolderRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                                final TextInputEditText folderName = (TextInputEditText) newFolderRootView.findViewById(R.id.input_text);
+                                folderName.setHint(R.string.folder_name);
+
+                                newFolderBuilder.setTitle("New folder");
+                                newFolderBuilder.setView(newFolderRootView);
+                                newFolderBuilder.setPositiveButton(R.string.create, null);
+                                newFolderBuilder.setNegativeButton(R.string.cancel, null);
+
+                                final AlertDialog newFolderDialog = newFolderBuilder.create();
+                                newFolderDialog.show();
+                                newFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (folderName.getText().toString().isEmpty()) {
+                                            folderName.setError("Please enter a folder name");
+                                        } else {
+                                            newFolderDialog.dismiss();
+                                            String folderStr = folderName.getText().toString();
+                                            File newFolder = new File(mProjectFile, folderStr);
+                                            try {
+                                                FileUtils.forceMkdir(newFolder);
+                                            } catch (IOException e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+
+                                            Snackbar.make(mDrawerLayout, "Created " + folderStr + ".", Snackbar.LENGTH_SHORT).show();
+                                            TreeNode newFolderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, newFolder, mDrawerLayout));
+                                            rootNode.addChild(newFolderNode);
+                                            treeView.setRoot(rootNode);
+                                            treeView.addNode(rootNode, newFolderNode);
+                                        }
+                                    }
+                                });
+
+                                return true;
+                            case R.id.action_paste:
+                                File currentFile = Clippy.getInstance().getCurrentFile();
+                                TreeNode currentNode = Clippy.getInstance().getCurrentNode();
+                                FileTreeHolder.FileTreeItem currentItem = (FileTreeHolder.FileTreeItem) currentNode.getValue();
+                                switch (Clippy.getInstance().getType()) {
+                                    case COPY:
+                                        if (currentFile.isDirectory()) {
+                                            try {
+                                                FileUtils.copyDirectoryToDirectory(currentFile, mProjectFile);
+                                            } catch (Exception e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            try {
+                                                FileUtils.copyFileToDirectory(currentFile, mProjectFile);
+                                            } catch (Exception e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        Snackbar.make(mDrawerLayout, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
+                                        File copyFile = new File(mProjectFile, currentFile.getName());
+                                        TreeNode copyNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(copyFile), copyFile, currentItem.view));
+                                        rootNode.addChild(copyNode);
+                                        treeView.setRoot(rootNode);
+                                        treeView.addNode(rootNode, copyNode);
+                                        break;
+                                    case CUT:
+                                        if (currentFile.isDirectory()) {
+                                            try {
+                                                FileUtils.moveDirectoryToDirectory(currentFile, mProjectFile, false);
+                                            } catch (Exception e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            try {
+                                                FileUtils.moveFileToDirectory(currentFile, mProjectFile, false);
+                                            } catch (Exception e) {
+                                                Log.e(TAG, e.toString());
+                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        Snackbar.make(mDrawerLayout, "Successfully moved " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
+                                        Clippy.getInstance().setCurrentFile(null);
+                                        File cutFile = new File(mProjectFile, currentFile.getName());
+                                        TreeNode cutNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(cutFile), cutFile, currentItem.view));
+                                        rootNode.addChild(cutNode);
+                                        treeView.setRoot(rootNode);
+                                        treeView.addNode(rootNode, cutNode);
+                                        treeView.removeNode(Clippy.getInstance().getCurrentNode());
+                                        break;
+                                }
+                                return true;
+                        }
+
+                        return false;
+                    }
+                });
+
+                menu.show();
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= 21) {
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(ProjectActivity.this, mProject));
