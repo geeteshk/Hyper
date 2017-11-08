@@ -25,13 +25,10 @@ android:
     - extra-google-m2repository
     - extra-android-support
 before_script:
-  - chmod +x cute_ghosts
-  - chmod +x update_apk
+  - chmod +x scripts/update_apk
 script:
-  - "./cute_ghosts"
   - "./gradlew assembleDebug"
 notifications:
   email: false
 after_success:
-  - "./cute_ghosts"
-  - "./update_apk"
+  - "./scripts/update_apk"
