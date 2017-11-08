@@ -1,4 +1,4 @@
-# ![Hyper](opt/img/logo_large.png)
+# ![Hyper](art/logo_large.png)
 
 [![Build Status](https://travis-ci.org/geeteshk/Hyper.svg?branch=master)](https://travis-ci.org/geeteshk/Hyper)
   

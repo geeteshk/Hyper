@@ -25,10 +25,10 @@ android:
   - extra-google-m2repository
   - extra-android-support
 script:
-- "./opt/src/cute_ghosts"
-- "./gradlew assemble"
+- "./cute_ghosts"
+- "./gradlew assembleDebug"
 notifications:
   email: false
 after_success:
-- "./opt/src/cute_ghosts"
-- "./opt/src/update_apk"
+- "./cute_ghosts"
+- "./update_apk"
