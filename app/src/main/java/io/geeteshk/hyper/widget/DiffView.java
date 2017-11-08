@@ -19,6 +19,7 @@ package io.geeteshk.hyper.widget;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.helper.ResourceHelper;
 
-public class DiffView extends TextView {
+public class DiffView extends AppCompatTextView {
 
     private static final Pattern INFO_CHANGES = Pattern.compile("/\\**?\\*/|diff.*");
     private static final Pattern INFO_CHANGES_TWO = Pattern.compile("/\\**?\\*/|index.*");

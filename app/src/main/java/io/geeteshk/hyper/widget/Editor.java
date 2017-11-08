@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
@@ -50,7 +51,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,14 +58,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.ResourceHelper;
 import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.ResourceHelper;
 
 /**
  * Editor class to handle code highlighting etc
  * Derived from: https://github.com/markusfisch/ShaderEditor/blob/master/app/src/main/java/de/markusfisch/android/shadereditor/widget/ShaderEditor.java
  */
-public class Editor extends MultiAutoCompleteTextView {
+public class Editor extends AppCompatMultiAutoCompleteTextView {
 
     private final String TAG = Editor.class.getSimpleName();
 
