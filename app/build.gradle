@@ -15,22 +15,29 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.github.ben-manes.versions'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.1'
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "io.geeteshk.hyper"
-        minSdkVersion 14
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName versions.name
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled false
+        }
+
 		release {
-            minifyEnabled false
+            testCoverageEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,21 +49,22 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:27.0.0'
-    compile 'com.android.support:design:27.0.0'
-    compile 'com.android.support:recyclerview-v7:27.0.0'
-    compile 'com.android.support:cardview-v7:27.0.0'
-    compile 'com.github.bmelnychuk:atv:1.2.9'
-    compile 'com.nanohttpd:nanohttpd-webserver:2.2.0'
-    compile ('org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r') {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation libraries.supportAppCompat
+    implementation libraries.supportDesign
+    implementation libraries.supportRecyclerView
+    implementation libraries.supportCardView
+
+    implementation libraries.nanohttpd
+    implementation libraries.commonsIO
+    implementation libraries.jsoup
+    implementation (libraries.jgit) {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    compile 'org.jsoup:jsoup:1.10.3'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.3'
-    compile 'commons-io:commons-io:2.6'
-    compile 'com.github.angads25:filepicker:1.1.1'
+    implementation libraries.atv
+    implementation libraries.licensesDialog
+    implementation libraries.filePicker
 }
