@@ -27,17 +27,17 @@ import java.util.Enumeration;
 /**
  * Helper class to handle network stuffs
  */
-public class Network {
+public class NetworkUtils {
 
     /**
      * Log TAG
      */
-    private static final String TAG = Network.class.getSimpleName();
+    private static final String TAG = NetworkUtils.class.getSimpleName();
 
     /**
      * Instance of web server
      */
-    private static Hyperion mDrive;
+    private static HyperServer mServer;
 
     /**
      * Gets device IP Address
@@ -67,16 +67,16 @@ public class Network {
      *
      * @return web server
      */
-    public static Hyperion getDrive() {
-        return mDrive;
+    public static HyperServer getServer() {
+        return mServer;
     }
 
     /**
      * Set instance of web server
      *
-     * @param drive to set
+     * @param server to set
      */
-    public static void setDrive(Hyperion drive) {
-        mDrive = drive;
+    public static void setServer(HyperServer server) {
+        mServer = server;
     }
 }

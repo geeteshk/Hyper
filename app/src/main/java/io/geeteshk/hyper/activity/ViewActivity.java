@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.Styles;
 import io.geeteshk.hyper.widget.holder.TagTreeHolder;
 
 public class ViewActivity extends AppCompatActivity {
@@ -56,7 +56,7 @@ public class ViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Theme.getThemeInt(this));
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 

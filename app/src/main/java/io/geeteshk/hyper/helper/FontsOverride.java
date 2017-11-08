@@ -25,12 +25,12 @@ import java.lang.reflect.Field;
 /**
  * Utility class to help override typeface
  */
-public final class Typefacer {
+public final class FontsOverride {
 
     /**
      * Log TAG
      */
-    private static final String TAG = Typefacer.class.getSimpleName();
+    private static final String TAG = FontsOverride.class.getSimpleName();
 
     /**
      * Method to set default font

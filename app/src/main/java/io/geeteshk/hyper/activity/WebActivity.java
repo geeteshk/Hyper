@@ -17,6 +17,7 @@
 package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -27,7 +28,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +38,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +46,11 @@ import java.util.ArrayList;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Hyperion;
-import io.geeteshk.hyper.helper.Network;
-import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Project;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.HyperServer;
+import io.geeteshk.hyper.helper.NetworkUtils;
+import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.ProjectManager;
+import io.geeteshk.hyper.helper.Styles;
 
 /**
  * Activity to test projects
@@ -80,24 +79,24 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         String project = getIntent().getStringExtra("name");
         mLogs = new ArrayList<>();
-        Network.setDrive(new Hyperion(project, mLogs));
-        setTheme(Theme.getThemeInt(this));
+        NetworkUtils.setServer(new HyperServer(project, mLogs));
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
 
         try {
-            Network.getDrive().start();
+            NetworkUtils.getServer().start();
         } catch (IOException e) {
             mLogs.add(e.toString());
         }
 
         setContentView(R.layout.activity_web);
 
-        File indexFile = Project.getIndexFile(project);
+        File indexFile = ProjectManager.getIndexFile(project);
         String indexStr = indexFile.getPath();
         indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         assert toolbar != null;
-        if (Pref.get(this, "dark_theme", false)) {
+        if (Prefs.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
@@ -109,8 +108,8 @@ public class WebActivity extends AppCompatActivity {
         mWebView.getSettings().setJavaScriptEnabled(true);
 
         url = getIntent().getStringExtra("url");
-        if (Network.getDrive().wasStarted() && Network.getDrive().isAlive() && Network.getIpAddress() != null) {
-            url = "http://" + Network.getIpAddress() + ":8080" + File.separator + indexStr;
+        if (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) {
+            url = "http://" + NetworkUtils.getIpAddress() + ":8080" + File.separator + indexStr;
         }
 
         mWebView.loadUrl(url);
@@ -138,8 +137,8 @@ public class WebActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Network.getDrive() != null) {
-            Network.getDrive().stop();
+        if (NetworkUtils.getServer() != null) {
+            NetworkUtils.getServer().stop();
         }
     }
 
@@ -173,7 +172,7 @@ public class WebActivity extends AppCompatActivity {
                 return true;
             case R.id.web_logs:
                 View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
-                if (Pref.get(this, "dark_theme", false)) {
+                if (Prefs.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
@@ -190,7 +189,7 @@ public class WebActivity extends AppCompatActivity {
                 return true;
             case R.id.web_settings:
                 View layout = inflater.inflate(R.layout.sheet_web_settings, null);
-                if (Pref.get(this, "dark_theme", false)) {
+                if (Prefs.get(this, "dark_theme", false)) {
                     layout.setBackgroundColor(0xFF333333);
                 }
 
@@ -325,13 +324,12 @@ public class WebActivity extends AppCompatActivity {
                     }
                 });
 
-                if (Build.VERSION.SDK_INT < 16) {
-                    allowFileAccessFromFileURLs.setVisibility(View.GONE);
-                    allowUniversalAccessFromFileURLs.setVisibility(View.GONE);
-                } else {
+
+                if (Build.VERSION.SDK_INT >= 16) {
                     allowFileAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowFileAccessFromFileURLs());
                     allowUniversalAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowUniversalAccessFromFileURLs());
                     allowFileAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             mWebView.getSettings().setAllowFileAccessFromFileURLs(isChecked);
@@ -339,11 +337,15 @@ public class WebActivity extends AppCompatActivity {
                     });
 
                     allowUniversalAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             mWebView.getSettings().setAllowUniversalAccessFromFileURLs(isChecked);
                         }
                     });
+                } else {
+                    allowFileAccessFromFileURLs.setVisibility(View.GONE);
+                    allowUniversalAccessFromFileURLs.setVisibility(View.GONE);
                 }
 
                 BottomSheetDialog dialog = new BottomSheetDialog(this);

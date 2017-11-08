@@ -29,7 +29,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import java.io.File;
 
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.ProjectManager;
 
 public class CloneTask extends GitTask {
 
@@ -83,7 +83,7 @@ public class CloneTask extends GitTask {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         if (aBoolean) {
-            if (!Project.isValid(mRepo.getName())) {
+            if (!ProjectManager.isValid(mRepo.getName())) {
                 mBuilder.setContentText("The repo was successfully cloned but it doesn't seem to be a Hyper project.");
             } else {
                 mAdapter.insert(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/") + 1, mRepo.getPath().length()));

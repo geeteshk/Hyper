@@ -6,13 +6,13 @@ import android.support.v7.widget.Toolbar;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.fragment.SettingsFragment;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.Styles;
 
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Theme.getThemeInt(this));
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 

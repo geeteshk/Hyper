@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.IntroAdapter;
-import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.Prefs;
 import io.geeteshk.hyper.text.HtmlCompat;
 
 public class IntroActivity extends AppCompatActivity {
@@ -116,7 +116,7 @@ public class IntroActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("isAppetize", false)) {
             Toast.makeText(IntroActivity.this, "Get the app to try out these features for yourself!", Toast.LENGTH_LONG).show();
         } else {
-            Pref.store(IntroActivity.this, "intro_done", true);
+            Prefs.store(IntroActivity.this, "intro_done", true);
             Intent intent = new Intent(IntroActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

@@ -41,9 +41,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Project;
+import io.geeteshk.hyper.helper.ResourceHelper;
 import io.geeteshk.hyper.widget.Editor;
 
 /**
@@ -79,7 +77,7 @@ public class EditorFragment extends Fragment {
         final File file = new File(location);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
-            int padding = Decor.dpToPx(getActivity(), 48);
+            int padding = ResourceHelper.dpToPx(getActivity(), 48);
             textView.setPadding(padding, padding, padding, padding);
             textView.setGravity(Gravity.CENTER);
             textView.setTypeface(Typeface.SERIF);

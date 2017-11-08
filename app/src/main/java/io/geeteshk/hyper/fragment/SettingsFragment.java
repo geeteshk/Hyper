@@ -21,8 +21,8 @@ import de.psdev.licensesdialog.LicensesDialog;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.SettingsActivity;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.Styles;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -40,7 +40,7 @@ public class SettingsFragment extends PreferenceFragment {
         darkTheme.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                Pref.store(getActivity(), "dark_theme", (boolean) o);
+                Prefs.store(getActivity(), "dark_theme", (boolean) o);
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(intent);
                 getActivity().finish();
@@ -52,7 +52,7 @@ public class SettingsFragment extends PreferenceFragment {
         darkThemeEditor.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                Pref.store(getActivity(), "dark_theme_editor", (boolean) o);
+                Prefs.store(getActivity(), "dark_theme_editor", (boolean) o);
                 return true;
             }
         });
@@ -61,7 +61,7 @@ public class SettingsFragment extends PreferenceFragment {
         lineNumbers.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                Pref.store(getActivity(), "show_line_numbers", (boolean) o);
+                Prefs.store(getActivity(), "show_line_numbers", (boolean) o);
                 return true;
             }
         });
@@ -99,7 +99,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 new LicensesDialog.Builder(getActivity())
                         .setNotices(R.raw.notices)
-                        .setThemeResourceId(Theme.getThemeInt(getActivity()))
+                        .setThemeResourceId(Styles.getThemeInt(getActivity()))
                         .build()
                         .show();
 

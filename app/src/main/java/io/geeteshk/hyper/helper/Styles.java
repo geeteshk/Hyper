@@ -16,17 +16,14 @@
 
 package io.geeteshk.hyper.helper;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 
 import io.geeteshk.hyper.R;
 
 /**
  * Helper class to handle theme related stuff
  */
-public class Theme {
+public class Styles {
 
     /**
      * Get current theme
@@ -35,7 +32,7 @@ public class Theme {
      * @return theme int
      */
     public static int getThemeInt(Context context) {
-        if (Pref.get(context, "dark_theme", false)) {
+        if (Prefs.get(context, "dark_theme", false)) {
             return R.style.Hyper_Dark;
         } else {
             return R.style.Hyper;

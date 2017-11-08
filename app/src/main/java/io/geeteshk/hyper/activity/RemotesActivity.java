@@ -35,7 +35,7 @@ import java.io.File;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.RemotesAdapter;
 import io.geeteshk.hyper.git.Giiit;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.Styles;
 
 public class RemotesActivity extends AppCompatActivity {
 
@@ -43,7 +43,7 @@ public class RemotesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Theme.getThemeInt(this));
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remotes);
 

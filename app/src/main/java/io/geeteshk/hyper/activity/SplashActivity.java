@@ -35,8 +35,8 @@ import android.widget.TextView;
 
 import de.psdev.licensesdialog.LicenseResolver;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Typefacer;
+import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.FontsOverride;
 import io.geeteshk.hyper.license.EclipseDistributionLicense10;
 
 /**
@@ -61,9 +61,9 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LicenseResolver.registerLicense(new EclipseDistributionLicense10());
-        Typefacer.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
-        Typefacer.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
-        Typefacer.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
+        FontsOverride.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
+        FontsOverride.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
+        FontsOverride.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -111,7 +111,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startIntro() {
         Class classTo = IntroActivity.class;
-        if (Pref.get(SplashActivity.this, "intro_done", false)) {
+        if (Prefs.get(SplashActivity.this, "intro_done", false)) {
             classTo = MainActivity.class;
         }
 

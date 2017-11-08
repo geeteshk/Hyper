@@ -17,54 +17,32 @@
 package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialog;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Selection;
-import android.text.SpanWatcher;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -84,11 +62,11 @@ import io.geeteshk.hyper.adapter.CreateAdapter;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.git.Giiit;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Project;
-import io.geeteshk.hyper.helper.Theme;
-import io.geeteshk.hyper.helper.Validator;
+import io.geeteshk.hyper.helper.ResourceHelper;
+import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.ProjectManager;
+import io.geeteshk.hyper.helper.Styles;
+import io.geeteshk.hyper.helper.DataValidator;
 
 /**
  * Main activity to show all main content
@@ -104,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final int SETTINGS_CODE = 101;
 
     /**
-     * Project related stuff
+     * ProjectManager related stuff
      */
     String[] mObjects;
     ArrayList<String> mObjectsList;
@@ -126,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Theme.getThemeInt(this));
+        setTheme(Styles.getThemeInt(this));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -137,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mObjects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return dir.isDirectory() && !name.equals(".git") && Project.isValid(name);
+                return dir.isDirectory() && !name.equals(".git") && ProjectManager.isValid(name);
             }
         });
 
@@ -148,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             mObjectsList = new ArrayList<>();
         }
         
-        Validator.removeBroken(mObjectsList);
+        DataValidator.removeBroken(mObjectsList);
         mProjectsList = (RecyclerView) findViewById(R.id.project_list);
         mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout, mProjectsList);
         boolean orientation = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
@@ -168,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         mProjectsList.setLayoutManager(layoutManager);
-        mProjectsList.addItemDecoration(new Decor.GridSpacingItemDecoration(numColumns, Decor.dpToPx(this, 2), true));
+        mProjectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
         mProjectsList.setItemAnimator(new DefaultItemAnimator());
         mProjectsList.setAdapter(mProjectAdapter);
 
@@ -194,17 +172,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 final TextInputLayout keywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
 
                                 final Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.type_spinner);
-                                typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, Project.TYPES));
-                                typeSpinner.setSelection(Pref.get(MainActivity.this, "type", 0));
+                                typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
+                                typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
                                 RadioButton defaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
                                 RadioButton chooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
                                 mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
 
-                                nameLayout.getEditText().setText(Pref.get(MainActivity.this, "name", ""));
-                                authorLayout.getEditText().setText(Pref.get(MainActivity.this, "author", ""));
-                                descriptionLayout.getEditText().setText(Pref.get(MainActivity.this, "description", ""));
-                                keywordsLayout.getEditText().setText(Pref.get(MainActivity.this, "keywords", ""));
+                                nameLayout.getEditText().setText(Prefs.get(MainActivity.this, "name", ""));
+                                authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
+                                descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
+                                keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
 
                                 defaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
@@ -243,14 +221,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (Validator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                            Pref.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
-                                            Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
-                                            Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
-                                            Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                            Pref.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
+                                        if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                            Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
+                                            Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
+                                            Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
+                                            Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
+                                            Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
 
-                                            Project.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout, typeSpinner.getSelectedItemPosition());
+                                            ProjectManager.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout, typeSpinner.getSelectedItemPosition());
                                             dialog1.dismiss();
                                         }
                                     }
@@ -268,8 +246,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 final TextInputEditText username = (TextInputEditText) cloneView.findViewById(R.id.clone_username);
                                 final TextInputEditText password = (TextInputEditText) cloneView.findViewById(R.id.clone_password);
 
-                                file.setText(Pref.get(MainActivity.this, "clone_name", ""));
-                                remote.setText(Pref.get(MainActivity.this, "remote", ""));
+                                file.setText(Prefs.get(MainActivity.this, "clone_name", ""));
+                                remote.setText(Prefs.get(MainActivity.this, "remote", ""));
 
                                 builder.setIcon(R.drawable.ic_action_clone);
                                 builder.setView(cloneView);
@@ -286,14 +264,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (Validator.validateClone(MainActivity.this, file, remote)) {
+                                        if (DataValidator.validateClone(MainActivity.this, file, remote)) {
                                             String remoteStr = remote.getText().toString();
                                             if (!remoteStr.contains("://")) {
                                                 remoteStr = "https://" + remoteStr;
                                             }
 
-                                            Pref.store(MainActivity.this, "clone_name", file.getText().toString());
-                                            Pref.store(MainActivity.this, "remote", remoteStr);
+                                            Prefs.store(MainActivity.this, "clone_name", file.getText().toString());
+                                            Prefs.store(MainActivity.this, "remote", remoteStr);
 
                                             Giiit.clone(MainActivity.this, mLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remoteStr, username.getText().toString(), password.getText().toString());
                                             dialog2.dismiss();
@@ -327,13 +305,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             final TextInputLayout keywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
 
                                             final Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.type_spinner);
-                                            typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, Project.TYPES));
-                                            typeSpinner.setSelection(Pref.get(MainActivity.this, "type", 0));
+                                            typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
+                                            typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
                                             nameLayout.getEditText().setText(new File(files[0]).getName());
-                                            authorLayout.getEditText().setText(Pref.get(MainActivity.this, "author", ""));
-                                            descriptionLayout.getEditText().setText(Pref.get(MainActivity.this, "description", ""));
-                                            keywordsLayout.getEditText().setText(Pref.get(MainActivity.this, "keywords", ""));
+                                            authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
+                                            descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
+                                            keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
 
                                             createBuilder.setIcon(R.drawable.ic_action_import);
                                             createBuilder.setView(rootView);
@@ -351,14 +329,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    if (Validator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                                        Pref.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
-                                                        Pref.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
-                                                        Pref.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
-                                                        Pref.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                                        Pref.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
+                                                    if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                                        Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
+                                                        Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
+                                                        Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
+                                                        Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
+                                                        Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
 
-                                                        Project._import(files[0], nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), mProjectAdapter, mLayout);
+                                                        ProjectManager._import(files[0], nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), mProjectAdapter, mLayout);
                                                         dialog1.dismiss();
                                                     }
                                                 }
@@ -431,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     try {
                         Uri selectedImage = data.getData();
                         mStream = MainActivity.this.getContentResolver().openInputStream(selectedImage);
-                        mIcon.setImageBitmap(Decor.decodeUri(MainActivity.this, selectedImage));
+                        mIcon.setImageBitmap(ResourceHelper.decodeUri(MainActivity.this, selectedImage));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -449,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
-        Validator.removeBroken(mObjectsList);
+        DataValidator.removeBroken(mObjectsList);
         for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();
             if (!string.toLowerCase(Locale.getDefault()).startsWith(query)) {

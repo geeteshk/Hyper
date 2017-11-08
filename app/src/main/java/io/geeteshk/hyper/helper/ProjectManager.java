@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import io.geeteshk.hyper.R;
@@ -47,14 +46,14 @@ import io.geeteshk.hyper.adapter.ProjectAdapter;
 /**
  * Helper class to handle all project related tasks
  */
-public class Project {
+public class ProjectManager {
 
     public static final String[] TYPES = {"Default"};
 
     /**
      * Log TAG
      */
-    private static final String TAG = Project.class.getSimpleName();
+    private static final String TAG = ProjectManager.class.getSimpleName();
 
     /**
      * Method to handle project creation
@@ -102,9 +101,9 @@ public class Project {
             FileUtils.forceMkdir(jsFile);
 
             // Create necessary files
-            FileUtils.writeStringToFile(new File(projectFile, "index.html"), Files.Default.getIndex(name, author, description, keywords), Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(cssFile, "style.css"), Files.Default.STYLE, Charset.defaultCharset());
-            FileUtils.writeStringToFile(new File(jsFile, "main.js"), Files.Default.MAIN, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(projectFile, "index.html"), ProjectFiles.Default.getIndex(name, author, description, keywords), Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(cssFile, "style.css"), ProjectFiles.Default.STYLE, Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(jsFile, "main.js"), ProjectFiles.Default.MAIN, Charset.defaultCharset());
 
             // Copy icon
             if (stream == null) {
@@ -134,7 +133,7 @@ public class Project {
             FileUtils.forceMkdir(outFile);
             FileUtils.copyDirectory(file, outFile);
             if (!new File(outFile, "index.html").exists()) {
-                FileUtils.writeStringToFile(new File(outFile, "index.html"), Files.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
+                FileUtils.writeStringToFile(new File(outFile, "index.html"), ProjectFiles.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset());
             }
         } catch (IOException e) {
             Log.e(TAG, e.toString());

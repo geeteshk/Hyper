@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Clippy;
-import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.Clipboard;
+import io.geeteshk.hyper.helper.ResourceHelper;
 
 public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.FileTreeItem> {
 
@@ -85,7 +85,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                         menu.getMenu().findItem(R.id.action_rename).setVisible(false);
                     }
                 } else {
-                    menu.getMenu().findItem(R.id.action_paste).setEnabled(Clippy.getInstance().getCurrentFile() != null);
+                    menu.getMenu().findItem(R.id.action_paste).setEnabled(Clipboard.getInstance().getCurrentFile() != null);
                 }
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -122,7 +122,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                                             }
 
                                             Snackbar.make(value.view, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
-                                            TreeNode newFileNode = new TreeNode(new FileTreeItem(Decor.getIcon(newFile), newFile, value.view));
+                                            TreeNode newFileNode = new TreeNode(new FileTreeItem(ResourceHelper.getIcon(newFile), newFile, value.view));
                                             node.addChild(newFileNode);
                                             arrow.setVisibility(View.VISIBLE);
                                             tView.expandNode(node);
@@ -210,7 +210,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                             Snackbar.make(value.view, "Renamed " + value.file.getName() + " to " + renameStr + ".", Snackbar.LENGTH_SHORT).show();
                                             value.file = rename;
-                                            value.icon = Decor.getIcon(rename);
+                                            value.icon = ResourceHelper.getIcon(rename);
                                             nodeFile.setText(value.file.getName());
                                             fileIcon.setImageResource(value.icon);
                                         }
@@ -219,22 +219,22 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                 return true;
                             case R.id.action_copy:
-                                Clippy.getInstance().setCurrentFile(file);
-                                Clippy.getInstance().setCurrentNode(node);
-                                Clippy.getInstance().setType(Clippy.Type.COPY);
+                                Clipboard.getInstance().setCurrentFile(file);
+                                Clipboard.getInstance().setCurrentNode(node);
+                                Clipboard.getInstance().setType(Clipboard.Type.COPY);
                                 Snackbar.make(value.view, value.file.getName() + " selected to be copied.", Snackbar.LENGTH_SHORT).show();
                                 return true;
                             case R.id.action_cut:
-                                Clippy.getInstance().setCurrentFile(file);
-                                Clippy.getInstance().setCurrentNode(node);
-                                Clippy.getInstance().setType(Clippy.Type.CUT);
+                                Clipboard.getInstance().setCurrentFile(file);
+                                Clipboard.getInstance().setCurrentNode(node);
+                                Clipboard.getInstance().setType(Clipboard.Type.CUT);
                                 Snackbar.make(value.view, value.file.getName() + " selected to be moved.", Snackbar.LENGTH_SHORT).show();
                                 return true;
                             case R.id.action_paste:
-                                File currentFile = Clippy.getInstance().getCurrentFile();
-                                TreeNode currentNode = Clippy.getInstance().getCurrentNode();
+                                File currentFile = Clipboard.getInstance().getCurrentFile();
+                                TreeNode currentNode = Clipboard.getInstance().getCurrentNode();
                                 FileTreeItem currentItem = (FileTreeItem) currentNode.getValue();
-                                switch (Clippy.getInstance().getType()) {
+                                switch (Clipboard.getInstance().getType()) {
                                     case COPY:
                                         if (currentFile.isDirectory()) {
                                             try {
@@ -254,7 +254,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                         Snackbar.make(value.view, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
                                         File copyFile = new File(file, currentFile.getName());
-                                        TreeNode copyNode = new TreeNode(new FileTreeItem(Decor.getIcon(copyFile), copyFile, currentItem.view));
+                                        TreeNode copyNode = new TreeNode(new FileTreeItem(ResourceHelper.getIcon(copyFile), copyFile, currentItem.view));
                                         node.addChild(copyNode);
                                         arrow.setVisibility(View.VISIBLE);
                                         tView.expandNode(node);
@@ -277,13 +277,13 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                                         }
 
                                         Snackbar.make(value.view, "Successfully moved " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
-                                        Clippy.getInstance().setCurrentFile(null);
+                                        Clipboard.getInstance().setCurrentFile(null);
                                         File cutFile = new File(file, currentFile.getName());
-                                        TreeNode cutNode = new TreeNode(new FileTreeItem(Decor.getIcon(cutFile), cutFile, currentItem.view));
+                                        TreeNode cutNode = new TreeNode(new FileTreeItem(ResourceHelper.getIcon(cutFile), cutFile, currentItem.view));
                                         node.addChild(cutNode);
                                         arrow.setVisibility(View.VISIBLE);
                                         tView.expandNode(node);
-                                        tView.removeNode(Clippy.getInstance().getCurrentNode());
+                                        tView.removeNode(Clipboard.getInstance().getCurrentNode());
                                         break;
                                 }
 

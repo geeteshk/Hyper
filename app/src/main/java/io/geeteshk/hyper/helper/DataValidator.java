@@ -21,7 +21,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,7 +29,7 @@ import io.geeteshk.hyper.R;
 /**
  * Helper class to validate project creation
  */
-public class Validator {
+public class DataValidator {
 
     /**
      * Method to validate project creation
@@ -93,7 +92,7 @@ public class Validator {
     public static void removeBroken(ArrayList objectsList) {
         for (Iterator iterator = objectsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();
-            if (!Project.isValid(string)) {
+            if (!ProjectManager.isValid(string)) {
                 iterator.remove();
             }
         }

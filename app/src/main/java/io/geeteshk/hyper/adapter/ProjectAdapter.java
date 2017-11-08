@@ -38,8 +38,8 @@ import java.util.Collections;
 
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.helper.Project;
-import io.geeteshk.hyper.helper.Soup;
+import io.geeteshk.hyper.helper.ProjectManager;
+import io.geeteshk.hyper.helper.HTMLParser;
 
 /**
  * Adapter to list all projects
@@ -108,10 +108,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        String[] properties = Soup.getProperties(mObjects.get(holder.getAdapterPosition()));
+        String[] properties = HTMLParser.getProperties(mObjects.get(holder.getAdapterPosition()));
         holder.setTitle(properties[0]);
         holder.setDescription(properties[2]);
-        holder.setIcon(Project.getFavicon(mContext, mObjects.get(holder.getAdapterPosition())));
+        holder.setIcon(ProjectManager.getFavicon(mContext, mObjects.get(holder.getAdapterPosition())));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +153,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String project = mObjects.get(holder.getAdapterPosition());
-                        Project.deleteProject(project);
+                        ProjectManager.deleteProject(project);
                         remove(holder.getAdapterPosition());
 
                         Snackbar.make(
@@ -181,7 +181,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String project = mObjects.get(holder.getAdapterPosition());
-                        Project.deleteProject(project);
+                        ProjectManager.deleteProject(project);
                         remove(holder.getAdapterPosition());
 
                         Snackbar.make(

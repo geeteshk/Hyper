@@ -33,12 +33,12 @@ import fi.iki.elonen.NanoHTTPD;
 /**
  * Web server class using NanoHTTPD
  */
-public class Hyperion extends NanoHTTPD {
+public class HyperServer extends NanoHTTPD {
 
     /**
      * Log TAG
      */
-    private static final String TAG = Hyperion.class.getSimpleName();
+    private static final String TAG = HyperServer.class.getSimpleName();
 
     /**
      * File types and respective mimes
@@ -49,7 +49,7 @@ public class Hyperion extends NanoHTTPD {
     private List<String> logs = new ArrayList<>();
 
     /**
-     * Project to host web server for
+     * ProjectManager to host web server for
      */
     private String mProject;
 
@@ -58,7 +58,7 @@ public class Hyperion extends NanoHTTPD {
      *
      * @param project to host server for
      */
-    public Hyperion(String project, List<String> logs) {
+    public HyperServer(String project, List<String> logs) {
         super(8080);
         mProject = project;
         this.logs = logs;
@@ -76,7 +76,7 @@ public class Hyperion extends NanoHTTPD {
         String mimeType = getMimeType(uri);
 
         if (uri.equals("/")) {
-            File indexFile = Project.getIndexFile(mProject);
+            File indexFile = ProjectManager.getIndexFile(mProject);
             String indexStr = indexFile.getPath();
             indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + mProject).getPath(), "");
             uri = File.separator + indexStr;

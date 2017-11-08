@@ -20,9 +20,9 @@ import com.unnamed.b.atv.model.TreeNode;
 
 import java.io.File;
 
-public class Clippy {
+public class Clipboard {
 
-    private static final Clippy clippy = new Clippy();
+    private static final Clipboard CLIPBOARD = new Clipboard();
     private File currentFile = null;
     private Type type = Type.COPY;
     private TreeNode currentNode = null;
@@ -31,8 +31,8 @@ public class Clippy {
         COPY, CUT
     }
 
-    public static Clippy getInstance() {
-        return clippy;
+    public static Clipboard getInstance() {
+        return CLIPBOARD;
     }
 
     public File getCurrentFile() {

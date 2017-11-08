@@ -58,8 +58,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Pref;
+import io.geeteshk.hyper.helper.ResourceHelper;
+import io.geeteshk.hyper.helper.Prefs;
 
 /**
  * Editor class to handle code highlighting etc
@@ -165,10 +165,10 @@ public class Editor extends MultiAutoCompleteTextView {
      * Code used to initialise editor
      */
     private void init() {
-        mColors = new Colors(!Pref.get(mContext, "dark_theme_editor", false));
+        mColors = new Colors(!Prefs.get(mContext, "dark_theme_editor", false));
         mPatterns = new Patterns();
         mRect = new Rect();
-        mLineNumbers = Pref.get(mContext, "show_line_numbers", true);
+        mLineNumbers = Prefs.get(mContext, "show_line_numbers", true);
 
         mLineShadowPaint = new Paint();
         mLineShadowPaint.setStyle(Paint.Style.FILL);
@@ -178,12 +178,12 @@ public class Editor extends MultiAutoCompleteTextView {
             mNumberPaint = new Paint();
             mNumberPaint.setStyle(Paint.Style.FILL);
             mNumberPaint.setAntiAlias(true);
-            mNumberPaint.setTextSize(Decor.dpToPx(mContext, 14));
+            mNumberPaint.setTextSize(ResourceHelper.dpToPx(mContext, 14));
             mNumberPaint.setTextAlign(Paint.Align.RIGHT);
             mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
             mNumberPaint.setColor(mColors.getColorNumber());
         } else {
-            int padding = Decor.dpToPx(mContext, 8);
+            int padding = ResourceHelper.dpToPx(mContext, 8);
             if (Build.VERSION.SDK_INT > 15) {
                 setPaddingRelative(padding, padding, padding, 0);
             } else {
@@ -659,7 +659,7 @@ public class Editor extends MultiAutoCompleteTextView {
                     replaceFrom.setText(selected);
 
                     AlertDialog.Builder builder;
-                    if (Pref.get(mContext, "dark_theme", false)) {
+                    if (Prefs.get(mContext, "dark_theme", false)) {
                         builder = new AlertDialog.Builder(mContext, R.style.Hyper_Dark);
                     } else {
                         builder = new AlertDialog.Builder(mContext);

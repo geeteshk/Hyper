@@ -29,12 +29,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.ResourceHelper;
 
 /**
  * Adapter to load main files into editor
@@ -75,7 +73,7 @@ public class FileAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
         TextView textView = (TextView) rootView.findViewById(R.id.file_title);
 
-        int resource = Decor.getIcon(new File(mFiles.get(position)));
+        int resource = ResourceHelper.getIcon(new File(mFiles.get(position)));
         imageView.setImageResource(resource);
         switch (resource) {
             case R.drawable.ic_font:case R.drawable.ic_file:case R.drawable.ic_folder:case R.drawable.ic_image:
@@ -110,7 +108,7 @@ public class FileAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
         TextView textView = (TextView) rootView.findViewById(R.id.file_title);
 
-        imageView.setImageResource(Decor.getIcon(new File(mFiles.get(position))));
+        imageView.setImageResource(ResourceHelper.getIcon(new File(mFiles.get(position))));
         textView.setText(getPageTitle(position));
         textView.setTypeface(Typeface.SERIF);
 

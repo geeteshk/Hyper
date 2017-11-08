@@ -22,7 +22,7 @@ import android.content.SharedPreferences;
 /**
  * Utility class to store and read preferences
  */
-public class Pref {
+public class Prefs {
 
     /**
      * Method to get sharedpreferences

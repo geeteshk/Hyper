@@ -23,8 +23,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +33,7 @@ import android.widget.TextView;
 import java.io.File;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.ResourceHelper;
 
 /**
  * Fragment to view image
@@ -64,7 +61,7 @@ public class ImageFragment extends Fragment {
         File file = new File(location);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
-            int padding = Decor.dpToPx(getActivity(), 48);
+            int padding = ResourceHelper.dpToPx(getActivity(), 48);
             textView.setPadding(padding, padding, padding, padding);
             textView.setGravity(Gravity.CENTER);
             textView.setTypeface(Typeface.SERIF);

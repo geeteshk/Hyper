@@ -17,7 +17,6 @@
 package io.geeteshk.hyper.widget;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -29,7 +28,7 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.geeteshk.hyper.helper.Decor;
+import io.geeteshk.hyper.helper.ResourceHelper;
 
 public class DiffView extends TextView {
 
@@ -60,7 +59,7 @@ public class DiffView extends TextView {
         setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Consolas.ttf"));
         setBackgroundColor(0xff333333);
         setTextColor(0xffffffff);
-        setTextSize(Decor.dpToPx(context, 4));
+        setTextSize(ResourceHelper.dpToPx(context, 4));
 
         mRectPaint = new Paint();
         mRectPaint.setColor(0xff444444);

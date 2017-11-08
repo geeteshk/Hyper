@@ -7,16 +7,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.IOException;
 
-public class Soup {
+public class HTMLParser {
 
-    private static final String TAG = Soup.class.getSimpleName();
+    private static final String TAG = HTMLParser.class.getSimpleName();
 
     private static Document getSoup(String name) {
         try {
-            return Jsoup.parse(Project.getIndexFile(name), "UTF-8");
+            return Jsoup.parse(ProjectManager.getIndexFile(name), "UTF-8");
         } catch (IOException e) {
             Log.e(TAG, e.toString());
             return null;

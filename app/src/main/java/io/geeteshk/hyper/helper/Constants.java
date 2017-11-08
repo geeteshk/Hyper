@@ -34,14 +34,4 @@ public class Constants {
      * Application package
      */
     public static final String PACKAGE = "io.geeteshk.hyper";
-
-    /**
-     * Firebase Global Storage Bucket
-     */
-    public static final String GS_BUCKET = "gs://hyper-a0ee4.appspot.com";
-
-    /**
-     * Literally in the name
-     */
-    public static final int ONE_MEGABYTE = 1024 * 1024;
 }

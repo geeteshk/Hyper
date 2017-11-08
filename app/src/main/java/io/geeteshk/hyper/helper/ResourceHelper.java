@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -34,7 +33,7 @@ import io.geeteshk.hyper.R;
 /**
  * Helper class used for decor related functions
  */
-public class Decor {
+public class ResourceHelper {
 
     /**
      * Method to prevent OOM errors when calling setImageBitmap()
@@ -77,8 +76,8 @@ public class Decor {
     public static int getIcon(File file) {
         String fileName = file.getName();
         if (file.isDirectory()) return R.drawable.ic_folder;
-        if (Project.isImageFile(file)) return R.drawable.ic_image;
-        if (Project.isBinaryFile(file)) return R.drawable.ic_binary;
+        if (ProjectManager.isImageFile(file)) return R.drawable.ic_image;
+        if (ProjectManager.isBinaryFile(file)) return R.drawable.ic_binary;
         if (fileName.endsWith(".html")) return R.drawable.ic_html;
         if (fileName.endsWith(".css")) return R.drawable.ic_css;
         if (fileName.endsWith(".js")) return R.drawable.ic_js;

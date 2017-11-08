@@ -76,13 +76,13 @@ import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
 import io.geeteshk.hyper.git.Giiit;
-import io.geeteshk.hyper.helper.Clippy;
+import io.geeteshk.hyper.helper.Clipboard;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.Decor;
-import io.geeteshk.hyper.helper.Pref;
-import io.geeteshk.hyper.helper.Project;
-import io.geeteshk.hyper.helper.Soup;
-import io.geeteshk.hyper.helper.Theme;
+import io.geeteshk.hyper.helper.ResourceHelper;
+import io.geeteshk.hyper.helper.Prefs;
+import io.geeteshk.hyper.helper.ProjectManager;
+import io.geeteshk.hyper.helper.HTMLParser;
+import io.geeteshk.hyper.helper.Styles;
 import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.holder.FileTreeHolder;
 
@@ -115,7 +115,7 @@ public class ProjectActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     /**
-     * Project definitions
+     * ProjectManager definitions
      */
     private String mProject;
     private File mProjectFile, mIndexFile;
@@ -146,9 +146,9 @@ public class ProjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mProject = getIntent().getStringExtra("project");
         mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
-        mIndexFile = Project.getIndexFile(mProject);
+        mIndexFile = ProjectManager.getIndexFile(mProject);
 
-        setTheme(Theme.getThemeInt(this));
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
 
@@ -159,7 +159,7 @@ public class ProjectActivity extends AppCompatActivity {
             mFiles.add(mIndexFile.getPath());
         }
 
-        mProperties = Soup.getProperties(mProject);
+        mProperties = HTMLParser.getProperties(mProject);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mSpinner = new Spinner(this);
@@ -167,7 +167,7 @@ public class ProjectActivity extends AppCompatActivity {
         mSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mSpinner.setAdapter(mFileAdapter);
         toolbar.addView(mSpinner);
-        if (Pref.get(this, "dark_theme", false)) {
+        if (Prefs.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
@@ -201,7 +201,7 @@ public class ProjectActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                mProperties = Soup.getProperties(mProject);
+                mProperties = HTMLParser.getProperties(mProject);
                 headerTitle.setText(mProperties[0]);
                 headerDesc.setText(mProperties[1]);
             }
@@ -235,10 +235,10 @@ public class ProjectActivity extends AppCompatActivity {
                         setFragment(item.file.getPath(), false);
                         mDrawerLayout.closeDrawers();
                     } else {
-                        if (!Project.isBinaryFile(item.file)) {
+                        if (!ProjectManager.isBinaryFile(item.file)) {
                             setFragment(item.file.getPath(), true);
                             mDrawerLayout.closeDrawers();
-                        } else if (Project.isImageFile(item.file)) {
+                        } else if (ProjectManager.isImageFile(item.file)) {
                             setFragment(item.file.getPath(), true);
                             mDrawerLayout.closeDrawers();
                         } else {
@@ -325,7 +325,7 @@ public class ProjectActivity extends AppCompatActivity {
         headerDesc = (TextView) findViewById(R.id.header_desc);
 
         headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(int) (Math.random() * 8)]);
-        headerIcon.setImageBitmap(Project.getFavicon(ProjectActivity.this, mProject));
+        headerIcon.setImageBitmap(ProjectManager.getFavicon(ProjectActivity.this, mProject));
         headerTitle.setText(mProperties[0]);
         headerDesc.setText(mProperties[1]);
 
@@ -337,7 +337,7 @@ public class ProjectActivity extends AppCompatActivity {
                 menu.getMenu().findItem(R.id.action_copy).setVisible(false);
                 menu.getMenu().findItem(R.id.action_cut).setVisible(false);
                 menu.getMenu().findItem(R.id.action_rename).setVisible(false);
-                menu.getMenu().findItem(R.id.action_paste).setEnabled(Clippy.getInstance().getCurrentFile() != null);
+                menu.getMenu().findItem(R.id.action_paste).setEnabled(Clipboard.getInstance().getCurrentFile() != null);
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -372,7 +372,7 @@ public class ProjectActivity extends AppCompatActivity {
                                             }
 
                                             Snackbar.make(mDrawerLayout, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
-                                            TreeNode newFileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(newFile), newFile, mDrawerLayout));
+                                            TreeNode newFileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(newFile), newFile, mDrawerLayout));
                                             rootNode.addChild(newFileNode);
                                             treeView.setRoot(rootNode);
                                             treeView.addNode(rootNode, newFileNode);
@@ -421,10 +421,10 @@ public class ProjectActivity extends AppCompatActivity {
 
                                 return true;
                             case R.id.action_paste:
-                                File currentFile = Clippy.getInstance().getCurrentFile();
-                                TreeNode currentNode = Clippy.getInstance().getCurrentNode();
+                                File currentFile = Clipboard.getInstance().getCurrentFile();
+                                TreeNode currentNode = Clipboard.getInstance().getCurrentNode();
                                 FileTreeHolder.FileTreeItem currentItem = (FileTreeHolder.FileTreeItem) currentNode.getValue();
-                                switch (Clippy.getInstance().getType()) {
+                                switch (Clipboard.getInstance().getType()) {
                                     case COPY:
                                         if (currentFile.isDirectory()) {
                                             try {
@@ -444,7 +444,7 @@ public class ProjectActivity extends AppCompatActivity {
 
                                         Snackbar.make(mDrawerLayout, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
                                         File copyFile = new File(mProjectFile, currentFile.getName());
-                                        TreeNode copyNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(copyFile), copyFile, currentItem.view));
+                                        TreeNode copyNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(copyFile), copyFile, currentItem.view));
                                         rootNode.addChild(copyNode);
                                         treeView.setRoot(rootNode);
                                         treeView.addNode(rootNode, copyNode);
@@ -467,13 +467,13 @@ public class ProjectActivity extends AppCompatActivity {
                                         }
 
                                         Snackbar.make(mDrawerLayout, "Successfully moved " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
-                                        Clippy.getInstance().setCurrentFile(null);
+                                        Clipboard.getInstance().setCurrentFile(null);
                                         File cutFile = new File(mProjectFile, currentFile.getName());
-                                        TreeNode cutNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(cutFile), cutFile, currentItem.view));
+                                        TreeNode cutNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(cutFile), cutFile, currentItem.view));
                                         rootNode.addChild(cutNode);
                                         treeView.setRoot(rootNode);
                                         treeView.addNode(rootNode, cutNode);
-                                        treeView.removeNode(Clippy.getInstance().getCurrentNode());
+                                        treeView.removeNode(Clipboard.getInstance().getCurrentNode());
                                         break;
                                 }
                                 return true;
@@ -488,7 +488,7 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, Project.getFavicon(ProjectActivity.this, mProject));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, ProjectManager.getFavicon(ProjectActivity.this, mProject));
             this.setTaskDescription(description);
         }
     }
@@ -507,7 +507,7 @@ public class ProjectActivity extends AppCompatActivity {
                 setupFileTree(folderNode, file);
                 root.addChild(folderNode);
             } else {
-                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(Decor.getIcon(file), file, mDrawerLayout));
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(file), file, mDrawerLayout));
                 root.addChild(fileNode);
             }
         }
@@ -547,7 +547,7 @@ public class ProjectActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("position", mFileAdapter.getCount());
         bundle.putString("location", title);
-        if (Project.isImageFile(new File(title))) {
+        if (ProjectManager.isImageFile(new File(title))) {
             return Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
         } else {
             return Fragment.instantiate(this, EditorFragment.class.getName(), bundle);
@@ -764,7 +764,7 @@ public class ProjectActivity extends AppCompatActivity {
             case R.id.action_git_log:
                 List<RevCommit> commits = Giiit.getCommits(mDrawerLayout, mProjectFile);
                 @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
-                if (Pref.get(this, "dark_theme", false)) {
+                if (Prefs.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
@@ -819,7 +819,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_status:
                 @SuppressLint("InflateParams") View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
-                if (Pref.get(this, "dark_theme", false)) {
+                if (Prefs.get(this, "dark_theme", false)) {
                     layoutStatus.setBackgroundColor(0xFF333333);
                 }
 
@@ -986,7 +986,7 @@ public class ProjectActivity extends AppCompatActivity {
                                 editText.setError("Please enter a name");
                             } else {
                                 dialog.dismiss();
-                                if (Project.importFile(ProjectActivity.this, mProject, fileUri, editText.getText().toString())) {
+                                if (ProjectManager.importFile(ProjectActivity.this, mProject, fileUri, editText.getText().toString())) {
                                     Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
                                 } else {
                                     Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
@@ -1019,7 +1019,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
-        mProperties = Soup.getProperties(mProject);
+        mProperties = HTMLParser.getProperties(mProject);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.sheet_about, null);
 
@@ -1033,7 +1033,7 @@ public class ProjectActivity extends AppCompatActivity {
         description.setText(mProperties[2]);
         keywords.setText(mProperties[3]);
 
-        if (Pref.get(this, "dark_theme", false)) {
+        if (Prefs.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);
         }
 
