@@ -17,13 +17,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '27.0.1'
 
     defaultConfig {
         applicationId "io.geeteshk.hyper"
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -34,22 +34,23 @@ android {
 		}
 		
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     lintOptions {
         disable 'PrivateResource'
+        abortOnError false
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.android.support:cardview-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:27.0.0'
+    compile 'com.android.support:design:27.0.0'
+    compile 'com.android.support:recyclerview-v7:27.0.0'
+    compile 'com.android.support:cardview-v7:27.0.0'
     compile 'com.github.bmelnychuk:atv:1.2.9'
     compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile ('org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r') {
@@ -58,7 +59,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    compile 'org.jsoup:jsoup:1.10.1'
+    compile 'org.jsoup:jsoup:1.10.2'
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
     compile 'commons-io:commons-io:2.5'
     compile 'com.github.angads25:filepicker:1.0.6'

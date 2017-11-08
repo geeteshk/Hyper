@@ -16,12 +16,12 @@
 
 package io.geeteshk.hyper.git;
 
-import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 
 import java.io.File;
@@ -45,7 +45,18 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
         mRepo = repo;
         mValues = values;
         mManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(context);
+
+        String id = "hyper_git_channel";
+        if (Build.VERSION.SDK_INT >= 26) {
+            CharSequence name = mContext.getString(R.string.app_name);
+            String description = mContext.getString(R.string.git);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(id, name, importance);
+            channel.setDescription(description);
+            mManager.createNotificationChannel(channel);
+        }
+
+        mBuilder = new NotificationCompat.Builder(context, id);
     }
 
     @Override
