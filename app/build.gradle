@@ -29,11 +29,7 @@ android {
     }
 
     buildTypes {
-		debug {
-			testCoverageEnabled true
-		}
-		
-        release {
+		release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -52,15 +48,15 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:27.0.0'
     compile 'com.android.support:cardview-v7:27.0.0'
     compile 'com.github.bmelnychuk:atv:1.2.9'
-    compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
+    compile 'com.nanohttpd:nanohttpd-webserver:2.2.0'
     compile ('org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r') {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    compile 'org.jsoup:jsoup:1.10.2'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
-    compile 'commons-io:commons-io:2.5'
-    compile 'com.github.angads25:filepicker:1.0.6'
+    compile 'org.jsoup:jsoup:1.10.3'
+    compile 'de.psdev.licensesdialog:licensesdialog:1.8.3'
+    compile 'commons-io:commons-io:2.6'
+    compile 'com.github.angads25:filepicker:1.1.1'
 }

@@ -18,10 +18,13 @@ package io.geeteshk.hyper.helper;
 
 import android.util.Log;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +89,12 @@ public class Hyperion extends NanoHTTPD {
             logs.add(e.getMessage());
         }
 
-        return new Response(Response.Status.OK, mimeType, inputStream);
+        try {
+            return newFixedLengthResponse(Response.Status.OK, mimeType, IOUtils.toString(inputStream, Charset.defaultCharset()));
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+            return newFixedLengthResponse(e.toString());
+        }
     }
 
     /**
