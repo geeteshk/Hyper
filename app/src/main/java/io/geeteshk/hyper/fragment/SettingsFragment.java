@@ -3,8 +3,6 @@ package io.geeteshk.hyper.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -20,9 +18,6 @@ import java.io.File;
 import java.io.IOException;
 
 import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.License;
-import de.psdev.licensesdialog.model.Notice;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.SettingsActivity;
 import io.geeteshk.hyper.helper.Constants;
@@ -72,7 +67,8 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         final Preference factoryReset = getPreferenceManager().findPreference("factory_reset");
-        factoryReset.setEnabled(new File(Constants.HYPER_ROOT).list().length > 0);
+        String[] files = new File(Constants.HYPER_ROOT).list();
+        factoryReset.setEnabled(files != null && files.length > 0);
         factoryReset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
