@@ -18,7 +18,7 @@ COMMIT_MSG="$(git log -1)"
 
 if [[ $COMMIT_MSG != *"[apk skip]"* ]]
 then
-git config --global user.email "noreply@travis.com"
+git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis CI"
 
 git config credential.helper "store --file=.git/credentials"
@@ -28,7 +28,7 @@ cp -R app/build/outputs/apk/debug/app-debug.apk apk/canary.apk
 
 git add apk/canary.apk
 git commit -F- <<EOF
-APK update from CI
+Build #${TRAVIS_BUILD_NUMBER}: Canary APK updated from CI
 $COMMIT_MSG
 
 [ci skip]
