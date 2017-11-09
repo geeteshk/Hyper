@@ -216,7 +216,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
 
     @Override
     public void toggle(boolean active) {
-        arrow.animate().rotation(active ? 0 : -90);
+        arrow.animate().rotation(active ? 0 : -90).setDuration(150);
     }
 
     public static class TagTreeItem {

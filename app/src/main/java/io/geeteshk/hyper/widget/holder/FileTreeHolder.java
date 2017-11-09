@@ -303,7 +303,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
     @Override
     public void toggle(boolean active) {
-        arrow.animate().rotation(active ? 0 : -90);
+        arrow.animate().rotation(active ? 0 : -90).setDuration(150);
     }
 
     public static class FileTreeItem {
