@@ -109,7 +109,7 @@ public class WebActivity extends AppCompatActivity {
 
         localUrl = getIntent().getStringExtra("localUrl");
         if (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) {
-            localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + File.separator + indexStr;
+            localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + indexStr;
         }
 
         webView.loadUrl(localUrl);
