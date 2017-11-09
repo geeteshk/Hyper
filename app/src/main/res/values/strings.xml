@@ -96,7 +96,7 @@
     <string name="name">Name</string>
     <string name="from_line">\t— From line\t</string>
     <string name="of">\tof\t</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="remove">Remove</string>
     <string name="git">Git</string>
     <string name="git_init">Init</string>

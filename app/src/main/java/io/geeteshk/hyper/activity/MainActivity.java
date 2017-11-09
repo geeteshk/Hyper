@@ -72,7 +72,7 @@ import io.geeteshk.hyper.helper.Styles;
 /**
  * Main activity to show all main content
  */
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     /**
      * Intent code for selecting an icon
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @BindView(R.id.fab_create) FloatingActionButton cloneButton;
 
     /**
-     * InputStream to read image from strorage
+     * InputStream to read image from storage
      */
     InputStream imageStream;
     ImageView projectIcon;
@@ -375,7 +375,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getMenuInflater().inflate(R.menu.menu_main, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(this);
+        searchView.setOnCloseListener(this);
         return true;
     }
 
@@ -424,11 +426,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
         contentsList = new ArrayList<>(Arrays.asList(contents));
         DataValidator.removeBroken(contentsList);
         for (Iterator iterator = contentsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();
-            if (!string.toLowerCase(Locale.getDefault()).startsWith(query)) {
+            if (!string.toLowerCase(Locale.getDefault()).contains(newText)) {
                 iterator.remove();
             }
         }
@@ -439,7 +446,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onClose() {
+        contentsList = new ArrayList<>(Arrays.asList(contents));
+        DataValidator.removeBroken(contentsList);
+        projectAdapter = new ProjectAdapter(MainActivity.this, contentsList, coordinatorLayout, projectsList);
+        projectsList.setAdapter(projectAdapter);
         return false;
     }
 }
