@@ -24,6 +24,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -70,18 +71,20 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.FileAdapter;
 import io.geeteshk.hyper.adapter.GitLogsAdapter;
 import io.geeteshk.hyper.fragment.EditorFragment;
 import io.geeteshk.hyper.fragment.ImageFragment;
-import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.git.GitWrapper;
 import io.geeteshk.hyper.helper.Clipboard;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.ResourceHelper;
+import io.geeteshk.hyper.helper.HTMLParser;
 import io.geeteshk.hyper.helper.Prefs;
 import io.geeteshk.hyper.helper.ProjectManager;
-import io.geeteshk.hyper.helper.HTMLParser;
+import io.geeteshk.hyper.helper.ResourceHelper;
 import io.geeteshk.hyper.helper.Styles;
 import io.geeteshk.hyper.widget.DiffView;
 import io.geeteshk.hyper.widget.holder.FileTreeHolder;
@@ -100,25 +103,28 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private static final int IMPORT_FILE = 101;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.file_browser) LinearLayout fileBrowser;
+    
     /**
      * Currently open files
      */
-    private ArrayList<String> mFiles;
+    private ArrayList<String> openFiles;
     /**
      * Spinner and Adapter to handle files
      */
-    private Spinner mSpinner;
-    private ArrayAdapter<String> mFileAdapter;
+    private Spinner fileSpinner;
+    private ArrayAdapter<String> fileAdapter;
     /**
      * Drawer related stuffs
      */
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle toggle;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     /**
      * ProjectManager definitions
      */
-    private String mProject;
-    private File mProjectFile, mIndexFile;
+    private String projectName;
+    private File projectDir, indexFile;
 
     private TreeNode rootNode;
     private AndroidTreeView treeView;
@@ -134,8 +140,12 @@ public class ProjectActivity extends AppCompatActivity {
             R.drawable.material_bg_8
     };
 
-    private String[] mProperties;
-    private TextView headerTitle, headerDesc;
+    private String[] props;
+    @BindView(R.id.header_title) TextView headerTitle;
+    @BindView(R.id.header_desc) TextView headerDesc;
+    @BindView(R.id.header_background) RelativeLayout headerBackground;
+    @BindView(R.id.header_icon) ImageView headerIcon;
+    @BindView(R.id.root_overflow) ImageButton overflow;
 
     /**
      * Method called when activity is created
@@ -144,38 +154,37 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mProject = getIntent().getStringExtra("project");
-        mProjectFile = new File(Constants.HYPER_ROOT + File.separator + mProject);
-        mIndexFile = ProjectManager.getIndexFile(mProject);
+        projectName = getIntent().getStringExtra("project");
+        projectDir = new File(Constants.HYPER_ROOT + File.separator + projectName);
+        indexFile = ProjectManager.getIndexFile(projectName);
 
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
+        ButterKnife.bind(this);
 
         if (getIntent().hasExtra("files")) {
-            mFiles = getIntent().getStringArrayListExtra("files");
+            openFiles = getIntent().getStringArrayListExtra("files");
         } else {
-            mFiles = new ArrayList<>();
-            mFiles.add(mIndexFile.getPath());
+            openFiles = new ArrayList<>();
+            openFiles.add(indexFile.getPath());
         }
 
-        mProperties = HTMLParser.getProperties(mProject);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mSpinner = new Spinner(this);
-        mFileAdapter = new FileAdapter(this, mFiles);
-        mSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        mSpinner.setAdapter(mFileAdapter);
-        toolbar.addView(mSpinner);
+        props = HTMLParser.getProperties(projectName);
+        fileSpinner = new Spinner(this);
+        fileAdapter = new FileAdapter(this, openFiles);
+        fileSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        fileSpinner.setAdapter(fileAdapter);
+        toolbar.addView(fileSpinner);
         if (Prefs.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        fileSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.editor_fragment, getFragment(mFiles.get(position)))
+                        .replace(R.id.editor_fragment, getFragment(openFiles.get(position)))
                         .commit();
             }
 
@@ -190,24 +199,23 @@ public class ProjectActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("");
         }
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
             }
 
             @Override
-            public void onDrawerOpened(View drawerView) {
-                mProperties = HTMLParser.getProperties(mProject);
-                headerTitle.setText(mProperties[0]);
-                headerDesc.setText(mProperties[1]);
+            public void onDrawerOpened(@NonNull View drawerView) {
+                props = HTMLParser.getProperties(projectName);
+                headerTitle.setText(props[0]);
+                headerDesc.setText(props[1]);
             }
 
             @Override
-            public void onDrawerClosed(View drawerView) {
+            public void onDrawerClosed(@NonNull View drawerView) {
 
             }
 
@@ -217,11 +225,10 @@ public class ProjectActivity extends AppCompatActivity {
             }
         });
 
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        LinearLayout fileBrowser = (LinearLayout) findViewById(R.id.file_browser);
         rootNode = TreeNode.root();
-        setupFileTree(rootNode, mProjectFile);
+        setupFileTree(rootNode, projectDir);
         treeView = new AndroidTreeView(ProjectActivity.this, rootNode);
         treeView.setDefaultAnimation(true);
         treeView.setDefaultViewHolder(FileTreeHolder.class);
@@ -231,18 +238,18 @@ public class ProjectActivity extends AppCompatActivity {
             public void onClick(TreeNode node, Object value) {
                 FileTreeHolder.FileTreeItem item = (FileTreeHolder.FileTreeItem) value;
                 if (node.isLeaf() && item.file.isFile()) {
-                    if (mFiles.contains(item.file.getPath())) {
+                    if (openFiles.contains(item.file.getPath())) {
                         setFragment(item.file.getPath(), false);
-                        mDrawerLayout.closeDrawers();
+                        drawerLayout.closeDrawers();
                     } else {
                         if (!ProjectManager.isBinaryFile(item.file)) {
                             setFragment(item.file.getPath(), true);
-                            mDrawerLayout.closeDrawers();
+                            drawerLayout.closeDrawers();
                         } else if (ProjectManager.isImageFile(item.file)) {
                             setFragment(item.file.getPath(), true);
-                            mDrawerLayout.closeDrawers();
+                            drawerLayout.closeDrawers();
                         } else {
-                            Snackbar.make(mDrawerLayout, R.string.not_text_file, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(drawerLayout, R.string.not_text_file, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -269,7 +276,7 @@ public class ProjectActivity extends AppCompatActivity {
                                 removeFragment(item.file.getPath());
 
                                 final Snackbar snackbar = Snackbar.make(
-                                        mDrawerLayout,
+                                        drawerLayout,
                                         "Deleted " + file + ".",
                                         Snackbar.LENGTH_LONG
                                 );
@@ -318,21 +325,15 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         fileBrowser.addView(treeView.getView());
-        RelativeLayout headerBackground = (RelativeLayout) findViewById(R.id.header_background);
-        ImageView headerIcon = (ImageView) findViewById(R.id.header_icon);
-        final ImageButton headerOverflow = (ImageButton) findViewById(R.id.root_overflow);
-        headerTitle = (TextView) findViewById(R.id.header_title);
-        headerDesc = (TextView) findViewById(R.id.header_desc);
-
         headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(int) (Math.random() * 8)]);
-        headerIcon.setImageBitmap(ProjectManager.getFavicon(ProjectActivity.this, mProject));
-        headerTitle.setText(mProperties[0]);
-        headerDesc.setText(mProperties[1]);
+        headerIcon.setImageBitmap(ProjectManager.getFavicon(ProjectActivity.this, projectName));
+        headerTitle.setText(props[0]);
+        headerDesc.setText(props[1]);
 
-        headerOverflow.setOnClickListener(new View.OnClickListener() {
+        overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(ProjectActivity.this, headerOverflow);
+                PopupMenu menu = new PopupMenu(ProjectActivity.this, overflow);
                 menu.getMenuInflater().inflate(R.menu.menu_file_options, menu.getMenu());
                 menu.getMenu().findItem(R.id.action_copy).setVisible(false);
                 menu.getMenu().findItem(R.id.action_cut).setVisible(false);
@@ -345,7 +346,7 @@ public class ProjectActivity extends AppCompatActivity {
                             case R.id.action_new_file:
                                 AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(ProjectActivity.this);
                                 View newFileRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
-                                final TextInputEditText fileName = (TextInputEditText) newFileRootView.findViewById(R.id.input_text);
+                                final TextInputEditText fileName = newFileRootView.findViewById(R.id.input_text);
                                 fileName.setHint(R.string.file_name);
 
                                 newFileBuilder.setTitle("New file");
@@ -363,16 +364,16 @@ public class ProjectActivity extends AppCompatActivity {
                                         } else {
                                             newFileDialog.dismiss();
                                             String fileStr = fileName.getText().toString();
-                                            File newFile = new File(mProjectFile, fileStr);
+                                            File newFile = new File(projectDir, fileStr);
                                             try {
                                                 FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset());
                                             } catch (IOException e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
 
-                                            Snackbar.make(mDrawerLayout, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
-                                            TreeNode newFileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(newFile), newFile, mDrawerLayout));
+                                            Snackbar.make(drawerLayout, "Created " + fileStr + ".", Snackbar.LENGTH_SHORT).show();
+                                            TreeNode newFileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(newFile), newFile, drawerLayout));
                                             rootNode.addChild(newFileNode);
                                             treeView.setRoot(rootNode);
                                             treeView.addNode(rootNode, newFileNode);
@@ -384,7 +385,7 @@ public class ProjectActivity extends AppCompatActivity {
                             case R.id.action_new_folder:
                                 AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(ProjectActivity.this);
                                 View newFolderRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
-                                final TextInputEditText folderName = (TextInputEditText) newFolderRootView.findViewById(R.id.input_text);
+                                final TextInputEditText folderName = newFolderRootView.findViewById(R.id.input_text);
                                 folderName.setHint(R.string.folder_name);
 
                                 newFolderBuilder.setTitle("New folder");
@@ -402,16 +403,16 @@ public class ProjectActivity extends AppCompatActivity {
                                         } else {
                                             newFolderDialog.dismiss();
                                             String folderStr = folderName.getText().toString();
-                                            File newFolder = new File(mProjectFile, folderStr);
+                                            File newFolder = new File(projectDir, folderStr);
                                             try {
                                                 FileUtils.forceMkdir(newFolder);
                                             } catch (IOException e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
 
-                                            Snackbar.make(mDrawerLayout, "Created " + folderStr + ".", Snackbar.LENGTH_SHORT).show();
-                                            TreeNode newFolderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, newFolder, mDrawerLayout));
+                                            Snackbar.make(drawerLayout, "Created " + folderStr + ".", Snackbar.LENGTH_SHORT).show();
+                                            TreeNode newFolderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, newFolder, drawerLayout));
                                             rootNode.addChild(newFolderNode);
                                             treeView.setRoot(rootNode);
                                             treeView.addNode(rootNode, newFolderNode);
@@ -428,22 +429,22 @@ public class ProjectActivity extends AppCompatActivity {
                                     case COPY:
                                         if (currentFile.isDirectory()) {
                                             try {
-                                                FileUtils.copyDirectoryToDirectory(currentFile, mProjectFile);
+                                                FileUtils.copyDirectoryToDirectory(currentFile, projectDir);
                                             } catch (Exception e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
                                         } else {
                                             try {
-                                                FileUtils.copyFileToDirectory(currentFile, mProjectFile);
+                                                FileUtils.copyFileToDirectory(currentFile, projectDir);
                                             } catch (Exception e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
                                         }
 
-                                        Snackbar.make(mDrawerLayout, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
-                                        File copyFile = new File(mProjectFile, currentFile.getName());
+                                        Snackbar.make(drawerLayout, "Successfully copied " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
+                                        File copyFile = new File(projectDir, currentFile.getName());
                                         TreeNode copyNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(copyFile), copyFile, currentItem.view));
                                         rootNode.addChild(copyNode);
                                         treeView.setRoot(rootNode);
@@ -452,23 +453,23 @@ public class ProjectActivity extends AppCompatActivity {
                                     case CUT:
                                         if (currentFile.isDirectory()) {
                                             try {
-                                                FileUtils.moveDirectoryToDirectory(currentFile, mProjectFile, false);
+                                                FileUtils.moveDirectoryToDirectory(currentFile, projectDir, false);
                                             } catch (Exception e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
                                         } else {
                                             try {
-                                                FileUtils.moveFileToDirectory(currentFile, mProjectFile, false);
+                                                FileUtils.moveFileToDirectory(currentFile, projectDir, false);
                                             } catch (Exception e) {
                                                 Log.e(TAG, e.toString());
-                                                Snackbar.make(mDrawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
+                                                Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show();
                                             }
                                         }
 
-                                        Snackbar.make(mDrawerLayout, "Successfully moved " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(drawerLayout, "Successfully moved " + currentFile.getName() + ".", Snackbar.LENGTH_SHORT).show();
                                         Clipboard.getInstance().setCurrentFile(null);
-                                        File cutFile = new File(mProjectFile, currentFile.getName());
+                                        File cutFile = new File(projectDir, currentFile.getName());
                                         TreeNode cutNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(cutFile), cutFile, currentItem.view));
                                         rootNode.addChild(cutNode);
                                         treeView.setRoot(rootNode);
@@ -488,7 +489,7 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(mProject, ProjectManager.getFavicon(ProjectActivity.this, mProject));
+            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(projectName, ProjectManager.getFavicon(ProjectActivity.this, projectName));
             this.setTaskDescription(description);
         }
     }
@@ -503,20 +504,20 @@ public class ProjectActivity extends AppCompatActivity {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file, mDrawerLayout));
+                TreeNode folderNode = new TreeNode(new FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file, drawerLayout));
                 setupFileTree(folderNode, file);
                 root.addChild(folderNode);
             } else {
-                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(file), file, mDrawerLayout));
+                TreeNode fileNode = new TreeNode(new FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(file), file, drawerLayout));
                 root.addChild(fileNode);
             }
         }
     }
 
     private void removeFragment(String file) {
-        mFiles.remove(file);
-        mFileAdapter.remove(file);
-        mFileAdapter.notifyDataSetChanged();
+        openFiles.remove(file);
+        fileAdapter.remove(file);
+        fileAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -527,11 +528,11 @@ public class ProjectActivity extends AppCompatActivity {
      */
     private void setFragment(String file, boolean add) {
         if (add) {
-            mFileAdapter.add(file);
-            mFileAdapter.notifyDataSetChanged();
+            fileAdapter.add(file);
+            fileAdapter.notifyDataSetChanged();
         }
 
-        mSpinner.setSelection(mFileAdapter.getPosition(file), true);
+        fileSpinner.setSelection(fileAdapter.getPosition(file), true);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.editor_fragment, getFragment(file))
                 .commit();
@@ -545,7 +546,7 @@ public class ProjectActivity extends AppCompatActivity {
      */
     public Fragment getFragment(String title) {
         Bundle bundle = new Bundle();
-        bundle.putInt("position", mFileAdapter.getCount());
+        bundle.putInt("position", fileAdapter.getCount());
         bundle.putString("location", title);
         if (ProjectManager.isImageFile(new File(title))) {
             return Fragment.instantiate(this, ImageFragment.class.getName(), bundle);
@@ -563,16 +564,16 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isGitRepo = new File(mProjectFile, ".git").exists() && new File(mProjectFile, ".git").isDirectory();
+        boolean isGitRepo = new File(projectDir, ".git").exists() && new File(projectDir, ".git").isDirectory();
         boolean canCommit = false;
         boolean canCheckout = false;
         boolean hasRemotes = false;
-        boolean isHtml = ((String) mSpinner.getSelectedItem()).endsWith(".html");
+        boolean isHtml = ((String) fileSpinner.getSelectedItem()).endsWith(".html");
         if (isGitRepo) {
-            canCommit = Giiit.canCommit(mDrawerLayout, mProjectFile);
-            canCheckout = Giiit.canCheckout(mDrawerLayout, mProjectFile);
-            hasRemotes = Giiit.getRemotes(mDrawerLayout, mProjectFile) != null &&
-                    Giiit.getRemotes(mDrawerLayout, mProjectFile).size() > 0;
+            canCommit = GitWrapper.canCommit(drawerLayout, projectDir);
+            canCheckout = GitWrapper.canCheckout(drawerLayout, projectDir);
+            hasRemotes = GitWrapper.getRemotes(drawerLayout, projectDir) != null &&
+                    GitWrapper.getRemotes(drawerLayout, projectDir).size() > 0;
         }
 
         menu.findItem(R.id.action_view).setEnabled(isHtml);
@@ -598,7 +599,7 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
+        toggle.syncState();
     }
 
     /**
@@ -609,7 +610,7 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        toggle.onConfigurationChanged(newConfig);
     }
 
     /**
@@ -617,8 +618,8 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawers();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
         }
@@ -649,13 +650,13 @@ public class ProjectActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
-                runIntent.putExtra("url", "file:///" + mIndexFile.getPath());
-                runIntent.putExtra("name", mProject);
+                runIntent.putExtra("url", "file:///" + indexFile.getPath());
+                runIntent.putExtra("name", projectName);
                 startActivity(runIntent);
                 return true;
             case R.id.action_view:
                 Intent viewIntent = new Intent(ProjectActivity.this, ViewActivity.class);
-                viewIntent.putExtra("html_path", mFiles.get(mSpinner.getSelectedItemPosition()));
+                viewIntent.putExtra("html_path", openFiles.get(fileSpinner.getSelectedItemPosition()));
                 startActivityForResult(viewIntent, VIEW_CODE);
                 return true;
             case R.id.action_import_file:
@@ -669,15 +670,15 @@ public class ProjectActivity extends AppCompatActivity {
                 showAbout();
                 return true;
             case R.id.action_git_init:
-                Giiit.init(ProjectActivity.this, mProjectFile, mDrawerLayout);
+                GitWrapper.init(ProjectActivity.this, projectDir, drawerLayout);
                 return true;
             case R.id.action_git_add:
-                Giiit.add(mDrawerLayout, mProjectFile);
+                GitWrapper.add(drawerLayout, projectDir);
                 return true;
             case R.id.action_git_commit:
                 AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
                 View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
-                final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.input_text);
+                final TextInputEditText editText = view.findViewById(R.id.input_text);
                 gitCommitBuilder.setTitle(R.string.git_commit);
                 editText.setHint(R.string.commit_message);
                 gitCommitBuilder.setView(view);
@@ -700,7 +701,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (!editText.getText().toString().isEmpty()) {
-                            Giiit.commit(ProjectActivity.this, mDrawerLayout, mProjectFile, editText.getText().toString());
+                            GitWrapper.commit(ProjectActivity.this, drawerLayout, projectDir, editText.getText().toString());
                             dialog4.dismiss();
                         } else {
                             editText.setError(getString(R.string.commit_message_empty));
@@ -715,22 +716,22 @@ public class ProjectActivity extends AppCompatActivity {
                 View pushView = LayoutInflater.from(ProjectActivity.this)
                         .inflate(R.layout.dialog_push, null, false);
 
-                final Spinner spinner = (Spinner) pushView.findViewById(R.id.remotes_spinner);
-                final CheckBox dryRun = (CheckBox) pushView.findViewById(R.id.dry_run);
-                final CheckBox force = (CheckBox) pushView.findViewById(R.id.force);
-                final CheckBox thin = (CheckBox) pushView.findViewById(R.id.thin);
-                final CheckBox tags = (CheckBox) pushView.findViewById(R.id.tags);
+                final Spinner spinner = pushView.findViewById(R.id.remotes_spinner);
+                final CheckBox dryRun = pushView.findViewById(R.id.dry_run);
+                final CheckBox force = pushView.findViewById(R.id.force);
+                final CheckBox thin = pushView.findViewById(R.id.thin);
+                final CheckBox tags = pushView.findViewById(R.id.tags);
 
-                final TextInputEditText pushUsername = (TextInputEditText) pushView.findViewById(R.id.push_username);
-                final TextInputEditText pushPassword = (TextInputEditText) pushView.findViewById(R.id.push_password);
+                final TextInputEditText pushUsername = pushView.findViewById(R.id.push_username);
+                final TextInputEditText pushPassword = pushView.findViewById(R.id.push_password);
 
-                spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(mDrawerLayout, mProjectFile)));
+                spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)));
                 gitPushBuilder.setView(pushView);
                 gitPushBuilder.setPositiveButton("PUSH", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.push(ProjectActivity.this, mDrawerLayout, mProjectFile, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
+                        GitWrapper.push(ProjectActivity.this, drawerLayout, projectDir, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
                     }
                 });
 
@@ -744,31 +745,31 @@ public class ProjectActivity extends AppCompatActivity {
                 View pullView = LayoutInflater.from(ProjectActivity.this)
                         .inflate(R.layout.dialog_pull, null, false);
 
-                final Spinner spinner1 = (Spinner) pullView.findViewById(R.id.remotes_spinner);
+                final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
 
-                final TextInputEditText pullUsername = (TextInputEditText) pullView.findViewById(R.id.pull_username);
-                final TextInputEditText pullPassword = (TextInputEditText) pullView.findViewById(R.id.pull_password);
+                final TextInputEditText pullUsername = pullView.findViewById(R.id.pull_username);
+                final TextInputEditText pullPassword = pullView.findViewById(R.id.pull_password);
 
-                spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, Giiit.getRemotes(mDrawerLayout, mProjectFile)));
+                spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)));
                 gitPullBuilder.setView(pullView);
                 gitPullBuilder.setPositiveButton("PULL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.pull(ProjectActivity.this, mDrawerLayout, mProjectFile, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                        GitWrapper.pull(ProjectActivity.this, drawerLayout, projectDir, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
                     }
                 });
 
                 gitPullBuilder.setNegativeButton(R.string.cancel, null);
                 gitPullBuilder.create().show();
             case R.id.action_git_log:
-                List<RevCommit> commits = Giiit.getCommits(mDrawerLayout, mProjectFile);
+                List<RevCommit> commits = GitWrapper.getCommits(drawerLayout, projectDir);
                 @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
                 if (Prefs.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
-                RecyclerView logsList = (RecyclerView) layoutLog.findViewById(R.id.logs_list);
+                RecyclerView logsList = layoutLog.findViewById(R.id.logs_list);
                 RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
                 RecyclerView.Adapter adapter = new GitLogsAdapter(ProjectActivity.this, commits);
 
@@ -781,7 +782,8 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_diff:
                 final int[] chosen = {-1, -1};
-                final List<RevCommit> commitsToDiff = Giiit.getCommits(mDrawerLayout, mProjectFile);
+                final List<RevCommit> commitsToDiff = GitWrapper.getCommits(drawerLayout, projectDir);
+                assert commitsToDiff != null;
                 final CharSequence[] commitNames = new CharSequence[commitsToDiff.size()];
                 for (int i = 0; i < commitNames.length; i++) {
                     commitNames[i] = commitsToDiff.get(i).getShortMessage();
@@ -802,9 +804,9 @@ public class ProjectActivity extends AppCompatActivity {
                                 dialogInterface.cancel();
                                 chosen[1] = i;
                                 AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                                SpannableString string = Giiit.diff(mDrawerLayout, mProjectFile, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
+                                SpannableString string = GitWrapper.diff(drawerLayout, projectDir, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
                                 View rootView = inflater.inflate(R.layout.dialog_diff, null, false);
-                                DiffView diffView = (DiffView) rootView.findViewById(R.id.diff_view);
+                                DiffView diffView = rootView.findViewById(R.id.diff_view);
                                 diffView.setDiffText(string);
                                 diffBuilder.setView(rootView);
                                 diffBuilder.create().show();
@@ -824,17 +826,17 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 TextView conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders;
-                conflict = (TextView) layoutStatus.findViewById(R.id.status_conflicting);
-                added = (TextView) layoutStatus.findViewById(R.id.status_added);
-                changed = (TextView) layoutStatus.findViewById(R.id.status_changed);
-                missing = (TextView) layoutStatus.findViewById(R.id.status_missing);
-                modified = (TextView) layoutStatus.findViewById(R.id.status_modified);
-                removed = (TextView) layoutStatus.findViewById(R.id.status_removed);
-                uncommitted = (TextView) layoutStatus.findViewById(R.id.status_uncommitted);
-                untracked = (TextView) layoutStatus.findViewById(R.id.status_untracked);
-                untrackedFolders = (TextView) layoutStatus.findViewById(R.id.status_untracked_folders);
+                conflict = layoutStatus.findViewById(R.id.status_conflicting);
+                added = layoutStatus.findViewById(R.id.status_added);
+                changed = layoutStatus.findViewById(R.id.status_changed);
+                missing = layoutStatus.findViewById(R.id.status_missing);
+                modified = layoutStatus.findViewById(R.id.status_modified);
+                removed = layoutStatus.findViewById(R.id.status_removed);
+                uncommitted = layoutStatus.findViewById(R.id.status_uncommitted);
+                untracked = layoutStatus.findViewById(R.id.status_untracked);
+                untrackedFolders = layoutStatus.findViewById(R.id.status_untracked_folders);
 
-                Giiit.status(mDrawerLayout, mProjectFile, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
+                GitWrapper.status(drawerLayout, projectDir, conflict, added, changed, missing, modified, removed, uncommitted, untracked, untrackedFolders);
 
                 BottomSheetDialog dialogStatus = new BottomSheetDialog(this);
                 dialogStatus.setContentView(layoutStatus);
@@ -844,8 +846,8 @@ public class ProjectActivity extends AppCompatActivity {
                 AlertDialog.Builder gitBranch = new AlertDialog.Builder(ProjectActivity.this);
                 View branchView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_git_branch, null, false);
                 gitBranch.setTitle("New branch");
-                final EditText editText5 = (EditText) branchView.findViewById(R.id.branch_name);
-                final CheckBox checkBox = (CheckBox) branchView.findViewById(R.id.checkout);
+                final EditText editText5 = branchView.findViewById(R.id.branch_name);
+                final CheckBox checkBox = branchView.findViewById(R.id.checkout);
                 checkBox.setText(R.string.checkout);
                 gitBranch.setView(branchView);
                 gitBranch.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
@@ -861,7 +863,7 @@ public class ProjectActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (!editText5.getText().toString().isEmpty()) {
-                            Giiit.createBranch(ProjectActivity.this, mDrawerLayout, mProjectFile, editText5.getText().toString(), checkBox.isChecked());
+                            GitWrapper.createBranch(ProjectActivity.this, drawerLayout, projectDir, editText5.getText().toString(), checkBox.isChecked());
                             dialog5.dismiss();
                         } else {
                             editText5.setError(getString(R.string.branch_name_empty));
@@ -871,7 +873,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_remove:
                 AlertDialog.Builder gitRemove = new AlertDialog.Builder(this);
-                final List<Ref> branchesList = Giiit.getBranches(mDrawerLayout, mProjectFile);
+                final List<Ref> branchesList = GitWrapper.getBranches(drawerLayout, projectDir);
                 if (branchesList != null) {
                     final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
                     for (int i = 0; i < itemsMultiple.length; i++) {
@@ -895,7 +897,7 @@ public class ProjectActivity extends AppCompatActivity {
                     gitRemove.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Giiit.deleteBranch(mDrawerLayout, mProjectFile, toDelete.toArray(new String[toDelete.size()]));
+                            GitWrapper.deleteBranch(drawerLayout, projectDir, toDelete.toArray(new String[toDelete.size()]));
                             dialogInterface.dismiss();
                         }
                     });
@@ -907,7 +909,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_checkout:
                 AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
-                final List<Ref> branches = Giiit.getBranches(mDrawerLayout, mProjectFile);
+                final List<Ref> branches = GitWrapper.getBranches(drawerLayout, projectDir);
                 int checkedItem = -1;
                 CharSequence[] items = new CharSequence[0];
                 if (branches != null) {
@@ -918,7 +920,7 @@ public class ProjectActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < items.length; i++) {
-                    String branch = Giiit.getCurrentBranch(mDrawerLayout, mProjectFile);
+                    String branch = GitWrapper.getCurrentBranch(drawerLayout, projectDir);
                     if (branch != null) {
                         if (branch.equals(items[i])) {
                             checkedItem = i;
@@ -931,7 +933,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         assert branches != null;
                         dialogInterface.dismiss();
-                        Giiit.checkout(ProjectActivity.this, mDrawerLayout, mProjectFile, branches.get(i).getName());
+                        GitWrapper.checkout(ProjectActivity.this, drawerLayout, projectDir, branches.get(i).getName());
                     }
                 });
 
@@ -941,7 +943,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_remote:
                 Intent remoteIntent = new Intent(ProjectActivity.this, RemotesActivity.class);
-                remoteIntent.putExtra("project_file", mProjectFile.getPath());
+                remoteIntent.putExtra("project_file", projectDir.getPath());
                 startActivity(remoteIntent);
                 return true;
         }
@@ -966,7 +968,7 @@ public class ProjectActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.name);
                     View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
-                    final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.input_text);
+                    final TextInputEditText editText = view.findViewById(R.id.input_text);
                     editText.setHint(R.string.file_name);
                     builder.setView(view);
                     builder.setCancelable(false);
@@ -986,10 +988,10 @@ public class ProjectActivity extends AppCompatActivity {
                                 editText.setError("Please enter a name");
                             } else {
                                 dialog.dismiss();
-                                if (ProjectManager.importFile(ProjectActivity.this, mProject, fileUri, editText.getText().toString())) {
-                                    Snackbar.make(mDrawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
+                                if (ProjectManager.importFile(ProjectActivity.this, projectName, fileUri, editText.getText().toString())) {
+                                    Snackbar.make(drawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show();
                                 } else {
-                                    Snackbar.make(mDrawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(drawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -1002,7 +1004,7 @@ public class ProjectActivity extends AppCompatActivity {
                     Intent intent = new Intent(ProjectActivity.this, ProjectActivity.class);
                     intent.putExtras(getIntent().getExtras());
                     intent.addFlags(getIntent().getFlags());
-                    intent.putStringArrayListExtra("files", mFiles);
+                    intent.putStringArrayListExtra("files", openFiles);
                     startActivity(intent);
                     finish();
                 }
@@ -1010,7 +1012,7 @@ public class ProjectActivity extends AppCompatActivity {
                 break;
         }
 
-        setupFileTree(rootNode, mProjectFile);
+        setupFileTree(rootNode, projectDir);
         treeView.setRoot(rootNode);
     }
 
@@ -1019,19 +1021,19 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @SuppressLint("InflateParams")
     private void showAbout() {
-        mProperties = HTMLParser.getProperties(mProject);
+        props = HTMLParser.getProperties(projectName);
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.sheet_about, null);
 
-        TextView name = (TextView) layout.findViewById(R.id.project_name);
-        TextView author = (TextView) layout.findViewById(R.id.project_author);
-        TextView description = (TextView) layout.findViewById(R.id.project_description);
-        TextView keywords = (TextView) layout.findViewById(R.id.project_keywords);
+        TextView name = layout.findViewById(R.id.project_name);
+        TextView author = layout.findViewById(R.id.project_author);
+        TextView description = layout.findViewById(R.id.project_description);
+        TextView keywords = layout.findViewById(R.id.project_keywords);
 
-        name.setText(mProperties[0]);
-        author.setText(mProperties[1]);
-        description.setText(mProperties[2]);
-        keywords.setText(mProperties[3]);
+        name.setText(props[0]);
+        author.setText(props[1]);
+        description.setText(props[2]);
+        keywords.setText(props[3]);
 
         if (Prefs.get(this, "dark_theme", false)) {
             layout.setBackgroundColor(0xFF333333);

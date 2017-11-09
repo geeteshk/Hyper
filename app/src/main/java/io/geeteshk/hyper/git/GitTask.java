@@ -30,39 +30,39 @@ import io.geeteshk.hyper.R;
 
 public abstract class GitTask extends AsyncTask<String, String, Boolean> {
 
-    public NotificationManager mManager;
-    public NotificationCompat.Builder mBuilder;
+    public NotificationManager manager;
+    public NotificationCompat.Builder builder;
     public int id = 1;
 
-    public Context mContext;
-    public View mView;
-    public File mRepo;
-    public String[] mValues;
+    public Context context;
+    public View rootView;
+    public File repo;
+    public String[] messages;
 
     public GitTask(Context context, View view, File repo, String[] values) {
-        mContext = context;
-        mView = view;
-        mRepo = repo;
-        mValues = values;
-        mManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.context = context;
+        rootView = view;
+        this.repo = repo;
+        messages = values;
+        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String id = "hyper_git_channel";
         if (Build.VERSION.SDK_INT >= 26) {
-            CharSequence name = mContext.getString(R.string.app_name);
-            String description = mContext.getString(R.string.git);
+            CharSequence name = context.getString(R.string.app_name);
+            String description = context.getString(R.string.git);
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(id, name, importance);
             channel.setDescription(description);
-            mManager.createNotificationChannel(channel);
+            manager.createNotificationChannel(channel);
         }
 
-        mBuilder = new NotificationCompat.Builder(context, id);
+        builder = new NotificationCompat.Builder(context, id);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mBuilder.setContentTitle(mValues[0])
+        builder.setContentTitle(messages[0])
                 .setSmallIcon(R.drawable.ic_git_small)
                 .setAutoCancel(false)
                 .setOngoing(true);
@@ -71,24 +71,24 @@ public abstract class GitTask extends AsyncTask<String, String, Boolean> {
     @Override
     protected void onProgressUpdate(final String... values) {
         super.onProgressUpdate(values);
-        mBuilder.setContentText(values[0])
+        builder.setContentText(values[0])
                 .setProgress(Integer.valueOf(values[2]), Integer.valueOf(values[1]), false);
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(values[0]));
-        mManager.notify(id, mBuilder.build());
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(values[0]));
+        manager.notify(id, builder.build());
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean) {
-            mBuilder.setContentText(mValues[1]);
+            builder.setContentText(messages[1]);
         } else {
-            mBuilder.setContentText(mValues[2]);
+            builder.setContentText(messages[2]);
         }
 
-        mBuilder.setProgress(0, 0, false)
+        builder.setProgress(0, 0, false)
                 .setAutoCancel(true)
                 .setOngoing(false);
-        mManager.notify(id, mBuilder.build());
+        manager.notify(id, builder.build());
     }
 }

@@ -41,6 +41,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Styles;
 import io.geeteshk.hyper.widget.holder.TagTreeHolder;
@@ -49,34 +51,32 @@ public class ViewActivity extends AppCompatActivity {
 
     private static final String TAG = ViewActivity.class.getSimpleName();
 
-    Document document;
-    File mFile;
+    Document htmlDoc;
+    File htmlFile;
 
-    LinearLayout viewLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.view_layout) LinearLayout viewLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
+        ButterKnife.bind(this);
 
         String htmlPath = getIntent().getStringExtra("html_path");
-        mFile = new File(htmlPath);
+        htmlFile = new File(htmlPath);
         TreeNode rootNode = TreeNode.root();
         try {
-            setupViewTree(rootNode, mFile);
+            setupViewTree(rootNode, htmlFile);
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(htmlFile.getName());
+        toolbar.setSubtitle(htmlFile.getPath().substring(htmlFile.getPath().indexOf("Hyper/") + 6));
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle(mFile.getName());
-        getSupportActionBar().setSubtitle(mFile.getPath().substring(mFile.getPath().indexOf("Hyper/") + 6));
-
-        viewLayout = (LinearLayout) findViewById(R.id.view_layout);
         AndroidTreeView treeView = new AndroidTreeView(ViewActivity.this, rootNode);
         treeView.setDefaultAnimation(true);
         treeView.setDefaultViewHolder(TagTreeHolder.class);
@@ -96,7 +96,7 @@ public class ViewActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_save:
                 try {
-                    FileUtils.writeStringToFile(mFile, document.outerHtml(), Charset.defaultCharset(), false);
+                    FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false);
                 } catch (IOException e) {
                     Log.e(TAG, e.toString());
                 }
@@ -110,14 +110,14 @@ public class ViewActivity extends AppCompatActivity {
     }
 
     private void setupViewTree(TreeNode root, File html) throws IOException {
-        document = Jsoup.parse(html, "UTF-8");
+        htmlDoc = Jsoup.parse(html, "UTF-8");
 
-        Element head = document.head();
+        Element head = htmlDoc.head();
         TreeNode headNode = new TreeNode(new TagTreeHolder.TagTreeItem(head));
         setupElementTree(headNode, head);
         root.addChild(headNode);
 
-        Element body = document.body();
+        Element body = htmlDoc.body();
         TreeNode bodyNode = new TreeNode(new TagTreeHolder.TagTreeItem(body));
         setupElementTree(bodyNode, body);
         root.addChild(bodyNode);
@@ -141,7 +141,7 @@ public class ViewActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
-                    FileUtils.writeStringToFile(mFile, document.outerHtml(), Charset.defaultCharset(), false);
+                    FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false);
                 } catch (IOException e) {
                     Log.e(TAG, e.toString());
                 }

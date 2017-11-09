@@ -43,6 +43,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.LogsAdapter;
 import io.geeteshk.hyper.helper.Constants;
@@ -60,14 +62,16 @@ public class WebActivity extends AppCompatActivity {
     /**
      * WebView to display project
      */
-    private WebView mWebView;
+    @BindView(R.id.web_view) WebView webView;
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     /**
      * ArrayList for JavaScript logs
      */
-    private ArrayList<String> mLogs;
+    private ArrayList<String> jsLogs;
 
-    String url;
+    String localUrl;
 
     /**
      * Method called when activity is created
@@ -78,57 +82,53 @@ public class WebActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String project = getIntent().getStringExtra("name");
-        mLogs = new ArrayList<>();
-        NetworkUtils.setServer(new HyperServer(project, mLogs));
+        jsLogs = new ArrayList<>();
+        NetworkUtils.setServer(new HyperServer(project, jsLogs));
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
 
         try {
             NetworkUtils.getServer().start();
         } catch (IOException e) {
-            mLogs.add(e.toString());
+            jsLogs.add(e.toString());
         }
 
         setContentView(R.layout.activity_web);
-
+        ButterKnife.bind(this);
+        
         File indexFile = ProjectManager.getIndexFile(project);
         String indexStr = indexFile.getPath();
-        indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        assert toolbar != null;
+        indexStr = indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
         if (Prefs.get(this, "dark_theme", false)) {
             toolbar.setPopupTheme(R.style.Hyper_Dark);
         }
 
         toolbar.setTitle(project);
         setSupportActionBar(toolbar);
+        webView.getSettings().setJavaScriptEnabled(true);
 
-        mWebView = (WebView) findViewById(R.id.web_view);
-        assert mWebView != null;
-        mWebView.getSettings().setJavaScriptEnabled(true);
-
-        url = getIntent().getStringExtra("url");
+        localUrl = getIntent().getStringExtra("localUrl");
         if (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) {
-            url = "http://" + NetworkUtils.getIpAddress() + ":8080" + File.separator + indexStr;
+            localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + File.separator + indexStr;
         }
 
-        mWebView.loadUrl(url);
-        mWebView.setWebChromeClient(new WebChromeClient() {
+        webView.loadUrl(localUrl);
+        webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                mLogs.add(consoleMessage.message() + getString(R.string.from_line) + consoleMessage.lineNumber() + getString(R.string.of) + consoleMessage.sourceId());
+                jsLogs.add(consoleMessage.message() + getString(R.string.from_line) + consoleMessage.lineNumber() + getString(R.string.of) + consoleMessage.sourceId());
                 return true;
             }
         });
-        mWebView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                mWebView.animate().alpha(1);
+            public void onPageFinished(WebView view, String localUrl) {
+                super.onPageFinished(view, localUrl);
+                webView.animate().alpha(1);
             }
         });
 
-        getSupportActionBar().setSubtitle(url);
+        toolbar.setSubtitle(localUrl);
     }
 
     /**
@@ -167,7 +167,7 @@ public class WebActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         switch (item.getItemId()) {
             case R.id.web_browser:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(localUrl));
                 startActivity(intent);
                 return true;
             case R.id.web_logs:
@@ -176,9 +176,9 @@ public class WebActivity extends AppCompatActivity {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
-                RecyclerView logsList = (RecyclerView) layoutLog.findViewById(R.id.logs_list);
+                RecyclerView logsList = layoutLog.findViewById(R.id.logs_list);
                 RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-                RecyclerView.Adapter adapter = new LogsAdapter(mLogs);
+                RecyclerView.Adapter adapter = new LogsAdapter(jsLogs);
 
                 logsList.setLayoutManager(manager);
                 logsList.setAdapter(adapter);
@@ -194,145 +194,145 @@ public class WebActivity extends AppCompatActivity {
                 }
 
                 SwitchCompat allowContentAccess, allowFileAccess, allowFileAccessFromFileURLs, allowUniversalAccessFromFileURLs, blockNetworkImage, blockNetworkLoads, builtInZoomControls, database, displayZoomControls, domStorage, jsCanOpenWindows, js, loadOverview, imageLoad, saveForm, wideView;
-                allowContentAccess = (SwitchCompat) layout.findViewById(R.id.allow_content_access);
-                allowFileAccess = (SwitchCompat) layout.findViewById(R.id.allow_file_access);
-                allowFileAccessFromFileURLs = (SwitchCompat) layout.findViewById(R.id.allow_file_access_from_file_urls);
-                allowUniversalAccessFromFileURLs = (SwitchCompat) layout.findViewById(R.id.allow_universal_access_from_file_urls);
-                blockNetworkImage = (SwitchCompat) layout.findViewById(R.id.block_network_image);
-                blockNetworkLoads = (SwitchCompat) layout.findViewById(R.id.block_network_loads);
-                builtInZoomControls = (SwitchCompat) layout.findViewById(R.id.built_in_zoom_controls);
-                database = (SwitchCompat) layout.findViewById(R.id.database_enabled);
-                displayZoomControls = (SwitchCompat) layout.findViewById(R.id.display_zoom_controls);
-                domStorage = (SwitchCompat) layout.findViewById(R.id.dom_storage_enabled);
-                jsCanOpenWindows = (SwitchCompat) layout.findViewById(R.id.javascript_can_open_windows_automatically);
-                js = (SwitchCompat) layout.findViewById(R.id.javascript_enabled);
-                loadOverview = (SwitchCompat) layout.findViewById(R.id.load_with_overview_mode);
-                imageLoad = (SwitchCompat) layout.findViewById(R.id.loads_images_automatically);
-                saveForm = (SwitchCompat) layout.findViewById(R.id.save_form_data);
-                wideView = (SwitchCompat) layout.findViewById(R.id.use_wide_view_port);
+                allowContentAccess = layout.findViewById(R.id.allow_content_access);
+                allowFileAccess = layout.findViewById(R.id.allow_file_access);
+                allowFileAccessFromFileURLs = layout.findViewById(R.id.allow_file_access_from_file_urls);
+                allowUniversalAccessFromFileURLs = layout.findViewById(R.id.allow_universal_access_from_file_urls);
+                blockNetworkImage = layout.findViewById(R.id.block_network_image);
+                blockNetworkLoads = layout.findViewById(R.id.block_network_loads);
+                builtInZoomControls = layout.findViewById(R.id.built_in_zoom_controls);
+                database = layout.findViewById(R.id.database_enabled);
+                displayZoomControls = layout.findViewById(R.id.display_zoom_controls);
+                domStorage = layout.findViewById(R.id.dom_storage_enabled);
+                jsCanOpenWindows = layout.findViewById(R.id.javascript_can_open_windows_automatically);
+                js = layout.findViewById(R.id.javascript_enabled);
+                loadOverview = layout.findViewById(R.id.load_with_overview_mode);
+                imageLoad = layout.findViewById(R.id.loads_images_automatically);
+                saveForm = layout.findViewById(R.id.save_form_data);
+                wideView = layout.findViewById(R.id.use_wide_view_port);
 
-                allowContentAccess.setChecked(mWebView.getSettings().getAllowContentAccess());
-                allowFileAccess.setChecked(mWebView.getSettings().getAllowFileAccess());
-                blockNetworkImage.setChecked(mWebView.getSettings().getBlockNetworkImage());
-                blockNetworkLoads.setChecked(mWebView.getSettings().getBlockNetworkLoads());
-                builtInZoomControls.setChecked(mWebView.getSettings().getBuiltInZoomControls());
-                database.setChecked(mWebView.getSettings().getDatabaseEnabled());
-                displayZoomControls.setChecked(mWebView.getSettings().getDisplayZoomControls());
-                domStorage.setChecked(mWebView.getSettings().getDomStorageEnabled());
-                jsCanOpenWindows.setChecked(mWebView.getSettings().getJavaScriptCanOpenWindowsAutomatically());
-                js.setChecked(mWebView.getSettings().getJavaScriptEnabled());
-                loadOverview.setChecked(mWebView.getSettings().getLoadWithOverviewMode());
-                imageLoad.setChecked(mWebView.getSettings().getLoadsImagesAutomatically());
-                saveForm.setChecked(mWebView.getSettings().getSaveFormData());
-                wideView.setChecked(mWebView.getSettings().getUseWideViewPort());
+                allowContentAccess.setChecked(webView.getSettings().getAllowContentAccess());
+                allowFileAccess.setChecked(webView.getSettings().getAllowFileAccess());
+                blockNetworkImage.setChecked(webView.getSettings().getBlockNetworkImage());
+                blockNetworkLoads.setChecked(webView.getSettings().getBlockNetworkLoads());
+                builtInZoomControls.setChecked(webView.getSettings().getBuiltInZoomControls());
+                database.setChecked(webView.getSettings().getDatabaseEnabled());
+                displayZoomControls.setChecked(webView.getSettings().getDisplayZoomControls());
+                domStorage.setChecked(webView.getSettings().getDomStorageEnabled());
+                jsCanOpenWindows.setChecked(webView.getSettings().getJavaScriptCanOpenWindowsAutomatically());
+                js.setChecked(webView.getSettings().getJavaScriptEnabled());
+                loadOverview.setChecked(webView.getSettings().getLoadWithOverviewMode());
+                imageLoad.setChecked(webView.getSettings().getLoadsImagesAutomatically());
+                saveForm.setChecked(webView.getSettings().getSaveFormData());
+                wideView.setChecked(webView.getSettings().getUseWideViewPort());
 
                 allowContentAccess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setAllowContentAccess(isChecked);
+                        webView.getSettings().setAllowContentAccess(isChecked);
                     }
                 });
 
                 allowFileAccess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setAllowFileAccess(isChecked);
+                        webView.getSettings().setAllowFileAccess(isChecked);
                     }
                 });
 
                 blockNetworkImage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setBlockNetworkImage(isChecked);
+                        webView.getSettings().setBlockNetworkImage(isChecked);
                     }
                 });
 
                 blockNetworkLoads.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setBlockNetworkLoads(isChecked);
+                        webView.getSettings().setBlockNetworkLoads(isChecked);
                     }
                 });
 
                 builtInZoomControls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setBuiltInZoomControls(isChecked);
+                        webView.getSettings().setBuiltInZoomControls(isChecked);
                     }
                 });
 
                 database.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setDatabaseEnabled(isChecked);
+                        webView.getSettings().setDatabaseEnabled(isChecked);
                     }
                 });
 
                 displayZoomControls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setDisplayZoomControls(isChecked);
+                        webView.getSettings().setDisplayZoomControls(isChecked);
                     }
                 });
 
                 domStorage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setDomStorageEnabled(isChecked);
+                        webView.getSettings().setDomStorageEnabled(isChecked);
                     }
                 });
 
                 jsCanOpenWindows.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(isChecked);
+                        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(isChecked);
                     }
                 });
 
                 js.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setJavaScriptEnabled(isChecked);
+                        webView.getSettings().setJavaScriptEnabled(isChecked);
                     }
                 });
 
                 loadOverview.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setLoadWithOverviewMode(isChecked);
+                        webView.getSettings().setLoadWithOverviewMode(isChecked);
                     }
                 });
 
                 imageLoad.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setLoadsImagesAutomatically(isChecked);
+                        webView.getSettings().setLoadsImagesAutomatically(isChecked);
                     }
                 });
 
                 saveForm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setSaveFormData(isChecked);
+                        webView.getSettings().setSaveFormData(isChecked);
                     }
                 });
 
                 wideView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mWebView.getSettings().setUseWideViewPort(isChecked);
+                        webView.getSettings().setUseWideViewPort(isChecked);
                     }
                 });
 
 
                 if (Build.VERSION.SDK_INT >= 16) {
-                    allowFileAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowFileAccessFromFileURLs());
-                    allowUniversalAccessFromFileURLs.setChecked(mWebView.getSettings().getAllowUniversalAccessFromFileURLs());
+                    allowFileAccessFromFileURLs.setChecked(webView.getSettings().getAllowFileAccessFromFileURLs());
+                    allowUniversalAccessFromFileURLs.setChecked(webView.getSettings().getAllowUniversalAccessFromFileURLs());
                     allowFileAccessFromFileURLs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            mWebView.getSettings().setAllowFileAccessFromFileURLs(isChecked);
+                            webView.getSettings().setAllowFileAccessFromFileURLs(isChecked);
                         }
                     });
 
@@ -340,7 +340,7 @@ public class WebActivity extends AppCompatActivity {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            mWebView.getSettings().setAllowUniversalAccessFromFileURLs(isChecked);
+                            webView.getSettings().setAllowUniversalAccessFromFileURLs(isChecked);
                         }
                     });
                 } else {

@@ -16,7 +16,6 @@
 
 package io.geeteshk.hyper.activity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -57,21 +56,22 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.CreateAdapter;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
-import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.git.GitWrapper;
 import io.geeteshk.hyper.helper.Constants;
-import io.geeteshk.hyper.helper.ResourceHelper;
+import io.geeteshk.hyper.helper.DataValidator;
 import io.geeteshk.hyper.helper.Prefs;
 import io.geeteshk.hyper.helper.ProjectManager;
+import io.geeteshk.hyper.helper.ResourceHelper;
 import io.geeteshk.hyper.helper.Styles;
-import io.geeteshk.hyper.helper.DataValidator;
 
 /**
  * Main activity to show all main content
  */
-@SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     /**
@@ -84,18 +84,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     /**
      * ProjectManager related stuff
      */
-    String[] mObjects;
-    ArrayList<String> mObjectsList;
-    ProjectAdapter mProjectAdapter;
-    RecyclerView mProjectsList;
+    String[] contents;
+    ArrayList<String> contentsList;
+    ProjectAdapter projectAdapter;
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.project_list) RecyclerView projectsList;
+    @BindView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.fab_create) FloatingActionButton cloneButton;
 
     /**
      * InputStream to read image from strorage
      */
-    InputStream mStream;
-    ImageView mIcon;
-
-    CoordinatorLayout mLayout;
+    InputStream imageStream;
+    ImageView projectIcon;
 
     /**
      * Method called when activity is created
@@ -108,27 +110,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-
-        mObjects = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
+        contents = new File(Constants.HYPER_ROOT).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return dir.isDirectory() && !name.equals(".git") && ProjectManager.isValid(name);
             }
         });
 
-        mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        if (mObjects != null) {
-            mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
+        if (contents != null) {
+            contentsList = new ArrayList<>(Arrays.asList(contents));
         } else {
-            mObjectsList = new ArrayList<>();
+            contentsList = new ArrayList<>();
         }
         
-        DataValidator.removeBroken(mObjectsList);
-        mProjectsList = (RecyclerView) findViewById(R.id.project_list);
-        mProjectAdapter = new ProjectAdapter(this, mObjectsList, mLayout, mProjectsList);
+        DataValidator.removeBroken(contentsList);
+        projectAdapter = new ProjectAdapter(this, contentsList, coordinatorLayout, projectsList);
         boolean orientation = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
         int numColumns = 2;
@@ -145,12 +144,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
-        mProjectsList.setLayoutManager(layoutManager);
-        mProjectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
-        mProjectsList.setItemAnimator(new DefaultItemAnimator());
-        mProjectsList.setAdapter(mProjectAdapter);
+        projectsList.setLayoutManager(layoutManager);
+        projectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
+        projectsList.setItemAnimator(new DefaultItemAnimator());
+        projectsList.setAdapter(projectAdapter);
 
-        final FloatingActionButton cloneButton = (FloatingActionButton) findViewById(R.id.fab_create);
         cloneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,18 +164,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 View rootView = LayoutInflater.from(MainActivity.this)
                                         .inflate(R.layout.dialog_create, null, false);
 
-                                final TextInputLayout nameLayout = (TextInputLayout) rootView.findViewById(R.id.name_layout);
-                                final TextInputLayout authorLayout = (TextInputLayout) rootView.findViewById(R.id.author_layout);
-                                final TextInputLayout descriptionLayout = (TextInputLayout) rootView.findViewById(R.id.description_layout);
-                                final TextInputLayout keywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
+                                final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
+                                final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
+                                final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
+                                final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
 
-                                final Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.type_spinner);
+                                final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
                                 typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
                                 typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
-                                RadioButton defaultIcon = (RadioButton) rootView.findViewById(R.id.default_icon);
-                                RadioButton chooseIcon = (RadioButton) rootView.findViewById(R.id.choose_icon);
-                                mIcon = (ImageView) rootView.findViewById(R.id.favicon_image);
+                                RadioButton defaultIcon = rootView.findViewById(R.id.default_icon);
+                                RadioButton chooseIcon = rootView.findViewById(R.id.choose_icon);
+                                projectIcon = rootView.findViewById(R.id.favicon_image);
 
                                 nameLayout.getEditText().setText(Prefs.get(MainActivity.this, "name", ""));
                                 authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
@@ -188,8 +186,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         if (isChecked) {
-                                            mIcon.setImageResource(R.drawable.ic_launcher);
-                                            mStream = null;
+                                            projectIcon.setImageResource(R.drawable.ic_launcher);
+                                            imageStream = null;
                                         }
                                     }
                                 });
@@ -228,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
                                             Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
 
-                                            ProjectManager.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), mStream, mProjectAdapter, mLayout, typeSpinner.getSelectedItemPosition());
+                                            ProjectManager.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), imageStream, projectAdapter, coordinatorLayout, typeSpinner.getSelectedItemPosition());
                                             dialog1.dismiss();
                                         }
                                     }
@@ -241,10 +239,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 View cloneView = LayoutInflater.from(MainActivity.this)
                                         .inflate(R.layout.dialog_clone, null, false);
 
-                                final TextInputEditText file = (TextInputEditText) cloneView.findViewById(R.id.clone_name);
-                                final TextInputEditText remote = (TextInputEditText) cloneView.findViewById(R.id.clone_url);
-                                final TextInputEditText username = (TextInputEditText) cloneView.findViewById(R.id.clone_username);
-                                final TextInputEditText password = (TextInputEditText) cloneView.findViewById(R.id.clone_password);
+                                final TextInputEditText file = cloneView.findViewById(R.id.clone_name);
+                                final TextInputEditText remote = cloneView.findViewById(R.id.clone_url);
+                                final TextInputEditText username = cloneView.findViewById(R.id.clone_username);
+                                final TextInputEditText password = cloneView.findViewById(R.id.clone_password);
 
                                 file.setText(Prefs.get(MainActivity.this, "clone_name", ""));
                                 remote.setText(Prefs.get(MainActivity.this, "remote", ""));
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             Prefs.store(MainActivity.this, "clone_name", file.getText().toString());
                                             Prefs.store(MainActivity.this, "remote", remoteStr);
 
-                                            Giiit.clone(MainActivity.this, mLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), mProjectAdapter, remoteStr, username.getText().toString(), password.getText().toString());
+                                            GitWrapper.clone(MainActivity.this, coordinatorLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), projectAdapter, remoteStr, username.getText().toString(), password.getText().toString());
                                             dialog2.dismiss();
                                         }
                                     }
@@ -299,12 +297,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             View rootView = LayoutInflater.from(MainActivity.this)
                                                     .inflate(R.layout.dialog_import, null, false);
 
-                                            final TextInputLayout nameLayout = (TextInputLayout) rootView.findViewById(R.id.name_layout);
-                                            final TextInputLayout authorLayout = (TextInputLayout) rootView.findViewById(R.id.author_layout);
-                                            final TextInputLayout descriptionLayout = (TextInputLayout) rootView.findViewById(R.id.description_layout);
-                                            final TextInputLayout keywordsLayout = (TextInputLayout) rootView.findViewById(R.id.keywords_layout);
+                                            final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
+                                            final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
+                                            final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
+                                            final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
 
-                                            final Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.type_spinner);
+                                            final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
                                             typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
                                             typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
@@ -336,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
                                                         Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
 
-                                                        ProjectManager._import(files[0], nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), mProjectAdapter, mLayout);
+                                                        ProjectManager._import(files[0], nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), projectAdapter, coordinatorLayout);
                                                         dialog1.dismiss();
                                                     }
                                                 }
@@ -355,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
-        mProjectsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        projectsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -408,8 +406,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (resultCode == RESULT_OK) {
                     try {
                         Uri selectedImage = data.getData();
-                        mStream = MainActivity.this.getContentResolver().openInputStream(selectedImage);
-                        mIcon.setImageBitmap(ResourceHelper.decodeUri(MainActivity.this, selectedImage));
+                        imageStream = MainActivity.this.getContentResolver().openInputStream(selectedImage);
+                        projectIcon.setImageBitmap(ResourceHelper.decodeUri(MainActivity.this, selectedImage));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -426,17 +424,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        mObjectsList = new ArrayList<>(Arrays.asList(mObjects));
-        DataValidator.removeBroken(mObjectsList);
-        for (Iterator iterator = mObjectsList.iterator(); iterator.hasNext(); ) {
+        contentsList = new ArrayList<>(Arrays.asList(contents));
+        DataValidator.removeBroken(contentsList);
+        for (Iterator iterator = contentsList.iterator(); iterator.hasNext(); ) {
             String string = (String) iterator.next();
             if (!string.toLowerCase(Locale.getDefault()).startsWith(query)) {
                 iterator.remove();
             }
         }
 
-        mProjectAdapter = new ProjectAdapter(MainActivity.this, mObjectsList, mLayout, mProjectsList);
-        mProjectsList.setAdapter(mProjectAdapter);
+        projectAdapter = new ProjectAdapter(MainActivity.this, contentsList, coordinatorLayout, projectsList);
+        projectsList.setAdapter(projectAdapter);
         return true;
     }
 

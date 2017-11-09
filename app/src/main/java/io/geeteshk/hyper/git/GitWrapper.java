@@ -47,12 +47,12 @@ import io.geeteshk.hyper.adapter.ProjectAdapter;
 /**
  * Helper class to handle git functions
  */
-public class Giiit {
+public class GitWrapper {
 
     /**
      * Log TAG
      */
-    private static final String TAG = Giiit.class.getSimpleName();
+    private static final String TAG = GitWrapper.class.getSimpleName();
 
     /**
      * git init
@@ -75,7 +75,6 @@ public class Giiit {
     /**
      * git add -A
      *
-     * @param context context to make toast
      * @param repo repo to stage files
      */
     public static void add(View view, File repo) {
@@ -115,7 +114,6 @@ public class Giiit {
     /**
      * git status
      *
-     * @param context context to make toast
      * @param repo repo to view status of
      * @param t text views to set status to
      */
@@ -198,7 +196,6 @@ public class Giiit {
     /**
      * git log
      *
-     * @param context context to make toast
      * @param repo to get commits from
      * @return list of commits
      */
@@ -229,7 +226,6 @@ public class Giiit {
     /**
      * git branch
      *
-     * @param context context to make toast
      * @param repo repo to get branches from
      * @return list of branches
      */
@@ -279,7 +275,6 @@ public class Giiit {
     /**
      * git branch -d branches
      *
-     * @param context context to make toast
      * @param repo to delete branches from
      * @param branches to delete
      */

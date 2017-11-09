@@ -20,6 +20,7 @@ package io.geeteshk.hyper.fragment;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -55,9 +56,8 @@ public class ImageFragment extends Fragment {
      */
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         String location = getArguments().getString("location");
-        assert location != null;
         File file = new File(location);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());

@@ -72,58 +72,58 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
     /**
      * Handler used to update colours when code is changed
      */
-    private final Handler mUpdateHandler = new Handler();
+    private final Handler updateHandler = new Handler();
     /**
      * Custom listener
      */
-    public OnTextChangedListener mOnTextChangedListener = null;
+    public OnTextChangedListener onTextChangedListener = null;
     /**
      * Delay used to update code
      */
-    public int mUpdateDelay = 2000;
+    public int updateDelay = 2000;
 
-    int mLine = 0;
-    int mLineDiff = 0;
+    int currentLine = 0;
+    int lineDiff = 0;
     /**
      * Type of code set
      */
-    private CodeType mType;
+    private CodeType codeType;
     /**
      * Checks if code has been changed
      */
-    private boolean mModified = true;
+    private boolean fileModified = true;
     /**
      * Context used to get preferences
      */
-    private Context mContext;
+    private Context context;
     /**
      * Rect to represent each line
      */
-    private Rect mRect;
+    private Rect lineRect;
     /**
      * Paint to draw line numbers
      */
-    private Paint mNumberPaint, mLineShadowPaint;
-    private boolean mHighlightStarted;
+    private Paint numberPaint, lineShadowPaint;
+    private boolean isHighlighting;
     /**
      * Runnable used to update colours when code is changed
      */
-    private final Runnable mUpdateRunnable = new Runnable() {
+    private final Runnable updateRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!mHighlightStarted) {
+            if (!isHighlighting) {
                 Editable e = getText();
-                if (mOnTextChangedListener != null)
-                    mOnTextChangedListener.onTextChanged(e.toString());
+                if (onTextChangedListener != null)
+                    onTextChangedListener.onTextChanged(e.toString());
                 highlightWithoutChange(e);
             }
         }
     };
 
-    private Colors mColors;
-    private Patterns mPatterns;
+    private Colors colors;
+    private Patterns patterns;
 
-    private boolean mLineNumbers;
+    private boolean hasLineNumbers;
 
     /**
      * Public constructor
@@ -142,7 +142,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      */
     public Editor(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
+        this.context = context;
         init();
     }
 
@@ -154,36 +154,36 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
     public void setTextHighlighted(CharSequence text) {
         cancelUpdate();
 
-        mModified = false;
+        fileModified = false;
         setText(highlight(new SpannableStringBuilder(text)));
-        mModified = true;
+        fileModified = true;
 
-        if (mOnTextChangedListener != null) mOnTextChangedListener.onTextChanged(text.toString());
+        if (onTextChangedListener != null) onTextChangedListener.onTextChanged(text.toString());
     }
 
     /**
      * Code used to initialise editor
      */
     private void init() {
-        mColors = new Colors(!Prefs.get(mContext, "dark_theme_editor", false));
-        mPatterns = new Patterns();
-        mRect = new Rect();
-        mLineNumbers = Prefs.get(mContext, "show_line_numbers", true);
+        colors = new Colors(!Prefs.get(context, "dark_theme_editor", false));
+        patterns = new Patterns();
+        lineRect = new Rect();
+        hasLineNumbers = Prefs.get(context, "show_line_numbers", true);
 
-        mLineShadowPaint = new Paint();
-        mLineShadowPaint.setStyle(Paint.Style.FILL);
-        mLineShadowPaint.setColor(mColors.getColorLineShadow());
+        lineShadowPaint = new Paint();
+        lineShadowPaint.setStyle(Paint.Style.FILL);
+        lineShadowPaint.setColor(colors.getColorLineShadow());
 
-        if (mLineNumbers) {
-            mNumberPaint = new Paint();
-            mNumberPaint.setStyle(Paint.Style.FILL);
-            mNumberPaint.setAntiAlias(true);
-            mNumberPaint.setTextSize(ResourceHelper.dpToPx(mContext, 14));
-            mNumberPaint.setTextAlign(Paint.Align.RIGHT);
-            mNumberPaint.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
-            mNumberPaint.setColor(mColors.getColorNumber());
+        if (hasLineNumbers) {
+            numberPaint = new Paint();
+            numberPaint.setStyle(Paint.Style.FILL);
+            numberPaint.setAntiAlias(true);
+            numberPaint.setTextSize(ResourceHelper.dpToPx(context, 14));
+            numberPaint.setTextAlign(Paint.Align.RIGHT);
+            numberPaint.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
+            numberPaint.setColor(colors.getColorNumber());
         } else {
-            int padding = ResourceHelper.dpToPx(mContext, 8);
+            int padding = ResourceHelper.dpToPx(context, 8);
             if (Build.VERSION.SDK_INT > 15) {
                 setPaddingRelative(padding, padding, padding, 0);
             } else {
@@ -191,16 +191,16 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             }
         }
 
-        setBackgroundColor(mColors.getColorBackground());
-        setTextColor(mColors.getColorText());
-        setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/Consolas.ttf"));
+        setBackgroundColor(colors.getColorBackground());
+        setTextColor(colors.getColorText());
+        setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Consolas.ttf"));
         setHorizontallyScrolling(true);
         setCustomSelectionActionModeCallback(new EditorCallback());
         setHorizontallyScrolling(false);
         setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                if (mModified && end - start == 1 && start < source.length() && dstart < dest.length()) {
+                if (fileModified && end - start == 1 && start < source.length() && dstart < dest.length()) {
                     char c = source.charAt(start);
                     if (c == '\n') return autoIndent(source, dest, dstart, dend);
                 }
@@ -221,7 +221,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      * Prevent code from updating
      */
     private void cancelUpdate() {
-        mUpdateHandler.removeCallbacks(mUpdateRunnable);
+        updateHandler.removeCallbacks(updateRunnable);
     }
 
     /**
@@ -230,9 +230,9 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      * @param e text to be highlighted
      */
     private void highlightWithoutChange(Editable e) {
-        mModified = false;
+        fileModified = false;
         highlight(e);
-        mModified = true;
+        fileModified = true;
     }
 
     /**
@@ -242,103 +242,103 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      * @return highlighted text
      */
     private Editable highlight(Editable e) {
-        mHighlightStarted = true;
+        isHighlighting = true;
 
         try {
             if (e.length() == 0) return e;
             if (hasSpans(e)) clearSpans(e);
 
             Matcher m;
-            switch (mType) {
+            switch (codeType) {
                 case HTML:
-                    for (m = mPatterns.getPatternKeywords().matcher(e); m.find(); ) {
+                    for (m = patterns.getPatternKeywords().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == '<' || e.toString().charAt(m.start() - 1) == '/') {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(colors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
-                    for (m = mPatterns.getPatternBuiltins().matcher(e); m.find(); ) {
+                    for (m = patterns.getPatternBuiltins().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.start() - 1) == ' ' && e.toString().charAt(m.end()) == '=') {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(colors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
-                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternComments().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternComments().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
                 case CSS:
-                    for (m = mPatterns.getPatternKeywords().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternKeywords().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternParams().matcher(e); m.find(); ) {
+                    for (m = patterns.getPatternParams().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.end()) == ':') {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(colors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
                     for (int index = e.toString().indexOf(":"); index >= 0; index = e.toString().indexOf(":", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(colors.getColorEnding()), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("."); index >= 0; index = e.toString().indexOf(".", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(colors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("#"); index >= 0; index = e.toString().indexOf("#", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(colors.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternEndings().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternEndings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorEnding()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternCommentsOther().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
                 case JS:
-                    for (m = mPatterns.getPatternDatatypes().matcher(e); m.find(); ) {
+                    for (m = patterns.getPatternDatatypes().matcher(e); m.find(); ) {
                         if (e.toString().charAt(m.end()) == ' ') {
-                            e.setSpan(new ForegroundColorSpan(mColors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            e.setSpan(new ForegroundColorSpan(colors.getColorParams()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     }
 
-                    for (m = mPatterns.getPatternFunctions().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorFunctions()), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternFunctions().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorFunctions()), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternSymbols().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternSymbols().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorKeyword()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     for (int index = e.toString().indexOf("null"); index >= 0; index = e.toString().indexOf("null", index + 1)) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorEnding()), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        e.setSpan(new ForegroundColorSpan(colors.getColorEnding()), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternNumbers().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternNumbers().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternBooleans().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternBooleans().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternStrings().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternStrings().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
-                    for (m = mPatterns.getPatternCommentsOther().matcher(e); m.find(); ) {
-                        e.setSpan(new ForegroundColorSpan(mColors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    for (m = patterns.getPatternCommentsOther().matcher(e); m.find(); ) {
+                        e.setSpan(new ForegroundColorSpan(colors.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     break;
             }
@@ -346,7 +346,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             Log.e(TAG, ex.toString());
         }
 
-        mHighlightStarted = false;
+        isHighlighting = false;
         return e;
     }
 
@@ -356,7 +356,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      * @param type of code
      */
     public void setType(CodeType type) {
-        mType = type;
+        codeType = type;
     }
 
     /**
@@ -382,7 +382,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      */
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-        if (mLineNumbers) {
+        if (hasLineNumbers) {
             int cursorLine = getCurrentCursorLine();
             int lineBounds;
             int lineHeight = getLineHeight();
@@ -390,26 +390,26 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             List<CharSequence> lines = getLines();
 
             for (int i = 0; i < lineCount; i++) {
-                lineBounds = getLineBounds(i - mLineDiff, mRect);
+                lineBounds = getLineBounds(i - lineDiff, lineRect);
                 if (lines.get(i).toString().endsWith("\n") || i == lineCount - 1) {
-                    if (mLineNumbers) canvas.drawText(String.valueOf(mLine + 1), 100, lineBounds, mNumberPaint);
-                    mLine += 1;
-                    mLineDiff = 0;
+                    if (hasLineNumbers) canvas.drawText(String.valueOf(currentLine + 1), 100, lineBounds, numberPaint);
+                    currentLine += 1;
+                    lineDiff = 0;
                 } else {
-                    mLineDiff += 1;
+                    lineDiff += 1;
                 }
 
                 if (i == cursorLine) {
-                    if (mLineNumbers) {
-                        canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, mLineShadowPaint);
+                    if (hasLineNumbers) {
+                        canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, lineShadowPaint);
                     } else {
 
                     }
                 }
 
                 if (i == lineCount - 1) {
-                    mLine = 0;
-                    mLineDiff = 0;
+                    currentLine = 0;
+                    lineDiff = 0;
                 }
             }
         } else {
@@ -417,8 +417,8 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             int lineBounds;
             int lineHeight = getLineHeight();
 
-            lineBounds = getLineBounds(cursorLine - mLineDiff, mRect);
-            canvas.drawRect(0, 8 + lineBounds - lineHeight, getWidth(), lineBounds + 12, mLineShadowPaint);
+            lineBounds = getLineBounds(cursorLine - lineDiff, lineRect);
+            canvas.drawRect(0, 8 + lineBounds - lineHeight, getWidth(), lineBounds + 12, lineShadowPaint);
         }
 
         super.onDraw(canvas);
@@ -529,8 +529,8 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
     }
 
     private void setupAutoComplete() {
-        String[] items = mPatterns.getPatternKeywords().pattern().replace("(", "").replace(")", "").substring(2, mPatterns.getPatternKeywords().pattern().length() - 2).split("\\|");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, items);
+        String[] items = patterns.getPatternKeywords().pattern().replace("(", "").replace(")", "").substring(2, patterns.getPatternKeywords().pattern().length() - 2).split("\\|");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, items);
         setAdapter(adapter);
 
         setThreshold(1);
@@ -618,9 +618,9 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             public void afterTextChanged(Editable e) {
                 cancelUpdate();
 
-                if (!mModified) return;
+                if (!fileModified) return;
 
-                mUpdateHandler.postDelayed(mUpdateRunnable, mUpdateDelay);
+                updateHandler.postDelayed(updateRunnable, updateDelay);
             }
         });
     }
@@ -651,7 +651,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             switch (item.getItemId()) {
                 case 1:
                     String selected = getSelectedString();
-                    LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+                    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                     @SuppressLint("InflateParams") View layout = inflater.inflate(R.layout.dialog_refactor, null);
 
                     final EditText replaceFrom = (EditText) layout.findViewById(R.id.replace_from);
@@ -659,10 +659,10 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
                     replaceFrom.setText(selected);
 
                     AlertDialog.Builder builder;
-                    if (Prefs.get(mContext, "dark_theme", false)) {
-                        builder = new AlertDialog.Builder(mContext, R.style.Hyper_Dark);
+                    if (Prefs.get(context, "dark_theme", false)) {
+                        builder = new AlertDialog.Builder(context, R.style.Hyper_Dark);
                     } else {
-                        builder = new AlertDialog.Builder(mContext);
+                        builder = new AlertDialog.Builder(context);
                     }
 
                     builder.setView(layout);
@@ -679,9 +679,9 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
                             String replaceToStr = replaceTo.getText().toString();
 
                             if (replaceFromStr.isEmpty()) {
-                                replaceFrom.setError(mContext.getString(R.string.empty_field_no_no));
+                                replaceFrom.setError(context.getString(R.string.empty_field_no_no));
                             } else if (replaceToStr.isEmpty()) {
-                                replaceTo.setError(mContext.getString(R.string.empty_field_no_no));
+                                replaceTo.setError(context.getString(R.string.empty_field_no_no));
                             } else {
                                 setText(getText().toString().replace(replaceFromStr, replaceToStr));
                                 dialog.dismiss();
@@ -692,7 +692,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
                     return true;
                 case 2:
                     String startComment = "", endComment = "";
-                    switch (mType) {
+                    switch (codeType) {
                         case HTML:
                             startComment = "<!-- ";
                             endComment = " -->";

@@ -27,7 +27,6 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -38,13 +37,12 @@ import com.unnamed.b.atv.model.TreeNode;
 import org.jsoup.nodes.Element;
 
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.activity.ProjectActivity;
 import io.geeteshk.hyper.adapter.AttrsAdapter;
 import io.geeteshk.hyper.text.HtmlCompat;
 
 public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.TagTreeItem> {
 
-    ImageView arrow;
+    private ImageView arrow;
 
     public TagTreeHolder(Context context) {
         super(context);
@@ -54,9 +52,9 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
     public View createNodeView(final TreeNode node, final TagTreeItem value) {
         final LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_element, null, false);
-        TextView tagName = (TextView) view.findViewById(R.id.element_name);
-        arrow = (ImageView) view.findViewById(R.id.element_arrow);
-        final ImageButton overflow = (ImageButton) view.findViewById(R.id.element_overflow);
+        TextView tagName = view.findViewById(R.id.element_name);
+        arrow = view.findViewById(R.id.element_arrow);
+        final ImageButton overflow = view.findViewById(R.id.element_overflow);
 
         Spanned element = HtmlCompat.fromHtml("\t&lt;<font color=\"#f92672\">" + value.element.tagName() + "</font>&gt;");
         tagName.setText(element);
@@ -90,8 +88,8 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                 builder.setTitle("Add to " + value.element.tagName());
                                 View rootView = inflater.inflate(R.layout.dialog_element_add, null, false);
-                                final TextInputEditText nameText = (TextInputEditText) rootView.findViewById(R.id.element_name_text);
-                                final TextInputEditText textText = (TextInputEditText) rootView.findViewById(R.id.element_text_text);
+                                final TextInputEditText nameText = rootView.findViewById(R.id.element_name_text);
+                                final TextInputEditText textText = rootView.findViewById(R.id.element_text_text);
                                 builder.setView(rootView);
                                 builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
                                     @Override
@@ -118,11 +116,11 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                             case R.id.action_tag_edit:
                                 final Element element = value.element;
                                 View rootView2 = inflater.inflate(R.layout.dialog_element_info, null, false);
-                                RecyclerView elementAttrs = (RecyclerView) rootView2.findViewById(R.id.element_attrs);
+                                RecyclerView elementAttrs = rootView2.findViewById(R.id.element_attrs);
                                 AttrsAdapter adapter = new AttrsAdapter(context, element);
                                 LinearLayoutManager manager = new LinearLayoutManager(context);
-                                final TextView elementTag = (TextView) rootView2.findViewById(R.id.element_tag);
-                                final TextView elementText = (TextView) rootView2.findViewById(R.id.element_text);
+                                final TextView elementTag = rootView2.findViewById(R.id.element_tag);
+                                final TextView elementText = rootView2.findViewById(R.id.element_text);
                                 AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
 
                                 elementAttrs.addItemDecoration(new DividerItemDecoration(elementAttrs.getContext(), manager.getOrientation()));
@@ -135,7 +133,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
-                                        final TextInputEditText editText = (TextInputEditText) viewElement.findViewById(R.id.input_text);
+                                        final TextInputEditText editText = viewElement.findViewById(R.id.input_text);
                                         builder.setTitle("Change element tag");
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
@@ -176,7 +174,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
-                                        final TextInputEditText editText = (TextInputEditText) viewElement.findViewById(R.id.input_text);
+                                        final TextInputEditText editText = viewElement.findViewById(R.id.input_text);
                                         builder.setTitle("Change element text");
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
@@ -223,7 +221,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
 
     public static class TagTreeItem {
 
-        public Element element;
+        Element element;
 
         public TagTreeItem(Element element) {
             this.element = element;

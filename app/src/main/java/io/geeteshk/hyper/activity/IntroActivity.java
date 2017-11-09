@@ -28,8 +28,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.IntroAdapter;
 import io.geeteshk.hyper.helper.Prefs;
@@ -37,11 +38,13 @@ import io.geeteshk.hyper.text.HtmlCompat;
 
 public class IntroActivity extends AppCompatActivity {
 
-    ViewPager mPager;
-    IntroAdapter mAdapter;
-    LinearLayout mDotsLayout;
-    TextView[] mDots;
-    Button mSkip, mNext;
+    @BindView(R.id.intro_pager) ViewPager viewPager;
+    @BindView(R.id.intro_dots) LinearLayout dotsLayout;
+    @BindView(R.id.btn_skip) Button skip;
+    @BindView(R.id.btn_next) Button next;
+
+    IntroAdapter introAdapter;
+    TextView[] dots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +55,7 @@ public class IntroActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_intro);
-
-        mPager = (ViewPager) findViewById(R.id.intro_pager);
-        mDotsLayout = (LinearLayout) findViewById(R.id.intro_dots);
-        mSkip = (Button) findViewById(R.id.btn_skip);
-        mNext = (Button) findViewById(R.id.btn_next);
+        ButterKnife.bind(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -66,9 +65,9 @@ public class IntroActivity extends AppCompatActivity {
 
         addBottomDots(0);
 
-        mAdapter = new IntroAdapter(this, getSupportFragmentManager());
-        mPager.setAdapter(mAdapter);
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        introAdapter = new IntroAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(introAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -78,11 +77,11 @@ public class IntroActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 addBottomDots(position);
                 if (position == 3) {
-                    mNext.setText(getString(R.string.start));
-                    mSkip.setVisibility(View.GONE);
+                    next.setText(getString(R.string.start));
+                    skip.setVisibility(View.GONE);
                 } else {
-                    mNext.setText(getString(R.string.next));
-                    mSkip.setVisibility(View.VISIBLE);
+                    next.setText(getString(R.string.next));
+                    skip.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -92,19 +91,19 @@ public class IntroActivity extends AppCompatActivity {
             }
         });
 
-        mSkip.setOnClickListener(new View.OnClickListener() {
+        skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 endIntro();
             }
         });
 
-        mNext.setOnClickListener(new View.OnClickListener() {
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int current = mPager.getCurrentItem() + 1;
+                int current = viewPager.getCurrentItem() + 1;
                 if (current < 4) {
-                    mPager.setCurrentItem(current);
+                    viewPager.setCurrentItem(current);
                 } else {
                     endIntro();
                 }
@@ -113,32 +112,28 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private void endIntro() {
-        if (getIntent().getBooleanExtra("isAppetize", false)) {
-            Toast.makeText(IntroActivity.this, "Get the app to try out these features for yourself!", Toast.LENGTH_LONG).show();
-        } else {
-            Prefs.store(IntroActivity.this, "intro_done", true);
-            Intent intent = new Intent(IntroActivity.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+        Prefs.store(IntroActivity.this, "intro_done", true);
+        Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void addBottomDots(int currentPage) {
-        mDots = new TextView[4];
+        dots = new TextView[4];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
         int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
 
-        mDotsLayout.removeAllViews();
-        for (int i = 0; i < mDots.length; i++) {
-            mDots[i] = new TextView(this);
-            mDots[i].setText(HtmlCompat.fromHtml("&#8226;"));
-            mDots[i].setTextSize(35);
-            mDots[i].setTextColor(colorsInactive[currentPage]);
-            mDotsLayout.addView(mDots[i]);
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(this);
+            dots[i].setText(HtmlCompat.fromHtml("&#8226;"));
+            dots[i].setTextSize(35);
+            dots[i].setTextColor(colorsInactive[currentPage]);
+            dotsLayout.addView(dots[i]);
         }
 
-        if (mDots.length > 0) mDots[currentPage].setTextColor(colorsActive[currentPage]);
+        if (dots.length > 0) dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
 }

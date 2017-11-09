@@ -31,7 +31,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
     /**
      * List to hold logs
      */
-    private List<String> mLogs;
+    private List<String> jsLogs;
 
     /**
      * public Constructor
@@ -39,7 +39,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
      * @param logs list of logs
      */
     public LogsAdapter(List<String> logs) {
-        mLogs = logs;
+        jsLogs = logs;
     }
 
     /**
@@ -63,7 +63,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mLogs.get(position));
+        holder.mTextView.setText(jsLogs.get(position));
     }
 
     /**
@@ -73,7 +73,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return mLogs.size();
+        return jsLogs.size();
     }
 
     /**

@@ -18,6 +18,7 @@ package io.geeteshk.hyper.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -71,9 +72,8 @@ public class EditorFragment extends Fragment {
      */
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String location = getArguments().getString("location");
-        assert location != null;
         final File file = new File(location);
         if (!file.exists()) {
             TextView textView = new TextView(getActivity());
@@ -88,16 +88,16 @@ public class EditorFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
 
-        final Editor editText = (Editor) rootView.findViewById(R.id.file_content);
-        FloatingActionButton symbolTab = (FloatingActionButton) rootView.findViewById(R.id.symbol_tab);
-        Button symbolOne = (Button) rootView.findViewById(R.id.symbol_one);
-        Button symbolTwo = (Button) rootView.findViewById(R.id.symbol_two);
-        Button symbolThree = (Button) rootView.findViewById(R.id.symbol_three);
-        Button symbolFour = (Button) rootView.findViewById(R.id.symbol_four);
-        Button symbolFive = (Button) rootView.findViewById(R.id.symbol_five);
-        Button symbolSix = (Button) rootView.findViewById(R.id.symbol_six);
-        Button symbolSeven = (Button) rootView.findViewById(R.id.symbol_seven);
-        Button symbolEight = (Button) rootView.findViewById(R.id.symbol_eight);
+        final Editor editText = rootView.findViewById(R.id.file_content);
+        FloatingActionButton symbolTab = rootView.findViewById(R.id.symbol_tab);
+        Button symbolOne = rootView.findViewById(R.id.symbol_one);
+        Button symbolTwo = rootView.findViewById(R.id.symbol_two);
+        Button symbolThree = rootView.findViewById(R.id.symbol_three);
+        Button symbolFour = rootView.findViewById(R.id.symbol_four);
+        Button symbolFive = rootView.findViewById(R.id.symbol_five);
+        Button symbolSix = rootView.findViewById(R.id.symbol_six);
+        Button symbolSeven = rootView.findViewById(R.id.symbol_seven);
+        Button symbolEight = rootView.findViewById(R.id.symbol_eight);
 
         String filename = file.getName();
         if (filename.endsWith(".html") || filename.equals("imports.txt")) {
@@ -137,7 +137,7 @@ public class EditorFragment extends Fragment {
 
         String contents = getContents(location);
         editText.setTextHighlighted(contents);
-        editText.mOnTextChangedListener = new Editor.OnTextChangedListener() {
+        editText.onTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
                 try {

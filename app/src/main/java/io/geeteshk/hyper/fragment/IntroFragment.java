@@ -17,6 +17,7 @@
 package io.geeteshk.hyper.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,18 +35,20 @@ public class IntroFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_intro, container, false);
-        RelativeLayout slideLayout = (RelativeLayout) rootView.findViewById(R.id.slide_layout);
-        ImageView slideImage = (ImageView) rootView.findViewById(R.id.slide_image);
-        TextView slideTitle = (TextView) rootView.findViewById(R.id.slide_title);
-        TextView slideDesc = (TextView) rootView.findViewById(R.id.slide_desc);
+        RelativeLayout slideLayout = rootView.findViewById(R.id.slide_layout);
+        ImageView slideImage = rootView.findViewById(R.id.slide_image);
+        TextView slideTitle = rootView.findViewById(R.id.slide_title);
+        TextView slideDesc = rootView.findViewById(R.id.slide_desc);
         Bundle arguments = getArguments();
 
-        slideLayout.setBackgroundColor(arguments.getInt("bg"));
-        slideImage.setImageResource(arguments.getInt("image"));
-        slideTitle.setText(arguments.getString("title"));
-        slideDesc.setText(arguments.getString("desc"));
+        if (arguments != null) {
+            slideLayout.setBackgroundColor(arguments.getInt("bg"));
+            slideImage.setImageResource(arguments.getInt("image"));
+            slideTitle.setText(arguments.getString("title"));
+            slideDesc.setText(arguments.getString("desc"));
+        }
 
         return rootView;
     }

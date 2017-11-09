@@ -33,6 +33,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 
 /**
@@ -43,12 +45,12 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
     /**
      * Adapter context
      */
-    private Context mContext;
+    private Context context;
 
     /**
      * Git logs
      */
-    private List<RevCommit> mLogs;
+    private List<RevCommit> gitLogs;
 
     /**
      * public Constructor
@@ -57,8 +59,8 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
      * @param logs git logs as list
      */
     public GitLogsAdapter(Context context, List<RevCommit> logs) {
-        mContext = context;
-        mLogs = logs;
+        this.context = context;
+        gitLogs = logs;
     }
 
     /**
@@ -82,43 +84,43 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final RevCommit commit = mLogs.get(position);
+        final RevCommit commit = gitLogs.get(position);
         final SpannableString string = new SpannableString(commit.getFullMessage());
         int index = commit.getFullMessage().indexOf('\n') + 1;
         if (index == 0) index = commit.getFullMessage().length();
         final boolean[] fullShown = {false};
         string.setSpan(new StyleSpan(Typeface.BOLD), 0, index, 0);
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!fullShown[0]) {
-                    holder.mCommitName.setTypeface(Typeface.DEFAULT);
-                    holder.mCommitName.setText(string);
+                    holder.commitName.setTypeface(Typeface.DEFAULT);
+                    holder.commitName.setText(string);
                     fullShown[0] = true;
                 } else {
-                    holder.mCommitName.setTypeface(Typeface.DEFAULT_BOLD);
-                    holder.mCommitName.setText(commit.getShortMessage());
+                    holder.commitName.setTypeface(Typeface.DEFAULT_BOLD);
+                    holder.commitName.setText(commit.getShortMessage());
                     fullShown[0] = false;
                 }
             }
         });
 
-        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("hash", commit.getId().getName());
                 clipboard.setPrimaryClip(clip);
-                Snackbar.make(holder.mView, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(holder.view, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show();
                 return true;
             }
         });
 
-        holder.mCommitName.setText(commit.getShortMessage());
-        holder.mCommitName.setTypeface(Typeface.DEFAULT_BOLD);
-        holder.mCommitAuthor.setText(commit.getAuthorIdent().getName() + " <" + commit.getAuthorIdent().getEmailAddress() + ">");
-        holder.mCommitDate.setText(commit.getAuthorIdent().getWhen().toString());
-        holder.mCommitHash.setText(commit.getId().getName());
+        holder.commitName.setText(commit.getShortMessage());
+        holder.commitName.setTypeface(Typeface.DEFAULT_BOLD);
+        holder.commitAuthor.setText(commit.getAuthorIdent().getName() + " <" + commit.getAuthorIdent().getEmailAddress() + ">");
+        holder.commitDate.setText(commit.getAuthorIdent().getWhen().toString());
+        holder.commitHash.setText(commit.getId().getName());
     }
 
     /**
@@ -128,8 +130,8 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
      */
     @Override
     public int getItemCount() {
-        if (mLogs != null) {
-            return mLogs.size();
+        if (gitLogs != null) {
+            return gitLogs.size();
         } else {
             return 0;
         }
@@ -143,8 +145,11 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
         /**
          * View holder views
          */
-        TextView mCommitName, mCommitDate, mCommitAuthor, mCommitHash;
-        View mView;
+        @BindView(R.id.commit_name) TextView commitName;
+        @BindView(R.id.commit_date) TextView commitDate;
+        @BindView(R.id.commit_author) TextView commitAuthor;
+        @BindView(R.id.commit_hash) TextView commitHash;
+        View view;
 
         /**
          * Constructor
@@ -152,11 +157,8 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
          */
         ViewHolder(View v) {
             super(v);
-            mView = v;
-            mCommitName = (TextView) v.findViewById(R.id.commit_name);
-            mCommitDate = (TextView) v.findViewById(R.id.commit_date);
-            mCommitAuthor = (TextView) v.findViewById(R.id.commit_author);
-            mCommitHash = (TextView) v.findViewById(R.id.commit_hash);
+            ButterKnife.bind(this, v);
+            view = v;
         }
     }
 }

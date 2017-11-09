@@ -32,14 +32,14 @@ public class PullTask extends GitTask {
 
     private static final String TAG = PullTask.class.getSimpleName();
 
-    public PullTask(Context context, View view, File repo, String[] values) {
+    PullTask(Context context, View view, File repo, String[] values) {
         super(context, view, repo, values);
         id = 5;
     }
 
     @Override
     protected Boolean doInBackground(String... params) {
-        Git git = Giiit.getGit(mView, mRepo);
+        Git git = GitWrapper.getGit(rootView, repo);
         if (git != null) {
             try {
                 git.pull()
@@ -69,7 +69,7 @@ public class PullTask extends GitTask {
                         .call();
             } catch (GitAPIException e) {
                 Log.e(TAG, e.toString());
-                Snackbar.make(mView, e.toString(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show();
                 return false;
             }
 

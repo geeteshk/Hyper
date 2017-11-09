@@ -34,11 +34,11 @@ import io.geeteshk.hyper.helper.ProjectManager;
 public class CloneTask extends GitTask {
 
     private static final String TAG = CloneTask.class.getSimpleName();
-    private ProjectAdapter mAdapter;
+    private ProjectAdapter projectAdapter;
 
-    public CloneTask(Context context, View view, File repo, ProjectAdapter adapter) {
+    CloneTask(Context context, View view, File repo, ProjectAdapter adapter) {
         super(context, view, repo, new String[]{"Cloning repository", "", ""});
-        mAdapter = adapter;
+        projectAdapter = adapter;
         id = 3;
     }
 
@@ -47,7 +47,7 @@ public class CloneTask extends GitTask {
         try {
             Git.cloneRepository()
                     .setURI(strings[0])
-                    .setDirectory(mRepo)
+                    .setDirectory(repo)
                     .setCredentialsProvider(new UsernamePasswordCredentialsProvider(strings[1], strings[2]))
                     .setProgressMonitor(new BatchingProgressMonitor() {
                         @Override
@@ -73,7 +73,7 @@ public class CloneTask extends GitTask {
                     .call();
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Snackbar.make(mView, e.toString(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show();
             return false;
         }
 
@@ -83,17 +83,17 @@ public class CloneTask extends GitTask {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         if (aBoolean) {
-            if (!ProjectManager.isValid(mRepo.getName())) {
-                mBuilder.setContentText("The repo was successfully cloned but it doesn't seem to be a Hyper project.");
+            if (!ProjectManager.isValid(repo.getName())) {
+                builder.setContentText("The repo was successfully cloned but it doesn't seem to be a Hyper project.");
             } else {
-                mAdapter.insert(mRepo.getPath().substring(mRepo.getPath().lastIndexOf("/") + 1, mRepo.getPath().length()));
-                mBuilder.setContentText("Successfully cloned.");
+                projectAdapter.insert(repo.getPath().substring(repo.getPath().lastIndexOf("/") + 1, repo.getPath().length()));
+                builder.setContentText("Successfully cloned.");
             }
         } else {
-            mBuilder.setContentText("Unable to clone repo.");
+            builder.setContentText("Unable to clone repo.");
         }
 
-        mBuilder.setProgress(0, 0, false);
-        mManager.notify(id, mBuilder.build());
+        builder.setProgress(0, 0, false);
+        manager.notify(id, builder.build());
     }
 }

@@ -49,39 +49,39 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     /**
      * Context used for various purposes such as loading files and inflating layouts
      */
-    private Context mContext;
+    private Context context;
 
     /**
      * Array of objects to fill list
      */
-    private ArrayList<String> mObjects;
+    private ArrayList<String> projects;
 
-    private CoordinatorLayout mLayout;
+    private CoordinatorLayout layout;
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
 
     /**
      * public Constructor
      *
      * @param context loading files and inflating etc
-     * @param objects objects to fill list
+     * @param projects objects to fill list
      */
-    public ProjectAdapter(Context context, ArrayList<String> objects, CoordinatorLayout layout, RecyclerView recyclerView) {
-        this.mContext = context;
-        this.mObjects = objects;
-        this.mLayout = layout;
-        this.mRecyclerView = recyclerView;
+    public ProjectAdapter(Context context, ArrayList<String> projects, CoordinatorLayout layout, RecyclerView recyclerView) {
+        this.context = context;
+        this.projects = projects;
+        this.layout = layout;
+        this.recyclerView = recyclerView;
     }
 
     public void insert(String project) {
-        mObjects.add(project);
-        int position = mObjects.indexOf(project);
+        projects.add(project);
+        int position = projects.indexOf(project);
         notifyItemInserted(position);
-        mRecyclerView.scrollToPosition(position);
+        recyclerView.scrollToPosition(position);
     }
 
     public void remove(int position) {
-        mObjects.remove(position);
+        projects.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -94,7 +94,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Collections.sort(mObjects);
+        Collections.sort(projects);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_project, parent, false);
         return new MyViewHolder(itemView);
@@ -108,56 +108,56 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        String[] properties = HTMLParser.getProperties(mObjects.get(holder.getAdapterPosition()));
+        String[] properties = HTMLParser.getProperties(projects.get(holder.getAdapterPosition()));
         holder.setTitle(properties[0]);
         holder.setDescription(properties[2]);
-        holder.setIcon(ProjectManager.getFavicon(mContext, mObjects.get(holder.getAdapterPosition())));
+        holder.setIcon(ProjectManager.getFavicon(context, projects.get(holder.getAdapterPosition())));
 
-        holder.mLayout.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects.get(holder.getAdapterPosition()));
+                Intent intent = new Intent(context, ProjectActivity.class);
+                intent.putExtra("project", projects.get(holder.getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                 }
 
-                ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
+                ((AppCompatActivity) context).startActivityForResult(intent, 0);
             }
         });
 
         holder.mFavicon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ProjectActivity.class);
-                intent.putExtra("project", mObjects.get(holder.getAdapterPosition()));
+                Intent intent = new Intent(context, ProjectActivity.class);
+                intent.putExtra("project", projects.get(holder.getAdapterPosition()));
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
                 if (Build.VERSION.SDK_INT >= 21) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                 }
 
-                ((AppCompatActivity) mContext).startActivityForResult(intent, 0);
+                ((AppCompatActivity) context).startActivityForResult(intent, 0);
             }
         });
 
-        holder.mLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(holder.getAdapterPosition()) + "?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(context.getString(R.string.delete) + " " + projects.get(holder.getAdapterPosition()) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String project = mObjects.get(holder.getAdapterPosition());
+                        String project = projects.get(holder.getAdapterPosition());
                         ProjectManager.deleteProject(project);
                         remove(holder.getAdapterPosition());
 
                         Snackbar.make(
-                                mLayout,
+                                layout,
                                 "Deleted " + project + ".",
                                 Snackbar.LENGTH_LONG
                         ).show();
@@ -174,18 +174,18 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         holder.mFavicon.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(mContext.getString(R.string.delete) + " " + mObjects.get(holder.getAdapterPosition()) + "?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(context.getString(R.string.delete) + " " + projects.get(holder.getAdapterPosition()) + "?");
                 builder.setMessage(R.string.change_undone);
                 builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String project = mObjects.get(holder.getAdapterPosition());
+                        String project = projects.get(holder.getAdapterPosition());
                         ProjectManager.deleteProject(project);
                         remove(holder.getAdapterPosition());
 
                         Snackbar.make(
-                                mLayout,
+                                layout,
                                 "Deleted " + project + ".",
                                 Snackbar.LENGTH_LONG
                         ).show();
@@ -207,7 +207,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
      */
     @Override
     public int getItemCount() {
-        return mObjects.size();
+        return projects.size();
     }
 
     /**
@@ -220,7 +220,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
          */
         TextView mTitle, mDescription;
         ImageView mFavicon;
-        LinearLayout mLayout;
+        LinearLayout layout;
 
         /**
          * public Constructor
@@ -230,10 +230,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         MyViewHolder(View view) {
             super(view);
 
-            mTitle = (TextView) view.findViewById(R.id.title);
-            mDescription = (TextView) view.findViewById(R.id.desc);
-            mFavicon = (ImageView) view.findViewById(R.id.favicon);
-            mLayout = (LinearLayout) view.findViewById(R.id.project_layout);
+            mTitle = view.findViewById(R.id.title);
+            mDescription = view.findViewById(R.id.desc);
+            mFavicon = view.findViewById(R.id.favicon);
+            layout = view.findViewById(R.id.project_layout);
         }
 
         public void setTitle(String title) {

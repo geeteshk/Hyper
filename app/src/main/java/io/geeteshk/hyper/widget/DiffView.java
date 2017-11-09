@@ -24,7 +24,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +40,7 @@ public class DiffView extends AppCompatTextView {
     private static final Pattern ADD_CHANGES = Pattern.compile("/\\**?\\*/|\\+.*");
     private static final Pattern REMOVE_CHANGES = Pattern.compile("/\\**?\\*/|-.*");
 
-    Paint mRectPaint;
+    Paint rectPaint;
 
     public DiffView(Context context) {
         this(context, null);
@@ -62,10 +61,10 @@ public class DiffView extends AppCompatTextView {
         setTextColor(0xffffffff);
         setTextSize(ResourceHelper.dpToPx(context, 4));
 
-        mRectPaint = new Paint();
-        mRectPaint.setColor(0xff444444);
-        mRectPaint.setStyle(Paint.Style.FILL);
-        mRectPaint.setAntiAlias(true);
+        rectPaint = new Paint();
+        rectPaint.setColor(0xff444444);
+        rectPaint.setStyle(Paint.Style.FILL);
+        rectPaint.setAntiAlias(true);
     }
 
     public void setDiffText(SpannableString text) {

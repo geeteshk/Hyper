@@ -32,39 +32,39 @@ import android.view.View;
 
 import java.io.File;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.adapter.RemotesAdapter;
-import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.git.GitWrapper;
 import io.geeteshk.hyper.helper.Styles;
 
 public class RemotesActivity extends AppCompatActivity {
 
-    CoordinatorLayout mLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.remotes_layout) CoordinatorLayout remotesLayout;
+    @BindView(R.id.remotes_list) RecyclerView remotesList;
+    @BindView(R.id.new_remote) FloatingActionButton newRemote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remotes);
-
-        mLayout = (CoordinatorLayout) findViewById(R.id.remotes_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         final File repo = new File(getIntent().getStringExtra("project_file"));
-        RecyclerView remotesList = (RecyclerView) findViewById(R.id.remotes_list);
-        final RemotesAdapter remotesAdapter = new RemotesAdapter(this, mLayout, repo);
+        final RemotesAdapter remotesAdapter = new RemotesAdapter(this, remotesLayout, repo);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(remotesList.getContext(),
                 layoutManager.getOrientation());
         remotesList.addItemDecoration(dividerItemDecoration);
-
         remotesList.setLayoutManager(layoutManager);
         remotesList.setAdapter(remotesAdapter);
 
-        final FloatingActionButton button = (FloatingActionButton) findViewById(R.id.new_remote);
-        button.setOnClickListener(new View.OnClickListener() {
+        newRemote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(RemotesActivity.this);
@@ -73,14 +73,14 @@ public class RemotesActivity extends AppCompatActivity {
                 View cloneView = LayoutInflater.from(RemotesActivity.this)
                         .inflate(R.layout.dialog_remote_add, null, false);
 
-                final TextInputEditText file = (TextInputEditText) cloneView.findViewById(R.id.clone_name);
-                final TextInputEditText remote = (TextInputEditText) cloneView.findViewById(R.id.clone_url);
+                final TextInputEditText file = cloneView.findViewById(R.id.clone_name);
+                final TextInputEditText remote = cloneView.findViewById(R.id.clone_url);
 
                 builder.setView(cloneView);
                 builder.setPositiveButton(R.string.git_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Giiit.addRemote(mLayout, repo, file.getText().toString(), remote.getText().toString());
+                        GitWrapper.addRemote(remotesLayout, repo, file.getText().toString(), remote.getText().toString());
                         remotesAdapter.add(file.getText().toString(), remote.getText().toString());
                     }
                 });
@@ -94,7 +94,7 @@ public class RemotesActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    button.show();
+                    newRemote.show();
                 }
 
                 super.onScrollStateChanged(recyclerView, newState);
@@ -102,7 +102,7 @@ public class RemotesActivity extends AppCompatActivity {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy < 0 && button.isShown()) button.hide();
+                if (dy > 0 || dy < 0 && newRemote.isShown()) newRemote.hide();
             }
         });
     }

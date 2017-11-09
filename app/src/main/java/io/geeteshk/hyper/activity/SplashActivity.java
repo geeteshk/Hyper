@@ -33,6 +33,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.psdev.licensesdialog.LicenseResolver;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Prefs;
@@ -49,9 +51,10 @@ public class SplashActivity extends AppCompatActivity {
     /**
      * Layout to handle snackbars
      */
-    CoordinatorLayout mLayout;
+    @BindView(R.id.splash_layout) CoordinatorLayout splashLayout;
 
-    boolean isAppetize;
+    @BindView(R.id.hyper_logo) ImageView logo;
+    @BindView(R.id.hyper_logo_text) TextView logoText;
 
     /**
      * Method called when activity is created
@@ -67,14 +70,12 @@ public class SplashActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
 
-        isAppetize = getIntent().getBooleanExtra("isAppetize", false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        ImageView logo = (ImageView) findViewById(R.id.hyper_logo);
-        TextView logoText = (TextView) findViewById(R.id.hyper_logo_text);
         logo.animate().alpha(1).setDuration(1000);
         logoText.animate().alpha(1).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
@@ -84,20 +85,12 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if (isAppetize) {
-                    startIntro();
-                } else {
-                    setupPermissions();
-                }
+                setupPermissions();
             }
 
             @Override
             public void onAnimationCancel(Animator animator) {
-                if (isAppetize) {
-                    startIntro();
-                } else {
-                    setupPermissions();
-                }
+                setupPermissions();
             }
 
             @Override
@@ -105,8 +98,6 @@ public class SplashActivity extends AppCompatActivity {
 
             }
         });
-
-        mLayout = (CoordinatorLayout) findViewById(R.id.splash_layout);
     }
 
     private void startIntro() {
@@ -117,7 +108,6 @@ public class SplashActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SplashActivity.this, classTo);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("isAppetize", isAppetize);
         startActivity(intent);
         finish();
     }
@@ -128,7 +118,7 @@ public class SplashActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                final Snackbar snackbar = Snackbar.make(mLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
+                final Snackbar snackbar = Snackbar.make(splashLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction("GRANT", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -160,7 +150,7 @@ public class SplashActivity extends AppCompatActivity {
                 startIntro();
             }
         } else {
-            final Snackbar snackbar = Snackbar.make(mLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackbar = Snackbar.make(splashLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("GRANT", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -50,6 +50,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation libraries.butterknife
+    annotationProcessor libraries.butterknifeCompiler
+
     implementation libraries.supportAppCompat
     implementation libraries.supportDesign
     implementation libraries.supportRecyclerView

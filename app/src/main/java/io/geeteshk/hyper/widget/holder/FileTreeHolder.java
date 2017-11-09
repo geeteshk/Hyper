@@ -56,10 +56,10 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
     public View createNodeView(final TreeNode node, final FileTreeItem value) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_file_browser, null, false);
-        final TextView nodeFile = (TextView) view.findViewById(R.id.file_browser_name);
-        final ImageView fileIcon = (ImageView) view.findViewById(R.id.file_browser_icon);
-        arrow = (ImageView) view.findViewById(R.id.file_browser_arrow);
-        final ImageButton overflow = (ImageButton) view.findViewById(R.id.file_browser_options);
+        final TextView nodeFile = view.findViewById(R.id.file_browser_name);
+        final ImageView fileIcon = view.findViewById(R.id.file_browser_icon);
+        arrow = view.findViewById(R.id.file_browser_arrow);
+        final ImageButton overflow = view.findViewById(R.id.file_browser_options);
 
         nodeFile.setText(value.file.getName());
         fileIcon.setImageResource(value.icon);
@@ -95,7 +95,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                             case R.id.action_new_file:
                                 AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(context);
                                 View newFileRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
-                                final TextInputEditText fileName = (TextInputEditText) newFileRootView.findViewById(R.id.input_text);
+                                final TextInputEditText fileName = newFileRootView.findViewById(R.id.input_text);
                                 fileName.setHint(R.string.file_name);
 
                                 newFileBuilder.setTitle("New file");
@@ -134,7 +134,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                             case R.id.action_new_folder:
                                 AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(context);
                                 View newFolderRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
-                                final TextInputEditText folderName = (TextInputEditText) newFolderRootView.findViewById(R.id.input_text);
+                                final TextInputEditText folderName = newFolderRootView.findViewById(R.id.input_text);
                                 folderName.setHint(R.string.folder_name);
 
                                 newFolderBuilder.setTitle("New folder");
@@ -173,7 +173,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                             case R.id.action_rename:
                                 AlertDialog.Builder renameBuilder = new AlertDialog.Builder(context);
                                 View renameRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
-                                final TextInputEditText renameTo = (TextInputEditText) renameRootView.findViewById(R.id.input_text);
+                                final TextInputEditText renameTo = renameRootView.findViewById(R.id.input_text);
                                 renameTo.setHint(R.string.new_name);
 
                                 renameBuilder.setTitle("Rename " + value.file.getName());

@@ -27,6 +27,8 @@ ext.versions = [
         dexcountPlugin : '0.8.1',
         versionsPlugin : '0.17.0',
 
+        butterknife : '8.8.1',
+
         supportLibs : '27.0.0',
         atv : '1.2.9',
         licensesDialog : '1.8.3',
@@ -45,6 +47,9 @@ ext.gradlePlugins = [
 ]
 
 ext.libraries = [
+        butterknife : "com.jakewharton:butterknife:$versions.butterknife",
+        butterknifeCompiler : "com.jakewharton:butterknife-compiler:$versions.butterknife",
+
         supportAppCompat : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign : "com.android.support:design:$versions.supportLibs",
         supportRecyclerView : "com.android.support:recyclerview-v7:$versions.supportLibs",

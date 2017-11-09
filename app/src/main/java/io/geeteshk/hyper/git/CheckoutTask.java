@@ -31,7 +31,7 @@ public class CheckoutTask extends GitTask {
 
     private static final String TAG = CheckoutTask.class.getSimpleName();
 
-    public CheckoutTask(Context context, View view, File repo, String[] values) {
+    CheckoutTask(Context context, View view, File repo, String[] values) {
         super(context, view, repo, values);
         id = 2;
     }
@@ -39,7 +39,7 @@ public class CheckoutTask extends GitTask {
     @Override
     protected Boolean doInBackground(String... strings) {
         try {
-            Git git = Giiit.getGit(mView, mRepo);
+            Git git = GitWrapper.getGit(rootView, repo);
             if (git != null) {
                 git.checkout()
                         .setCreateBranch(Boolean.valueOf(strings[0]))
@@ -48,7 +48,7 @@ public class CheckoutTask extends GitTask {
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
-            Snackbar.make(mView, e.toString(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show();
             return false;
         }
 
@@ -59,7 +59,7 @@ public class CheckoutTask extends GitTask {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean) {
-            ((Activity) mContext).finish();
+            ((Activity) context).finish();
         }
     }
 }

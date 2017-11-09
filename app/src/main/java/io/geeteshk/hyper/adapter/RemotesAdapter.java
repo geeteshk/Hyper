@@ -31,22 +31,23 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.git.Giiit;
+import io.geeteshk.hyper.git.GitWrapper;
 
 public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesHolder> {
 
-    private ArrayList<String> mRemotes;
-    private Context mContext;
-    private View mView;
-    private File mRepo;
+    private ArrayList<String> remotesList;
+    private Context context;
+    private View remotesView;
+    private File repo;
 
     public RemotesAdapter(Context context, View view, File repo) {
-        mRemotes = Giiit.getRemotes(view, repo);
-        mContext = context;
-        mView = view;
-        mRepo = repo;
+        remotesList = GitWrapper.getRemotes(view, repo);
+        this.context = context;
+        this.remotesView = view;
+        this.repo = repo;
     }
 
     @Override
@@ -57,29 +58,29 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
 
     @Override
     public void onBindViewHolder(final RemotesHolder holder, final int position) {
-        holder.mName.setText(mRemotes.get(position));
-        holder.mUrl.setText(Giiit.getRemoteUrl(mView, mRepo, mRemotes.get(position)));
-        holder.mRootView.setOnClickListener(new View.OnClickListener() {
+        holder.name.setText(remotesList.get(position));
+        holder.url.setText(GitWrapper.getRemoteUrl(remotesView, repo, remotesList.get(position)));
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(context);
                 gitPullBuilder.setTitle("Fetch from remote");
 
-                View pullView = LayoutInflater.from(mContext)
+                View pullView = LayoutInflater.from(context)
                         .inflate(R.layout.dialog_pull, null, false);
 
-                final Spinner spinner1 = (Spinner) pullView.findViewById(R.id.remotes_spinner);
+                final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
 
-                final TextInputEditText pullUsername = (TextInputEditText) pullView.findViewById(R.id.pull_username);
-                final TextInputEditText pullPassword = (TextInputEditText) pullView.findViewById(R.id.pull_password);
+                final TextInputEditText pullUsername = pullView.findViewById(R.id.pull_username);
+                final TextInputEditText pullPassword = pullView.findViewById(R.id.pull_password);
 
-                spinner1.setAdapter(new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, mRemotes));
+                spinner1.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, remotesList));
                 gitPullBuilder.setView(pullView);
                 gitPullBuilder.setPositiveButton("FETCH", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        Giiit.fetch(mContext, mView, mRepo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                        GitWrapper.fetch(context, remotesView, repo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
                     }
                 });
 
@@ -88,18 +89,18 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
             }
         });
 
-        holder.mRootView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 final int newPos = holder.getAdapterPosition();
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Remove " + mRemotes.get(newPos) + "?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Remove " + remotesList.get(newPos) + "?");
                 builder.setMessage("This remote will be removed permanently.");
                 builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Giiit.removeRemote(mView, mRepo, mRemotes.get(newPos));
-                        mRemotes.remove(mRemotes.get(newPos));
+                        GitWrapper.removeRemote(remotesView, repo, remotesList.get(newPos));
+                        remotesList.remove(remotesList.get(newPos));
                         notifyDataSetChanged();
                     }
                 });
@@ -113,25 +114,25 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
 
     @Override
     public int getItemCount() {
-        return mRemotes.size();
+        return remotesList.size();
     }
 
     public void add(String remote, String url) {
-        Giiit.addRemote(mView, mRepo, remote, url);
-        mRemotes.add(remote);
+        GitWrapper.addRemote(remotesView, repo, remote, url);
+        remotesList.add(remote);
         notifyDataSetChanged();
     }
 
     class RemotesHolder extends RecyclerView.ViewHolder {
 
-        TextView mName, mUrl;
-        View mRootView;
+        @BindView(R.id.remote_name) TextView name;
+        @BindView(R.id.remote_url) TextView url;
+        View rootView;
 
         RemotesHolder(View view) {
             super(view);
-            mRootView = view;
-            mName = (TextView) view.findViewById(R.id.remote_name);
-            mUrl = (TextView) view.findViewById(R.id.remote_url);
+            ButterKnife.bind(this, view);
+            rootView = view;
         }
     }
 }

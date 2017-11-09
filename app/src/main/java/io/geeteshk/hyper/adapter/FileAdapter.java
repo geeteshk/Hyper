@@ -42,14 +42,14 @@ public class FileAdapter extends ArrayAdapter<String> {
     /**
      * Names of main files to edit
      */
-    private List<String> mFiles;
+    private List<String> openFiles;
 
     /**
      * Public constructor for adapter
      */
     public FileAdapter(Context context, List<String> files) {
         super(context, android.R.layout.simple_list_item_1, files);
-        mFiles = files;
+        openFiles = files;
     }
 
     /**
@@ -70,10 +70,10 @@ public class FileAdapter extends ArrayAdapter<String> {
             rootView = convertView;
         }
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
-        TextView textView = (TextView) rootView.findViewById(R.id.file_title);
+        ImageView imageView = rootView.findViewById(R.id.file_icon);
+        TextView textView = rootView.findViewById(R.id.file_title);
 
-        int resource = ResourceHelper.getIcon(new File(mFiles.get(position)));
+        int resource = ResourceHelper.getIcon(new File(openFiles.get(position)));
         imageView.setImageResource(resource);
         switch (resource) {
             case R.drawable.ic_font:case R.drawable.ic_file:case R.drawable.ic_folder:case R.drawable.ic_image:
@@ -105,10 +105,10 @@ public class FileAdapter extends ArrayAdapter<String> {
             rootView = convertView;
         }
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.file_icon);
-        TextView textView = (TextView) rootView.findViewById(R.id.file_title);
+        ImageView imageView = rootView.findViewById(R.id.file_icon);
+        TextView textView = rootView.findViewById(R.id.file_title);
 
-        imageView.setImageResource(ResourceHelper.getIcon(new File(mFiles.get(position))));
+        imageView.setImageResource(ResourceHelper.getIcon(new File(openFiles.get(position))));
         textView.setText(getPageTitle(position));
         textView.setTypeface(Typeface.SERIF);
 
@@ -122,7 +122,7 @@ public class FileAdapter extends ArrayAdapter<String> {
      * @return new page title
      */
     private CharSequence getPageTitle(int position) {
-        return new File(mFiles.get(position)).getName();
+        return new File(openFiles.get(position)).getName();
     }
 
     /**
@@ -132,6 +132,6 @@ public class FileAdapter extends ArrayAdapter<String> {
      */
     @Override
     public int getCount() {
-        return mFiles.size();
+        return openFiles.size();
     }
 }

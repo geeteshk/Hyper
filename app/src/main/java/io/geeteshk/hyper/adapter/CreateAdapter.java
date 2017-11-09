@@ -29,26 +29,26 @@ import io.geeteshk.hyper.R;
 
 public class CreateAdapter extends ArrayAdapter<String> {
 
-    private Context mContext;
+    private Context context;
 
     public CreateAdapter(Context context, int resource) {
         super(context, resource);
-        mContext = context;
+        this.context = context;
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View rootView;
 
         if (convertView == null) {
-            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_dialog_list, parent, false);
+            rootView = LayoutInflater.from(context).inflate(R.layout.item_dialog_list, parent, false);
         } else {
             rootView = convertView;
         }
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.dialog_list_item_image);
-        TextView textView = (TextView) rootView.findViewById(R.id.dialog_list_item_text);
+        ImageView imageView = rootView.findViewById(R.id.dialog_list_item_image);
+        TextView textView = rootView.findViewById(R.id.dialog_list_item_text);
 
         switch (position) {
             case 0:
