@@ -15,9 +15,12 @@
    -->
 
 <resources>
-    <color name="colorPrimary">#00BCD4</color>
-    <color name="colorPrimaryDark">#0097A7</color>
-    <color name="colorAccent">#FF9800</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#BDBDBD</color>
+    <color name="colorPrimaryNight">#424242</color>
+    <color name="colorPrimaryDarkNight">#282828</color>
+    <color name="colorAccent">#2979FF</color>
+    <color name="colorAccentNight">#448AFF</color>
 
     <!-- WHY IS THIS A THING??? -->
     <color name="whiteButNotAndroidWhite">#FFFFFF</color>
@@ -57,4 +60,6 @@
         <item>@color/dot_dark_screen3</item>
         <item>@color/dot_dark_screen4</item>
     </array>
+
+    <color name="colorHeader">@color/colorAccent</color>
 </resources>

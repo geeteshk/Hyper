@@ -178,6 +178,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                 renameBuilder.setTitle("Rename " + value.file.getName());
                                 renameBuilder.setView(renameRootView);
+                                renameTo.setText(value.file.getName());
                                 renameBuilder.setPositiveButton("RENAME", null);
                                 renameBuilder.setNegativeButton(R.string.cancel, null);
 

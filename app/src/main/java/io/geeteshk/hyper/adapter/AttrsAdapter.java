@@ -2,12 +2,14 @@ package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.eclipse.jgit.util.StringUtils;
@@ -56,49 +58,66 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
 
     @Override
     public void onBindViewHolder(final AttrsHolder holder, final int position) {
-        final int newPos = holder.getAdapterPosition();
-        holder.attrKey.setText(attrsList.get(newPos));
-        holder.attrValue.setText(currentElement.attr(attrsList.get(newPos)));
-        holder.attrView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                View attrsView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
-                final TextInputEditText editText = attrsView.findViewById(R.id.input_text);
-                builder.setTitle(attrsList.get(newPos));
-                editText.setHint("Value");
-                editText.setSingleLine(true);
-                editText.setMaxLines(1);
-                editText.setText(currentElement.attr(attrsList.get(newPos)));
-                builder.setView(attrsView);
-                builder.setPositiveButton("SET", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        currentElement.attr(attrsList.get(newPos), editText.getText().toString());
-                        holder.attrValue.setText(editText.getText().toString());
-                    }
-                });
+        if (position == 0) {
+            holder.attrKey.setText("Key");
+            holder.attrKey.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.attrValue.setText("Value");
+            holder.attrValue.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.attrEdit.setVisibility(View.GONE);
+        } else {
+            final int newPos = holder.getAdapterPosition() - 1;
+            holder.attrKey.setText(attrsList.get(newPos));
+            holder.attrValue.setText(currentElement.attr(attrsList.get(newPos)));
+            holder.attrEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    View attrsView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                    final TextInputEditText editText = attrsView.findViewById(R.id.input_text);
+                    builder.setTitle(attrsList.get(newPos));
+                    editText.setHint("Value");
+                    editText.setSingleLine(true);
+                    editText.setMaxLines(1);
+                    editText.setText(currentElement.attr(attrsList.get(newPos)));
+                    builder.setView(attrsView);
+                    builder.setPositiveButton("SET", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            currentElement.attr(attrsList.get(newPos), editText.getText().toString());
+                            holder.attrValue.setText(editText.getText().toString());
+                        }
+                    });
 
-                builder.setNegativeButton("CANCEL", null);
-                builder.create().show();
-            }
-        });
+                    builder.setNegativeButton("CANCEL", null);
+                    builder.create().show();
+                }
+            });
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
     public int getItemCount() {
-        return attrsList.size();
+        return attrsList.size() + 1;
     }
 
     class AttrsHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.attr_key) TextView attrKey;
         @BindView(R.id.attr_value) TextView attrValue;
-        View attrView;
+        @BindView(R.id.element_attr_edit) ImageButton attrEdit;
 
         AttrsHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            attrView = view;
         }
     }
 }

@@ -14,34 +14,88 @@
    limitations under the License.
    -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#333333">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/element_tag"
+    <LinearLayout
+        android:id="@+id/element_tag_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="24sp"
-        android:textColor="@color/whiteButNotAndroidWhite"
-        android:fontFamily="sans-serif-light"
-        android:background="#f92672" />
+        android:orientation="horizontal"
+        android:weightSum="9">
 
-    <TextView
-        android:id="@+id/element_text"
+        <TextView
+            android:id="@+id/element_tag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:padding="16dp"
+            android:textSize="24sp"
+            android:textColor="?attr/symbolColor"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/element_tag_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_element_edit"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/content_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/element_tag_layout"
+        android:background="?android:attr/dividerVertical" />
+
+    <LinearLayout
+        android:id="@+id/element_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textColor="@color/whiteButNotAndroidWhite"
-        android:background="#333333"
-        android:typeface="serif" />
+        android:layout_below="@+id/content_divider"
+        android:orientation="horizontal"
+        android:weightSum="9">
+
+        <TextView
+            android:id="@+id/element_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:textStyle="italic"
+            android:padding="16dp" />
+
+        <ImageButton
+            android:id="@+id/element_text_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_element_edit"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/element_attrs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/element_text_layout" />
 
-</LinearLayout>
+    <View
+        android:id="@+id/drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/element_text_layout"
+        android:alpha="0.5"
+        android:background="@drawable/bottom_shadow" />
+
+</RelativeLayout>

@@ -22,22 +22,7 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>android-support-appcompat-v7</name>
-        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
-        <name>android-support-design</name>
-        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
-        <name>android-support-recyclerview-v7</name>
-        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
-        <name>android-support-cardview-v7</name>
+        <name>Android Support Libraries</name>
         <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
@@ -76,9 +61,8 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>Roboto Fonts</name>
-        <url>https://fonts.google.com/specimen/Roboto</url>
-        <copyright>Font data copyright Google 2012</copyright>
+        <name>MPAndroidChart</name>
+        <url>https://github.com/PhilJay/MPAndroidChart</url>
         <license>Apache Software License 2.0</license>
     </notice>
 </notices>

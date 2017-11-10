@@ -36,9 +36,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Meta"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
-                android:typeface="serif" />
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
@@ -101,9 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Type"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
-                android:typeface="serif" />
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp" />
 
             <Spinner
                 android:id="@+id/type_spinner"

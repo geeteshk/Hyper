@@ -20,16 +20,40 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarStyle">@style/Hyper.Toolbar</item>
+        <item name="toolbarPopupStyle">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="symbolColor">@color/colorAccent</item>
     </style>
 
     <style name="Hyper.Dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
+        <item name="colorAccent">@color/colorAccentNight</item>
+        <item name="toolbarStyle">@style/Hyper.Toolbar.Dark</item>
+        <item name="toolbarPopupStyle">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="symbolColor">@color/colorAccentNight</item>
+    </style>
+
+    <style name="Hyper.Project" parent="Hyper">
+    </style>
+
+    <style name="Hyper.Project.Dark" parent="Hyper.Dark">
     </style>
 
     <style name="Hyper.FileTree">
         <item name="android:paddingLeft">20dp</item>
+    </style>
+
+    <style name="Hyper.Toolbar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="Hyper.Toolbar.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/colorAccentNight</item>
+        <item name="android:textColorSecondary">@color/colorAccentNight</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
     </style>
 
 </resources>

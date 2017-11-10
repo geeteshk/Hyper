@@ -69,5 +69,5 @@ dependencies {
 
     implementation libraries.atv
     implementation libraries.licensesDialog
-    implementation libraries.filePicker
+    implementation libraries.mpchart
 }

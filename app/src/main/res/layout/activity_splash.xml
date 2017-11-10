@@ -19,7 +19,6 @@
     android:id="@+id/splash_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     tools:context=".activity.SplashActivity">
 
     <RelativeLayout
@@ -49,10 +48,8 @@
             android:layout_below="@+id/centre_divider"
             android:layout_centerHorizontal="true"
             android:alpha="0"
-            android:text="@string/hyper"
-            android:textColor="@android:color/white"
-            android:textSize="52sp"
-            android:typeface="serif" />
+            android:text="@string/app_name"
+            android:textSize="52sp" />
 
     </RelativeLayout>
 

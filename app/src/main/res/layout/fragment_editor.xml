@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary">
+        android:background="?attr/colorPrimary">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -47,7 +47,8 @@
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="8dp">
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
 
             <Button
                 android:id="@+id/symbol_one"
@@ -55,9 +56,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&lt;"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
@@ -66,20 +66,18 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="/"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
                 android:id="@+id/symbol_three"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&gt;"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:typeface="monospace" />
 
@@ -89,9 +87,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="&quot;"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
@@ -100,9 +97,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="="
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
@@ -111,9 +107,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="!"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
@@ -122,9 +117,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="-"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
             <Button
@@ -133,14 +127,22 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="\"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?attr/symbolColor"
+                android:textSize="16sp"
                 android:typeface="monospace" />
 
         </LinearLayout>
 
     </HorizontalScrollView>
+
+    <View
+        android:id="@+id/drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_above="@+id/symbol_layout_scroll_container"
+        android:rotation="180"
+        android:alpha="0.5"
+        android:background="@drawable/bottom_shadow" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/symbol_tab"

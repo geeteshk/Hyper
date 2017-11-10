@@ -21,5 +21,5 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
     android:minHeight="?attr/actionBarSize"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    hyper:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    android:theme="?attr/toolbarStyle"
+    hyper:popupTheme="?attr/toolbarPopupStyle" />

@@ -39,8 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:typeface="serif" />
+        android:layout_marginStart="16dp" />
 
     <ImageButton
         android:id="@+id/file_browser_options"

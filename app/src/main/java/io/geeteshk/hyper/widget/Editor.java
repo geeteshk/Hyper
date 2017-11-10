@@ -180,7 +180,6 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             numberPaint.setAntiAlias(true);
             numberPaint.setTextSize(ResourceHelper.dpToPx(context, 14));
             numberPaint.setTextAlign(Paint.Align.RIGHT);
-            numberPaint.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
             numberPaint.setColor(colors.getColorNumber());
         } else {
             int padding = ResourceHelper.dpToPx(context, 8);
@@ -392,7 +391,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             for (int i = 0; i < lineCount; i++) {
                 lineBounds = getLineBounds(i - lineDiff, lineRect);
                 if (lines.get(i).toString().endsWith("\n") || i == lineCount - 1) {
-                    if (hasLineNumbers) canvas.drawText(String.valueOf(currentLine + 1), 100, lineBounds, numberPaint);
+                    if (hasLineNumbers) canvas.drawText(String.valueOf(currentLine + 1), 64, lineBounds, numberPaint);
                     currentLine += 1;
                     lineDiff = 0;
                 } else {
@@ -401,9 +400,7 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
 
                 if (i == cursorLine) {
                     if (hasLineNumbers) {
-                        canvas.drawRect(0, 8 + lineBounds - lineHeight, 120, lineBounds + 12, lineShadowPaint);
-                    } else {
-
+                        canvas.drawRect(0, 10 + lineBounds - lineHeight, 72, lineBounds + 8, lineShadowPaint);
                     }
                 }
 

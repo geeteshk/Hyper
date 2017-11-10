@@ -39,6 +39,7 @@ import de.psdev.licensesdialog.LicenseResolver;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Prefs;
 import io.geeteshk.hyper.helper.FontsOverride;
+import io.geeteshk.hyper.helper.Styles;
 import io.geeteshk.hyper.license.EclipseDistributionLicense10;
 
 /**
@@ -68,6 +69,7 @@ public class SplashActivity extends AppCompatActivity {
         FontsOverride.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
         FontsOverride.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
 
+        setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);

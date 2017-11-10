@@ -27,13 +27,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:typeface="serif" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/remote_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:typeface="sans" />
+        android:textSize="16sp" />
 
 </LinearLayout>

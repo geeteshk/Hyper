@@ -80,7 +80,6 @@ public class EditorFragment extends Fragment {
             int padding = ResourceHelper.dpToPx(getActivity(), 48);
             textView.setPadding(padding, padding, padding, padding);
             textView.setGravity(Gravity.CENTER);
-            textView.setTypeface(Typeface.SERIF);
             textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alert_error, 0, 0, 0);
             textView.setText(R.string.file_problem);
             return textView;

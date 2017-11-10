@@ -42,7 +42,7 @@
                     android:alpha="0.87"
                     android:text="@string/allow_content_access"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                     android:alpha="0.87"
                     android:text="@string/allow_file_access"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                     android:alpha="0.87"
                     android:text="@string/allow_file_access_from_file_urls"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -156,7 +156,7 @@
                     android:alpha="0.87"
                     android:text="@string/allow_universal_access_from_file_urls"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -194,7 +194,7 @@
                     android:alpha="0.87"
                     android:text="@string/block_network_image"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -232,7 +232,7 @@
                     android:alpha="0.87"
                     android:text="@string/block_network_loads"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -270,7 +270,7 @@
                     android:alpha="0.87"
                     android:text="@string/built_in_zoom_controls"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -308,7 +308,7 @@
                     android:alpha="0.87"
                     android:text="@string/database_enabled"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -346,7 +346,7 @@
                     android:alpha="0.87"
                     android:text="@string/display_zoom_controls"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -384,7 +384,7 @@
                     android:alpha="0.87"
                     android:text="@string/dom_storage_enabled"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -422,7 +422,7 @@
                     android:alpha="0.87"
                     android:text="@string/javascript_can_open_windows_automatically"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -460,7 +460,7 @@
                     android:alpha="0.87"
                     android:text="@string/javascript_enabled"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -498,7 +498,7 @@
                     android:alpha="0.87"
                     android:text="@string/load_with_overview_mode"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -536,7 +536,7 @@
                     android:alpha="0.87"
                     android:text="@string/loads_images_automatically"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -574,7 +574,7 @@
                     android:alpha="0.87"
                     android:text="@string/save_form_dats"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -612,7 +612,7 @@
                     android:alpha="0.87"
                     android:text="@string/use_wide_view_port"
                     android:textSize="15sp"
-                    android:typeface="serif" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -29,7 +29,7 @@ public class IntroAdapter extends FragmentStatePagerAdapter {
 
     private Context context;
     private int[] bgColors;
-    private int[] images = {R.drawable.ic_intro_logo, R.drawable.ic_intro_editor, R.drawable.ic_intro_git, R.drawable.ic_intro_done};
+    private int[] images = {R.drawable.ic_intro_logo_n, R.drawable.ic_intro_editor, R.drawable.ic_intro_git, R.drawable.ic_intro_done};
     private String[] titles, desc;
 
     public IntroAdapter(Context context, FragmentManager fm) {

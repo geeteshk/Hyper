@@ -43,11 +43,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.github.angads25.filepicker.controller.DialogSelectionListener;
-import com.github.angads25.filepicker.model.DialogConfigs;
-import com.github.angads25.filepicker.model.DialogProperties;
-import com.github.angads25.filepicker.view.FilePickerDialog;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
@@ -59,7 +54,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
-import io.geeteshk.hyper.adapter.CreateAdapter;
 import io.geeteshk.hyper.adapter.ProjectAdapter;
 import io.geeteshk.hyper.git.GitWrapper;
 import io.geeteshk.hyper.helper.Constants;
@@ -80,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final int SELECT_ICON = 100;
 
     public static final int SETTINGS_CODE = 101;
+
+    private static final int IMPORT_PROJECT = 102;
 
     /**
      * ProjectManager related stuff
@@ -107,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Styles.getThemeInt(this));
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -148,16 +143,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         projectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(projectAdapter);
-
         cloneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder choiceBuilder = new AlertDialog.Builder(MainActivity.this);
                 choiceBuilder.setTitle("Would you like to...");
-                choiceBuilder.setAdapter(new CreateAdapter(MainActivity.this, R.layout.item_dialog_list), new DialogInterface.OnClickListener() {
+                String[] choices = {"Create a new project", "Clone a repository", "Import an external project"};
+                choiceBuilder.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, choices), new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i) {
                             case 0:
                                 AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
                                 createBuilder.setTitle("Create a new project");
@@ -203,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     }
                                 });
 
-                                createBuilder.setIcon(R.drawable.ic_action_create);
                                 createBuilder.setView(rootView);
                                 createBuilder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
                                     @Override
@@ -247,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 file.setText(Prefs.get(MainActivity.this, "clone_name", ""));
                                 remote.setText(Prefs.get(MainActivity.this, "remote", ""));
 
-                                builder.setIcon(R.drawable.ic_action_clone);
                                 builder.setView(cloneView);
                                 builder.setPositiveButton("CLONE", new DialogInterface.OnClickListener() {
                                     @Override
@@ -279,71 +272,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                                 break;
                             case 2:
-                                DialogProperties properties = new DialogProperties();
-                                properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                                properties.selection_type = DialogConfigs.DIR_SELECT;
-                                properties.root = new File(DialogConfigs.DEFAULT_DIR);
-                                properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-                                properties.extensions = null;
+                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                intent.setType("file/*");
+                                if (intent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(intent, IMPORT_PROJECT);
+                                }
 
-                                FilePickerDialog pickerDialog = new FilePickerDialog(MainActivity.this, properties);
-                                pickerDialog.setTitle("Import a project");
-                                pickerDialog.setDialogSelectionListener(new DialogSelectionListener() {
-                                    @Override
-                                    public void onSelectedFilePaths(final String[] files) {
-                                        if (files.length > 0) {
-                                            AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
-                                            createBuilder.setTitle("Import an external project");
-                                            View rootView = LayoutInflater.from(MainActivity.this)
-                                                    .inflate(R.layout.dialog_import, null, false);
-
-                                            final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
-                                            final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
-                                            final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
-                                            final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
-
-                                            final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
-                                            typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
-                                            typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
-
-                                            nameLayout.getEditText().setText(new File(files[0]).getName());
-                                            authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
-                                            descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
-                                            keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
-
-                                            createBuilder.setIcon(R.drawable.ic_action_import);
-                                            createBuilder.setView(rootView);
-                                            createBuilder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                }
-                                            });
-
-                                            createBuilder.setNegativeButton("CANCEL", null);
-                                            final AlertDialog dialog1 = createBuilder.create();
-                                            dialog1.show();
-
-                                            dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                                        Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
-                                                        Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
-                                                        Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
-                                                        Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                                        Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
-
-                                                        ProjectManager._import(files[0], nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), projectAdapter, coordinatorLayout);
-                                                        dialog1.dismiss();
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
-
-                                pickerDialog.show();
                                 break;
                         }
                     }
@@ -420,6 +354,60 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
+                break;
+            case IMPORT_PROJECT:
+                if (resultCode == RESULT_OK) {
+                    Uri fileUri = data.getData();
+                    final File file = new File(fileUri.getPath());
+                    AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
+                    createBuilder.setTitle("Import an external project");
+                    View rootView = LayoutInflater.from(MainActivity.this)
+                            .inflate(R.layout.dialog_import, null, false);
+
+                    final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
+                    final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
+                    final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
+                    final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
+
+                    final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
+                    typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
+                    typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
+
+                    nameLayout.getEditText().setText(file.getParentFile().getName());
+                    authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
+                    descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
+                    keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
+
+                    createBuilder.setIcon(R.drawable.ic_action_import);
+                    createBuilder.setView(rootView);
+                    createBuilder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+                    createBuilder.setNegativeButton("CANCEL", null);
+                    final AlertDialog dialog1 = createBuilder.create();
+                    dialog1.show();
+
+                    dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
+                                Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
+                                Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
+                                Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
+                                Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
+
+                                ProjectManager._import(file.getParentFile().getPath(), nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), projectAdapter, coordinatorLayout);
+                                dialog1.dismiss();
+                            }
+                        }
+                    });
+                }
+
                 break;
         }
     }

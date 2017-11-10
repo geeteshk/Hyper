@@ -99,14 +99,10 @@ public class WebActivity extends AppCompatActivity {
         File indexFile = ProjectManager.getIndexFile(project);
         String indexStr = indexFile.getPath();
         indexStr = indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
-        if (Prefs.get(this, "dark_theme", false)) {
-            toolbar.setPopupTheme(R.style.Hyper_Dark);
-        }
 
         toolbar.setTitle(project);
         setSupportActionBar(toolbar);
         webView.getSettings().setJavaScriptEnabled(true);
-
         localUrl = getIntent().getStringExtra("localUrl");
         if (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) {
             localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + indexStr;
@@ -120,6 +116,7 @@ public class WebActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String localUrl) {

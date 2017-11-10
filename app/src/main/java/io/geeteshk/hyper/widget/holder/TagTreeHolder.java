@@ -118,17 +118,18 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 View rootView2 = inflater.inflate(R.layout.dialog_element_info, null, false);
                                 RecyclerView elementAttrs = rootView2.findViewById(R.id.element_attrs);
                                 AttrsAdapter adapter = new AttrsAdapter(context, element);
+                                ImageButton tagEdit = rootView2.findViewById(R.id.element_tag_edit);
+                                ImageButton textEdit = rootView2.findViewById(R.id.element_text_edit);
                                 LinearLayoutManager manager = new LinearLayoutManager(context);
                                 final TextView elementTag = rootView2.findViewById(R.id.element_tag);
                                 final TextView elementText = rootView2.findViewById(R.id.element_text);
                                 AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
-
-                                elementAttrs.addItemDecoration(new DividerItemDecoration(elementAttrs.getContext(), manager.getOrientation()));
                                 elementAttrs.setLayoutManager(manager);
+                                elementAttrs.addItemDecoration(new DividerItemDecoration(context, manager.getOrientation()));
                                 elementAttrs.setHasFixedSize(true);
                                 elementAttrs.setAdapter(adapter);
                                 elementTag.setText(element.tagName());
-                                elementTag.setOnClickListener(new View.OnClickListener() {
+                                tagEdit.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -168,8 +169,8 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                     }
                                 });
 
-                                elementText.setText(element.ownText());
-                                elementText.setOnClickListener(new View.OnClickListener() {
+                                elementText.setText(element.ownText().isEmpty() ? "empty" : element.ownText());
+                                textEdit.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);

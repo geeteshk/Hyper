@@ -17,10 +17,8 @@
 package io.geeteshk.hyper.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,15 +73,8 @@ public class FileAdapter extends ArrayAdapter<String> {
 
         int resource = ResourceHelper.getIcon(new File(openFiles.get(position)));
         imageView.setImageResource(resource);
-        switch (resource) {
-            case R.drawable.ic_font:case R.drawable.ic_file:case R.drawable.ic_folder:case R.drawable.ic_image:
-                imageView.setColorFilter(ContextCompat.getColor(getContext(), R.color.whiteButNotAndroidWhite), PorterDuff.Mode.SRC_ATOP);
-                break;
-        }
-
         textView.setText(getPageTitle(position));
-        textView.setTextColor(0xffffffff);
-        textView.setTypeface(Typeface.SERIF);
+        textView.setTypeface(Typeface.DEFAULT_BOLD);
 
         return rootView;
     }
@@ -110,7 +101,6 @@ public class FileAdapter extends ArrayAdapter<String> {
 
         imageView.setImageResource(ResourceHelper.getIcon(new File(openFiles.get(position))));
         textView.setText(getPageTitle(position));
-        textView.setTypeface(Typeface.SERIF);
 
         return rootView;
     }

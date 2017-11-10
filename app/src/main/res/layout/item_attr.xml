@@ -18,7 +18,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="10">
+    android:weightSum="9">
 
     <TextView
         android:id="@+id/attr_key"
@@ -27,20 +27,26 @@
         android:layout_weight="4"
         android:maxLines="1"
         android:ellipsize="end"
-        android:typeface="sans"
-        android:padding="16dp"
-        android:textColor="@color/whiteButNotAndroidWhite"
-        android:background="#72b000" />
+        android:padding="16dp" />
 
     <TextView
         android:id="@+id/attr_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="6"
+        android:layout_weight="4"
         android:maxLines="1"
         android:ellipsize="end"
-        android:padding="16dp"
-        android:textColor="@color/whiteButNotAndroidWhite"
-        android:background="#ed5c00" />
+        android:padding="16dp" />
+
+    <ImageButton
+        android:id="@+id/element_attr_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_action_element_edit"
+        android:background="?attr/selectableItemBackgroundBorderless" />
 
 </LinearLayout>

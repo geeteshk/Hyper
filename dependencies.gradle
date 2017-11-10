@@ -32,12 +32,12 @@ ext.versions = [
         supportLibs : '27.0.0',
         atv : '1.2.9',
         licensesDialog : '1.8.3',
-        filePicker : '1.1.1',
+        mpchart : '3.0.2',
 
         nanohttpd : '2.3.1',
         jgit : '3.7.1.201504261725-r',
         jsoup : '1.11.1',
-        commonsIO : '2.6',
+        commonsIO : '2.5',
 ]
 
 ext.gradlePlugins = [
@@ -57,7 +57,7 @@ ext.libraries = [
 
         atv : "com.github.bmelnychuk:atv:$versions.atv",
         licensesDialog : "de.psdev.licensesdialog:licensesdialog:$versions.licensesDialog",
-        filePicker : "com.github.angads25:filepicker:$versions.filePicker",
+        mpchart : "com.github.PhilJay:MPAndroidChart:v$versions.mpchart",
 
         nanohttpd : "org.nanohttpd:nanohttpd-webserver:$versions.nanohttpd",
         jgit : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
@@ -68,6 +68,7 @@ ext.libraries = [
 def addRepos(RepositoryHandler repoHandler) {
     repoHandler.jcenter()
     repoHandler.google()
+    repoHandler.maven { url "https://jitpack.io" }
 }
 
 ext.addRepos = this.&addRepos

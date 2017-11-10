@@ -136,7 +136,7 @@ public class ViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewActivity.this);
         builder.setTitle("Save changes?");
-        builder.setMessage("This will append any changes to the html file.");
+        builder.setMessage("This will append any changes to the html file. If you choose to discard unsaved changes will not be saved.");
         builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -157,7 +157,6 @@ public class ViewActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         builder.create().show();
     }
 }

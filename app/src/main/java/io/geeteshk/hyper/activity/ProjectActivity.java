@@ -176,10 +176,6 @@ public class ProjectActivity extends AppCompatActivity {
         fileSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         fileSpinner.setAdapter(fileAdapter);
         toolbar.addView(fileSpinner);
-        if (Prefs.get(this, "dark_theme", false)) {
-            toolbar.setPopupTheme(R.style.Hyper_Dark);
-        }
-
         fileSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -225,7 +221,9 @@ public class ProjectActivity extends AppCompatActivity {
             }
         });
 
+        boolean darkTheme = Prefs.get(this, "dark_theme", false);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(darkTheme ? R.color.colorPrimaryDarkNight : R.color.colorPrimaryDark));
 
         rootNode = TreeNode.root();
         setupFileTree(rootNode, projectDir);
@@ -489,6 +487,7 @@ public class ProjectActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(0x00000000);
             ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(projectName, ProjectManager.getFavicon(ProjectActivity.this, projectName));
             this.setTaskDescription(description);
         }
