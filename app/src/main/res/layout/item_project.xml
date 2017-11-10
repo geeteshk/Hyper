@@ -35,7 +35,6 @@
                 android:id="@+id/favicon"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:clickable="true"
                 android:contentDescription="@string/create_favicon"
                 android:scaleType="fitCenter" />
 
@@ -44,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/favicon"
-                android:singleLine="true"
                 android:paddingBottom="4dp"
                 android:paddingTop="8dp"
                 android:textSize="18sp"
@@ -54,8 +52,7 @@
                 android:id="@+id/desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:singleLine="true" />
+                android:layout_below="@+id/title" />
 
         </RelativeLayout>
 

@@ -29,9 +29,9 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numColumns);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(numColumns, 1);
         projectsList.setLayoutManager(layoutManager);
         projectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
         projectsList.setItemAnimator(new DefaultItemAnimator());
