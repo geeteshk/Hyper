@@ -18,7 +18,6 @@ package io.geeteshk.hyper.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -29,9 +28,10 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -123,24 +123,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         
         DataValidator.removeBroken(contentsList);
         projectAdapter = new ProjectAdapter(this, contentsList, coordinatorLayout, projectsList);
-        boolean orientation = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
-        int numColumns = 2;
-        if (isTablet) {
-            if (orientation) {
-                numColumns = 6;
-            } else {
-                numColumns = 4;
-            }
-        } else {
-            if (orientation) {
-                numColumns = 3;
-            }
-        }
-
-        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(numColumns, 1);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         projectsList.setLayoutManager(layoutManager);
-        projectsList.addItemDecoration(new ResourceHelper.GridSpacingItemDecoration(numColumns, ResourceHelper.dpToPx(this, 2), true));
+        projectsList.addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
         projectsList.setItemAnimator(new DefaultItemAnimator());
         projectsList.setAdapter(projectAdapter);
         cloneButton.setOnClickListener(new View.OnClickListener() {

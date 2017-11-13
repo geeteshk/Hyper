@@ -18,44 +18,58 @@
     android:id="@+id/project_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="?attr/selectableItemBackground">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_margin="4dp">
+        android:padding="8dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+        <ImageView
+            android:id="@+id/favicon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:contentDescription="@string/create_favicon"
+            android:scaleType="fitCenter" />
 
-            <ImageView
-                android:id="@+id/favicon"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:contentDescription="@string/create_favicon"
-                android:scaleType="fitCenter" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/favicon"
+            android:layout_toEndOf="@+id/favicon"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/favicon"
-                android:paddingBottom="4dp"
-                android:paddingTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/desc"
-                android:layout_width="match_parent"
+                android:id="@+id/author"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp"
+                android:alpha="0.75" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp" />
 
-    </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -65,9 +65,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LicenseResolver.registerLicense(new EclipseDistributionLicense10());
-        FontsOverride.setDefaultFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf");
-        FontsOverride.setDefaultFont(getApplicationContext(), "SANS_SERIF", "fonts/RobotoCondensed-Regular.ttf");
-        FontsOverride.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Consolas.ttf");
+        FontsOverride.setDefaultFont(getApplicationContext(), "MONOSPACE", "fonts/Inconsolata-Regular.ttf");
 
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);

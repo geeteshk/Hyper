@@ -19,7 +19,6 @@ package io.geeteshk.hyper.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -36,10 +35,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.activity.ProjectActivity;
-import io.geeteshk.hyper.helper.ProjectManager;
 import io.geeteshk.hyper.helper.HTMLParser;
+import io.geeteshk.hyper.helper.ProjectManager;
 
 /**
  * Adapter to list all projects
@@ -109,9 +110,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         String[] properties = HTMLParser.getProperties(projects.get(holder.getAdapterPosition()));
-        holder.setTitle(properties[0]);
-        holder.setDescription(properties[2]);
-        holder.setIcon(ProjectManager.getFavicon(context, projects.get(holder.getAdapterPosition())));
+        holder.title.setText(properties[0]);
+        holder.author.setText("By " + properties[1]);
+        holder.description.setText(properties[2]);
+        holder.favicon.setImageBitmap(ProjectManager.getFavicon(context, projects.get(holder.getAdapterPosition())));
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,50 +130,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
             }
         });
 
-        holder.mFavicon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProjectActivity.class);
-                intent.putExtra("project", projects.get(holder.getAdapterPosition()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-
-                if (Build.VERSION.SDK_INT >= 21) {
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-                }
-
-                ((AppCompatActivity) context).startActivityForResult(intent, 0);
-            }
-        });
-
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(context.getString(R.string.delete) + " " + projects.get(holder.getAdapterPosition()) + "?");
-                builder.setMessage(R.string.change_undone);
-                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String project = projects.get(holder.getAdapterPosition());
-                        ProjectManager.deleteProject(project);
-                        remove(holder.getAdapterPosition());
-
-                        Snackbar.make(
-                                layout,
-                                "Deleted " + project + ".",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    }
-                });
-
-                builder.setNegativeButton(R.string.cancel, null);
-                builder.create().show();
-
-                return true;
-            }
-        });
-
-        holder.mFavicon.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -218,9 +177,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         /**
          * Views for view holder
          */
-        TextView mTitle, mDescription;
-        ImageView mFavicon;
-        LinearLayout layout;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.desc) TextView description;
+        @BindView(R.id.author) TextView author;
+        @BindView(R.id.favicon) ImageView favicon;
+        @BindView(R.id.project_layout) LinearLayout layout;
 
         /**
          * public Constructor
@@ -229,23 +190,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
          */
         MyViewHolder(View view) {
             super(view);
-
-            mTitle = view.findViewById(R.id.title);
-            mDescription = view.findViewById(R.id.desc);
-            mFavicon = view.findViewById(R.id.favicon);
-            layout = view.findViewById(R.id.project_layout);
-        }
-
-        public void setTitle(String title) {
-            mTitle.setText(title);
-        }
-
-        public void setDescription(String description) {
-            mDescription.setText(description);
-        }
-
-        public void setIcon(Bitmap bitmap) {
-            mFavicon.setImageBitmap(bitmap);
+            ButterKnife.bind(this, view);
         }
     }
 }

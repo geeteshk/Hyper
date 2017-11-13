@@ -35,7 +35,7 @@ android {
             testCoverageEnabled false
         }
 
-		release {
+        release {
             testCoverageEnabled false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -61,7 +61,7 @@ dependencies {
     implementation libraries.nanohttpd
     implementation libraries.commonsIO
     implementation libraries.jsoup
-    implementation (libraries.jgit) {
+    implementation(libraries.jgit) {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'

@@ -26,10 +26,8 @@
         android:layout_above="@+id/symbol_layout_scroll_container"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
-        android:paddingEnd="16dp"
-        android:paddingLeft="52dp"
-        android:paddingRight="16dp"
-        android:paddingStart="52dp"
+        android:paddingLeft="36dp"
+        android:paddingStart="36dp"
         android:privateImeOptions="nm"
         android:scrollbars="vertical"
         android:textSize="14sp" />

@@ -65,4 +65,10 @@
         <url>https://github.com/PhilJay/MPAndroidChart</url>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>Inconsolata Font</name>
+        <url>https://github.com/google/fonts</url>
+        <copyright>Copyright 2006 The Inconsolata Project Authors</copyright>
+        <license>SIL Open Font License v1.1</license>
+    </notice>
 </notices>

@@ -190,9 +190,10 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             }
         }
 
+        setLineSpacing(0, 1.2f);
         setBackgroundColor(colors.getColorBackground());
         setTextColor(colors.getColorText());
-        setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Consolas.ttf"));
+        setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Inconsolata-Regular.ttf"));
         setHorizontallyScrolling(true);
         setCustomSelectionActionModeCallback(new EditorCallback());
         setHorizontallyScrolling(false);

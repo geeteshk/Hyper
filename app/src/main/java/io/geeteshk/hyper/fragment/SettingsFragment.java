@@ -2,10 +2,12 @@ package io.geeteshk.hyper.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.support.annotation.ColorInt;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -97,16 +99,34 @@ public class SettingsFragment extends PreferenceFragment {
         notices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                new LicensesDialog.Builder(getActivity())
+                LicensesDialog.Builder builder = new LicensesDialog.Builder(getActivity())
                         .setNotices(R.raw.notices)
-                        .setThemeResourceId(Styles.getThemeInt(getActivity()))
-                        .build()
-                        .show();
+                        .setThemeResourceId(Styles.getThemeInt(getActivity()));
 
+                if (Prefs.get(getActivity(), "dark_theme", false)) {
+                    String formatString = getString(R.string.custom_notices_format_style);
+                    String pBg = getRGBAString(0xff9e9e9e);
+                    String bodyBg = getRGBAString(0xff424242);
+                    String preBg = getRGBAString(0xffbdbdbd);
+                    String liColor = "color: #ffffff";
+                    String linkColor = "color: #1976D2";
+                    String style = String.format(formatString, pBg, bodyBg, preBg, liColor, linkColor);
+                    builder.setNoticesCssStyle(style);
+                }
+
+                builder.build().show();
                 return true;
             }
         });
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    private String getRGBAString(@ColorInt int color) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        float alpha = ((float) Color.alpha(color) / 255);
+        return String.format(getString(R.string.rgba_background_format), red, green, blue, alpha);
     }
 }

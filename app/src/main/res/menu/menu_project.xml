@@ -103,6 +103,11 @@
     </item>
 
     <item
+        android:id="@+id/action_analyze"
+        android:title="Analyze"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_run"
         android:title="@string/run_project"
         app:showAsAction="never" />

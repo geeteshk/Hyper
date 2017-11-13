@@ -945,6 +945,11 @@ public class ProjectActivity extends AppCompatActivity {
                 remoteIntent.putExtra("project_file", projectDir.getPath());
                 startActivity(remoteIntent);
                 return true;
+            case R.id.action_analyze:
+                Intent analyzeIntent = new Intent(ProjectActivity.this, AnalyzeActivity.class);
+                analyzeIntent.putExtra("project_file", projectDir.getPath());
+                startActivity(analyzeIntent);
+                return true;
         }
 
         return false;

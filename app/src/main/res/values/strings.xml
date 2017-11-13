@@ -158,4 +158,28 @@
     <string name="dark_theme_editor">Dark Coding Theme</string>
     <string name="dark_theme_editor_desc">Less stress on your eyes… while coding!</string>
 
+    <string name="custom_notices_format_style" translatable="false">
+        p.license {
+        %1$s
+        }
+        body {
+        font-family: sans-serif;
+        overflow-wrap: break-word;
+        %2$s
+        }
+        pre {
+        %3$s
+        padding: 1em;
+        white-space: pre-wrap;
+        }
+        li {
+        %4$s
+        }
+        li a {
+        %5$s
+        }
+    </string>
+
+    <string name="rgba_background_format">background-color:rgba(%1$d,%2$d,%3$d,%4$1f);</string>
+
 </resources>
