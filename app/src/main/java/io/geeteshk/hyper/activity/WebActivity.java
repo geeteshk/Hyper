@@ -212,6 +212,10 @@ public class WebActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         LayoutInflater inflater = getLayoutInflater();
         switch (item.getItemId()) {
+            case R.id.refresh:
+                webView.animate().alpha(0);
+                webView.reload();
+                return true;
             case R.id.web_browser:
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(localUrl));
                 startActivity(intent);
