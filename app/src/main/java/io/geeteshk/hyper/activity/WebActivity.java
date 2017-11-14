@@ -18,12 +18,13 @@ package io.geeteshk.hyper.activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -128,13 +129,38 @@ public class WebActivity extends AppCompatActivity {
 
             @Override
             public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-                Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", new View.OnClickListener() {
+                new AlertDialog.Builder(WebActivity.this)
+                        .setTitle("Alert")
+                        .setMessage(message)
+                        .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
+                            public void onClick(DialogInterface dialogInterface, int i) {
                                 result.confirm();
                             }
-                        }).show();
+                        })
+                        .show();
+
+                return true;
+            }
+
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+                new AlertDialog.Builder(WebActivity.this)
+                        .setTitle("Confirm")
+                        .setMessage(message)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                result.confirm();
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                result.cancel();
+                            }
+                        })
+                        .show();
 
                 return true;
             }
