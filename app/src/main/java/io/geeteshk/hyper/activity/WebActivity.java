@@ -38,6 +38,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +66,8 @@ public class WebActivity extends AppCompatActivity {
     @BindView(R.id.web_view) WebView webView;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+
+    @BindView(R.id.loading_progress) ProgressBar loadingProgress;
 
     /**
      * ArrayList for JavaScript logs
@@ -110,6 +113,11 @@ public class WebActivity extends AppCompatActivity {
 
         webView.loadUrl(localUrl);
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                loadingProgress.setProgress(newProgress);
+            }
+
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 jsLogs.add(consoleMessage.message() + getString(R.string.from_line) + consoleMessage.lineNumber() + getString(R.string.of) + consoleMessage.sourceId());
