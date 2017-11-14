@@ -26,10 +26,12 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +65,8 @@ import io.geeteshk.hyper.helper.Styles;
  */
 public class WebActivity extends AppCompatActivity {
 
+    private static final String TAG = WebActivity.class.getSimpleName();
+
     /**
      * WebView to display project
      */
@@ -75,9 +79,9 @@ public class WebActivity extends AppCompatActivity {
     /**
      * ArrayList for JavaScript logs
      */
-    private ArrayList<String> jsLogs;
+    private ArrayList<ConsoleMessage> jsLogs;
 
-    String localUrl;
+    String localUrl, localWithoutIndex;
 
     /**
      * Method called when activity is created
@@ -89,14 +93,14 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         String project = getIntent().getStringExtra("name");
         jsLogs = new ArrayList<>();
-        NetworkUtils.setServer(new HyperServer(project, jsLogs));
+        NetworkUtils.setServer(new HyperServer(project));
         setTheme(Styles.getThemeInt(this));
         super.onCreate(savedInstanceState);
 
         try {
             NetworkUtils.getServer().start();
         } catch (IOException e) {
-            jsLogs.add(e.toString());
+            Log.e(TAG, e.toString());
         }
 
         setContentView(R.layout.activity_web);
@@ -114,6 +118,7 @@ public class WebActivity extends AppCompatActivity {
             localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + indexStr;
         }
 
+        localWithoutIndex = localUrl.substring(0, localUrl.length() - 10);
         webView.loadUrl(localUrl);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -123,7 +128,7 @@ public class WebActivity extends AppCompatActivity {
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                jsLogs.add(consoleMessage.message() + getString(R.string.from_line) + consoleMessage.lineNumber() + getString(R.string.of) + consoleMessage.sourceId());
+                jsLogs.add(consoleMessage);
                 return true;
             }
 
@@ -227,10 +232,11 @@ public class WebActivity extends AppCompatActivity {
                 }
 
                 RecyclerView logsList = layoutLog.findViewById(R.id.logs_list);
-                RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
-                RecyclerView.Adapter adapter = new LogsAdapter(jsLogs);
+                LinearLayoutManager manager = new LinearLayoutManager(this);
+                RecyclerView.Adapter adapter = new LogsAdapter(WebActivity.this, localWithoutIndex, jsLogs);
 
                 logsList.setLayoutManager(manager);
+                logsList.addItemDecoration(new DividerItemDecoration(WebActivity.this, manager.getOrientation()));
                 logsList.setAdapter(adapter);
 
                 BottomSheetDialog dialogLog = new BottomSheetDialog(this);

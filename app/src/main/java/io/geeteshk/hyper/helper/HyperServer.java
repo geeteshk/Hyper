@@ -25,8 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -46,8 +44,6 @@ public class HyperServer extends NanoHTTPD {
     private final String[] mTypes = {"css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt"};
     private final String[] mMimes = {"text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt"};
 
-    private List<String> logs = new ArrayList<>();
-
     /**
      * ProjectManager to host web server for
      */
@@ -58,10 +54,9 @@ public class HyperServer extends NanoHTTPD {
      *
      * @param project to host server for
      */
-    public HyperServer(String project, List<String> logs) {
+    public HyperServer(String project) {
         super(8080);
         mProject = project;
-        this.logs = logs;
     }
 
     /**
@@ -86,7 +81,7 @@ public class HyperServer extends NanoHTTPD {
         try {
             inputStream = new FileInputStream(Constants.HYPER_ROOT + File.separator + mProject + uri);
         } catch (IOException e) {
-            logs.add(e.getMessage());
+            Log.e(TAG, e.toString());
         }
 
         try {
