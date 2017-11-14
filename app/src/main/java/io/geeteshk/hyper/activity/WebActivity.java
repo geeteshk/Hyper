@@ -137,12 +137,13 @@ public class WebActivity extends AppCompatActivity {
                 new AlertDialog.Builder(WebActivity.this)
                         .setTitle("Alert")
                         .setMessage(message)
-                        .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 result.confirm();
                             }
                         })
+                        .setCancelable(false)
                         .show();
 
                 return true;
@@ -165,6 +166,7 @@ public class WebActivity extends AppCompatActivity {
                                 result.cancel();
                             }
                         })
+                        .setCancelable(false)
                         .show();
 
                 return true;
