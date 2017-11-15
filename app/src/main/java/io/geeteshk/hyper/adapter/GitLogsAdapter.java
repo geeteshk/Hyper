@@ -24,6 +24,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ import io.geeteshk.hyper.R;
  * Adapter to display git logs
  */
 public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHolder> {
+
+    private static final String TAG = GitLogsAdapter.class.getSimpleName();
 
     /**
      * Adapter context
@@ -110,15 +113,20 @@ public class GitLogsAdapter extends RecyclerView.Adapter<GitLogsAdapter.ViewHold
             public boolean onLongClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("hash", commit.getId().getName());
-                clipboard.setPrimaryClip(clip);
-                Snackbar.make(holder.view, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show();
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                    Snackbar.make(holder.view, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Log.e(TAG, "Unable to obtain CLIPBOARD_SERVICE.");
+                }
+
                 return true;
             }
         });
 
         holder.commitName.setText(commit.getShortMessage());
         holder.commitName.setTypeface(Typeface.DEFAULT_BOLD);
-        holder.commitAuthor.setText(commit.getAuthorIdent().getName() + " <" + commit.getAuthorIdent().getEmailAddress() + ">");
+        holder.commitAuthor.setText(context.getString(R.string.git_user_format, commit.getAuthorIdent().getName(), commit.getAuthorIdent().getEmailAddress()));
         holder.commitDate.setText(commit.getAuthorIdent().getWhen().toString());
         holder.commitHash.setText(commit.getId().getName());
     }

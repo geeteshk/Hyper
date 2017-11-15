@@ -72,9 +72,9 @@ public class HyperServer extends NanoHTTPD {
 
         if (uri.equals("/")) {
             File indexFile = ProjectManager.getIndexFile(mProject);
-            String indexStr = indexFile.getPath();
-            indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + mProject).getPath(), "");
-            uri = File.separator + indexStr;
+            String indexPath = indexFile.getPath();
+            indexPath = indexPath.replace(new File(Constants.HYPER_ROOT + File.separator + mProject).getPath(), "");
+            uri = File.separator + indexPath;
         }
 
         InputStream inputStream = null;

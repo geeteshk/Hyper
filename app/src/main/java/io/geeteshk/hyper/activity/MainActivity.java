@@ -24,7 +24,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -33,7 +32,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +66,8 @@ import io.geeteshk.hyper.helper.Styles;
  * Main activity to show all main content
  */
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * Intent code for selecting an icon
@@ -141,8 +142,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             case 0:
                                 AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
                                 createBuilder.setTitle("Create a new project");
-                                View rootView = LayoutInflater.from(MainActivity.this)
-                                        .inflate(R.layout.dialog_create, null, false);
+                                View rootView = View.inflate(MainActivity.this, R.layout.dialog_create, null);
 
                                 final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
                                 final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
@@ -199,13 +199,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onClick(View v) {
                                         if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                            Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
-                                            Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
-                                            Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
-                                            Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                            Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
+                                            String name = nameLayout.getEditText().getText().toString();
+                                            String author = authorLayout.getEditText().getText().toString();
+                                            String description = descriptionLayout.getEditText().getText().toString();
+                                            String keywords = keywordsLayout.getEditText().getText().toString();
+                                            int type = typeSpinner.getSelectedItemPosition();
 
-                                            ProjectManager.generate(MainActivity.this, nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), imageStream, projectAdapter, coordinatorLayout, typeSpinner.getSelectedItemPosition());
+                                            Prefs.storeProject(MainActivity.this, name, author, description, keywords, type);
+                                            ProjectManager.generate(
+                                                    MainActivity.this,
+                                                    name,
+                                                    author,
+                                                    description,
+                                                    keywords,
+                                                    imageStream,
+                                                    projectAdapter,
+                                                    coordinatorLayout,
+                                                    type
+                                            );
+
                                             dialog1.dismiss();
                                         }
                                     }
@@ -215,8 +227,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                 builder.setTitle("Clone a repository");
 
-                                View cloneView = LayoutInflater.from(MainActivity.this)
-                                        .inflate(R.layout.dialog_clone, null, false);
+                                View cloneView = View.inflate(MainActivity.this, R.layout.dialog_clone, null);
 
                                 final TextInputEditText file = cloneView.findViewById(R.id.clone_name);
                                 final TextInputEditText remote = cloneView.findViewById(R.id.clone_url);
@@ -246,10 +257,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                 remoteStr = "https://" + remoteStr;
                                             }
 
-                                            Prefs.store(MainActivity.this, "clone_name", file.getText().toString());
+                                            String cloneName = file.getText().toString();
+                                            Prefs.store(MainActivity.this, "clone_name", cloneName);
                                             Prefs.store(MainActivity.this, "remote", remoteStr);
 
-                                            GitWrapper.clone(MainActivity.this, coordinatorLayout, new File(Constants.HYPER_ROOT + File.separator + file.getText().toString()), projectAdapter, remoteStr, username.getText().toString(), password.getText().toString());
+                                            GitWrapper.clone(
+                                                    MainActivity.this,
+                                                    coordinatorLayout,
+                                                    new File(Constants.HYPER_ROOT + File.separator + cloneName),
+                                                    projectAdapter,
+                                                    remoteStr,
+                                                    username.getText().toString(),
+                                                    password.getText().toString()
+                                            );
+
                                             dialog2.dismiss();
                                         }
                                     }
@@ -293,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
@@ -327,10 +348,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (resultCode == RESULT_OK) {
                     try {
                         Uri selectedImage = data.getData();
-                        imageStream = MainActivity.this.getContentResolver().openInputStream(selectedImage);
-                        projectIcon.setImageBitmap(ResourceHelper.decodeUri(MainActivity.this, selectedImage));
+                        if (selectedImage != null) {
+                            imageStream = MainActivity.this.getContentResolver().openInputStream(selectedImage);
+                            projectIcon.setImageBitmap(ResourceHelper.decodeUri(MainActivity.this, selectedImage));
+                        }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.toString());
                     }
                 }
 
@@ -343,54 +366,66 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             case IMPORT_PROJECT:
                 if (resultCode == RESULT_OK) {
                     Uri fileUri = data.getData();
-                    final File file = new File(fileUri.getPath());
-                    AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
-                    createBuilder.setTitle("Import an external project");
-                    View rootView = LayoutInflater.from(MainActivity.this)
-                            .inflate(R.layout.dialog_import, null, false);
+                    if (fileUri != null) {
+                        final File file = new File(fileUri.getPath());
+                        AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
+                        createBuilder.setTitle("Import an external project");
+                        View rootView = View.inflate(MainActivity.this, R.layout.dialog_import, null);
 
-                    final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
-                    final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
-                    final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
-                    final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
+                        final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
+                        final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
+                        final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
+                        final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
 
-                    final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
-                    typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
-                    typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
+                        final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
+                        typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
+                        typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
-                    nameLayout.getEditText().setText(file.getParentFile().getName());
-                    authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
-                    descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
-                    keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
+                        nameLayout.getEditText().setText(file.getParentFile().getName());
+                        authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
+                        descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
+                        keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
 
-                    createBuilder.setIcon(R.drawable.ic_action_import);
-                    createBuilder.setView(rootView);
-                    createBuilder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        createBuilder.setIcon(R.drawable.ic_action_import);
+                        createBuilder.setView(rootView);
+                        createBuilder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    });
-
-                    createBuilder.setNegativeButton("CANCEL", null);
-                    final AlertDialog dialog1 = createBuilder.create();
-                    dialog1.show();
-
-                    dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                Prefs.store(MainActivity.this, "name", nameLayout.getEditText().getText().toString());
-                                Prefs.store(MainActivity.this, "author", authorLayout.getEditText().getText().toString());
-                                Prefs.store(MainActivity.this, "description", descriptionLayout.getEditText().getText().toString());
-                                Prefs.store(MainActivity.this, "keywords", keywordsLayout.getEditText().getText().toString());
-                                Prefs.store(MainActivity.this, "type", typeSpinner.getSelectedItemPosition());
-
-                                ProjectManager._import(file.getParentFile().getPath(), nameLayout.getEditText().getText().toString(), authorLayout.getEditText().getText().toString(), descriptionLayout.getEditText().getText().toString(), keywordsLayout.getEditText().getText().toString(), typeSpinner.getSelectedItemPosition(), projectAdapter, coordinatorLayout);
-                                dialog1.dismiss();
                             }
-                        }
-                    });
+                        });
+
+                        createBuilder.setNegativeButton("CANCEL", null);
+                        final AlertDialog dialog1 = createBuilder.create();
+                        dialog1.show();
+
+                        dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                    String name = nameLayout.getEditText().getText().toString();
+                                    String author = authorLayout.getEditText().getText().toString();
+                                    String description = descriptionLayout.getEditText().getText().toString();
+                                    String keywords = keywordsLayout.getEditText().getText().toString();
+                                    int type = typeSpinner.getSelectedItemPosition();
+
+                                    Prefs.storeProject(MainActivity.this, name, author, description, keywords, type);
+                                    ProjectManager._import(
+                                            file.getParentFile().getPath(),
+                                            name,
+                                            author,
+                                            description,
+                                            keywords,
+                                            type,
+                                            projectAdapter,
+                                            coordinatorLayout
+                                    );
+
+                                    dialog1.dismiss();
+                                }
+                            }
+                        });
+                    }
                 }
 
                 break;

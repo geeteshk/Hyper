@@ -42,26 +42,22 @@ public class DataValidator {
      */
     public static boolean validateCreate(Context context, @Nullable TextInputLayout name, TextInputLayout author, TextInputLayout description, TextInputLayout keywords) {
         if (name != null) {
-            assert name.getEditText() != null;
             if (name.getEditText().getText().toString().isEmpty()) {
                 name.setError(context.getString(R.string.name_error));
                 return false;
             }
         }
 
-        assert author.getEditText() != null;
         if (author.getEditText().getText().toString().isEmpty()) {
             author.setError(context.getString(R.string.author_error));
             return false;
         }
 
-        assert description.getEditText() != null;
         if (description.getEditText().getText().toString().isEmpty()) {
             description.setError(context.getString(R.string.desc_error));
             return false;
         }
 
-        assert keywords.getEditText() != null;
         if (keywords.getEditText().getText().toString().isEmpty()) {
             keywords.setError(context.getString(R.string.keywords_error));
             return false;

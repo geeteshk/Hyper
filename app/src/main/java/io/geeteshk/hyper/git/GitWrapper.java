@@ -125,67 +125,67 @@ public class GitWrapper {
                         .call();
 
                 Set<String> conflicting = status.getConflicting();
-                String conflictingOut = "";
+                StringBuilder conflictingOut = new StringBuilder();
                 for (String conflict : conflicting) {
-                    conflictingOut = conflictingOut + conflict + "\n";
+                    conflictingOut.append(conflict).append("\n");
                 }
-                t[0].setText(changeTextToNone(conflictingOut));
+                t[0].setText(changeTextToNone(conflictingOut.toString()));
 
                 Set<String> added = status.getAdded();
-                String addedOut = "";
+                StringBuilder addedOut = new StringBuilder();
                 for (String add : added) {
-                    addedOut = addedOut + add + "\n";
+                    addedOut.append(add).append("\n");
                 }
-                t[1].setText(changeTextToNone(addedOut));
+                t[1].setText(changeTextToNone(addedOut.toString()));
 
                 Set<String> changed = status.getChanged();
-                String changedOut = "";
+                StringBuilder changedOut = new StringBuilder();
                 for (String change : changed) {
-                    changedOut = changedOut + change + "\n";
+                    changedOut.append(change).append("\n");
                 }
-                t[2].setText(changeTextToNone(changedOut));
+                t[2].setText(changeTextToNone(changedOut.toString()));
 
                 Set<String> missing = status.getMissing();
-                String missingOut = "";
+                StringBuilder missingOut = new StringBuilder();
                 for (String miss : missing) {
-                    missingOut = missingOut + miss + "\n";
+                    missingOut.append(miss).append("\n");
                 }
-                t[3].setText(changeTextToNone(missingOut));
+                t[3].setText(changeTextToNone(missingOut.toString()));
 
                 Set<String> modified = status.getModified();
-                String modifiedOut = "";
+                StringBuilder modifiedOut = new StringBuilder();
                 for (String mod : modified) {
-                    modifiedOut = modifiedOut + mod + "\n";
+                    modifiedOut.append(mod).append("\n");
                 }
-                t[4].setText(changeTextToNone(modifiedOut));
+                t[4].setText(changeTextToNone(modifiedOut.toString()));
 
                 Set<String> removed = status.getRemoved();
-                String removedOut = "";
+                StringBuilder removedOut = new StringBuilder();
                 for (String remove : removed) {
-                    removedOut = removedOut + remove + "\n";
+                    removedOut.append(remove).append("\n");
                 }
-                t[5].setText(changeTextToNone(removedOut));
+                t[5].setText(changeTextToNone(removedOut.toString()));
 
                 Set<String> uncommitted = status.getUncommittedChanges();
-                String uncommittedOut = "";
+                StringBuilder uncommittedOut = new StringBuilder();
                 for (String uncom : uncommitted) {
-                    uncommittedOut = uncommittedOut + uncom + "\n";
+                    uncommittedOut.append(uncom).append("\n");
                 }
-                t[6].setText(changeTextToNone(uncommittedOut));
+                t[6].setText(changeTextToNone(uncommittedOut.toString()));
 
                 Set<String> untracked = status.getUntracked();
-                String untrackedOut = "";
+                StringBuilder untrackedOut = new StringBuilder();
                 for (String untrack : untracked) {
-                    untrackedOut = untrackedOut + untrack + "\n";
+                    untrackedOut.append(untrack).append("\n");
                 }
-                t[7].setText(changeTextToNone(untrackedOut));
+                t[7].setText(changeTextToNone(untrackedOut.toString()));
 
                 Set<String> untrackedFolders = status.getUntrackedFolders();
-                String untrackedFoldersOut = "";
+                StringBuilder untrackedFoldersOut = new StringBuilder();
                 for (String untrackedf : untrackedFolders) {
-                    untrackedFoldersOut = untrackedFoldersOut + untrackedf + "\n";
+                    untrackedFoldersOut.append(untrackedf).append("\n");
                 }
-                t[8].setText(changeTextToNone(untrackedFoldersOut));
+                t[8].setText(changeTextToNone(untrackedFoldersOut.toString()));
             }
         } catch (GitAPIException e) {
             Log.e(TAG, e.toString());
@@ -348,7 +348,7 @@ public class GitWrapper {
         new FetchTask(context, view, repo, new String[] {"Fetching remote " + remote, "Successfully fetched from " + remote + ".", "There was a problem while fetching from " + remote + "."}).execute(remote, username, password);
     }
 
-    public static Git getGit(View view, File repo) {
+    static Git getGit(View view, File repo) {
         try {
             return Git.open(repo);
         } catch (IOException e) {

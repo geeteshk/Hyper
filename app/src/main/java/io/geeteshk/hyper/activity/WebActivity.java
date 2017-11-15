@@ -32,7 +32,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -107,16 +106,15 @@ public class WebActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         
         File indexFile = ProjectManager.getIndexFile(project);
-        String indexStr = indexFile.getPath();
-        indexStr = indexStr.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
+        String indexPath = indexFile.getPath();
+        indexPath = indexPath.replace(new File(Constants.HYPER_ROOT + File.separator + project).getPath(), "");
 
         toolbar.setTitle(project);
         setSupportActionBar(toolbar);
         webView.getSettings().setJavaScriptEnabled(true);
-        localUrl = getIntent().getStringExtra("localUrl");
-        if (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) {
-            localUrl = "http://" + NetworkUtils.getIpAddress() + ":8080" + indexStr;
-        }
+        localUrl = (NetworkUtils.getServer().wasStarted() && NetworkUtils.getServer().isAlive() && NetworkUtils.getIpAddress() != null) 
+                ? "http://" + NetworkUtils.getIpAddress() + ":8080" + indexPath 
+                : getIntent().getStringExtra("localUrl");
 
         localWithoutIndex = localUrl.substring(0, localUrl.length() - 10);
         webView.loadUrl(localUrl);
@@ -214,10 +212,8 @@ public class WebActivity extends AppCompatActivity {
      * @param item selected menu item
      * @return true if handled
      */
-    @SuppressLint("InflateParams")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        LayoutInflater inflater = getLayoutInflater();
         switch (item.getItemId()) {
             case R.id.refresh:
                 webView.animate().alpha(0);
@@ -228,14 +224,14 @@ public class WebActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.web_logs:
-                View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
+                View layoutLog = View.inflate(this, R.layout.sheet_logs, null);
                 if (Prefs.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
 
                 RecyclerView logsList = layoutLog.findViewById(R.id.logs_list);
                 LinearLayoutManager manager = new LinearLayoutManager(this);
-                RecyclerView.Adapter adapter = new LogsAdapter(WebActivity.this, localWithoutIndex, jsLogs);
+                RecyclerView.Adapter adapter = new LogsAdapter(localWithoutIndex, jsLogs);
 
                 logsList.setLayoutManager(manager);
                 logsList.addItemDecoration(new DividerItemDecoration(WebActivity.this, manager.getOrientation()));
@@ -246,7 +242,7 @@ public class WebActivity extends AppCompatActivity {
                 dialogLog.show();
                 return true;
             case R.id.web_settings:
-                View layout = inflater.inflate(R.layout.sheet_web_settings, null);
+                View layout = View.inflate(this, R.layout.sheet_web_settings, null);
                 if (Prefs.get(this, "dark_theme", false)) {
                     layout.setBackgroundColor(0xFF333333);
                 }

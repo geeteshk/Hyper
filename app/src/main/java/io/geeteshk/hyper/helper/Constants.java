@@ -33,5 +33,5 @@ public class Constants {
     /**
      * Application package
      */
-    public static final String PACKAGE = "io.geeteshk.hyper";
+    static final String PACKAGE = "io.geeteshk.hyper";
 }

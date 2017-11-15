@@ -16,7 +16,6 @@
 
 package io.geeteshk.hyper.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
@@ -37,8 +36,6 @@ import io.geeteshk.hyper.R;
  */
 public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
 
-    private Context context;
-
     private String localWithoutIndex;
 
     /**
@@ -51,8 +48,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.ViewHolder> {
      *
      * @param logs list of logs
      */
-    public LogsAdapter(Context context, String localWithoutIndex, List<ConsoleMessage> logs) {
-        this.context = context;
+    public LogsAdapter(String localWithoutIndex, List<ConsoleMessage> logs) {
         this.localWithoutIndex = localWithoutIndex;
         jsLogs = logs;
     }

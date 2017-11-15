@@ -16,7 +16,6 @@
 
 package io.geeteshk.hyper.activity;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,7 +38,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -300,7 +298,9 @@ public class ProjectActivity extends AppCompatActivity {
                                                         Log.e(TAG, e.toString());
                                                     }
                                                 } else {
-                                                    item.file.delete();
+                                                    if (!item.file.delete()) {
+                                                        Log.e(TAG, "Failed to delete " + item.file.getPath());
+                                                    }
                                                 }
                                             } else {
                                                 treeView.addNode(parent, node);
@@ -343,7 +343,7 @@ public class ProjectActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.action_new_file:
                                 AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                                View newFileRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                                View newFileRootView = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                                 final TextInputEditText fileName = newFileRootView.findViewById(R.id.input_text);
                                 fileName.setHint(R.string.file_name);
 
@@ -382,7 +382,7 @@ public class ProjectActivity extends AppCompatActivity {
                                 return true;
                             case R.id.action_new_folder:
                                 AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                                View newFolderRootView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                                View newFolderRootView = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                                 final TextInputEditText folderName = newFolderRootView.findViewById(R.id.input_text);
                                 folderName.setHint(R.string.folder_name);
 
@@ -645,7 +645,6 @@ public class ProjectActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final LayoutInflater inflater = LayoutInflater.from(ProjectActivity.this);
         switch (item.getItemId()) {
             case R.id.action_run:
                 Intent runIntent = new Intent(ProjectActivity.this, WebActivity.class);
@@ -676,7 +675,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_commit:
                 AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                View view = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                 final TextInputEditText editText = view.findViewById(R.id.input_text);
                 gitCommitBuilder.setTitle(R.string.git_commit);
                 editText.setHint(R.string.commit_message);
@@ -712,9 +711,7 @@ public class ProjectActivity extends AppCompatActivity {
                 AlertDialog.Builder gitPushBuilder = new AlertDialog.Builder(ProjectActivity.this);
                 gitPushBuilder.setTitle("Push changes");
 
-                View pushView = LayoutInflater.from(ProjectActivity.this)
-                        .inflate(R.layout.dialog_push, null, false);
-
+                View pushView = View.inflate(ProjectActivity.this, R.layout.dialog_push, null);
                 final Spinner spinner = pushView.findViewById(R.id.remotes_spinner);
                 final CheckBox dryRun = pushView.findViewById(R.id.dry_run);
                 final CheckBox force = pushView.findViewById(R.id.force);
@@ -741,11 +738,8 @@ public class ProjectActivity extends AppCompatActivity {
                 AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(ProjectActivity.this);
                 gitPullBuilder.setTitle("Push changes");
 
-                View pullView = LayoutInflater.from(ProjectActivity.this)
-                        .inflate(R.layout.dialog_pull, null, false);
-
+                View pullView = View.inflate(ProjectActivity.this, R.layout.dialog_pull, null);
                 final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
-
                 final TextInputEditText pullUsername = pullView.findViewById(R.id.pull_username);
                 final TextInputEditText pullPassword = pullView.findViewById(R.id.pull_password);
 
@@ -763,7 +757,7 @@ public class ProjectActivity extends AppCompatActivity {
                 gitPullBuilder.create().show();
             case R.id.action_git_log:
                 List<RevCommit> commits = GitWrapper.getCommits(drawerLayout, projectDir);
-                @SuppressLint("InflateParams") View layoutLog = inflater.inflate(R.layout.sheet_logs, null);
+                View layoutLog = View.inflate(this, R.layout.sheet_logs, null);
                 if (Prefs.get(this, "dark_theme", false)) {
                     layoutLog.setBackgroundColor(0xFF333333);
                 }
@@ -782,7 +776,6 @@ public class ProjectActivity extends AppCompatActivity {
             case R.id.action_git_diff:
                 final int[] chosen = {-1, -1};
                 final List<RevCommit> commitsToDiff = GitWrapper.getCommits(drawerLayout, projectDir);
-                assert commitsToDiff != null;
                 final CharSequence[] commitNames = new CharSequence[commitsToDiff.size()];
                 for (int i = 0; i < commitNames.length; i++) {
                     commitNames[i] = commitsToDiff.get(i).getShortMessage();
@@ -804,7 +797,7 @@ public class ProjectActivity extends AppCompatActivity {
                                 chosen[1] = i;
                                 AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
                                 SpannableString string = GitWrapper.diff(drawerLayout, projectDir, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
-                                View rootView = inflater.inflate(R.layout.dialog_diff, null, false);
+                                View rootView = View.inflate(ProjectActivity.this, R.layout.dialog_diff, null);
                                 DiffView diffView = rootView.findViewById(R.id.diff_view);
                                 diffView.setDiffText(string);
                                 diffBuilder.setView(rootView);
@@ -819,7 +812,7 @@ public class ProjectActivity extends AppCompatActivity {
                 firstCommit.create().show();
                 return true;
             case R.id.action_git_status:
-                @SuppressLint("InflateParams") View layoutStatus = inflater.inflate(R.layout.item_git_status, null);
+                View layoutStatus = View.inflate(this, R.layout.item_git_status, null);
                 if (Prefs.get(this, "dark_theme", false)) {
                     layoutStatus.setBackgroundColor(0xFF333333);
                 }
@@ -843,7 +836,7 @@ public class ProjectActivity extends AppCompatActivity {
                 return true;
             case R.id.action_git_branch_new:
                 AlertDialog.Builder gitBranch = new AlertDialog.Builder(ProjectActivity.this);
-                View branchView = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_git_branch, null, false);
+                View branchView = View.inflate(ProjectActivity.this, R.layout.dialog_git_branch, null);
                 gitBranch.setTitle("New branch");
                 final EditText editText5 = branchView.findViewById(R.id.branch_name);
                 final CheckBox checkBox = branchView.findViewById(R.id.checkout);
@@ -930,7 +923,6 @@ public class ProjectActivity extends AppCompatActivity {
                 gitCheckout.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        assert branches != null;
                         dialogInterface.dismiss();
                         GitWrapper.checkout(ProjectActivity.this, drawerLayout, projectDir, branches.get(i).getName());
                     }
@@ -971,7 +963,7 @@ public class ProjectActivity extends AppCompatActivity {
                     final Uri fileUri = data.getData();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.name);
-                    View view = LayoutInflater.from(ProjectActivity.this).inflate(R.layout.dialog_input_single, null, false);
+                    View view = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                     final TextInputEditText editText = view.findViewById(R.id.input_text);
                     editText.setHint(R.string.file_name);
                     builder.setView(view);
@@ -1006,7 +998,11 @@ public class ProjectActivity extends AppCompatActivity {
             case VIEW_CODE:
                 if (resultCode == RESULT_OK) {
                     Intent intent = new Intent(ProjectActivity.this, ProjectActivity.class);
-                    intent.putExtras(getIntent().getExtras());
+                    Bundle extras = getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtras(extras);
+                    }
+
                     intent.addFlags(getIntent().getFlags());
                     intent.putStringArrayListExtra("files", openFiles);
                     startActivity(intent);
@@ -1023,11 +1019,9 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Method to show about dialog holding project information
      */
-    @SuppressLint("InflateParams")
     private void showAbout() {
         props = HTMLParser.getProperties(projectName);
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.sheet_about, null);
+        View layout = View.inflate(ProjectActivity.this, R.layout.sheet_about, null);
 
         TextView name = layout.findViewById(R.id.project_name);
         TextView author = layout.findViewById(R.id.project_author);

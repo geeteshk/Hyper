@@ -57,12 +57,12 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
         final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.ScrimInsetsView, defStyle, 0);
+                R.styleable.ScrimInsetsFrameLayout, defStyle, 0);
         if (a == null) {
             return;
         }
         mInsetForeground = a.getDrawable(
-                R.styleable.ScrimInsetsView_insetForeground);
+                R.styleable.ScrimInsetsFrameLayout_insetForeground);
         a.recycle();
 
         setWillNotDraw(true);
@@ -148,7 +148,7 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
         mOnInsetsCallback = onInsetsCallback;
     }
 
-    public static interface OnInsetsCallback {
-        public void onInsetsChanged(Rect insets);
+    public interface OnInsetsCallback {
+        void onInsetsChanged(Rect insets);
     }
 }

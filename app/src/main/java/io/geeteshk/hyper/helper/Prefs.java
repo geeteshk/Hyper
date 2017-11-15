@@ -102,4 +102,12 @@ public class Prefs {
     public static boolean get(Context context, String name, boolean defValue) {
         return pref(context).getBoolean(name, defValue);
     }
+    
+    public static void storeProject(Context context, String name, String author, String description, String keywords, int type) {
+        store(context, "name", name);
+        store(context, "author", author);
+        store(context, "description", description);
+        store(context, "keywords", keywords);
+        store(context, "type", type);
+    }
 }

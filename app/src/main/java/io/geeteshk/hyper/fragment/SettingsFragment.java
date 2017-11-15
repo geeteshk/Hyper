@@ -95,7 +95,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-        Preference notices  = getPreferenceManager().findPreference("notices");
+        Preference notices = getPreferenceManager().findPreference("notices");
         notices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

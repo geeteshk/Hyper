@@ -17,7 +17,6 @@
 package io.geeteshk.hyper.fragment;
 
 
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,8 +57,12 @@ public class ImageFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         String location = getArguments().getString("location");
-        File file = new File(location);
-        if (!file.exists()) {
+        File file = null;
+        if (location != null) {
+             file = new File(location);
+        }
+
+        if (file == null || !file.exists()) {
             TextView textView = new TextView(getActivity());
             int padding = ResourceHelper.dpToPx(getActivity(), 48);
             textView.setPadding(padding, padding, padding, padding);

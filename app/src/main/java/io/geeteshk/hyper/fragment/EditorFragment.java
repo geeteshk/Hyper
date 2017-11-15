@@ -16,7 +16,6 @@
 
 package io.geeteshk.hyper.fragment;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,8 +73,12 @@ public class EditorFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String location = getArguments().getString("location");
-        final File file = new File(location);
-        if (!file.exists()) {
+        File file = null;
+        if (location != null) {
+            file = new File(location);
+        }
+
+        if (file == null || !file.exists()) {
             TextView textView = new TextView(getActivity());
             int padding = ResourceHelper.dpToPx(getActivity(), 48);
             textView.setPadding(padding, padding, padding, padding);
@@ -136,11 +139,12 @@ public class EditorFragment extends Fragment {
 
         String contents = getContents(location);
         editText.setTextHighlighted(contents);
+        final File finalFile = file;
         editText.onTextChangedListener = new Editor.OnTextChangedListener() {
             @Override
             public void onTextChanged(String text) {
                 try {
-                    FileUtils.writeStringToFile(file, editText.getText().toString(), Charset.defaultCharset(), false);
+                    FileUtils.writeStringToFile(finalFile, editText.getText().toString(), Charset.defaultCharset(), false);
                 } catch (IOException e) {
                     Log.wtf(TAG, e.toString());
                 }

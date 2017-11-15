@@ -66,8 +66,7 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
                 AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(context);
                 gitPullBuilder.setTitle("Fetch from remote");
 
-                View pullView = LayoutInflater.from(context)
-                        .inflate(R.layout.dialog_pull, null, false);
+                View pullView = View.inflate(context, R.layout.dialog_pull, null);
 
                 final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
 

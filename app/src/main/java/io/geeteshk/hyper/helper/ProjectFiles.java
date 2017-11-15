@@ -16,7 +16,7 @@
 
 package io.geeteshk.hyper.helper;
 
-public class ProjectFiles {
+class ProjectFiles {
 
     static class Default {
 

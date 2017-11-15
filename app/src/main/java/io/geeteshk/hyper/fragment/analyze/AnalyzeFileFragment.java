@@ -103,7 +103,7 @@ public class AnalyzeFileFragment extends Fragment {
         pieChart.setRotationAngle(0);
         pieChart.setRotationEnabled(false);
         pieChart.setHighlightPerTapEnabled(true);
-        pieChart.setCenterText(ProjectManager.humanReadableByteCount(FileUtils.sizeOfDirectory(projectDir), true));
+        pieChart.setCenterText(ProjectManager.humanReadableByteCount(FileUtils.sizeOfDirectory(projectDir)));
         pieChart.setCenterTextSize(48f);
         pieChart.setCenterTextColor(darkTheme ? darkColor : lightColor);
         pieChart.setDrawCenterText(true);
@@ -216,7 +216,7 @@ public class AnalyzeFileFragment extends Fragment {
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            return ProjectManager.humanReadableByteCount((long) value, true);
+            return ProjectManager.humanReadableByteCount((long) value);
         }
     }
 }

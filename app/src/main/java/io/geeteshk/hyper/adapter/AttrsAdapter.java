@@ -34,7 +34,7 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
     public AttrsAdapter(Context context, Element element) {
         this.context = context;
         currentElement = element;
-        Pattern patternBuiltins = Pattern.compile("\\b(charset|lang|href|name|target|onclick|onmouseover|onmouseout|accesskey|code|codebase|width|height|align|vspace|hspace|border|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controls|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)");
+        Pattern patternBuiltins = Pattern.compile("\\b(charset|lang|href|onclick|onmouseover|onmouseout|code|codebase|width|height|align|vspace|hspace|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)");
         attrsList = new LinkedList<>(Arrays.asList(patternBuiltins.pattern().replace("(", "").replace(")", "").substring(2, patternBuiltins.pattern().length() - 2).split("\\|")));
         Collections.sort(attrsList);
         sortByPriority(attrsList);
@@ -59,9 +59,9 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
     @Override
     public void onBindViewHolder(final AttrsHolder holder, final int position) {
         if (position == 0) {
-            holder.attrKey.setText("Key");
+            holder.attrKey.setText(R.string.key);
             holder.attrKey.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.attrValue.setText("Value");
+            holder.attrValue.setText(R.string.value);
             holder.attrValue.setTypeface(Typeface.DEFAULT_BOLD);
             holder.attrEdit.setVisibility(View.GONE);
         } else {
@@ -72,10 +72,10 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    View attrsView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                    View attrsView = View.inflate(context, R.layout.dialog_input_single, null);
                     final TextInputEditText editText = attrsView.findViewById(R.id.input_text);
                     builder.setTitle(attrsList.get(newPos));
-                    editText.setHint("Value");
+                    editText.setHint(R.string.value);
                     editText.setSingleLine(true);
                     editText.setMaxLines(1);
                     editText.setText(currentElement.attr(attrsList.get(newPos)));
@@ -88,7 +88,7 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
                         }
                     });
 
-                    builder.setNegativeButton("CANCEL", null);
+                    builder.setNegativeButton(R.string.cancel, null);
                     builder.create().show();
                 }
             });

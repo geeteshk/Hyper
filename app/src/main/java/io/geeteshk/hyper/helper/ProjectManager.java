@@ -160,18 +160,14 @@ public class ProjectManager {
      * Method used to delete a project
      *
      * @param name of project
-     * @return true if successfully deleted
      */
-    public static boolean deleteProject(String name) {
+    public static void deleteProject(String name) {
         File projectDir = new File(Constants.HYPER_ROOT + File.separator + name);
         try {
             FileUtils.deleteDirectory(projectDir);
         } catch (IOException e) {
             Log.e(TAG, e.toString());
-            return false;
         }
-
-        return true;
     }
 
     private static File getFaviconFile(File dir) {
@@ -187,11 +183,7 @@ public class ProjectManager {
     public static File getIndexFile(String project) {
         IOFileFilter filter = new NameFileFilter("index.html", IOCase.INSENSITIVE);
         Iterator<File> iterator = FileUtils.iterateFiles(new File(Constants.HYPER_ROOT + File.separator + project), filter, DirectoryFileFilter.DIRECTORY);
-        if (iterator.hasNext()) {
-            return iterator.next();
-        }
-
-        return null;
+        return iterator.next();
     }
 
     /**
@@ -214,9 +206,8 @@ public class ProjectManager {
      *
      * @param context used to open assets
      * @param name of projects
-     * @return true if successfully copied
      */
-    private static boolean copyIcon(Context context, String name) {
+    private static void copyIcon(Context context, String name) {
         try {
             AssetManager manager = context.getAssets();
             InputStream stream = manager.open("web/favicon.ico");
@@ -231,10 +222,7 @@ public class ProjectManager {
             output.close();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            return false;
         }
-
-        return true;
     }
 
     /**
@@ -242,9 +230,8 @@ public class ProjectManager {
      *
      * @param name of project
      * @param stream containing path to custom icon
-     * @return true if successfully copied
      */
-    private static boolean copyIcon(String name, InputStream stream) {
+    private static void copyIcon(String name, InputStream stream) {
         try {
             OutputStream outputStream = new FileOutputStream(new File(Constants.HYPER_ROOT + File.separator + name + File.separator + "images" + File.separator + "favicon.ico"));
             byte[] buffer = new byte[1024];
@@ -257,10 +244,7 @@ public class ProjectManager {
             outputStream.close();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            return false;
         }
-
-        return true;
     }
 
     /**
@@ -332,11 +316,11 @@ public class ProjectManager {
         return true;
     }
 
-    public static String humanReadableByteCount(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
+    public static String humanReadableByteCount(long bytes) {
+        int unit = 1000;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        String pre = ("kMGTPE").charAt(exp - 1) + "";
         return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

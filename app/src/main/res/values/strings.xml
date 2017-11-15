@@ -179,5 +179,8 @@
     </string>
 
     <string name="rgba_background_format">background-color:rgba(%1$d,%2$d,%3$d,%4$1f);</string>
+    <string name="key">Key</string>
+    <string name="value">Value</string>
+    <string name="git_user_format">%1$s &lt;%2$s&gt;</string>
 
 </resources>
