@@ -61,6 +61,7 @@ dependencies {
     implementation libraries.nanohttpd
     implementation libraries.commonsIO
     implementation libraries.jsoup
+    implementation libraries.uaUtils
     implementation(libraries.jgit) {
         exclude module: 'httpclient'
         exclude group: 'org.apache.httpcomponents'

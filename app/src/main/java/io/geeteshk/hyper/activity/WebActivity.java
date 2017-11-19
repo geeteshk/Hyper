@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -47,6 +48,8 @@ import android.widget.ProgressBar;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -218,6 +221,54 @@ public class WebActivity extends AppCompatActivity {
             case R.id.refresh:
                 webView.animate().alpha(0);
                 webView.reload();
+                return true;
+            case R.id.user_agent:
+                final int[] selectedI = new int[1];
+                final String current = webView.getSettings().getUserAgentString();
+                final LinkedList<String> agents = new LinkedList<>(Arrays.asList(Constants.USER_AGENTS));
+                if (!agents.contains(current)) agents.add(0, current);
+                LinkedList<String> parsedAgents = NetworkUtils.parseUAList(agents);
+                new AlertDialog.Builder(this)
+                        .setTitle("Change User Agent")
+                        .setSingleChoiceItems(parsedAgents.toArray(new String[0]), parsedAgents.indexOf(NetworkUtils.parseUA(current)), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                selectedI[0] = i;
+                            }
+                        })
+                        .setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                webView.getSettings().setUserAgentString(agents.get(selectedI[0]));
+                            }
+                        })
+                        .setNeutralButton("RESET", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                webView.getSettings().setUserAgentString(null);
+                            }
+                        })
+                        .setNegativeButton("CUSTOM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                View rootView = View.inflate(WebActivity.this, R.layout.dialog_input_single, null);
+                                final TextInputEditText fileName = rootView.findViewById(R.id.input_text);
+                                fileName.setHint("Custom agent string");
+                                fileName.setText(current);
+                                new AlertDialog.Builder(WebActivity.this)
+                                        .setTitle("Custom User Agent")
+                                        .setView(rootView)
+                                        .setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                webView.getSettings().setUserAgentString(fileName.getText().toString());
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .show();
+                            }
+                        })
+                        .show();
                 return true;
             case R.id.web_browser:
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(localUrl));

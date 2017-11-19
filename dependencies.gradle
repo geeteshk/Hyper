@@ -38,6 +38,7 @@ ext.versions = [
         jgit : '3.7.1.201504261725-r',
         jsoup : '1.11.1',
         commonsIO : '2.5',
+        uaUtils : '1.20',
 ]
 
 ext.gradlePlugins = [
@@ -63,6 +64,7 @@ ext.libraries = [
         jgit : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
         jsoup : "org.jsoup:jsoup:$versions.jsoup",
         commonsIO : "commons-io:commons-io:$versions.commonsIO",
+        uaUtils : "eu.bitwalker:UserAgentUtils:$versions.uaUtils",
 ]
 
 def addRepos(RepositoryHandler repoHandler) {

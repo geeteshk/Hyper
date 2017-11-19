@@ -23,6 +23,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.LinkedList;
+
+import eu.bitwalker.useragentutils.UserAgent;
 
 /**
  * Helper class to handle network stuffs
@@ -78,5 +81,19 @@ public class NetworkUtils {
      */
     public static void setServer(HyperServer server) {
         mServer = server;
+    }
+
+    public static String parseUA(String ua) {
+        UserAgent agent = UserAgent.parseUserAgentString(ua);
+        return agent.getOperatingSystem().getName() + " / " + agent.getBrowser().getName() + " " + agent.getBrowserVersion().getVersion();
+    }
+
+    public static LinkedList<String> parseUAList(LinkedList<String> uaList) {
+        LinkedList<String> parsedList = new LinkedList<>();
+        for (String ua : uaList) {
+            parsedList.add(parseUA(ua));
+        }
+
+        return parsedList;
     }
 }
