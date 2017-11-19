@@ -109,7 +109,7 @@ public class AnalyzeFileFragment extends Fragment {
         pieChart.setDrawCenterText(true);
         pieChart.setDrawEntryLabels(false);
 
-        setData(true);
+        setData(false);
 
         Legend pieLegend = pieChart.getLegend();
         pieLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);

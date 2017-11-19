@@ -23,21 +23,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="COUNT"
-            android:background="@null" />
+            android:background="@null"
+            android:alpha="0.4" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_file"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false" />
+            android:checked="true" />
 
         <Button
             android:id="@+id/size_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIZE"
-            android:background="@null"
-            android:alpha="0.4" />
+            android:background="@null" />
 
     </LinearLayout>
 
