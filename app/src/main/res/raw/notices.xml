@@ -23,6 +23,7 @@
     </notice>
     <notice>
         <name>Android Support Libraries</name>
+        <url>https://developer.android.com/topic/libraries/support-library/index.html</url>
         <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
@@ -70,5 +71,11 @@
         <url>https://github.com/google/fonts</url>
         <copyright>Copyright 2006 The Inconsolata Project Authors</copyright>
         <license>SIL Open Font License v1.1</license>
+    </notice>
+    <notice>
+        <name>user-agent-utils</name>
+        <url>https://github.com/HaraldWalker/user-agent-utils</url>
+        <copyright>Copyright (c) 2013, Harald Walker (bitwalker.eu)</copyright>
+        <license>BSD 3-Clause License</license>
     </notice>
 </notices>
