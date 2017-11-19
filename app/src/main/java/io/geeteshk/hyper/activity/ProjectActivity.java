@@ -100,10 +100,30 @@ public class ProjectActivity extends AppCompatActivity {
      * Intent code to import image
      */
     private static final int IMPORT_FILE = 101;
-
+    private final int[] MATERIAL_BACKGROUNDS = {
+            R.drawable.material_bg_1,
+            R.drawable.material_bg_2,
+            R.drawable.material_bg_3,
+            R.drawable.material_bg_4,
+            R.drawable.material_bg_5,
+            R.drawable.material_bg_6,
+            R.drawable.material_bg_7,
+            R.drawable.material_bg_8
+    };
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.file_browser) LinearLayout fileBrowser;
-    
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.header_title)
+    TextView headerTitle;
+    @BindView(R.id.header_desc)
+    TextView headerDesc;
+    @BindView(R.id.header_background)
+    RelativeLayout headerBackground;
+    @BindView(R.id.header_icon)
+    ImageView headerIcon;
+    @BindView(R.id.root_overflow)
+    ImageButton overflow;
     /**
      * Currently open files
      */
@@ -117,33 +137,14 @@ public class ProjectActivity extends AppCompatActivity {
      * Drawer related stuffs
      */
     private ActionBarDrawerToggle toggle;
-    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     /**
      * ProjectManager definitions
      */
     private String projectName;
     private File projectDir, indexFile;
-
     private TreeNode rootNode;
     private AndroidTreeView treeView;
-
-    private final int[] MATERIAL_BACKGROUNDS = {
-            R.drawable.material_bg_1,
-            R.drawable.material_bg_2,
-            R.drawable.material_bg_3,
-            R.drawable.material_bg_4,
-            R.drawable.material_bg_5,
-            R.drawable.material_bg_6,
-            R.drawable.material_bg_7,
-            R.drawable.material_bg_8
-    };
-
     private String[] props;
-    @BindView(R.id.header_title) TextView headerTitle;
-    @BindView(R.id.header_desc) TextView headerDesc;
-    @BindView(R.id.header_background) RelativeLayout headerBackground;
-    @BindView(R.id.header_icon) ImageView headerIcon;
-    @BindView(R.id.root_overflow) ImageButton overflow;
 
     /**
      * Method called when activity is created
@@ -260,63 +261,63 @@ public class ProjectActivity extends AppCompatActivity {
                     case "index.html":
                         return false;
                     default:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectActivity.this);
-                        builder.setTitle(getString(R.string.delete) + " " + item.file.getName() + "?");
-                        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final boolean[] delete = {true, false};
-                                final String file = item.file.getName();
-                                final TreeNode parent = node.getParent();
-                                treeView.removeNode(node);
-                                removeFragment(item.file.getPath());
-
-                                final Snackbar snackbar = Snackbar.make(
-                                        drawerLayout,
-                                        "Deleted " + file + ".",
-                                        Snackbar.LENGTH_LONG
-                                );
-
-                                snackbar.setAction("UNDO", new View.OnClickListener() {
+                        new AlertDialog.Builder(ProjectActivity.this)
+                                .setTitle(getString(R.string.delete) + " " + item.file.getName() + "?")
+                                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(View view) {
-                                        delete[0] = false;
-                                        snackbar.dismiss();
-                                    }
-                                });
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final boolean[] delete = {true, false};
+                                        final String file = item.file.getName();
+                                        final TreeNode parent = node.getParent();
+                                        treeView.removeNode(node);
+                                        removeFragment(item.file.getPath());
 
-                                snackbar.addCallback(new Snackbar.Callback() {
-                                    @Override
-                                    public void onDismissed(Snackbar snackbar, int event) {
-                                        super.onDismissed(snackbar, event);
-                                        if (!delete[1]) {
-                                            if (delete[0]) {
-                                                if (item.file.isDirectory()) {
-                                                    try {
-                                                        FileUtils.deleteDirectory(item.file);
-                                                    } catch (IOException e) {
-                                                        Log.e(TAG, e.toString());
-                                                    }
-                                                } else {
-                                                    if (!item.file.delete()) {
-                                                        Log.e(TAG, "Failed to delete " + item.file.getPath());
-                                                    }
-                                                }
-                                            } else {
-                                                treeView.addNode(parent, node);
+                                        final Snackbar snackbar = Snackbar.make(
+                                                drawerLayout,
+                                                "Deleted " + file + ".",
+                                                Snackbar.LENGTH_LONG
+                                        );
+
+                                        snackbar.setAction("UNDO", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                delete[0] = false;
+                                                snackbar.dismiss();
                                             }
+                                        });
 
-                                            delete[1] = true;
-                                        }
+                                        snackbar.addCallback(new Snackbar.Callback() {
+                                            @Override
+                                            public void onDismissed(Snackbar snackbar, int event) {
+                                                super.onDismissed(snackbar, event);
+                                                if (!delete[1]) {
+                                                    if (delete[0]) {
+                                                        if (item.file.isDirectory()) {
+                                                            try {
+                                                                FileUtils.deleteDirectory(item.file);
+                                                            } catch (IOException e) {
+                                                                Log.e(TAG, e.toString());
+                                                            }
+                                                        } else {
+                                                            if (!item.file.delete()) {
+                                                                Log.e(TAG, "Failed to delete " + item.file.getPath());
+                                                            }
+                                                        }
+                                                    } else {
+                                                        treeView.addNode(parent, node);
+                                                    }
+
+                                                    delete[1] = true;
+                                                }
+                                            }
+                                        });
+
+                                        snackbar.show();
                                     }
-                                });
+                                })
+                                .setNegativeButton(R.string.cancel, null)
+                                .show();
 
-                                snackbar.show();
-                            }
-                        });
-
-                        builder.setNegativeButton(R.string.cancel, null);
-                        builder.show();
                         return true;
                 }
             }
@@ -342,17 +343,17 @@ public class ProjectActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_new_file:
-                                AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(ProjectActivity.this);
                                 View newFileRootView = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                                 final TextInputEditText fileName = newFileRootView.findViewById(R.id.input_text);
                                 fileName.setHint(R.string.file_name);
 
-                                newFileBuilder.setTitle("New file");
-                                newFileBuilder.setView(newFileRootView);
-                                newFileBuilder.setPositiveButton(R.string.create, null);
-                                newFileBuilder.setNegativeButton(R.string.cancel, null);
+                                final AlertDialog newFileDialog = new AlertDialog.Builder(ProjectActivity.this)
+                                        .setTitle("New file")
+                                        .setView(newFileRootView)
+                                        .setPositiveButton(R.string.create, null)
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create();
 
-                                final AlertDialog newFileDialog = newFileBuilder.create();
                                 newFileDialog.show();
                                 newFileDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -381,17 +382,17 @@ public class ProjectActivity extends AppCompatActivity {
 
                                 return true;
                             case R.id.action_new_folder:
-                                AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(ProjectActivity.this);
                                 View newFolderRootView = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                                 final TextInputEditText folderName = newFolderRootView.findViewById(R.id.input_text);
                                 folderName.setHint(R.string.folder_name);
 
-                                newFolderBuilder.setTitle("New folder");
-                                newFolderBuilder.setView(newFolderRootView);
-                                newFolderBuilder.setPositiveButton(R.string.create, null);
-                                newFolderBuilder.setNegativeButton(R.string.cancel, null);
+                                final AlertDialog newFolderDialog = new AlertDialog.Builder(ProjectActivity.this)
+                                        .setTitle("New folder")
+                                        .setView(newFolderRootView)
+                                        .setPositiveButton(R.string.create, null)
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create();
 
-                                final AlertDialog newFolderDialog = newFolderBuilder.create();
                                 newFolderDialog.show();
                                 newFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -674,33 +675,30 @@ public class ProjectActivity extends AppCompatActivity {
                 GitWrapper.add(drawerLayout, projectDir);
                 return true;
             case R.id.action_git_commit:
-                AlertDialog.Builder gitCommitBuilder = new AlertDialog.Builder(ProjectActivity.this);
                 View view = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                 final TextInputEditText editText = view.findViewById(R.id.input_text);
-                gitCommitBuilder.setTitle(R.string.git_commit);
                 editText.setHint(R.string.commit_message);
-                gitCommitBuilder.setView(view);
-                gitCommitBuilder.setCancelable(false);
-                gitCommitBuilder.setPositiveButton(R.string.git_commit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-                gitCommitBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                final AlertDialog dialog4 = gitCommitBuilder.create();
-                dialog4.show();
-                dialog4.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                final AlertDialog commitDialog = new AlertDialog.Builder(ProjectActivity.this)
+                        .setTitle(R.string.git_commit)
+                        .setView(view)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.git_commit, null)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .create();
+
+                commitDialog.show();
+                commitDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!editText.getText().toString().isEmpty()) {
                             GitWrapper.commit(ProjectActivity.this, drawerLayout, projectDir, editText.getText().toString());
-                            dialog4.dismiss();
+                            commitDialog.dismiss();
                         } else {
                             editText.setError(getString(R.string.commit_message_empty));
                         }
@@ -708,53 +706,51 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 return true;
             case R.id.action_git_push:
-                AlertDialog.Builder gitPushBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                gitPushBuilder.setTitle("Push changes");
-
                 View pushView = View.inflate(ProjectActivity.this, R.layout.dialog_push, null);
                 final Spinner spinner = pushView.findViewById(R.id.remotes_spinner);
                 final CheckBox dryRun = pushView.findViewById(R.id.dry_run);
                 final CheckBox force = pushView.findViewById(R.id.force);
                 final CheckBox thin = pushView.findViewById(R.id.thin);
                 final CheckBox tags = pushView.findViewById(R.id.tags);
-
                 final TextInputEditText pushUsername = pushView.findViewById(R.id.push_username);
                 final TextInputEditText pushPassword = pushView.findViewById(R.id.push_password);
-
                 spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)));
-                gitPushBuilder.setView(pushView);
-                gitPushBuilder.setPositiveButton("PUSH", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        GitWrapper.push(ProjectActivity.this, drawerLayout, projectDir, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
-                    }
-                });
 
-                gitPushBuilder.setNegativeButton(R.string.cancel, null);
-                gitPushBuilder.create().show();
+                new AlertDialog.Builder(ProjectActivity.this)
+                        .setTitle("Push changes")
+                        .setView(pushView)
+                        .setPositiveButton("PUSH", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                GitWrapper.push(ProjectActivity.this, drawerLayout, projectDir, (String) spinner.getSelectedItem(), new boolean[]{dryRun.isChecked(), force.isChecked(), thin.isChecked(), tags.isChecked()}, pushUsername.getText().toString(), pushPassword.getText().toString());
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+
                 return true;
             case R.id.action_git_pull:
-                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                gitPullBuilder.setTitle("Push changes");
-
                 View pullView = View.inflate(ProjectActivity.this, R.layout.dialog_pull, null);
                 final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
                 final TextInputEditText pullUsername = pullView.findViewById(R.id.pull_username);
                 final TextInputEditText pullPassword = pullView.findViewById(R.id.pull_password);
-
                 spinner1.setAdapter(new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)));
-                gitPullBuilder.setView(pullView);
-                gitPullBuilder.setPositiveButton("PULL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        GitWrapper.pull(ProjectActivity.this, drawerLayout, projectDir, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
-                    }
-                });
 
-                gitPullBuilder.setNegativeButton(R.string.cancel, null);
-                gitPullBuilder.create().show();
+                new AlertDialog.Builder(ProjectActivity.this)
+                        .setTitle("Push changes")
+                        .setView(pullView)
+                        .setPositiveButton("PULL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                GitWrapper.pull(ProjectActivity.this, drawerLayout, projectDir, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+
+                return true;
             case R.id.action_git_log:
                 List<RevCommit> commits = GitWrapper.getCommits(drawerLayout, projectDir);
                 View layoutLog = View.inflate(this, R.layout.sheet_logs, null);
@@ -781,35 +777,35 @@ public class ProjectActivity extends AppCompatActivity {
                     commitNames[i] = commitsToDiff.get(i).getShortMessage();
                 }
 
-                AlertDialog.Builder firstCommit = new AlertDialog.Builder(ProjectActivity.this);
-                firstCommit.setTitle("Choose first commit");
-                firstCommit.setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                        chosen[0] = i;
-                        AlertDialog.Builder secondCommit = new AlertDialog.Builder(ProjectActivity.this);
-                        secondCommit.setTitle("Choose second commit");
-                        secondCommit.setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(ProjectActivity.this)
+                        .setTitle("Choose first commit")
+                        .setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
-                                chosen[1] = i;
-                                AlertDialog.Builder diffBuilder = new AlertDialog.Builder(ProjectActivity.this);
-                                SpannableString string = GitWrapper.diff(drawerLayout, projectDir, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
-                                View rootView = View.inflate(ProjectActivity.this, R.layout.dialog_diff, null);
-                                DiffView diffView = rootView.findViewById(R.id.diff_view);
-                                diffView.setDiffText(string);
-                                diffBuilder.setView(rootView);
-                                diffBuilder.create().show();
+                                chosen[0] = i;
+                                new AlertDialog.Builder(ProjectActivity.this)
+                                        .setTitle("Choose second commit")
+                                        .setSingleChoiceItems(commitNames, -1, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.cancel();
+                                                chosen[1] = i;
+                                                SpannableString string = GitWrapper.diff(drawerLayout, projectDir, commitsToDiff.get(chosen[0]).getId(), commitsToDiff.get(chosen[1]).getId());
+                                                View rootView = View.inflate(ProjectActivity.this, R.layout.dialog_diff, null);
+                                                DiffView diffView = rootView.findViewById(R.id.diff_view);
+                                                diffView.setDiffText(string);
+
+                                                new AlertDialog.Builder(ProjectActivity.this)
+                                                        .setView(rootView)
+                                                        .show();
+                                            }
+                                        })
+                                        .show();
                             }
-                        });
+                        })
+                        .show();
 
-                        secondCommit.create().show();
-                    }
-                });
-
-                firstCommit.create().show();
                 return true;
             case R.id.action_git_status:
                 View layoutStatus = View.inflate(this, R.layout.item_git_status, null);
@@ -835,28 +831,25 @@ public class ProjectActivity extends AppCompatActivity {
                 dialogStatus.show();
                 return true;
             case R.id.action_git_branch_new:
-                AlertDialog.Builder gitBranch = new AlertDialog.Builder(ProjectActivity.this);
                 View branchView = View.inflate(ProjectActivity.this, R.layout.dialog_git_branch, null);
-                gitBranch.setTitle("New branch");
                 final EditText editText5 = branchView.findViewById(R.id.branch_name);
                 final CheckBox checkBox = branchView.findViewById(R.id.checkout);
                 checkBox.setText(R.string.checkout);
-                gitBranch.setView(branchView);
-                gitBranch.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-                gitBranch.setNegativeButton(R.string.cancel, null);
-                final AlertDialog dialog5 = gitBranch.create();
-                dialog5.show();
-                dialog5.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                final AlertDialog branchDialog = new AlertDialog.Builder(ProjectActivity.this)
+                        .setTitle("New branch")
+                        .setView(branchView)
+                        .setPositiveButton(R.string.create, null)
+                        .setNegativeButton(R.string.cancel, null)
+                        .create();
+
+                branchDialog.show();
+                branchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!editText5.getText().toString().isEmpty()) {
                             GitWrapper.createBranch(ProjectActivity.this, drawerLayout, projectDir, editText5.getText().toString(), checkBox.isChecked());
-                            dialog5.dismiss();
+                            branchDialog.dismiss();
                         } else {
                             editText5.setError(getString(R.string.branch_name_empty));
                         }
@@ -864,51 +857,44 @@ public class ProjectActivity extends AppCompatActivity {
                 });
                 return true;
             case R.id.action_git_branch_remove:
-                AlertDialog.Builder gitRemove = new AlertDialog.Builder(this);
                 final List<Ref> branchesList = GitWrapper.getBranches(drawerLayout, projectDir);
-                if (branchesList != null) {
-                    final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
-                    for (int i = 0; i < itemsMultiple.length; i++) {
-                        itemsMultiple[i] = branchesList.get(i).getName();
-                    }
-
-                    final boolean[] checkedItems = new boolean[itemsMultiple.length];
-
-                    final List<String> toDelete = new ArrayList<>();
-                    gitRemove.setMultiChoiceItems(itemsMultiple, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                            if (b) {
-                                toDelete.add(itemsMultiple[i].toString());
-                            } else {
-                                toDelete.remove(itemsMultiple[i].toString());
-                            }
-                        }
-                    });
-
-                    gitRemove.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            GitWrapper.deleteBranch(drawerLayout, projectDir, toDelete.toArray(new String[toDelete.size()]));
-                            dialogInterface.dismiss();
-                        }
-                    });
+                final CharSequence[] itemsMultiple = new CharSequence[branchesList.size()];
+                for (int i = 0; i < itemsMultiple.length; i++) {
+                    itemsMultiple[i] = branchesList.get(i).getName();
                 }
 
-                gitRemove.setNegativeButton(R.string.close, null);
-                gitRemove.setTitle("Delete branches");
-                gitRemove.create().show();
+                final boolean[] checkedItems = new boolean[itemsMultiple.length];
+                final List<String> toDelete = new ArrayList<>();
+
+                new AlertDialog.Builder(this)
+                        .setMultiChoiceItems(itemsMultiple, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                if (b) {
+                                    toDelete.add(itemsMultiple[i].toString());
+                                } else {
+                                    toDelete.remove(itemsMultiple[i].toString());
+                                }
+                            }
+                        })
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                GitWrapper.deleteBranch(drawerLayout, projectDir, toDelete.toArray(new String[toDelete.size()]));
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.close, null)
+                        .setTitle("Delete branches")
+                        .show();
+
                 return true;
             case R.id.action_git_branch_checkout:
-                AlertDialog.Builder gitCheckout = new AlertDialog.Builder(this);
                 final List<Ref> branches = GitWrapper.getBranches(drawerLayout, projectDir);
                 int checkedItem = -1;
-                CharSequence[] items = new CharSequence[0];
-                if (branches != null) {
-                    items = new CharSequence[branches.size()];
-                    for (int i = 0; i < items.length; i++) {
-                        items[i] = branches.get(i).getName();
-                    }
+                CharSequence[] items = new CharSequence[branches.size()];
+                for (int i = 0; i < items.length; i++) {
+                    items[i] = branches.get(i).getName();
                 }
 
                 for (int i = 0; i < items.length; i++) {
@@ -920,17 +906,18 @@ public class ProjectActivity extends AppCompatActivity {
                     }
                 }
 
-                gitCheckout.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        GitWrapper.checkout(ProjectActivity.this, drawerLayout, projectDir, branches.get(i).getName());
-                    }
-                });
+                new AlertDialog.Builder(this)
+                        .setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                GitWrapper.checkout(ProjectActivity.this, drawerLayout, projectDir, branches.get(i).getName());
+                            }
+                        })
+                        .setNegativeButton(R.string.close, null)
+                        .setTitle("Checkout branch")
+                        .show();
 
-                gitCheckout.setNegativeButton(R.string.close, null);
-                gitCheckout.setTitle("Checkout branch");
-                gitCheckout.create().show();
                 return true;
             case R.id.action_git_remote:
                 Intent remoteIntent = new Intent(ProjectActivity.this, RemotesActivity.class);
@@ -961,21 +948,23 @@ public class ProjectActivity extends AppCompatActivity {
             case IMPORT_FILE:
                 if (resultCode == RESULT_OK) {
                     final Uri fileUri = data.getData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.name);
                     View view = View.inflate(ProjectActivity.this, R.layout.dialog_input_single, null);
                     final TextInputEditText editText = view.findViewById(R.id.input_text);
                     editText.setHint(R.string.file_name);
-                    builder.setView(view);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton(R.string.import_not_java, null);
-                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    final AlertDialog dialog = builder.create();
+
+                    final AlertDialog dialog = new AlertDialog.Builder(this)
+                            .setTitle(R.string.name)
+                            .setView(view)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.import_not_java, null)
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .create();
+
                     dialog.show();
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                         @Override

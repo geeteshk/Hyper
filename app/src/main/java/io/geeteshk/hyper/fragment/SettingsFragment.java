@@ -74,23 +74,23 @@ public class SettingsFragment extends PreferenceFragment {
         factoryReset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder resetBuilder = new AlertDialog.Builder(getActivity());
-                resetBuilder.setTitle("Factory Reset");
-                resetBuilder.setMessage("Are you sure you want to delete ALL of your projects? This change cannot be undone!");
-                resetBuilder.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        try {
-                            FileUtils.cleanDirectory(new File(Constants.HYPER_ROOT));
-                            factoryReset.setEnabled(false);
-                        } catch (IOException e) {
-                            Log.e(TAG, e.toString());
-                        }
-                    }
-                });
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Factory Reset")
+                        .setMessage("Are you sure you want to delete ALL of your projects? This change cannot be undone!")
+                        .setPositiveButton("RESET", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                try {
+                                    FileUtils.cleanDirectory(new File(Constants.HYPER_ROOT));
+                                    factoryReset.setEnabled(false);
+                                } catch (IOException e) {
+                                    Log.e(TAG, e.toString());
+                                }
+                            }
+                        })
+                        .setNegativeButton("CANCEL", null)
+                        .show();
 
-                resetBuilder.setNegativeButton("CANCEL", null);
-                resetBuilder.create().show();
                 return true;
             }
         });

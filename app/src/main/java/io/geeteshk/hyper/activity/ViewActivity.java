@@ -134,29 +134,28 @@ public class ViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewActivity.this);
-        builder.setTitle("Save changes?");
-        builder.setMessage("This will append any changes to the html file. If you choose to discard unsaved changes will not be saved.");
-        builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false);
-                } catch (IOException e) {
-                    Log.e(TAG, e.toString());
-                }
+        new AlertDialog.Builder(ViewActivity.this)
+                .setTitle("Save changes?")
+                .setMessage("This will append any changes to the html file. If you choose to discard unsaved changes will not be saved.")
+                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false);
+                        } catch (IOException e) {
+                            Log.e(TAG, e.toString());
+                        }
 
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
-
-        builder.setNegativeButton("DISCARD", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        builder.create().show();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                })
+                .setNegativeButton("DISCARD", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show();
     }
 }

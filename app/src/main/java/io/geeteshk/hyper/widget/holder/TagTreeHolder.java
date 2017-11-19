@@ -85,21 +85,17 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_tag_add:
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Add to " + value.element.tagName());
                                 View rootView = inflater.inflate(R.layout.dialog_element_add, null, false);
                                 final TextInputEditText nameText = rootView.findViewById(R.id.element_name_text);
                                 final TextInputEditText textText = rootView.findViewById(R.id.element_text_text);
-                                builder.setView(rootView);
-                                builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                                    }
-                                });
+                                final AlertDialog dialog = new AlertDialog.Builder(context)
+                                        .setTitle("Add to " + value.element.tagName())
+                                        .setView(rootView)
+                                        .setPositiveButton("ADD", null)
+                                        .setNegativeButton("CANCEL", null)
+                                        .create();
 
-                                builder.setNegativeButton("CANCEL", null);
-                                final AlertDialog dialog = builder.create();
                                 dialog.show();
                                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -123,7 +119,6 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 LinearLayoutManager manager = new LinearLayoutManager(context);
                                 final TextView elementTag = rootView2.findViewById(R.id.element_tag);
                                 final TextView elementText = rootView2.findViewById(R.id.element_text);
-                                AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
                                 elementAttrs.setLayoutManager(manager);
                                 elementAttrs.addItemDecoration(new DividerItemDecoration(context, manager.getOrientation()));
                                 elementAttrs.setHasFixedSize(true);
@@ -132,26 +127,22 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 tagEdit.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
                                         final TextInputEditText editText = viewElement.findViewById(R.id.input_text);
-                                        builder.setTitle("Change element tag");
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
                                         editText.setMaxLines(1);
                                         editText.setText(element.tagName());
-                                        builder.setView(viewElement);
-                                        builder.setPositiveButton("CHANGE", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                                            }
-                                        });
+                                        final AlertDialog elementDialog = new AlertDialog.Builder(context)
+                                                .setTitle("Change element tag")
+                                                .setView(viewElement)
+                                                .setPositiveButton("CHANGE", null)
+                                                .setNegativeButton("CANCEL", null)
+                                                .create();
 
-                                        builder.setNegativeButton("CANCEL", null);
-                                        final AlertDialog dialog = builder.create();
-                                        dialog.show();
-                                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                        elementDialog.show();
+                                        elementDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 if (!editText.getText().toString().isEmpty()) {
@@ -160,7 +151,7 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                                     TreeNode parent = node.getParent();
                                                     tView.removeNode(node);
                                                     tView.addNode(parent, new TreeNode(new TagTreeItem(value.element)));
-                                                    dialog.dismiss();
+                                                    elementDialog.dismiss();
                                                 } else {
                                                     editText.setError("Please enter a name for the element.");
                                                 }
@@ -173,30 +164,31 @@ public class TagTreeHolder extends TreeNode.BaseNodeViewHolder<TagTreeHolder.Tag
                                 textEdit.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         View viewElement = inflater.inflate(R.layout.dialog_input_single, null, false);
                                         final TextInputEditText editText = viewElement.findViewById(R.id.input_text);
-                                        builder.setTitle("Change element text");
                                         editText.setHint("Value");
                                         editText.setSingleLine(true);
                                         editText.setMaxLines(1);
                                         editText.setText(element.ownText());
-                                        builder.setView(viewElement);
-                                        builder.setPositiveButton("CHANGE", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                element.text(editText.getText().toString());
-                                                elementText.setText(editText.getText().toString());
-                                            }
-                                        });
 
-                                        builder.setNegativeButton("CANCEL", null);
-                                        builder.create().show();
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Change element text")
+                                                .setView(viewElement)
+                                                .setPositiveButton("CHANGE", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        element.text(editText.getText().toString());
+                                                        elementText.setText(editText.getText().toString());
+                                                    }
+                                                })
+                                                .setNegativeButton("CANCEL", null)
+                                                .show();
                                     }
                                 });
 
-                                builder2.setView(rootView2);
-                                builder2.create().show();
+                                new AlertDialog.Builder(context)
+                                        .setView(rootView2)
+                                        .show();
                                 return true;
                             case R.id.action_tag_remove:
                                 tView.removeNode(node);

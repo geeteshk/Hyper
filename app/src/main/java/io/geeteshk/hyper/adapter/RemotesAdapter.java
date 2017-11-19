@@ -63,28 +63,24 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder gitPullBuilder = new AlertDialog.Builder(context);
-                gitPullBuilder.setTitle("Fetch from remote");
-
                 View pullView = View.inflate(context, R.layout.dialog_pull, null);
-
                 final Spinner spinner1 = pullView.findViewById(R.id.remotes_spinner);
-
                 final TextInputEditText pullUsername = pullView.findViewById(R.id.pull_username);
                 final TextInputEditText pullPassword = pullView.findViewById(R.id.pull_password);
-
                 spinner1.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, remotesList));
-                gitPullBuilder.setView(pullView);
-                gitPullBuilder.setPositiveButton("FETCH", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        GitWrapper.fetch(context, remotesView, repo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
-                    }
-                });
 
-                gitPullBuilder.setNegativeButton(R.string.cancel, null);
-                gitPullBuilder.create().show();
+                new AlertDialog.Builder(context)
+                        .setTitle("Fetch from remote")
+                        .setView(pullView)
+                        .setPositiveButton("FETCH", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                GitWrapper.fetch(context, remotesView, repo, (String) spinner1.getSelectedItem(), pullUsername.getText().toString(), pullPassword.getText().toString());
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
             }
         });
 
@@ -92,20 +88,20 @@ public class RemotesAdapter extends RecyclerView.Adapter<RemotesAdapter.RemotesH
             @Override
             public boolean onLongClick(View v) {
                 final int newPos = holder.getAdapterPosition();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Remove " + remotesList.get(newPos) + "?");
-                builder.setMessage("This remote will be removed permanently.");
-                builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        GitWrapper.removeRemote(remotesView, repo, remotesList.get(newPos));
-                        remotesList.remove(remotesList.get(newPos));
-                        notifyDataSetChanged();
-                    }
-                });
+                new AlertDialog.Builder(context)
+                        .setTitle("Remove " + remotesList.get(newPos) + "?")
+                        .setMessage("This remote will be removed permanently.")
+                        .setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                GitWrapper.removeRemote(remotesView, repo, remotesList.get(newPos));
+                                remotesList.remove(remotesList.get(newPos));
+                                notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
 
-                builder.setNegativeButton(R.string.cancel, null);
-                builder.create().show();
                 return true;
             }
         });

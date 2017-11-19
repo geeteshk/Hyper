@@ -133,10 +133,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(context.getString(R.string.delete) + " " + projects.get(holder.getAdapterPosition()) + "?");
-                builder.setMessage(R.string.change_undone);
-                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context)
+                        .setTitle(context.getString(R.string.delete) + " " + projects.get(holder.getAdapterPosition()) + "?")
+                        .setMessage(R.string.change_undone)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String project = projects.get(holder.getAdapterPosition());
@@ -149,10 +149,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
                                 Snackbar.LENGTH_LONG
                         ).show();
                     }
-                });
-
-                builder.setNegativeButton(R.string.cancel, null);
-                builder.create().show();
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
 
                 return true;
             }

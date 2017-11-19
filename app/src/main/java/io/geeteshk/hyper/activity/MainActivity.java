@@ -67,15 +67,12 @@ import io.geeteshk.hyper.helper.Styles;
  */
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     /**
      * Intent code for selecting an icon
      */
     public static final int SELECT_ICON = 100;
-
     public static final int SETTINGS_CODE = 101;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int IMPORT_PROJECT = 102;
 
     /**
@@ -132,164 +129,150 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         cloneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder choiceBuilder = new AlertDialog.Builder(MainActivity.this);
-                choiceBuilder.setTitle("Would you like to...");
                 String[] choices = {"Create a new project", "Clone a repository", "Import an external project"};
-                choiceBuilder.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, choices), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i) {
-                            case 0:
-                                AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
-                                createBuilder.setTitle("Create a new project");
-                                View rootView = View.inflate(MainActivity.this, R.layout.dialog_create, null);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Would you like to...")
+                        .setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, choices), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i) {
+                                    case 0:
+                                        View rootView = View.inflate(MainActivity.this, R.layout.dialog_create, null);
+                                        final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
+                                        final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
+                                        final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
+                                        final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
 
-                                final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
-                                final TextInputLayout authorLayout = rootView.findViewById(R.id.author_layout);
-                                final TextInputLayout descriptionLayout = rootView.findViewById(R.id.description_layout);
-                                final TextInputLayout keywordsLayout = rootView.findViewById(R.id.keywords_layout);
+                                        final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
+                                        typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
+                                        typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
 
-                                final Spinner typeSpinner = rootView.findViewById(R.id.type_spinner);
-                                typeSpinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, ProjectManager.TYPES));
-                                typeSpinner.setSelection(Prefs.get(MainActivity.this, "type", 0));
+                                        RadioButton defaultIcon = rootView.findViewById(R.id.default_icon);
+                                        RadioButton chooseIcon = rootView.findViewById(R.id.choose_icon);
+                                        projectIcon = rootView.findViewById(R.id.favicon_image);
 
-                                RadioButton defaultIcon = rootView.findViewById(R.id.default_icon);
-                                RadioButton chooseIcon = rootView.findViewById(R.id.choose_icon);
-                                projectIcon = rootView.findViewById(R.id.favicon_image);
+                                        nameLayout.getEditText().setText(Prefs.get(MainActivity.this, "name", ""));
+                                        authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
+                                        descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
+                                        keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
 
-                                nameLayout.getEditText().setText(Prefs.get(MainActivity.this, "name", ""));
-                                authorLayout.getEditText().setText(Prefs.get(MainActivity.this, "author", ""));
-                                descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
-                                keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
-
-                                defaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        if (isChecked) {
-                                            projectIcon.setImageResource(R.drawable.ic_launcher);
-                                            imageStream = null;
-                                        }
-                                    }
-                                });
-
-                                chooseIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        if (isChecked) {
-                                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                            intent.setType("image/*");
-                                            startActivityForResult(intent, SELECT_ICON);
-                                        }
-                                    }
-                                });
-
-                                createBuilder.setView(rootView);
-                                createBuilder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                });
-
-                                createBuilder.setNegativeButton("CANCEL", null);
-                                final AlertDialog dialog1 = createBuilder.create();
-                                dialog1.show();
-
-                                dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
-                                            String name = nameLayout.getEditText().getText().toString();
-                                            String author = authorLayout.getEditText().getText().toString();
-                                            String description = descriptionLayout.getEditText().getText().toString();
-                                            String keywords = keywordsLayout.getEditText().getText().toString();
-                                            int type = typeSpinner.getSelectedItemPosition();
-
-                                            Prefs.storeProject(MainActivity.this, name, author, description, keywords, type);
-                                            ProjectManager.generate(
-                                                    MainActivity.this,
-                                                    name,
-                                                    author,
-                                                    description,
-                                                    keywords,
-                                                    imageStream,
-                                                    projectAdapter,
-                                                    coordinatorLayout,
-                                                    type
-                                            );
-
-                                            dialog1.dismiss();
-                                        }
-                                    }
-                                });
-                                break;
-                            case 1:
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                builder.setTitle("Clone a repository");
-
-                                View cloneView = View.inflate(MainActivity.this, R.layout.dialog_clone, null);
-
-                                final TextInputEditText file = cloneView.findViewById(R.id.clone_name);
-                                final TextInputEditText remote = cloneView.findViewById(R.id.clone_url);
-                                final TextInputEditText username = cloneView.findViewById(R.id.clone_username);
-                                final TextInputEditText password = cloneView.findViewById(R.id.clone_password);
-
-                                file.setText(Prefs.get(MainActivity.this, "clone_name", ""));
-                                remote.setText(Prefs.get(MainActivity.this, "remote", ""));
-
-                                builder.setView(cloneView);
-                                builder.setPositiveButton("CLONE", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    }
-                                });
-
-                                builder.setNegativeButton(R.string.cancel, null);
-                                final AlertDialog dialog2 = builder.create();
-                                dialog2.show();
-                                dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (DataValidator.validateClone(MainActivity.this, file, remote)) {
-                                            String remoteStr = remote.getText().toString();
-                                            if (!remoteStr.contains("://")) {
-                                                remoteStr = "https://" + remoteStr;
+                                        defaultIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                            @Override
+                                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                if (isChecked) {
+                                                    projectIcon.setImageResource(R.drawable.ic_launcher);
+                                                    imageStream = null;
+                                                }
                                             }
+                                        });
 
-                                            String cloneName = file.getText().toString();
-                                            Prefs.store(MainActivity.this, "clone_name", cloneName);
-                                            Prefs.store(MainActivity.this, "remote", remoteStr);
+                                        chooseIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                            @Override
+                                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                if (isChecked) {
+                                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                                    intent.setType("image/*");
+                                                    startActivityForResult(intent, SELECT_ICON);
+                                                }
+                                            }
+                                        });
 
-                                            GitWrapper.clone(
-                                                    MainActivity.this,
-                                                    coordinatorLayout,
-                                                    new File(Constants.HYPER_ROOT + File.separator + cloneName),
-                                                    projectAdapter,
-                                                    remoteStr,
-                                                    username.getText().toString(),
-                                                    password.getText().toString()
-                                            );
+                                        final AlertDialog createDialog = new AlertDialog.Builder(MainActivity.this)
+                                                .setTitle("Create a new project")
+                                                .setView(rootView)
+                                                .setPositiveButton("CREATE", null)
+                                                .setNegativeButton("CANCEL", null)
+                                                .create();
 
-                                            dialog2.dismiss();
+                                        createDialog.show();
+                                        createDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
+                                                    String name = nameLayout.getEditText().getText().toString();
+                                                    String author = authorLayout.getEditText().getText().toString();
+                                                    String description = descriptionLayout.getEditText().getText().toString();
+                                                    String keywords = keywordsLayout.getEditText().getText().toString();
+                                                    int type = typeSpinner.getSelectedItemPosition();
+
+                                                    Prefs.storeProject(MainActivity.this, name, author, description, keywords, type);
+                                                    ProjectManager.generate(
+                                                            MainActivity.this,
+                                                            name,
+                                                            author,
+                                                            description,
+                                                            keywords,
+                                                            imageStream,
+                                                            projectAdapter,
+                                                            coordinatorLayout,
+                                                            type
+                                                    );
+
+                                                    createDialog.dismiss();
+                                                }
+                                            }
+                                        });
+                                        break;
+                                    case 1:
+                                        View cloneView = View.inflate(MainActivity.this, R.layout.dialog_clone, null);
+
+                                        final TextInputEditText file = cloneView.findViewById(R.id.clone_name);
+                                        final TextInputEditText remote = cloneView.findViewById(R.id.clone_url);
+                                        final TextInputEditText username = cloneView.findViewById(R.id.clone_username);
+                                        final TextInputEditText password = cloneView.findViewById(R.id.clone_password);
+
+                                        file.setText(Prefs.get(MainActivity.this, "clone_name", ""));
+                                        remote.setText(Prefs.get(MainActivity.this, "remote", ""));
+
+                                        final AlertDialog cloneDialog = new AlertDialog.Builder(MainActivity.this)
+                                                .setTitle("Clone a repository")
+                                                .setView(cloneView)
+                                                .setPositiveButton("CLONE", null)
+                                                .setNegativeButton(R.string.cancel, null)
+                                                .create();
+
+                                        cloneDialog.show();
+                                        cloneDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if (DataValidator.validateClone(MainActivity.this, file, remote)) {
+                                                    String remoteStr = remote.getText().toString();
+                                                    if (!remoteStr.contains("://")) {
+                                                        remoteStr = "https://" + remoteStr;
+                                                    }
+
+                                                    String cloneName = file.getText().toString();
+                                                    Prefs.store(MainActivity.this, "clone_name", cloneName);
+                                                    Prefs.store(MainActivity.this, "remote", remoteStr);
+
+                                                    GitWrapper.clone(
+                                                            MainActivity.this,
+                                                            coordinatorLayout,
+                                                            new File(Constants.HYPER_ROOT + File.separator + cloneName),
+                                                            projectAdapter,
+                                                            remoteStr,
+                                                            username.getText().toString(),
+                                                            password.getText().toString()
+                                                    );
+
+                                                    cloneDialog.dismiss();
+                                                }
+                                            }
+                                        });
+
+                                        break;
+                                    case 2:
+                                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                        intent.setType("file/*");
+                                        if (intent.resolveActivity(getPackageManager()) != null) {
+                                            startActivityForResult(intent, IMPORT_PROJECT);
                                         }
-                                    }
-                                });
 
-                                break;
-                            case 2:
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("file/*");
-                                if (intent.resolveActivity(getPackageManager()) != null) {
-                                    startActivityForResult(intent, IMPORT_PROJECT);
+                                        break;
                                 }
-
-                                break;
-                        }
-                    }
-                });
-
-                choiceBuilder.create().show();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -368,8 +351,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     Uri fileUri = data.getData();
                     if (fileUri != null) {
                         final File file = new File(fileUri.getPath());
-                        AlertDialog.Builder createBuilder = new AlertDialog.Builder(MainActivity.this);
-                        createBuilder.setTitle("Import an external project");
                         View rootView = View.inflate(MainActivity.this, R.layout.dialog_import, null);
 
                         final TextInputLayout nameLayout = rootView.findViewById(R.id.name_layout);
@@ -386,20 +367,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         descriptionLayout.getEditText().setText(Prefs.get(MainActivity.this, "description", ""));
                         keywordsLayout.getEditText().setText(Prefs.get(MainActivity.this, "keywords", ""));
 
-                        createBuilder.setIcon(R.drawable.ic_action_import);
-                        createBuilder.setView(rootView);
-                        createBuilder.setPositiveButton("IMPORT", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        final AlertDialog createDialog = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Import an external project")
+                                .setIcon(R.drawable.ic_action_import)
+                                .setView(rootView)
+                                .setPositiveButton("IMPORT", null)
+                                .setNegativeButton("CANCEL", null)
+                                .create();
 
-                            }
-                        });
-
-                        createBuilder.setNegativeButton("CANCEL", null);
-                        final AlertDialog dialog1 = createBuilder.create();
-                        dialog1.show();
-
-                        dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        createDialog.show();
+                        createDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 if (DataValidator.validateCreate(MainActivity.this, nameLayout, authorLayout, descriptionLayout, keywordsLayout)) {
@@ -421,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             coordinatorLayout
                                     );
 
-                                    dialog1.dismiss();
+                                    createDialog.dismiss();
                                 }
                             }
                         });

@@ -22,7 +22,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -54,8 +53,7 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
     @Override
     public View createNodeView(final TreeNode node, final FileTreeItem value) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_file_browser, null, false);
+        View view = View.inflate(context, R.layout.item_file_browser, null);
         final TextView nodeFile = view.findViewById(R.id.file_browser_name);
         final ImageView fileIcon = view.findViewById(R.id.file_browser_icon);
         arrow = view.findViewById(R.id.file_browser_arrow);
@@ -93,17 +91,17 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_new_file:
-                                AlertDialog.Builder newFileBuilder = new AlertDialog.Builder(context);
-                                View newFileRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                                View newFileRootView = View.inflate(context, R.layout.dialog_input_single, null);
                                 final TextInputEditText fileName = newFileRootView.findViewById(R.id.input_text);
                                 fileName.setHint(R.string.file_name);
 
-                                newFileBuilder.setTitle("New file");
-                                newFileBuilder.setView(newFileRootView);
-                                newFileBuilder.setPositiveButton(R.string.create, null);
-                                newFileBuilder.setNegativeButton(R.string.cancel, null);
+                                final AlertDialog newFileDialog = new AlertDialog.Builder(context)
+                                        .setTitle("New file")
+                                        .setView(newFileRootView)
+                                        .setPositiveButton(R.string.create, null)
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create();
 
-                                final AlertDialog newFileDialog = newFileBuilder.create();
                                 newFileDialog.show();
                                 newFileDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -132,17 +130,17 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                 return true;
                             case R.id.action_new_folder:
-                                AlertDialog.Builder newFolderBuilder = new AlertDialog.Builder(context);
-                                View newFolderRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                                View newFolderRootView = View.inflate(context, R.layout.dialog_input_single, null);
                                 final TextInputEditText folderName = newFolderRootView.findViewById(R.id.input_text);
                                 folderName.setHint(R.string.folder_name);
 
-                                newFolderBuilder.setTitle("New folder");
-                                newFolderBuilder.setView(newFolderRootView);
-                                newFolderBuilder.setPositiveButton(R.string.create, null);
-                                newFolderBuilder.setNegativeButton(R.string.cancel, null);
+                                final AlertDialog newFolderDialog = new AlertDialog.Builder(context)
+                                        .setTitle("New folder")
+                                        .setView(newFolderRootView)
+                                        .setPositiveButton(R.string.create, null)
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create();
 
-                                final AlertDialog newFolderDialog = newFolderBuilder.create();
                                 newFolderDialog.show();
                                 newFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -171,18 +169,18 @@ public class FileTreeHolder extends TreeNode.BaseNodeViewHolder<FileTreeHolder.F
 
                                 return true;
                             case R.id.action_rename:
-                                AlertDialog.Builder renameBuilder = new AlertDialog.Builder(context);
-                                View renameRootView = LayoutInflater.from(context).inflate(R.layout.dialog_input_single, null, false);
+                                View renameRootView = View.inflate(context, R.layout.dialog_input_single, null);
                                 final TextInputEditText renameTo = renameRootView.findViewById(R.id.input_text);
                                 renameTo.setHint(R.string.new_name);
-
-                                renameBuilder.setTitle("Rename " + value.file.getName());
-                                renameBuilder.setView(renameRootView);
                                 renameTo.setText(value.file.getName());
-                                renameBuilder.setPositiveButton("RENAME", null);
-                                renameBuilder.setNegativeButton(R.string.cancel, null);
 
-                                final AlertDialog renameDialog = renameBuilder.create();
+                                final AlertDialog renameDialog = new AlertDialog.Builder(context)
+                                        .setTitle("Rename " + value.file.getName())
+                                        .setView(renameRootView)
+                                        .setPositiveButton("RENAME", null)
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create();
+
                                 renameDialog.show();
                                 renameDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                                     @Override

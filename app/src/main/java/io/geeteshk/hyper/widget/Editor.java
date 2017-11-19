@@ -25,7 +25,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -46,7 +45,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -102,6 +100,8 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
      */
     private Paint numberPaint, lineShadowPaint;
     private boolean isHighlighting;
+    private Colors colors;
+    private Patterns patterns;
     /**
      * Runnable used to update colours when code is changed
      */
@@ -116,10 +116,6 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
             }
         }
     };
-
-    private Colors colors;
-    private Patterns patterns;
-
     private boolean hasLineNumbers;
 
     /**
@@ -620,6 +616,10 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
         });
     }
 
+    public enum CodeType {
+        HTML, CSS, JS
+    }
+
     /**
      * Listens to when text is changed
      */
@@ -652,21 +652,13 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
                     final EditText replaceTo = layout.findViewById(R.id.replace_to);
                     replaceFrom.setText(selected);
 
-                    AlertDialog.Builder builder;
-                    if (Prefs.get(context, "dark_theme", false)) {
-                        builder = new AlertDialog.Builder(context, R.style.Hyper_Dark);
-                    } else {
-                        builder = new AlertDialog.Builder(context);
-                    }
+                    final AlertDialog dialog = new AlertDialog.Builder(context, (Prefs.get(context, "dark_theme", false)) ? R.style.Hyper_Dark : R.style.Hyper)
+                            .setView(layout)
+                            .setPositiveButton(R.string.replace, null)
+                            .create();
 
-                    builder.setView(layout);
-                    builder.setPositiveButton(R.string.replace, null);
-
-                    final AppCompatDialog dialog = builder.create();
                     dialog.show();
-
-                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setOnClickListener(new View.OnClickListener() {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String replaceFromStr = replaceFrom.getText().toString();
@@ -716,10 +708,6 @@ public class Editor extends AppCompatMultiAutoCompleteTextView {
         private String getSelectedString() {
             return getText().toString().substring(getSelectionStart(), getSelectionEnd());
         }
-    }
-
-    public enum CodeType {
-        HTML, CSS, JS
     }
 
     class Colors {

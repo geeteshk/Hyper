@@ -71,25 +71,25 @@ public class AttrsAdapter extends RecyclerView.Adapter<AttrsAdapter.AttrsHolder>
             holder.attrEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     View attrsView = View.inflate(context, R.layout.dialog_input_single, null);
                     final TextInputEditText editText = attrsView.findViewById(R.id.input_text);
-                    builder.setTitle(attrsList.get(newPos));
                     editText.setHint(R.string.value);
                     editText.setSingleLine(true);
                     editText.setMaxLines(1);
                     editText.setText(currentElement.attr(attrsList.get(newPos)));
-                    builder.setView(attrsView);
-                    builder.setPositiveButton("SET", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            currentElement.attr(attrsList.get(newPos), editText.getText().toString());
-                            holder.attrValue.setText(editText.getText().toString());
-                        }
-                    });
 
-                    builder.setNegativeButton(R.string.cancel, null);
-                    builder.create().show();
+                    new AlertDialog.Builder(context)
+                            .setTitle(attrsList.get(newPos))
+                            .setView(attrsView)
+                            .setPositiveButton("SET", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    currentElement.attr(attrsList.get(newPos), editText.getText().toString());
+                                    holder.attrValue.setText(editText.getText().toString());
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
                 }
             });
         }
