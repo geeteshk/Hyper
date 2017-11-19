@@ -54,8 +54,7 @@ ext.libraries = [
         supportAppCompat : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign : "com.android.support:design:$versions.supportLibs",
         supportRecyclerView : "com.android.support:recyclerview-v7:$versions.supportLibs",
-        supportCardView : "com.android.support:cardview-v7:$versions.supportLibs",
-
+        
         atv : "com.github.bmelnychuk:atv:$versions.atv",
         licensesDialog : "de.psdev.licensesdialog:licensesdialog:$versions.licensesDialog",
         mpchart : "com.github.PhilJay:MPAndroidChart:v$versions.mpchart",
