@@ -27,9 +27,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.geeteshk.hyper.R;
 
 public class IntroFragment extends Fragment {
+
+    private Unbinder unbinder;
+
+    @BindView(R.id.slide_layout) RelativeLayout slideLayout;
+    @BindView(R.id.slide_image) ImageView slideImage;
+    @BindView(R.id.slide_title) TextView slideTitle;
+    @BindView(R.id.slide_desc) TextView slideDesc;
 
     public IntroFragment() {}
 
@@ -37,12 +47,9 @@ public class IntroFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_intro, container, false);
-        RelativeLayout slideLayout = rootView.findViewById(R.id.slide_layout);
-        ImageView slideImage = rootView.findViewById(R.id.slide_image);
-        TextView slideTitle = rootView.findViewById(R.id.slide_title);
-        TextView slideDesc = rootView.findViewById(R.id.slide_desc);
-        Bundle arguments = getArguments();
+        unbinder = ButterKnife.bind(this, rootView);
 
+        Bundle arguments = getArguments();
         if (arguments != null) {
             slideLayout.setBackgroundColor(arguments.getInt("bg"));
             slideImage.setImageResource(arguments.getInt("image"));
@@ -51,5 +58,11 @@ public class IntroFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -16,11 +16,13 @@
 
 package io.geeteshk.hyper.fragment.analyze;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -53,11 +55,14 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.Prefs;
 import io.geeteshk.hyper.helper.ProjectManager;
 
 public class AnalyzeFileFragment extends Fragment {
+
+    private Unbinder unbinder;
 
     @BindView(R.id.count_text) TextView countText;
     @BindView(R.id.size_text) TextView sizeText;
@@ -66,16 +71,17 @@ public class AnalyzeFileFragment extends Fragment {
 
     ArrayList<Integer> pieColors;
     File projectDir;
+    FragmentActivity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        boolean darkTheme = Prefs.get(getActivity(), "dark_theme", false);
-        int lightColor = ContextCompat.getColor(getActivity(), android.support.v7.appcompat.R.color.abc_primary_text_material_light);
-        int darkColor = ContextCompat.getColor(getActivity(), android.support.v7.appcompat.R.color.abc_primary_text_material_dark);
+        boolean darkTheme = Prefs.get(activity, "dark_theme", false);
+        int lightColor = ContextCompat.getColor(activity, android.support.v7.appcompat.R.color.abc_primary_text_material_light);
+        int darkColor = ContextCompat.getColor(activity, android.support.v7.appcompat.R.color.abc_primary_text_material_dark);
         projectDir = new File(getArguments().getString("project_file"));
         View rootView = inflater.inflate(R.layout.fragment_analyze_file, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
 
         pieColors = new ArrayList<>();
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
@@ -218,5 +224,17 @@ public class AnalyzeFileFragment extends Fragment {
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
             return ProjectManager.humanReadableByteCount((long) value);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (FragmentActivity) context;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -40,6 +40,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.geeteshk.hyper.R;
 import io.geeteshk.hyper.helper.ResourceHelper;
 import io.geeteshk.hyper.widget.Editor;
@@ -48,6 +51,19 @@ import io.geeteshk.hyper.widget.Editor;
  * Fragment used to edit files
  */
 public class EditorFragment extends Fragment {
+
+    private Unbinder unbinder;
+
+    @BindView(R.id.file_content) Editor editText;
+    @BindView(R.id.symbol_tab) FloatingActionButton symbolTab;
+    @BindView(R.id.symbol_one) Button symbolOne;
+    @BindView(R.id.symbol_two) Button symbolTwo;
+    @BindView(R.id.symbol_three) Button symbolThree;
+    @BindView(R.id.symbol_four) Button symbolFour;
+    @BindView(R.id.symbol_five) Button symbolFive;
+    @BindView(R.id.symbol_six) Button symbolSix;
+    @BindView(R.id.symbol_seven) Button symbolSeven;
+    @BindView(R.id.symbol_eight) Button symbolEight;
 
     /**
      * Log TAG
@@ -89,17 +105,7 @@ public class EditorFragment extends Fragment {
         }
 
         View rootView = inflater.inflate(R.layout.fragment_editor, container, false);
-
-        final Editor editText = rootView.findViewById(R.id.file_content);
-        FloatingActionButton symbolTab = rootView.findViewById(R.id.symbol_tab);
-        Button symbolOne = rootView.findViewById(R.id.symbol_one);
-        Button symbolTwo = rootView.findViewById(R.id.symbol_two);
-        Button symbolThree = rootView.findViewById(R.id.symbol_three);
-        Button symbolFour = rootView.findViewById(R.id.symbol_four);
-        Button symbolFive = rootView.findViewById(R.id.symbol_five);
-        Button symbolSix = rootView.findViewById(R.id.symbol_six);
-        Button symbolSeven = rootView.findViewById(R.id.symbol_seven);
-        Button symbolEight = rootView.findViewById(R.id.symbol_eight);
+        unbinder = ButterKnife.bind(this, rootView);
 
         String filename = file.getName();
         if (filename.endsWith(".html") || filename.equals("imports.txt")) {
@@ -195,6 +201,12 @@ public class EditorFragment extends Fragment {
         }
 
         return "Unable to read file!";
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**
