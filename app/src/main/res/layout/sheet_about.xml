@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -36,13 +36,13 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/project_name"
+            android:id="@+id/projName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:alpha="0.87"
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:alpha="0.87" />
+            android:paddingRight="16dp" />
 
         <View
             android:layout_width="match_parent"
@@ -61,13 +61,13 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/project_author"
+            android:id="@+id/projAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:alpha="0.87"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:alpha="0.87" />
+            android:paddingRight="16dp" />
 
         <View
             android:layout_width="match_parent"
@@ -86,13 +86,13 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/project_description"
+            android:id="@+id/projDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:alpha="0.87"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:alpha="0.87" />
+            android:paddingRight="16dp" />
 
         <View
             android:layout_width="match_parent"
@@ -111,12 +111,12 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/project_keywords"
+            android:id="@+id/projKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:alpha="0.87"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:alpha="0.87" />
+            android:paddingRight="16dp" />
 
     </LinearLayout>
 

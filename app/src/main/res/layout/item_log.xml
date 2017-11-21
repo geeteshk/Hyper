@@ -5,31 +5,31 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/log_level"
+        android:id="@+id/logLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/log_message"
+        android:id="@+id/logMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/log_details"
-        android:layout_toStartOf="@id/log_details"
-        android:layout_toRightOf="@+id/log_level"
-        android:layout_toEndOf="@id/log_level"
-        android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toEndOf="@id/logLevel"
+        android:layout_toLeftOf="@id/logDetails"
+        android:layout_toRightOf="@+id/logLevel"
+        android:layout_toStartOf="@id/logDetails"
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@+id/log_details"
+        android:id="@+id/logDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:textStyle="italic" />
 
 </RelativeLayout>

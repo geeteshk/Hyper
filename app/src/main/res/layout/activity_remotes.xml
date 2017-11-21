@@ -15,7 +15,7 @@
    -->
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/remotes_layout"
+    android:id="@+id/remotesLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,19 +25,18 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <include android:id="@+id/toolbar"
-            layout="@layout/widget_toolbar" />
+        <include layout="@layout/widget_toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/remotes_list"
+        android:id="@+id/remotesList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/new_remote"
+        android:id="@+id/newRemote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

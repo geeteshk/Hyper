@@ -54,7 +54,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/allow_content_access"
+                android:id="@+id/allowContentAccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -92,7 +92,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/allow_file_access"
+                android:id="@+id/allowFileAccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -130,7 +130,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/allow_file_access_from_file_urls"
+                android:id="@+id/allowFileAccessFromFileUrls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -168,7 +168,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/allow_universal_access_from_file_urls"
+                android:id="@+id/allowUniversalAccessFromFileUrls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -206,7 +206,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/block_network_image"
+                android:id="@+id/blockNetworkImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -244,7 +244,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/block_network_loads"
+                android:id="@+id/blockNetworkLoads"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -282,7 +282,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/built_in_zoom_controls"
+                android:id="@+id/builtInZoomControls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -320,7 +320,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/database_enabled"
+                android:id="@+id/database"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -358,7 +358,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/display_zoom_controls"
+                android:id="@+id/displayZoomControls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -396,7 +396,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/dom_storage_enabled"
+                android:id="@+id/domStorage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -434,7 +434,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/javascript_can_open_windows_automatically"
+                android:id="@+id/jsCanOpenWindows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -472,7 +472,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/javascript_enabled"
+                android:id="@+id/jsEnabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -510,7 +510,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/load_with_overview_mode"
+                android:id="@+id/loadOverview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -548,45 +548,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/loads_images_automatically"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:orientation="vertical"
-                tools:ignore="RelativeOverlap">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.87"
-                    android:text="@string/save_form_dats"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:alpha="0.54"
-                    android:text="@string/save_form_data_desc" />
-
-            </LinearLayout>
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/save_form_data"
+                android:id="@+id/imageLoad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -624,7 +586,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/use_wide_view_port"
+                android:id="@+id/wideView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

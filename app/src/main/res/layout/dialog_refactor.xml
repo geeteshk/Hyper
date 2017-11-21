@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/replace_from"
+            android:id="@+id/replaceFrom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/replace_from"
@@ -40,7 +40,7 @@
         android:layout_marginBottom="8dp">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/replace_to"
+            android:id="@+id/replaceTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/replace_to"

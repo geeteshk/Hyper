@@ -19,12 +19,12 @@
     android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/intro_pager"
+        android:id="@+id/introPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@+id/intro_dots"
+        android:id="@+id/dotsLayout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
@@ -35,23 +35,23 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_above="@id/dotsLayout"
         android:alpha=".5"
-        android:layout_above="@id/intro_dots"
         android:background="@android:color/white" />
 
     <Button
-        android:id="@+id/btn_next"
+        android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:background="@null"
         android:text="@string/next"
         android:textColor="@android:color/white" />
 
     <Button
-        android:id="@+id/btn_skip"
+        android:id="@+id/btnSkip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

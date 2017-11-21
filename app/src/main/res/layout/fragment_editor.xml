@@ -16,14 +16,15 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <io.geeteshk.hyper.widget.Editor
-        android:id="@+id/file_content"
+        android:id="@+id/fileContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/symbol_layout_scroll_container"
+        android:layout_above="@+id/symbolLayoutScrollContainer"
         android:gravity="start"
         android:inputType="textMultiLine|textNoSuggestions"
         android:paddingLeft="36dp"
@@ -33,7 +34,7 @@
         android:textSize="14sp" />
 
     <HorizontalScrollView
-        android:id="@+id/symbol_layout_scroll_container"
+        android:id="@+id/symbolLayoutScrollContainer"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentBottom="true"
@@ -49,7 +50,7 @@
             android:paddingRight="8dp">
 
             <Button
-                android:id="@+id/symbol_one"
+                android:id="@+id/symbolOne"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -59,7 +60,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_two"
+                android:id="@+id/symbolTwo"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -69,7 +70,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_three"
+                android:id="@+id/symbolThree"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -80,7 +81,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_four"
+                android:id="@+id/symbolFour"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -90,7 +91,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_five"
+                android:id="@+id/symbolFive"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -100,7 +101,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_six"
+                android:id="@+id/symbolSix"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -110,7 +111,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_seven"
+                android:id="@+id/symbolSeven"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -120,7 +121,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/symbol_eight"
+                android:id="@+id/symbolEight"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -134,25 +135,26 @@
     </HorizontalScrollView>
 
     <View
-        android:id="@+id/drop_shadow"
+        android:id="@+id/dropShadow"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:layout_above="@+id/symbol_layout_scroll_container"
-        android:rotation="180"
+        android:layout_above="@+id/symbolLayoutScrollContainer"
         android:alpha="0.5"
-        android:background="@drawable/bottom_shadow" />
+        android:background="@drawable/bottom_shadow"
+        android:rotation="180" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/symbol_tab"
+        android:id="@+id/symbolTab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_tab"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="32dp"
-        app:fabSize="mini" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_tab"
+        app:fabSize="mini"
+        tools:ignore="RelativeOverlap" />
 
 </RelativeLayout>

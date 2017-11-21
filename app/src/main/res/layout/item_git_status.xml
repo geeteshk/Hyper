@@ -33,7 +33,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_conflicting"
+            android:id="@+id/conflict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -47,7 +47,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_added"
+            android:id="@+id/added"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -61,7 +61,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_changed"
+            android:id="@+id/changed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -75,7 +75,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_missing"
+            android:id="@+id/missing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -89,7 +89,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_modified"
+            android:id="@+id/modified"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -103,7 +103,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_removed"
+            android:id="@+id/removed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -117,7 +117,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_uncommitted"
+            android:id="@+id/uncommitted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -131,7 +131,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_untracked"
+            android:id="@+id/untracked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />
@@ -145,7 +145,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/status_untracked_folders"
+            android:id="@+id/untrackedFolders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp" />

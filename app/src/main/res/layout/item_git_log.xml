@@ -21,14 +21,14 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/commit_name"
+        android:id="@+id/commitName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/commit_date"
+        android:layout_below="@+id/commitDate"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/commit_date"
+        android:id="@+id/commitDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -37,18 +37,18 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/commit_author"
+        android:id="@+id/commitAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/commit_name"
+        android:layout_below="@+id/commitName"
         android:layout_marginTop="8dp"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/commit_hash"
+        android:id="@+id/commitHash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/commit_author"
+        android:layout_below="@+id/commitAuthor"
         android:layout_marginTop="8dp"
         android:textSize="12sp"
         android:textStyle="bold" />

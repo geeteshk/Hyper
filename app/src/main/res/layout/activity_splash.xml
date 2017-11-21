@@ -16,7 +16,7 @@
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/splash_layout"
+    android:id="@+id/splashLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SplashActivity">
@@ -26,26 +26,26 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/hyper_logo"
+            android:id="@+id/hyperLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/centre_divider"
+            android:layout_above="@+id/centreDivider"
             android:layout_centerHorizontal="true"
             android:alpha="1"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_intro_logo" />
 
         <android.support.v4.widget.Space
-            android:id="@+id/centre_divider"
+            android:id="@+id/centreDivider"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_centerInParent="true" />
 
         <TextView
-            android:id="@+id/hyper_logo_text"
+            android:id="@+id/hyperLogoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/centre_divider"
+            android:layout_below="@+id/centreDivider"
             android:layout_centerHorizontal="true"
             android:alpha="0"
             android:text="@string/app_name"

@@ -18,19 +18,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:padding="8dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/element_arrow"
+        android:id="@+id/elementArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:src="@drawable/ic_browser_arrow" />
 
     <TextView
-        android:id="@+id/element_name"
+        android:id="@+id/elementName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -38,13 +38,13 @@
         android:textSize="18sp" />
 
     <ImageButton
-        android:id="@+id/element_overflow"
+        android:id="@+id/elementOverflow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
-        android:src="@drawable/ic_overflow"
-        android:background="?attr/selectableItemBackgroundBorderless" />
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_overflow" />
 
 </LinearLayout>

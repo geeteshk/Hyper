@@ -40,7 +40,7 @@
                 android:textSize="16sp" />
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/name_layout"
+                android:id="@+id/nameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -54,7 +54,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/author_layout"
+                android:id="@+id/authorLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -68,7 +68,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/description_layout"
+                android:id="@+id/descLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -82,7 +82,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/keywords_layout"
+                android:id="@+id/keyLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
@@ -104,7 +104,7 @@
                 android:textSize="16sp" />
 
             <Spinner
-                android:id="@+id/type_spinner"
+                android:id="@+id/typeSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -123,13 +123,13 @@
                 android:weightSum="6">
 
                 <ImageView
-                    android:id="@+id/favicon_image"
+                    android:id="@+id/faviconImage"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:scaleType="fitCenter"
                     android:contentDescription="@string/create_favicon"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_launcher" />
 
                 <LinearLayout
@@ -144,13 +144,13 @@
                         android:checkedButton="@+id/default_icon">
 
                         <RadioButton
-                            android:id="@+id/default_icon"
+                            android:id="@+id/defaultIcon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/favicon_default" />
 
                         <RadioButton
-                            android:id="@+id/choose_icon"
+                            android:id="@+id/chooseIcon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/favicon_choose" />

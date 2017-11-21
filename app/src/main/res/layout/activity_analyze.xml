@@ -27,23 +27,22 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <include android:id="@+id/toolbar"
-            layout="@layout/widget_toolbar" />
+        <include layout="@layout/widget_toolbar" />
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/analyze_tabs"
+            android:id="@+id/analyzeTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabGravity="fill"
             app:tabIndicatorColor="?attr/symbolColor"
-            app:tabSelectedTextColor="?attr/symbolColor"
-            app:tabTextColor="?android:attr/textColorPrimary"
             app:tabMode="fixed"
-            app:tabGravity="fill" />
+            app:tabSelectedTextColor="?attr/symbolColor"
+            app:tabTextColor="?android:attr/textColorPrimary" />
 
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/analyze_pager"
+        android:id="@+id/analyzePager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

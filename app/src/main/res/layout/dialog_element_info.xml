@@ -19,82 +19,82 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/element_tag_layout"
+        android:id="@+id/elementTagLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="9">
 
         <TextView
-            android:id="@+id/element_tag"
+            android:id="@+id/elementTag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
             android:padding="16dp"
-            android:textSize="24sp"
             android:textColor="?attr/symbolColor"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/element_tag_edit"
+            android:id="@+id/tagEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_action_element_edit"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_action_element_edit" />
 
     </LinearLayout>
 
     <View
-        android:id="@+id/content_divider"
+        android:id="@+id/contentDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/element_tag_layout"
+        android:layout_below="@+id/elementTagLayout"
         android:background="?android:attr/dividerVertical" />
 
     <LinearLayout
-        android:id="@+id/element_text_layout"
+        android:id="@+id/elementTextLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/content_divider"
+        android:layout_below="@+id/contentDivider"
         android:orientation="horizontal"
         android:weightSum="9">
 
         <TextView
-            android:id="@+id/element_text"
+            android:id="@+id/elementText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
-            android:textStyle="italic"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:textStyle="italic" />
 
         <ImageButton
-            android:id="@+id/element_text_edit"
+            android:id="@+id/textEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_action_element_edit"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_action_element_edit" />
 
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/element_attrs"
+        android:id="@+id/elementAttrs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/element_text_layout" />
+        android:layout_below="@+id/elementTextLayout" />
 
     <View
-        android:id="@+id/drop_shadow"
+        android:id="@+id/dropShadow"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:layout_below="@+id/element_text_layout"
+        android:layout_below="@+id/elementTextLayout"
         android:alpha="0.5"
         android:background="@drawable/bottom_shadow" />
 

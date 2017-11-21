@@ -28,13 +28,12 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <include android:id="@+id/toolbar"
-                layout="@layout/widget_toolbar" />
+            <include layout="@layout/widget_toolbar" />
 
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout
-            android:id="@+id/view_layout"
+            android:id="@+id/viewLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/appbar"

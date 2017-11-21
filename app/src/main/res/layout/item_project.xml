@@ -15,11 +15,11 @@
    -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/project_layout"
+    android:id="@+id/projectLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,18 +36,18 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/favicon"
-            android:layout_toEndOf="@+id/favicon"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/favicon"
+            android:layout_toRightOf="@id/favicon"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -55,18 +55,18 @@
                 android:id="@+id/author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
                 android:alpha="0.75" />
 
             <TextView
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginStart="8dp" />
 
         </LinearLayout>
 

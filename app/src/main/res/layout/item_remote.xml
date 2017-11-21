@@ -15,22 +15,23 @@
    -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="?attr/selectableItemBackground"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/remote_name"
+        android:id="@+id/remoteName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/remote_url"
+        android:id="@+id/remoteUrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp" />

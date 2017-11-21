@@ -24,6 +24,8 @@ buildscript {
     }
     dependencies {
         classpath gradlePlugins.android
+        classpath gradlePlugins.kotlinGradle
+        classpath gradlePlugins.kotlinExtensions
         classpath gradlePlugins.dexcount
         classpath gradlePlugins.versions
     }
