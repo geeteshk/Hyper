@@ -14,6 +14,12 @@ cat << "EOF"
 
 EOF
 
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]
+then
+echo "Pull request. Skipping APK upload."
+exit 1
+fi
+
 COMMIT_MSG="$(git log -1)"
 
 if [[ $COMMIT_MSG != *"[apk skip]"* ]]
