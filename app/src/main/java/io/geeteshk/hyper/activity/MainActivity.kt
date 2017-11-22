@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                                 rootView.descLayout.editText!!.setText(prefs["description", ""])
                                 rootView.keyLayout.editText!!.setText(prefs["keywords", ""])
 
+                                projectIcon = rootView.faviconImage
+                                rootView.defaultIcon.isChecked = true
                                 rootView.defaultIcon.setOnCheckedChangeListener { _, isChecked ->
                                     if (isChecked) {
                                         projectIcon.setImageResource(R.drawable.ic_launcher)
