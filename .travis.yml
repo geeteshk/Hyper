@@ -27,8 +27,9 @@ android:
 before_script:
   - chmod +x scripts/update_apk
 script:
-  - "./gradlew dependencyUpdates assembleDebug"
+  - "./gradlew dependencyUpdates jacocoTestReport assembleDebug"
 notifications:
   email: false
 after_success:
+  - bash <(curl -s https://codecov.io/bash)
   - "./scripts/update_apk"
