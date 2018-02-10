@@ -27,8 +27,8 @@ buildscript {
         classpath gradlePlugins.kotlinGradle
         classpath gradlePlugins.kotlinExtensions
         classpath gradlePlugins.dexcount
+        classpath gradlePlugins.apkSize
         classpath gradlePlugins.versions
-        classpath gradlePlugins.jacoco
     }
 }
 

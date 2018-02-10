@@ -15,56 +15,56 @@
  */
 
 ext.versions = [
-        code : 1,
-        name : '1.0',
+        code                    : 1,
+        name                    : '1.0',
 
-        minSdk : 14,
-        targetSdk : 27,
-        compileSdk : 27,
-        buildTools : '27.0.1',
+        minSdk                  : 14,
+        targetSdk               : 27,
+        compileSdk              : 27,
+        buildTools              : '27.0.3',
 
-        androidGradlePlugin : '3.0.1',
-        kotlinPlugin : '1.2.0',
-        dexcountPlugin : '0.8.1',
-        versionsPlugin : '0.17.0',
-        jacocoPlugin : '0.1.2',
+        androidGradlePlugin     : '3.0.1',
+        kotlinPlugin            : '1.2.21',
+        dexcountPlugin          : '0.8.1',
+        apkSizePlugin           : '0.4.0',
+        versionsPlugin          : '0.17.0',
 
-        supportLibs : '27.0.2',
-        atv : '1.2.9',
-        licensesDialog : '1.8.3',
-        mpchart : '3.0.3',
+        supportLibs             : '27.0.2',
+        atv                     : '1.2.9',
+        licensesDialog          : '1.8.3',
+        mpchart                 : '3.0.3',
 
-        nanohttpd : '2.3.1',
-        jgit : '3.7.1.201504261725-r',
-        jsoup : '1.11.2',
-        commonsIO : '2.5',
-        uaUtils : '1.20',
+        nanohttpd               : '2.3.1',
+        jgit                    : '3.7.1.201504261725-r',
+        jsoup                   : '1.11.2',
+        commonsIO               : '2.5',
+        uaUtils                 : '1.21',
 ]
 
 ext.gradlePlugins = [
-        android : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        kotlinGradle : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPlugin",
-        kotlinExtensions : "org.jetbrains.kotlin:kotlin-android-extensions:$versions.kotlinPlugin",
-        dexcount : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcountPlugin",
-        versions : "com.github.ben-manes:gradle-versions-plugin:$versions.versionsPlugin",
-        jacoco : "com.dicedmelon.gradle:jacoco-android:$versions.jacocoPlugin",
+        android             : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+        kotlinGradle        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPlugin",
+        kotlinExtensions    : "org.jetbrains.kotlin:kotlin-android-extensions:$versions.kotlinPlugin",
+        dexcount            : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcountPlugin",
+        apkSize       : "com.vanniktech:gradle-android-apk-size-plugin:$versions.apkSizePlugin",
+        versions            : "com.github.ben-manes:gradle-versions-plugin:$versions.versionsPlugin",
 ]
 
 ext.libraries = [
-        supportAppCompat : "com.android.support:appcompat-v7:$versions.supportLibs",
-        supportDesign : "com.android.support:design:$versions.supportLibs",
-        supportRecyclerView : "com.android.support:recyclerview-v7:$versions.supportLibs",
-        kotlin : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinPlugin",
+        supportAppCompat        : "com.android.support:appcompat-v7:$versions.supportLibs",
+        supportDesign           : "com.android.support:design:$versions.supportLibs",
+        supportRecyclerView     : "com.android.support:recyclerview-v7:$versions.supportLibs",
+        kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinPlugin",
 
-        atv : "com.github.bmelnychuk:atv:$versions.atv",
-        licensesDialog : "de.psdev.licensesdialog:licensesdialog:$versions.licensesDialog",
-        mpchart : "com.github.PhilJay:MPAndroidChart:v$versions.mpchart",
+        atv                     : "com.github.bmelnychuk:atv:$versions.atv",
+        licensesDialog          : "de.psdev.licensesdialog:licensesdialog:$versions.licensesDialog",
+        mpchart                 : "com.github.PhilJay:MPAndroidChart:v$versions.mpchart",
 
-        nanohttpd : "org.nanohttpd:nanohttpd-webserver:$versions.nanohttpd",
-        jgit : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
-        jsoup : "org.jsoup:jsoup:$versions.jsoup",
-        commonsIO : "commons-io:commons-io:$versions.commonsIO",
-        uaUtils : "eu.bitwalker:UserAgentUtils:$versions.uaUtils",
+        nanohttpd               : "org.nanohttpd:nanohttpd-webserver:$versions.nanohttpd",
+        jgit                    : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
+        jsoup                   : "org.jsoup:jsoup:$versions.jsoup",
+        commonsIO               : "commons-io:commons-io:$versions.commonsIO",
+        uaUtils                 : "eu.bitwalker:UserAgentUtils:$versions.uaUtils",
 ]
 
 def addRepos(RepositoryHandler repoHandler) {

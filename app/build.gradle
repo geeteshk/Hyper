@@ -18,8 +18,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.vanniktech.android.apk.size'
 apply plugin: 'com.github.ben-manes.versions'
-apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -46,8 +46,22 @@ android {
     }
 
     lintOptions {
-        disable 'PrivateResource'
-        abortOnError false
+        textOutput "stdout"
+        checkAllWarnings true
+        warningsAsErrors true
+        disable "UnusedResources"
+        disable "IconExpectedSize"
+        disable "GoogleAppIndexingApiWarning"
+        disable "InvalidPackage"
+        disable "ResourceType"
+        disable "GradleDependency"
+        disable "NewerVersionAvailable"
+    }
+
+    packagingOptions {
+        exclude "**/*.txt"
+        exclude "**/*.xml"
+        exclude "**/*.properties"
     }
 }
 
