@@ -16,15 +16,13 @@ cache:
     - "$HOME/.gradle/caches/"
     - "$HOME/.gradle/wrapper/"
     - "$HOME/.android/build-cache"
-android:
-  components:
-    - platform-tools
-    - tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
-    - extra-android-m2repository
-    - extra-google-m2repository
-    - extra-android-support
+install:
+    - echo yes | sdkmanager "tools" &>/dev/null
+    - echo yes | sdkmanager "platform-tools" &>/dev/null
+    - echo yes | sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" &>/dev/null
+    - echo yes | sdkmanager "platforms;android-$ANDROID_API_LEVEL" &>/dev/null
+    - echo yes | sdkmanager "extras;android;m2repository" &>/dev/null
+    - echo yes | sdkmanager "extras;google;m2repository" &>/dev/null
 before_script:
   - chmod +x scripts/update_apk
 script:
