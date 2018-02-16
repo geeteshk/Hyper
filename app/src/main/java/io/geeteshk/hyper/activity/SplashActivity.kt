@@ -47,8 +47,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         supportActionBar?.hide()
 
-        hyperLogo.animate().alpha(1F).duration = 1000
-        hyperLogoText.animate().alpha(1F).setDuration(1000).setListener(object : Animator.AnimatorListener {
+        hyperLogo.animate().alpha(1F).setDuration(1000).setListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animator: Animator) {
 
             }
