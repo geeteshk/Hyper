@@ -17,6 +17,8 @@
 package io.geeteshk.hyper.adapter
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +35,9 @@ class FileAdapter(context: Context, private val openFiles: List<String>) : Array
         val rootView: View = convertView ?: parent.inflate(R.layout.item_file_project)
         val resource = ResourceHelper.getIcon(File(openFiles[position]))
         rootView.fileIcon.setImageResource(resource)
+        rootView.fileIcon.colorFilter = PorterDuffColorFilter(0xffffffff.toInt(), PorterDuff.Mode.SRC_ATOP)
         rootView.fileTitle.text = getPageTitle(position)
+        rootView.fileTitle.setTextColor(0xffffffff.toInt())
         rootView.fileTitle.typeface = Typeface.DEFAULT_BOLD
         return rootView
     }

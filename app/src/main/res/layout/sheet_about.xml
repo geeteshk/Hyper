@@ -32,7 +32,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/about_name"
-            android:textColor="?attr/symbolColor"
+            android:textColor="?attr/colorPrimary"
             android:textSize="20sp" />
 
         <TextView
@@ -57,7 +57,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/about_author"
-            android:textColor="?attr/symbolColor"
+            android:textColor="?attr/colorPrimary"
             android:textSize="20sp" />
 
         <TextView
@@ -82,7 +82,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/about_desc"
-            android:textColor="?attr/symbolColor"
+            android:textColor="?attr/colorPrimary"
             android:textSize="20sp" />
 
         <TextView
@@ -107,7 +107,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/about_keywords"
-            android:textColor="?attr/symbolColor"
+            android:textColor="?attr/colorPrimary"
             android:textSize="20sp" />
 
         <TextView

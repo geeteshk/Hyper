@@ -148,9 +148,8 @@ class ProjectActivity : AppCompatActivity() {
             }
         })
 
-        val darkTheme = prefs["dark_theme", false]!!
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
-        drawerLayout.setStatusBarBackgroundColor(ContextCompat.getColor(this, if (darkTheme) R.color.colorPrimaryDarkNight else R.color.colorPrimaryDark))
+        drawerLayout.setStatusBarBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
         rootNode = TreeNode.root()
         setupFileTree(rootNode, projectDir)

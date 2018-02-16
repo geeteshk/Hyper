@@ -15,12 +15,10 @@
    -->
 
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#BDBDBD</color>
-    <color name="colorPrimaryNight">#424242</color>
-    <color name="colorPrimaryDarkNight">#282828</color>
-    <color name="colorAccent">#2979FF</color>
-    <color name="colorAccentNight">#448AFF</color>
+    <color name="colorPrimary">#448AFF</color>
+    <color name="colorPrimaryDark">#2962FF</color>
+    <color name="colorAccent">#FF6B69</color>
+    <color name="colorAccentNight">#FF7163</color>
 
     <!-- WHY IS THIS A THING??? -->
     <color name="whiteButNotAndroidWhite">#FFFFFF</color>
