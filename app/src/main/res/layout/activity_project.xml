@@ -65,6 +65,7 @@
                 android:id="@+id/headerBackground"
                 android:layout_width="match_parent"
                 android:layout_height="190dp"
+                android:background="@drawable/header_bg"
                 android:orientation="vertical"
                 tools:ignore="UselessParent">
 

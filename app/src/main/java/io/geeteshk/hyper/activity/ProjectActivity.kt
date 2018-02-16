@@ -239,7 +239,6 @@ class ProjectActivity : AppCompatActivity() {
         }
 
         fileBrowser.addView(treeView.view)
-        headerBackground.setBackgroundResource(MATERIAL_BACKGROUNDS[(Math.random() * 8).toInt()])
         headerIcon.setImageBitmap(ProjectManager.getFavicon(this@ProjectActivity, projectName))
         headerTitle.text = props[0]
         headerDesc.text = props[1]
@@ -808,6 +807,5 @@ class ProjectActivity : AppCompatActivity() {
         private val TAG = ProjectActivity::class.java.simpleName
         private val VIEW_CODE = 99
         private val IMPORT_FILE = 101
-        private val MATERIAL_BACKGROUNDS = intArrayOf(R.drawable.material_bg_1, R.drawable.material_bg_2, R.drawable.material_bg_3, R.drawable.material_bg_4, R.drawable.material_bg_5, R.drawable.material_bg_6, R.drawable.material_bg_7, R.drawable.material_bg_8)
     }
 }
