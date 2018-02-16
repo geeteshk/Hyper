@@ -278,7 +278,7 @@ class ProjectActivity : AppCompatActivity() {
                                 }
 
                                 Snackbar.make(drawerLayout, "Created $fileStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFileNode = TreeNode(FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(newFile), newFile, drawerLayout))
+                                val newFileNode = TreeNode(FileTreeHolder.FileTreeItem(newFile, drawerLayout))
                                 rootNode.addChild(newFileNode)
                                 treeView.setRoot(rootNode)
                                 treeView.addNode(rootNode, newFileNode)
@@ -314,7 +314,7 @@ class ProjectActivity : AppCompatActivity() {
                                 }
 
                                 Snackbar.make(drawerLayout, "Created $folderStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFolderNode = TreeNode(FileTreeHolder.FileTreeItem(R.drawable.ic_folder, newFolder, drawerLayout))
+                                val newFolderNode = TreeNode(FileTreeHolder.FileTreeItem(newFolder, drawerLayout))
                                 rootNode.addChild(newFolderNode)
                                 treeView.setRoot(rootNode)
                                 treeView.addNode(rootNode, newFolderNode)
@@ -349,7 +349,7 @@ class ProjectActivity : AppCompatActivity() {
 
                                 Snackbar.make(drawerLayout, "Successfully copied " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
                                 val copyFile = File(projectDir, currentFile.name)
-                                val copyNode = TreeNode(FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(copyFile), copyFile, currentItem.view))
+                                val copyNode = TreeNode(FileTreeHolder.FileTreeItem(copyFile, currentItem.view))
                                 rootNode.addChild(copyNode)
                                 treeView.setRoot(rootNode)
                                 treeView.addNode(rootNode, copyNode)
@@ -376,7 +376,7 @@ class ProjectActivity : AppCompatActivity() {
                                 Snackbar.make(drawerLayout, "Successfully moved " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
                                 Clipboard.instance.currentFile = null
                                 val cutFile = File(projectDir, currentFile.name)
-                                val cutNode = TreeNode(FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(cutFile), cutFile, currentItem.view))
+                                val cutNode = TreeNode(FileTreeHolder.FileTreeItem(cutFile, currentItem.view))
                                 rootNode.addChild(cutNode)
                                 treeView.setRoot(rootNode)
                                 treeView.addNode(rootNode, cutNode)
@@ -405,11 +405,11 @@ class ProjectActivity : AppCompatActivity() {
 
         for (file in files) {
             if (file.isDirectory) {
-                val folderNode = TreeNode(FileTreeHolder.FileTreeItem(R.drawable.ic_folder, file, drawerLayout))
+                val folderNode = TreeNode(FileTreeHolder.FileTreeItem(file, drawerLayout))
                 setupFileTree(folderNode, file)
                 root!!.addChild(folderNode)
             } else {
-                val fileNode = TreeNode(FileTreeHolder.FileTreeItem(ResourceHelper.getIcon(file), file, drawerLayout))
+                val fileNode = TreeNode(FileTreeHolder.FileTreeItem(file, drawerLayout))
                 root!!.addChild(fileNode)
             }
         }

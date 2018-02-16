@@ -17,7 +17,6 @@
 package io.geeteshk.hyper.widget.holder
 
 import android.content.Context
-import android.support.annotation.DrawableRes
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -39,9 +38,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
     override fun createNodeView(node: TreeNode, value: FileTreeItem): View {
         val view = View.inflate(context, R.layout.item_file_browser, null)
-
         view.fileBrowserName.text = value.file.name
-        view.fileBrowserIcon.setImageResource(value.icon)
+        ResourceHelper.setIcon(view.fileBrowserIcon, value.file, 0xFF448AFF.toInt())
 
         if (node.isLeaf) {
             view.fileBrowserArrow.visibility = View.GONE
@@ -94,7 +92,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 }
 
                                 Snackbar.make(value.view, "Created $fileStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFileNode = TreeNode(FileTreeItem(ResourceHelper.getIcon(newFile), newFile, value.view))
+                                val newFileNode = TreeNode(FileTreeItem(newFile, value.view))
                                 node.addChild(newFileNode)
                                 view.fileBrowserArrow.visibility = View.VISIBLE
                                 tView.expandNode(node)
@@ -130,7 +128,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 }
 
                                 Snackbar.make(value.view, "Created $folderStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFolderNode = TreeNode(FileTreeItem(R.drawable.ic_folder, newFolder, value.view))
+                                val newFolderNode = TreeNode(FileTreeItem(newFolder, value.view))
                                 node.addChild(newFolderNode)
                                 view.fileBrowserArrow.visibility = View.VISIBLE
                                 tView.expandNode(node)
@@ -179,9 +177,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                                 Snackbar.make(value.view, "Renamed " + value.file.name + " to " + renameStr + ".", Snackbar.LENGTH_SHORT).show()
                                 value.file = rename
-                                value.icon = ResourceHelper.getIcon(rename)
                                 view.fileBrowserName.text = value.file.name
-                                view.fileBrowserIcon.setImageResource(value.icon)
+                                ResourceHelper.setIcon(view.fileBrowserIcon, value.file, 0xFF448AFF.toInt())
                             }
                         }
 
@@ -227,7 +224,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                                 Snackbar.make(value.view, "Successfully copied " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
                                 val copyFile = File(file, currentFile.name)
-                                val copyNode = TreeNode(FileTreeItem(ResourceHelper.getIcon(copyFile), copyFile, currentItem.view))
+                                val copyNode = TreeNode(FileTreeItem(copyFile, currentItem.view))
                                 node.addChild(copyNode)
                                 view.fileBrowserArrow!!.visibility = View.VISIBLE
                                 tView.expandNode(node)
@@ -254,7 +251,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 Snackbar.make(value.view, "Successfully moved " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
                                 Clipboard.instance.currentFile = null
                                 val cutFile = File(file, currentFile.name)
-                                val cutNode = TreeNode(FileTreeItem(ResourceHelper.getIcon(cutFile), cutFile, currentItem.view))
+                                val cutNode = TreeNode(FileTreeItem(cutFile, currentItem.view))
                                 node.addChild(cutNode)
                                 view.fileBrowserArrow!!.visibility = View.VISIBLE
                                 tView.expandNode(node)
@@ -278,7 +275,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
         view.fileBrowserArrow.animate().rotation((if (active) 0 else -90).toFloat()).duration = 150
     }
 
-    class FileTreeItem(@field:DrawableRes var icon: Int, var file: File, var view: View)
+    class FileTreeItem(var file: File, var view: View)
 
     companion object {
 

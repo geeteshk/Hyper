@@ -17,8 +17,6 @@
 package io.geeteshk.hyper.adapter
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
@@ -33,9 +31,7 @@ class FileAdapter(context: Context, private val openFiles: List<String>) : Array
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val rootView: View = convertView ?: parent.inflate(R.layout.item_file_project)
-        val resource = ResourceHelper.getIcon(File(openFiles[position]))
-        rootView.fileIcon.setImageResource(resource)
-        rootView.fileIcon.colorFilter = PorterDuffColorFilter(0xffffffff.toInt(), PorterDuff.Mode.SRC_ATOP)
+        ResourceHelper.setIcon(rootView.fileIcon, File(openFiles[position]), 0xffffffff.toInt())
         rootView.fileTitle.text = getPageTitle(position)
         rootView.fileTitle.setTextColor(0xffffffff.toInt())
         rootView.fileTitle.typeface = Typeface.DEFAULT_BOLD
@@ -44,7 +40,7 @@ class FileAdapter(context: Context, private val openFiles: List<String>) : Array
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val rootView: View = convertView ?: parent.inflate(R.layout.item_file_project)
-        rootView.fileIcon.setImageResource(ResourceHelper.getIcon(File(openFiles[position])))
+        ResourceHelper.setIcon(rootView.fileIcon, File(openFiles[position]), 0xffffffff.toInt())
         rootView.fileTitle.text = getPageTitle(position)
         return rootView
     }

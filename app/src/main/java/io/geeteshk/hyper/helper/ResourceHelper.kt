@@ -19,8 +19,11 @@ package io.geeteshk.hyper.helper
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.util.TypedValue
+import android.widget.ImageView
 import io.geeteshk.hyper.R
 import java.io.File
 
@@ -54,15 +57,22 @@ object ResourceHelper {
 
     }
 
-    fun getIcon(file: File): Int {
+    fun setIcon(image: ImageView, file: File, filter: Int) {
+        image.clearColorFilter()
         val fileName = file.name
-        if (file.isDirectory) return R.drawable.ic_folder
-        if (ProjectManager.isImageFile(file)) return R.drawable.ic_image
-        if (ProjectManager.isBinaryFile(file)) return R.drawable.ic_binary
-        if (fileName.endsWith(".html")) return R.drawable.ic_html
-        if (fileName.endsWith(".css")) return R.drawable.ic_css
-        if (fileName.endsWith(".js")) return R.drawable.ic_js
-        return if (fileName.endsWith(".woff") || fileName.endsWith(".ttf") || fileName.endsWith(".otf") || fileName.endsWith(".woff2") || fileName.endsWith(".fnt")) R.drawable.ic_font else R.drawable.ic_file
+        if (file.isDirectory) setWithFilter(image, R.drawable.ic_folder, filter)
+        else if (ProjectManager.isImageFile(file)) setWithFilter(image, R.drawable.ic_image, filter)
+        else if (ProjectManager.isBinaryFile(file)) setWithFilter(image, R.drawable.ic_binary, filter)
+        else if (fileName.endsWith(".html")) image.setImageResource(R.drawable.ic_html)
+        else if (fileName.endsWith(".css")) image.setImageResource(R.drawable.ic_css)
+        else if (fileName.endsWith(".js")) image.setImageResource(R.drawable.ic_js)
+        else if (fileName.endsWith(".woff") || fileName.endsWith(".ttf") || fileName.endsWith(".otf") || fileName.endsWith(".woff2") || fileName.endsWith(".fnt")) setWithFilter(image, R.drawable.ic_font, filter)
+        else setWithFilter(image, R.drawable.ic_file, filter)
+    }
+
+    private fun setWithFilter(image: ImageView, icon: Int, filter: Int) {
+        image.setImageResource(icon)
+        image.colorFilter = PorterDuffColorFilter(filter, PorterDuff.Mode.SRC_ATOP)
     }
 
     fun dpToPx(context: Context, dp: Int): Int {
