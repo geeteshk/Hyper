@@ -39,7 +39,7 @@ import io.geeteshk.hyper.R
 import io.geeteshk.hyper.helper.Prefs.defaultPrefs
 import io.geeteshk.hyper.helper.Prefs.get
 import io.geeteshk.hyper.helper.ProjectManager
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.fragment_analyze_file.*
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils

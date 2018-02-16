@@ -28,7 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.item_git_log.view.*
 import org.eclipse.jgit.revwalk.RevCommit
 

@@ -28,7 +28,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.helper.ResourceHelper
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import io.geeteshk.hyper.widget.Editor
 import kotlinx.android.synthetic.main.fragment_editor.*
 import org.apache.commons.io.FileUtils

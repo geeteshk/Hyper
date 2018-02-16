@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.widget.TextView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.item_log.view.*
 
 class LogsAdapter(private val localWithoutIndex: String, private val jsLogs: List<ConsoleMessage>, private val darkTheme: Boolean) : RecyclerView.Adapter<LogsAdapter.ViewHolder>() {

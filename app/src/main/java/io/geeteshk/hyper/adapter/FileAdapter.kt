@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.helper.ResourceHelper
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.item_file_project.view.*
 import java.io.File
 

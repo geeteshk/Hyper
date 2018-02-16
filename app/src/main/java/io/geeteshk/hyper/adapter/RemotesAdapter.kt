@@ -25,7 +25,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.git.GitWrapper
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.dialog_pull.view.*
 import kotlinx.android.synthetic.main.item_remote.view.*
 import java.io.File

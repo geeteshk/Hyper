@@ -48,7 +48,7 @@ import java.util.*
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     private var contents: Array<String>? = null
-    private lateinit var contentsList: ArrayList<String>
+    private var contentsList: ArrayList<String>? = null
     private lateinit var projectAdapter: ProjectAdapter
 
     private var imageStream: InputStream? = null
@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
             ArrayList()
         }
 
-        DataValidator.removeBroken(contentsList)
-        projectAdapter = ProjectAdapter(this, contentsList, coordinatorLayout, projectList)
+        DataValidator.removeBroken(contentsList!!)
+        projectAdapter = ProjectAdapter(this, contentsList!!, coordinatorLayout, projectList)
         val layoutManager = LinearLayoutManager(this)
         projectList.layoutManager = layoutManager
         projectList.addItemDecoration(DividerItemDecoration(this, layoutManager.orientation))
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                                                 author,
                                                 description,
                                                 keywords,
-                                                imageStream!!,
+                                                imageStream,
                                                 projectAdapter,
                                                 coordinatorLayout,
                                                 type
@@ -309,23 +309,23 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
 
     override fun onQueryTextChange(newText: String): Boolean {
         contentsList = ArrayList(Arrays.asList(*contents!!))
-        DataValidator.removeBroken(contentsList)
-        val iterator = contentsList.iterator()
+        DataValidator.removeBroken(contentsList!!)
+        val iterator = contentsList!!.iterator()
         while (iterator.hasNext()) {
             if (!iterator.next().toLowerCase(Locale.getDefault()).contains(newText)) {
                 iterator.remove()
             }
         }
 
-        projectAdapter = ProjectAdapter(this@MainActivity, contentsList, coordinatorLayout, projectList)
+        projectAdapter = ProjectAdapter(this@MainActivity, contentsList!!, coordinatorLayout, projectList)
         projectList.adapter = projectAdapter
         return true
     }
 
     override fun onClose(): Boolean {
         contentsList = ArrayList(Arrays.asList(*contents!!))
-        DataValidator.removeBroken(contentsList)
-        projectAdapter = ProjectAdapter(this@MainActivity, contentsList, coordinatorLayout, projectList)
+        DataValidator.removeBroken(contentsList!!)
+        projectAdapter = ProjectAdapter(this@MainActivity, contentsList!!, coordinatorLayout, projectList)
         projectList.adapter = projectAdapter
         return false
     }

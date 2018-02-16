@@ -1,4 +1,4 @@
-package io.geeteshk.hyper.helper
+package io.geeteshk.hyper.hyperx
 
 import android.view.LayoutInflater
 import android.view.View

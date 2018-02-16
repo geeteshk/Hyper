@@ -33,7 +33,7 @@ import io.geeteshk.hyper.R
 import io.geeteshk.hyper.activity.ProjectActivity
 import io.geeteshk.hyper.helper.HTMLParser
 import io.geeteshk.hyper.helper.ProjectManager
-import io.geeteshk.hyper.helper.inflate
+import io.geeteshk.hyper.hyperx.inflate
 import kotlinx.android.synthetic.main.item_project.view.*
 import java.util.*
 

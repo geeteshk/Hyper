@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.View
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.adapter.ProjectAdapter
+import io.geeteshk.hyper.hyperx.copyInputStreamToFile
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOCase
 import org.apache.commons.io.filefilter.DirectoryFileFilter
@@ -42,7 +43,7 @@ object ProjectManager {
 
     private val TAG = ProjectManager::class.java.simpleName
 
-    fun generate(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream, adapter: ProjectAdapter, view: View, type: Int) {
+    fun generate(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream?, adapter: ProjectAdapter, view: View, type: Int) {
         var nameNew = name
         var counter = 1
         while (File(Constants.HYPER_ROOT + File.separator + nameNew).exists()) {
