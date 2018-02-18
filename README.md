@@ -18,8 +18,7 @@
 
 <h1 align="center">
 	<br>
-		<img src="https://github.com/geeteshk/Hyper/blob/master/art/left.png?raw=true" />
-		<img src="https://github.com/geeteshk/Hyper/blob/master/art/middle.png?raw=true" />
-		<img src="https://github.com/geeteshk/Hyper/blob/master/art/right.png?raw=true" />
+		<img src="https://github.com/geeteshk/Hyper/blob/master/art/left.png?raw=true" width="427" height="768" />
+		<img src="https://github.com/geeteshk/Hyper/blob/master/art/middle.png?raw=true" width="427" height="768" />
 	<br>
 </h1>
