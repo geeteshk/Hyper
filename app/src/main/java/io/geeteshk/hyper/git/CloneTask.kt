@@ -20,8 +20,8 @@ import android.content.Context
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
-import io.geeteshk.hyper.adapter.ProjectAdapter
-import io.geeteshk.hyper.helper.ProjectManager
+import io.geeteshk.hyper.ui.adapter.ProjectAdapter
+import io.geeteshk.hyper.util.project.ProjectManager
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.lib.BatchingProgressMonitor

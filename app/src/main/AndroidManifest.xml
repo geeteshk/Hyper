@@ -28,7 +28,7 @@
         android:theme="@style/Hyper"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name="io.geeteshk.hyper.ui.activity.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -38,34 +38,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MainActivity"
+            android:name="io.geeteshk.hyper.ui.activity.MainActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".activity.WebActivity"
+            android:name="io.geeteshk.hyper.ui.activity.WebActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" />
         <activity
-            android:name=".activity.ProjectActivity"
+            android:name="io.geeteshk.hyper.ui.activity.ProjectActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName="io.geeteshk.hyper.ui.activity.MainActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value="io.geeteshk.hyper.ui.activity.MainActivity" />
         </activity>
-        <activity android:name=".activity.IntroActivity" />
+        <activity android:name="io.geeteshk.hyper.ui.activity.IntroActivity" />
         <activity
-            android:name=".activity.RemotesActivity"
+            android:name="io.geeteshk.hyper.ui.activity.RemotesActivity"
             android:label="Remotes" />
         <activity
-            android:name=".activity.ViewActivity"
+            android:name="io.geeteshk.hyper.ui.activity.ViewActivity"
             android:label="View Mode" />
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="io.geeteshk.hyper.ui.activity.SettingsActivity"
             android:label="@string/action_settings" />
-        <activity android:name=".activity.AnalyzeActivity"></activity>
+        <activity android:name="io.geeteshk.hyper.ui.activity.AnalyzeActivity"></activity>
     </application>
 
 </manifest>

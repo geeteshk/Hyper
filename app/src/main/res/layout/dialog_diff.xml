@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <io.geeteshk.hyper.widget.DiffView
+        <io.geeteshk.hyper.ui.widget.DiffView
             android:id="@+id/diffView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

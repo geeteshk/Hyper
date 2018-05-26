@@ -71,6 +71,11 @@ dependencies {
     implementation libraries.supportDesign
     implementation libraries.supportRecyclerView
 
+    implementation libraries.archLifecycle
+    implementation libraries.archRuntime
+    kapt libraries.archCompiler
+    implementation libraries.rxJava
+
     implementation libraries.nanohttpd
     implementation libraries.commonsIO
     implementation libraries.jsoup
