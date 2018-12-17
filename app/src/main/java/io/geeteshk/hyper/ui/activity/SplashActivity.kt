@@ -27,19 +27,16 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import de.psdev.licensesdialog.LicenseResolver
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.util.ui.FontsOverride
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.ui.Styles
-import io.geeteshk.hyper.license.EclipseDistributionLicense10
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        LicenseResolver.registerLicense(EclipseDistributionLicense10())
         FontsOverride.setDefaultFont(applicationContext, "MONOSPACE", "fonts/Inconsolata-Regular.ttf")
 
         setTheme(Styles.getThemeInt(this))

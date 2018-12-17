@@ -22,11 +22,13 @@ buildscript {
         google()
         maven { url "https://jitpack.io" }
     }
+
     dependencies {
         classpath gradlePlugins.android
         classpath gradlePlugins.kotlinGradle
         classpath gradlePlugins.kotlinExtensions
         classpath gradlePlugins.versions
+        classpath gradlePlugins.ossLicenses
     }
 }
 

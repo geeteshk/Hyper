@@ -19,6 +19,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -87,6 +88,6 @@ dependencies {
     }
 
     implementation libraries.atv
-    implementation libraries.licensesDialog
+    implementation libraries.playServicesLicenses
     implementation libraries.mpchart
 }
