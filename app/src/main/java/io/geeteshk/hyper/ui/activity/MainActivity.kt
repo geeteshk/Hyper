@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
         projectList.addItemDecoration(DividerItemDecoration(this, layoutManager.orientation))
         projectList.itemAnimator = DefaultItemAnimator()
         projectList.adapter = projectAdapter
-        cloneButton.setOnClickListener({
+        cloneButton.setOnClickListener {
             val choices = arrayOf("Create a new project", "Clone a repository", "Import an external project")
             AlertDialog.Builder(this@MainActivity)
                     .setTitle("Would you like to...")
@@ -197,10 +197,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                         }
                     }
                     .show()
-        })
+        }
 
         projectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cloneButton.show()
                 }
@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                 super.onScrollStateChanged(recyclerView, newState)
             }
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && cloneButton.isShown) cloneButton.hide()
             }
         })

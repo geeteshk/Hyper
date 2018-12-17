@@ -50,7 +50,7 @@ class RemotesActivity : AppCompatActivity() {
         remotesList.layoutManager = layoutManager
         remotesList.adapter = remotesAdapter
 
-        newRemote.setOnClickListener({
+        newRemote.setOnClickListener {
             val cloneView = View.inflate(this@RemotesActivity, R.layout.dialog_remote_add, null)
 
             AlertDialog.Builder(this@RemotesActivity)
@@ -62,10 +62,10 @@ class RemotesActivity : AppCompatActivity() {
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
-        })
+        }
 
         remotesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     newRemote.show()
                 }
@@ -73,7 +73,7 @@ class RemotesActivity : AppCompatActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
             }
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && newRemote.isShown) newRemote.hide()
             }
         })

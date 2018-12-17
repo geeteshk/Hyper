@@ -19,20 +19,20 @@ ext.versions = [
         name                    : '1.0',
 
         minSdk                  : 14,
-        targetSdk               : 27,
-        compileSdk              : 27,
+        targetSdk               : 28,
+        compileSdk              : 28,
 
-        androidGradlePlugin     : '3.1.2',
-        kotlinPlugin            : '1.2.41',
-        versionsPlugin          : '0.17.0',
+        androidGradlePlugin     : '3.2.1',
+        kotlinPlugin            : '1.3.10',
+        versionsPlugin          : '0.20.0',
 
-        supportLibs             : '27.1.1',
+        supportLibs             : '28.0.0',
         atv                     : '1.2.9',
         licensesDialog          : '1.8.3',
         mpchart                 : '3.0.3',
 
         lifecycle               : '1.1.1',
-        rxJava                  : '2.1.13',
+        rxJava                  : '2.2.4',
 
         nanohttpd               : '2.3.1',
         jgit                    : '3.7.1.201504261725-r', // no-update
@@ -61,7 +61,7 @@ ext.libraries = [
 
         atv                     : "com.github.bmelnychuk:atv:$versions.atv",
         licensesDialog          : "de.psdev.licensesdialog:licensesdialog:$versions.licensesDialog",
-        mpchart                 : "com.github.PhilJay:MPAndroidChart:v$versions.mpchart",
+        mpchart                 : "com.github.PhilJay:MPAndroidChart:$versions.mpchart",
 
         nanohttpd               : "org.nanohttpd:nanohttpd-webserver:$versions.nanohttpd",
         jgit                    : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
