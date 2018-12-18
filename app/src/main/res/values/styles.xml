@@ -23,6 +23,7 @@
         <item name="toolbarStyle">@style/Hyper.Toolbar</item>
         <item name="toolbarPopupStyle">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="symbolColor">@android:color/white</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="Hyper.Dark" parent="Theme.AppCompat.NoActionBar">
@@ -32,6 +33,7 @@
         <item name="toolbarStyle">@style/Hyper.Toolbar.Dark</item>
         <item name="toolbarPopupStyle">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="symbolColor">@android:color/white</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="Hyper.Project" parent="Hyper">

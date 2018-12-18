@@ -16,7 +16,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
 
-        fragmentManager
+        supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settingsFragment, SettingsFragment())
                 .commit()
