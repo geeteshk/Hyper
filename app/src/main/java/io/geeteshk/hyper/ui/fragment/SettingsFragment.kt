@@ -6,7 +6,6 @@ import android.preference.Preference
 import android.preference.PreferenceFragment
 import android.preference.SwitchPreference
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -62,7 +62,7 @@ class SettingsFragment : PreferenceFragment() {
                             FileUtils.cleanDirectory(File(Constants.HYPER_ROOT))
                             factoryReset.isEnabled = false
                         } catch (e: IOException) {
-                            Log.e(TAG, e.toString())
+                            Timber.e(e)
                         }
                     }
                     .setNegativeButton("CANCEL", null)

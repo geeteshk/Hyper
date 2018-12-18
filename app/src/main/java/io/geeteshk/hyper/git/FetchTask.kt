@@ -18,11 +18,11 @@ package io.geeteshk.hyper.git
 
 import android.content.Context
 import android.support.design.widget.Snackbar
-import android.util.Log
 import android.view.View
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.lib.BatchingProgressMonitor
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
+import timber.log.Timber
 import java.io.File
 
 class FetchTask internal constructor(context: Context, view: View, repo: File, values: Array<String>) : GitTask(context, view, repo, values) {
@@ -58,7 +58,7 @@ class FetchTask internal constructor(context: Context, view: View, repo: File, v
                         })
                         .call()
             } catch (e: GitAPIException) {
-                Log.e(TAG, e.toString())
+                Timber.e(e)
                 Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show()
                 return false
             }
@@ -67,10 +67,5 @@ class FetchTask internal constructor(context: Context, view: View, repo: File, v
         }
 
         return false
-    }
-
-    companion object {
-
-        private val TAG = PullTask::class.java.simpleName
     }
 }

@@ -26,7 +26,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +44,7 @@ import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.sheet_logs.view.*
 import kotlinx.android.synthetic.main.sheet_web_settings.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -68,7 +68,7 @@ class WebActivity : AppCompatActivity() {
         try {
             NetworkUtils.server!!.start()
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
         }
 
         setContentView(R.layout.activity_web)
@@ -251,10 +251,5 @@ class WebActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-
-        private val TAG = WebActivity::class.java.simpleName
     }
 }

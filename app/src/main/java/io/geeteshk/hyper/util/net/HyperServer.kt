@@ -16,11 +16,11 @@
 
 package io.geeteshk.hyper.util.net
 
-import android.util.Log
 import fi.iki.elonen.NanoHTTPD
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.project.ProjectManager
 import org.apache.commons.io.IOUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -44,13 +44,13 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
         try {
             inputStream = FileInputStream(Constants.HYPER_ROOT + File.separator + project + uri)
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
         }
 
         return try {
             NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mimeType, IOUtils.toString(inputStream, Charset.defaultCharset()))
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             NanoHTTPD.newFixedLengthResponse(e.toString())
         }
 
@@ -65,7 +65,6 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
 
     companion object {
 
-        private val TAG = HyperServer::class.java.simpleName
         private val TYPES = arrayOf("css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt")
         private val MIMES = arrayOf("text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt")
     }

@@ -34,7 +34,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -70,6 +69,7 @@ import kotlinx.android.synthetic.main.sheet_about.view.*
 import kotlinx.android.synthetic.main.sheet_logs.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -215,12 +215,12 @@ class ProjectActivity : AppCompatActivity() {
                                                     try {
                                                         FileUtils.deleteDirectory(item.file)
                                                     } catch (e: IOException) {
-                                                        Log.e(TAG, e.toString())
+                                                        Timber.e(e)
                                                     }
 
                                                 } else {
                                                     if (!item.file.delete()) {
-                                                        Log.e(TAG, "Failed to delete " + item.file.path)
+                                                        Timber.d("Failed to delete %s", item.file.path)
                                                     }
                                                 }
                                             } else {
@@ -277,7 +277,7 @@ class ProjectActivity : AppCompatActivity() {
                                 try {
                                     FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
                                 } catch (e: IOException) {
-                                    Log.e(TAG, e.toString())
+                                    Timber.e(e)
                                     Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                 }
 
@@ -313,7 +313,7 @@ class ProjectActivity : AppCompatActivity() {
                                 try {
                                     FileUtils.forceMkdir(newFolder)
                                 } catch (e: IOException) {
-                                    Log.e(TAG, e.toString())
+                                    Timber.e(e)
                                     Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                 }
 
@@ -337,7 +337,7 @@ class ProjectActivity : AppCompatActivity() {
                                     try {
                                         FileUtils.copyDirectoryToDirectory(currentFile, projectDir)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -345,7 +345,7 @@ class ProjectActivity : AppCompatActivity() {
                                     try {
                                         FileUtils.copyFileToDirectory(currentFile, projectDir)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -363,7 +363,7 @@ class ProjectActivity : AppCompatActivity() {
                                     try {
                                         FileUtils.moveDirectoryToDirectory(currentFile, projectDir, false)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -371,7 +371,7 @@ class ProjectActivity : AppCompatActivity() {
                                     try {
                                         FileUtils.moveFileToDirectory(currentFile, projectDir, false)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -808,7 +808,6 @@ class ProjectActivity : AppCompatActivity() {
 
     companion object {
 
-        private val TAG = ProjectActivity::class.java.simpleName
         private val VIEW_CODE = 99
         private val IMPORT_FILE = 101
     }

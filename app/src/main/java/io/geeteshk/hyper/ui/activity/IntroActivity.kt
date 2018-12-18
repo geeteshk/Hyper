@@ -76,16 +76,16 @@ class IntroActivity : AppCompatActivity() {
             }
         })
 
-        btnSkip.setOnClickListener({ endIntro() })
+        btnSkip.setOnClickListener { endIntro() }
 
-        btnNext.setOnClickListener({
+        btnNext.setOnClickListener {
             val current = introPager.currentItem + 1
             if (current < 4) {
                 introPager.currentItem = current
             } else {
                 endIntro()
             }
-        })
+        }
     }
 
     private fun endIntro() {

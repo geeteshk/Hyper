@@ -76,6 +76,7 @@ dependencies {
     implementation libraries.archRuntime
     kapt libraries.archCompiler
     implementation libraries.rxJava
+    implementation libraries.timber
 
     implementation libraries.nanohttpd
     implementation libraries.commonsIO

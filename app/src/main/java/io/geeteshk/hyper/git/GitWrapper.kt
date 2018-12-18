@@ -32,14 +32,13 @@ import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.StoredConfig
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.util.StringUtils
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.util.*
 
 object GitWrapper {
-
-    private val TAG = GitWrapper::class.java.simpleName
 
     fun init(context: Context, repo: File, view: View) {
         try {
@@ -48,7 +47,7 @@ object GitWrapper {
                     .call()
             Snackbar.make(view, context.getString(R.string.repo_init) + git.repository.directory, Snackbar.LENGTH_LONG).show()
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -64,7 +63,7 @@ object GitWrapper {
                 Snackbar.make(view, R.string.added_to_stage, Snackbar.LENGTH_LONG).show()
             }
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -152,7 +151,7 @@ object GitWrapper {
                 t[8].text = changeTextToNone(untrackedFoldersOut.toString())
             }
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -168,7 +167,7 @@ object GitWrapper {
                         .call()
             }
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             return null
         }
@@ -189,7 +188,7 @@ object GitWrapper {
                         .call()
             }
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             return null
         }
@@ -205,7 +204,7 @@ object GitWrapper {
                 val git = getGit(view, repo)
                 git?.branchCreate()?.setName(branchName)?.call()
             } catch (e: GitAPIException) {
-                Log.e(TAG, e.toString())
+                Timber.e(e)
                 Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             }
 
@@ -217,7 +216,7 @@ object GitWrapper {
             val git = getGit(view, repo)
             git?.branchDelete()?.setBranchNames(*branches)?.call()
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -232,11 +231,10 @@ object GitWrapper {
         try {
             val git = getGit(view, repo)
             git?.let {
-                branch = git.repository
-                        .fullBranch
+                branch = git.repository.fullBranch
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             return null
         }
@@ -268,7 +266,7 @@ object GitWrapper {
         try {
             return Git.open(repo)
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -308,7 +306,7 @@ object GitWrapper {
             try {
                 config.save()
             } catch (e: IOException) {
-                Log.e(TAG, e.toString())
+                Timber.e(e)
                 Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             }
 
@@ -322,7 +320,7 @@ object GitWrapper {
             try {
                 config.save()
             } catch (e: IOException) {
-                Log.e(TAG, e.toString())
+                Timber.e(e)
                 Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
             }
 
@@ -336,7 +334,7 @@ object GitWrapper {
                 return git.repository.repositoryState.canCommit() && git.status().call().hasUncommittedChanges()
             }
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 
@@ -360,7 +358,7 @@ object GitWrapper {
                 string = SpannableString(out.toString())
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
         }
 

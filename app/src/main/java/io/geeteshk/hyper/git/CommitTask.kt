@@ -18,9 +18,9 @@ package io.geeteshk.hyper.git
 
 import android.content.Context
 import android.support.design.widget.Snackbar
-import android.util.Log
 import android.view.View
 import org.eclipse.jgit.api.errors.GitAPIException
+import timber.log.Timber
 import java.io.File
 
 class CommitTask internal constructor(context: Context, view: View, repo: File, values: Array<String>) : GitTask(context, view, repo, values) {
@@ -34,16 +34,11 @@ class CommitTask internal constructor(context: Context, view: View, repo: File, 
             val git = GitWrapper.getGit(rootView, repo)
             git?.commit()?.setMessage(strings[0])?.call()
         } catch (e: GitAPIException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show()
             return false
         }
 
         return true
-    }
-
-    companion object {
-
-        private val TAG = CommitTask::class.java.simpleName
     }
 }

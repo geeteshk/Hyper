@@ -18,6 +18,7 @@ package io.geeteshk.hyper.util.net
 
 import android.util.Log
 import eu.bitwalker.useragentutils.UserAgent
+import timber.log.Timber
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -25,8 +26,6 @@ import java.net.SocketException
 import java.util.*
 
 object NetworkUtils {
-
-    private val TAG = NetworkUtils::class.java.simpleName
 
     var server: HyperServer? = null
 
@@ -44,8 +43,8 @@ object NetworkUtils {
                         }
                     }
                 }
-            } catch (ex: SocketException) {
-                Log.e(TAG, ex.message)
+            } catch (e: SocketException) {
+                Timber.e(e)
             }
 
             return null

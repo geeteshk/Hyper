@@ -18,11 +18,9 @@ package io.geeteshk.hyper.util.ui
 
 import android.content.Context
 import android.graphics.Typeface
-import android.util.Log
+import timber.log.Timber
 
 object FontsOverride {
-
-    private val TAG = FontsOverride::class.java.simpleName
 
     fun setDefaultFont(context: Context, staticTypefaceFieldName: String, fontAssetName: String) {
         val regular = Typeface.createFromAsset(context.assets, fontAssetName)
@@ -35,7 +33,7 @@ object FontsOverride {
             staticField.isAccessible = true
             staticField.set(null, newTypeface)
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            Timber.e(e)
         }
     }
 }

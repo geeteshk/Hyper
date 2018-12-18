@@ -23,17 +23,19 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:restoreAnyVersion="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Hyper"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:name=".Hyper">
         <activity
             android:name="io.geeteshk.hyper.ui.activity.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -65,7 +67,7 @@
         <activity
             android:name="io.geeteshk.hyper.ui.activity.SettingsActivity"
             android:label="@string/action_settings" />
-        <activity android:name="io.geeteshk.hyper.ui.activity.AnalyzeActivity"></activity>
+        <activity android:name="io.geeteshk.hyper.ui.activity.AnalyzeActivity" />
     </application>
 
 </manifest>

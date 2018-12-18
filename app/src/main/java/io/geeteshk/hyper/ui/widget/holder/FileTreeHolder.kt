@@ -19,7 +19,6 @@ package io.geeteshk.hyper.ui.widget.holder
 import android.content.Context
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import com.unnamed.b.atv.model.TreeNode
@@ -29,6 +28,7 @@ import io.geeteshk.hyper.util.editor.ResourceHelper
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.item_file_browser.view.*
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -87,7 +87,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 try {
                                     FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
                                 } catch (e: IOException) {
-                                    Log.e(TAG, e.toString())
+                                    Timber.e(e)
                                     Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                 }
 
@@ -123,7 +123,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 try {
                                     FileUtils.forceMkdir(newFolder)
                                 } catch (e: IOException) {
-                                    Log.e(TAG, e.toString())
+                                    Timber.e(e)
                                     Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                 }
 
@@ -161,7 +161,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.moveFile(file, rename)
                                     } catch (e: IOException) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -169,7 +169,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.moveDirectory(file, rename)
                                     } catch (e: IOException) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -208,7 +208,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.copyDirectoryToDirectory(currentFile, file)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -216,7 +216,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.copyFileToDirectory(currentFile, file)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -234,7 +234,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.moveDirectoryToDirectory(currentFile, file, false)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -242,7 +242,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     try {
                                         FileUtils.moveFileToDirectory(currentFile, file, false)
                                     } catch (e: Exception) {
-                                        Log.e(TAG, e.toString())
+                                        Timber.e(e)
                                         Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
                                     }
 
@@ -276,9 +276,4 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
     }
 
     class FileTreeItem(var file: File, var view: View)
-
-    companion object {
-
-        private val TAG = FileTreeHolder::class.java.simpleName
-    }
 }

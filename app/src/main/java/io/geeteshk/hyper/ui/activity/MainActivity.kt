@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.*
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +44,7 @@ import kotlinx.android.synthetic.main.dialog_clone.view.*
 import kotlinx.android.synthetic.main.dialog_create.view.*
 import kotlinx.android.synthetic.main.dialog_import.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
+import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.util.*
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                                     if (DataValidator.validateClone(this@MainActivity, cloneView.cloneName, cloneView.cloneUrl)) {
                                         var remoteStr = cloneView.cloneUrl.text.toString()
                                         if (!remoteStr.contains("://")) {
-                                            remoteStr = "https://" + remoteStr
+                                            remoteStr = "https://$remoteStr"
                                         }
 
                                         val cloneName = cloneView.cloneName.text.toString()
@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                         projectIcon.setImageBitmap(ResourceHelper.decodeUri(this@MainActivity, selectedImage))
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, e.toString())
+                    Timber.e(e)
                 }
 
             }
@@ -338,7 +338,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
 
         val SELECT_ICON = 100
         val SETTINGS_CODE = 101
-        private val TAG = MainActivity::class.java.simpleName
         private val IMPORT_PROJECT = 102
     }
 }

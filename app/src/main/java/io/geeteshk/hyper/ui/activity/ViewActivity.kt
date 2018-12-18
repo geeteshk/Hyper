@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.unnamed.b.atv.model.TreeNode
@@ -35,6 +34,7 @@ import org.apache.commons.io.FileUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -55,7 +55,7 @@ class ViewActivity : AppCompatActivity() {
         try {
             setupViewTree(rootNode, htmlFile)
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
         }
 
         setSupportActionBar(toolbar)
@@ -81,7 +81,7 @@ class ViewActivity : AppCompatActivity() {
                 try {
                     FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false)
                 } catch (e: IOException) {
-                    Log.e(TAG, e.toString())
+                    Timber.e(e)
                 }
 
                 setResult(Activity.RESULT_OK)
@@ -124,7 +124,7 @@ class ViewActivity : AppCompatActivity() {
                     try {
                         FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false)
                     } catch (e: IOException) {
-                        Log.e(TAG, e.toString())
+                        Timber.e(e)
                     }
 
                     setResult(Activity.RESULT_OK)
@@ -132,10 +132,5 @@ class ViewActivity : AppCompatActivity() {
                 }
                 .setNegativeButton("DISCARD") { _, _ -> finish() }
                 .show()
-    }
-
-    companion object {
-
-        private val TAG = ViewActivity::class.java.simpleName
     }
 }

@@ -1,19 +1,17 @@
 package io.geeteshk.hyper.util.net
 
-import android.util.Log
 import io.geeteshk.hyper.util.project.ProjectManager
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.io.IOException
 
 object HtmlParser {
 
-    private val TAG = HtmlParser::class.java.simpleName
-
     private fun getSoup(name: String): Document? = try {
         Jsoup.parse(ProjectManager.getIndexFile(name), "UTF-8")
     } catch (e: IOException) {
-        Log.e(TAG, e.toString())
+        Timber.e(e)
         null
     }
 

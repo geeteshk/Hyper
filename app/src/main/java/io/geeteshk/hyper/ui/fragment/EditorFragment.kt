@@ -18,7 +18,6 @@ package io.geeteshk.hyper.ui.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +26,12 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.ui.widget.Editor
 import io.geeteshk.hyper.util.editor.ResourceHelper
 import io.geeteshk.hyper.util.inflate
-import io.geeteshk.hyper.ui.widget.Editor
 import kotlinx.android.synthetic.main.fragment_editor.*
 import org.apache.commons.io.FileUtils
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -40,7 +40,7 @@ import java.nio.charset.Charset
 
 class EditorFragment : Fragment() {
 
-    private lateinit var location: String
+    private var location: String? = null
     private lateinit var file: File
 
     init {
@@ -101,7 +101,7 @@ class EditorFragment : Fragment() {
             setSymbol(fileContent, symbolEight, "?")
         }
 
-        val contents = getContents(location)
+        val contents = getContents(location!!)
         fileContent.setTextHighlighted(contents)
         val finalFile = file
         fileContent.onTextChangedListener = object : Editor.OnTextChangedListener {
@@ -109,7 +109,7 @@ class EditorFragment : Fragment() {
                 try {
                     FileUtils.writeStringToFile(finalFile, fileContent.text.toString(), Charset.defaultCharset(), false)
                 } catch (e: IOException) {
-                    Log.wtf(TAG, e.toString())
+                    Timber.wtf(e)
                 }
 
             }
@@ -129,7 +129,7 @@ class EditorFragment : Fragment() {
         try {
             return FileInputStream(location).bufferedReader().use(BufferedReader::readText)
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            Timber.e(e)
         }
 
         return "Unable to read file!"
@@ -144,10 +144,5 @@ class EditorFragment : Fragment() {
             mEditor.text.replace(Math.min(start, end), Math.max(start, end),
                     mSymbol, 0, mSymbol.length)
         }
-    }
-
-    companion object {
-
-        private val TAG = EditorFragment::class.java.simpleName
     }
 }

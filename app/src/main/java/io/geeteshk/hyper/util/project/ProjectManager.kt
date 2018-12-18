@@ -21,7 +21,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.support.design.widget.Snackbar
-import android.util.Log
 import android.view.View
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
@@ -32,6 +31,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOCase
 import org.apache.commons.io.filefilter.DirectoryFileFilter
 import org.apache.commons.io.filefilter.NameFileFilter
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -42,8 +42,6 @@ import java.util.*
 object ProjectManager {
 
     val TYPES = arrayOf("Default")
-
-    private val TAG = ProjectManager::class.java.simpleName
 
     fun generate(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream?, adapter: ProjectAdapter, view: View, type: Int) {
         var nameNew = name
@@ -87,7 +85,7 @@ object ProjectManager {
                 copyIcon(name, stream)
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             return false
         }
 
@@ -111,7 +109,7 @@ object ProjectManager {
                 FileUtils.writeStringToFile(File(outFile, "index.html"), ProjectFiles.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset())
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
             Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show()
             return
         }
@@ -127,7 +125,7 @@ object ProjectManager {
         try {
             FileUtils.deleteDirectory(projectDir)
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Timber.e(e)
         }
 
     }
@@ -164,7 +162,7 @@ object ProjectManager {
             output.copyInputStreamToFile(stream)
             stream.close()
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            Timber.e(e)
         }
     }
 
@@ -174,7 +172,7 @@ object ProjectManager {
             output.copyInputStreamToFile(stream)
             stream.close()
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            Timber.e(e)
         }
     }
 
@@ -205,7 +203,7 @@ object ProjectManager {
             return other != 0 && 100 * other / (ascii + other) > 95
 
         } catch (e: Exception) {
-            Log.e(TAG, e.message + result.toString())
+            Timber.e(e)
         }
 
         return true
@@ -225,7 +223,7 @@ object ProjectManager {
             output.copyInputStreamToFile(inputStream)
             inputStream?.close()
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            Timber.e(e)
             return false
         }
 

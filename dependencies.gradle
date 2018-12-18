@@ -34,6 +34,7 @@ ext.versions = [
 
         lifecycle                  : '1.1.1',
         rxJava                     : '2.2.4',
+        timber                     : '4.7.1',
 
         nanohttpd                  : '2.3.1',
         jgit                       : '3.7.1.201504261725-r', // no-update
@@ -47,7 +48,7 @@ ext.gradlePlugins = [
         kotlinGradle        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPlugin",
         kotlinExtensions    : "org.jetbrains.kotlin:kotlin-android-extensions:$versions.kotlinPlugin",
         versions            : "com.github.ben-manes:gradle-versions-plugin:$versions.versionsPlugin",
-        ossLicenses         : "com.google.android.gms:oss-licenses-plugin:$versions.ossLicensesPlugin"
+        ossLicenses         : "com.google.android.gms:oss-licenses-plugin:$versions.ossLicensesPlugin",
 ]
 
 ext.libraries = [
@@ -60,6 +61,7 @@ ext.libraries = [
         archCompiler            : "android.arch.lifecycle:compiler:$versions.lifecycle",
         archRuntime             : "android.arch.lifecycle:runtime:$versions.lifecycle",
         rxJava                  : "io.reactivex.rxjava2:rxjava:$versions.rxJava",
+        timber                  : "com.jakewharton.timber:timber:$versions.timber",
 
         atv                     : "com.github.bmelnychuk:atv:$versions.atv",
         playServicesLicenses    : "com.google.android.gms:play-services-oss-licenses:$versions.playServicesLicensesPlugin",
