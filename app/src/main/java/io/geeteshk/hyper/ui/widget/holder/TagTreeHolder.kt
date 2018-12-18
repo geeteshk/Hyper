@@ -17,9 +17,9 @@
 package io.geeteshk.hyper.ui.widget.holder
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.PopupMenu
 import com.unnamed.b.atv.model.TreeNode

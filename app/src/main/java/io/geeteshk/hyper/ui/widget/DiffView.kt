@@ -19,7 +19,7 @@ package io.geeteshk.hyper.ui.widget
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.widget.AppCompatTextView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan

@@ -18,7 +18,7 @@ package io.geeteshk.hyper.git
 
 import android.app.Activity
 import android.content.Context
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import org.eclipse.jgit.api.errors.GitAPIException
 import timber.log.Timber

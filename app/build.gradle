@@ -30,6 +30,7 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode versions.code
         versionName versions.name
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -44,19 +45,6 @@ android {
         }
     }
 
-    lintOptions {
-        textOutput "stdout"
-        checkAllWarnings true
-        warningsAsErrors true
-        disable "UnusedResources"
-        disable "IconExpectedSize"
-        disable "GoogleAppIndexingApiWarning"
-        disable "InvalidPackage"
-        disable "ResourceType"
-        disable "GradleDependency"
-        disable "NewerVersionAvailable"
-    }
-
     packagingOptions {
         exclude "**/*.txt"
         exclude "**/*.xml"
@@ -68,13 +56,16 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libraries.kotlin
 
-    implementation libraries.supportAppCompat
-    implementation libraries.supportDesign
-    implementation libraries.supportRecyclerView
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
 
-    implementation libraries.archLifecycle
-    implementation libraries.archRuntime
-    kapt libraries.archCompiler
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.1.0-alpha01'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.1.0-alpha01'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     implementation libraries.rxJava
     implementation libraries.timber
 

@@ -20,7 +20,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter

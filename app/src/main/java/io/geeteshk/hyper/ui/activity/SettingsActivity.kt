@@ -1,7 +1,7 @@
 package io.geeteshk.hyper.ui.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.fragment.SettingsFragment
 import io.geeteshk.hyper.util.ui.Styles

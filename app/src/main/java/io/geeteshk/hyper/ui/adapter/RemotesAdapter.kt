@@ -17,8 +17,8 @@
 package io.geeteshk.hyper.ui.adapter
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter

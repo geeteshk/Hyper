@@ -25,8 +25,8 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatMultiAutoCompleteTextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet

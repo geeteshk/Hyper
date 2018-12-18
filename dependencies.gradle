@@ -27,12 +27,10 @@ ext.versions = [
         versionsPlugin             : '0.20.0',
         ossLicensesPlugin          : '0.9.3',
 
-        supportLibs                : '28.0.0',
         atv                        : '1.2.9',
         playServicesLicensesPlugin : '16.0.0',
         mpchart                    : '3.0.3',
 
-        lifecycle                  : '1.1.1',
         rxJava                     : '2.2.4',
         timber                     : '4.7.1',
 
@@ -52,14 +50,8 @@ ext.gradlePlugins = [
 ]
 
 ext.libraries = [
-        supportAppCompat        : "com.android.support:appcompat-v7:$versions.supportLibs",
-        supportDesign           : "com.android.support:design:$versions.supportLibs",
-        supportRecyclerView     : "com.android.support:recyclerview-v7:$versions.supportLibs",
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinPlugin",
 
-        archLifecycle           : "android.arch.lifecycle:extensions:$versions.lifecycle",
-        archCompiler            : "android.arch.lifecycle:compiler:$versions.lifecycle",
-        archRuntime             : "android.arch.lifecycle:runtime:$versions.lifecycle",
         rxJava                  : "io.reactivex.rxjava2:rxjava:$versions.rxJava",
         timber                  : "com.jakewharton.timber:timber:$versions.timber",
 

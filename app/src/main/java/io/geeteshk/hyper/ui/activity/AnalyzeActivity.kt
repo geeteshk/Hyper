@@ -17,8 +17,8 @@
 package io.geeteshk.hyper.ui.activity
 
 import android.os.Bundle
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.AnalyzeAdapter
 import io.geeteshk.hyper.ui.fragment.analyze.AnalyzeFileFragment

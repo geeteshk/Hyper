@@ -19,9 +19,9 @@ package io.geeteshk.hyper.ui.fragment.analyze
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,8 +60,8 @@ class AnalyzeFileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val prefs = defaultPrefs(activity)
         val darkTheme = prefs["dark_theme", false]!!
-        val lightColor = ContextCompat.getColor(activity, android.support.v7.appcompat.R.color.abc_primary_text_material_light)
-        val darkColor = ContextCompat.getColor(activity, android.support.v7.appcompat.R.color.abc_primary_text_material_dark)
+        val lightColor = ContextCompat.getColor(activity, androidx.appcompat.R.color.abc_primary_text_material_light)
+        val darkColor = ContextCompat.getColor(activity, androidx.appcompat.R.color.abc_primary_text_material_dark)
         projectDir = File(arguments!!.getString("project_file")!!)
         pieColors = ArrayList()
         for (c in ColorTemplate.VORDIPLOM_COLORS)
@@ -196,8 +196,8 @@ class AnalyzeFileFragment : Fragment() {
                 ProjectManager.humanReadableByteCount(value.toLong())
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity = (context as FragmentActivity?)!!
+        activity = context as FragmentActivity
     }
 }

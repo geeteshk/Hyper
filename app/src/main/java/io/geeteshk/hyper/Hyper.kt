@@ -17,6 +17,8 @@
 package io.geeteshk.hyper
 
 import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDex
 import timber.log.Timber
 
 class Hyper : Application() {
@@ -29,5 +31,10 @@ class Hyper : Application() {
         } else {
             // Release reporting
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 }

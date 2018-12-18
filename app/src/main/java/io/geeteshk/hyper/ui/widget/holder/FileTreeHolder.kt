@@ -17,8 +17,8 @@
 package io.geeteshk.hyper.ui.widget.holder
 
 import android.content.Context
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.widget.PopupMenu
 import com.unnamed.b.atv.model.TreeNode
