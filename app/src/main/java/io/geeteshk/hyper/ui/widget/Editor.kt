@@ -387,29 +387,21 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
         while (istart > -1) {
             val c = dest[istart]
 
-            if (c == '\n')
-                break
+            if (c == '\n') break
 
             if (c != ' ' && c != '\t') {
                 if (!dataBefore) {
-                    if (c == '{' ||
-                            c == '+' ||
-                            c == '-' ||
-                            c == '*' ||
-                            c == '/' ||
-                            c == '%' ||
-                            c == '^' ||
-                            c == '=')
-                        --pt
-
+                    if (arrayOf('{', '+', '-', '*', '/', '%', '^', '=').contains(c)) --pt
                     dataBefore = true
                 }
 
-                if (c == '(')
+                if (c == '(') {
                     --pt
-                else if (c == ')')
+                } else if (c == ')') {
                     ++pt
+                }
             }
+
             --istart
         }
 
@@ -428,16 +420,14 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
                     break
                 }
 
-                if (c != ' ' && c != '\t')
-                    break
+                if (c != ' ' && c != '\t') break
                 ++iend
             }
 
             indent += dest.subSequence(istart, iend)
         }
 
-        if (pt < 0)
-            indent += "\t"
+        if (pt < 0) indent += "\t"
 
         return source.toString() + indent
     }
