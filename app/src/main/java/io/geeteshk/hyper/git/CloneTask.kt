@@ -23,12 +23,12 @@ import io.geeteshk.hyper.util.project.ProjectManager
 import io.geeteshk.hyper.util.snack
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.GitAPIException
-import org.eclipse.jgit.lib.BatchingProgressMonitor
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import timber.log.Timber
 import java.io.File
+import java.lang.ref.WeakReference
 
-class CloneTask internal constructor(context: Context, view: View, repo: File, private val projectAdapter: ProjectAdapter) : GitTask(context, view, repo, arrayOf("Cloning repository", "", "")) {
+class CloneTask internal constructor(context: WeakReference<Context>, view: WeakReference<View>, repo: File, private val projectAdapter: ProjectAdapter) : GitTask(context, view, repo, arrayOf("Cloning repository", "", "")) {
 
     init {
         id = 3
@@ -40,27 +40,11 @@ class CloneTask internal constructor(context: Context, view: View, repo: File, p
                     .setURI(strings[0])
                     .setDirectory(repo)
                     .setCredentialsProvider(UsernamePasswordCredentialsProvider(strings[1], strings[2]))
-                    .setProgressMonitor(object : BatchingProgressMonitor() {
-                        override fun onUpdate(taskName: String, workCurr: Int) {
-
-                        }
-
-                        override fun onEndTask(taskName: String, workCurr: Int) {
-
-                        }
-
-                        override fun onUpdate(taskName: String, workCurr: Int, workTotal: Int, percentDone: Int) {
-                            publishProgress(taskName, percentDone.toString(), workCurr.toString(), workTotal.toString())
-                        }
-
-                        override fun onEndTask(taskName: String, workCurr: Int, workTotal: Int, percentDone: Int) {
-                            publishProgress(taskName, workCurr.toString(), workTotal.toString())
-                        }
-                    })
+                    .setProgressMonitor(progressMonitor)
                     .call()
         } catch (e: GitAPIException) {
             Timber.e(e)
-            rootView.snack(e.toString())
+            rootView.get()?.snack(e.toString())
             return false
         }
 

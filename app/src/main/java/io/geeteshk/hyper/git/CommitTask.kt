@@ -22,8 +22,9 @@ import io.geeteshk.hyper.util.snack
 import org.eclipse.jgit.api.errors.GitAPIException
 import timber.log.Timber
 import java.io.File
+import java.lang.ref.WeakReference
 
-class CommitTask internal constructor(context: Context, view: View, repo: File, values: Array<String>) : GitTask(context, view, repo, values) {
+class CommitTask internal constructor(context: WeakReference<Context>, view: WeakReference<View>, repo: File, values: Array<String>) : GitTask(context, view, repo, values) {
 
     init {
         id = 4
@@ -31,11 +32,11 @@ class CommitTask internal constructor(context: Context, view: View, repo: File, 
 
     override fun doInBackground(vararg strings: String): Boolean? {
         try {
-            val git = GitWrapper.getGit(rootView, repo)
+            val git = GitWrapper.getGit(rootView.get()!!, repo)
             git?.commit()?.setMessage(strings[0])?.call()
         } catch (e: GitAPIException) {
             Timber.e(e)
-            rootView.snack(e.toString())
+            rootView.get()?.snack(e.toString())
             return false
         }
 

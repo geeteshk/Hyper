@@ -35,6 +35,7 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.lang.ref.WeakReference
 import java.util.*
 
 object GitWrapper {
@@ -69,7 +70,7 @@ object GitWrapper {
     }
 
     fun commit(context: Context, view: View, repo: File, message: String) {
-        CommitTask(context, view, repo, arrayOf("Committing changes", "Committed successfully.", "Unable to commit files.")).execute(message)
+        CommitTask(WeakReference(context), WeakReference(view), repo, arrayOf("Committing changes", "Committed successfully.", "Unable to commit files.")).execute(message)
     }
 
     private fun changeTextToNone(text: String): String {
@@ -197,7 +198,7 @@ object GitWrapper {
 
     fun createBranch(context: Context, view: View, repo: File, branchName: String, checked: Boolean) {
         if (checked) {
-            CheckoutTask(context, view, repo, arrayOf("Creating new branch", "Checked out successfully.", "Unable to checkout.")).execute(true.toString(), branchName)
+            CheckoutTask(WeakReference(context), WeakReference(view), repo, arrayOf("Creating new branch", "Checked out successfully.", "Unable to checkout.")).execute(true.toString(), branchName)
         } else {
             try {
                 val git = getGit(view, repo)
@@ -222,7 +223,7 @@ object GitWrapper {
     }
 
     fun checkout(context: Context, view: View, repo: File, branch: String) {
-        CheckoutTask(context, view, repo, arrayOf("Checking out", "Checked out successfully.", "Unable to checkout.")).execute(false.toString(), branch)
+        CheckoutTask(WeakReference(context), WeakReference(view), repo, arrayOf("Checking out", "Checked out successfully.", "Unable to checkout.")).execute(false.toString(), branch)
     }
 
     fun getCurrentBranch(view: View, repo: File): String? {
@@ -243,22 +244,22 @@ object GitWrapper {
 
     fun clone(context: Context, view: View, repo: File, adapter: ProjectAdapter, remoteUrl: String, username: String, password: String) {
         if (!repo.exists()) {
-            CloneTask(context, view, repo, adapter).execute(remoteUrl, username, password)
+            CloneTask(WeakReference(context), WeakReference(view), repo, adapter).execute(remoteUrl, username, password)
         } else {
             view.snack(R.string.folder_exists)
         }
     }
 
     fun push(context: Context, view: View, repo: File, remoteUrl: String, options: BooleanArray, username: String, password: String) {
-        PushTask(context, view, repo, arrayOf("Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."), options).execute(remoteUrl, username, password)
+        PushTask(WeakReference(context), WeakReference(view), repo, arrayOf("Pushing changes", "Successfully pushed commits to remote.", "There was a problem while pushing commits."), options).execute(remoteUrl, username, password)
     }
 
     fun pull(context: Context, view: View, repo: File, remote: String, username: String, password: String) {
-        PullTask(context, view, repo, arrayOf("Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits.")).execute(remote, username, password)
+        PullTask(WeakReference(context), WeakReference(view), repo, arrayOf("Pulling changes", "Successfully pulled commits from remote.", "There was a problem while pulling commits.")).execute(remote, username, password)
     }
 
     fun fetch(context: Context, view: View, repo: File, remote: String, username: String, password: String) {
-        FetchTask(context, view, repo, arrayOf("Fetching remote " + remote, "Successfully fetched from $remote.", "There was a problem while fetching from $remote.")).execute(remote, username, password)
+        FetchTask(WeakReference(context), WeakReference(view), repo, arrayOf("Fetching remote $remote", "Successfully fetched from $remote.", "There was a problem while fetching from $remote.")).execute(remote, username, password)
     }
 
     internal fun getGit(view: View, repo: File): Git? {
