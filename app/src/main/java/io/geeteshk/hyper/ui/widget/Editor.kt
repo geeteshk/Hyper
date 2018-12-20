@@ -25,12 +25,9 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -38,13 +35,16 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.util.color
 import io.geeteshk.hyper.util.editor.ResourceHelper
+import timber.log.Timber
 import java.util.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
-class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : AppCompatMultiAutoCompleteTextView(context, attrs) {
+class Editor constructor(context: Context, attrs: AttributeSet? = null)
+    : AppCompatMultiAutoCompleteTextView(context, attrs) {
 
     private val updateHandler = Handler()
 
@@ -59,13 +59,30 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
 
     private var fileModified = true
 
-    private var lineRect: Rect? = null
+    private var lineRect: Rect
 
     private var numberPaint: Paint? = null
-    private var lineShadowPaint: Paint? = null
+    private var lineShadowPaint: Paint
     private var isHighlighting: Boolean = false
-    private var colors: Colors? = null
-    private var patterns: Patterns? = null
+    private var colors: IntArray
+
+    /* Patterns */
+    private val keywords = "(<|<\\\\)\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b>".toRegex()
+    private val builtIns = "\\b(charset|lang|href|onclick|onmouseover|onmouseout|code|codebase|width|height|align|vspace|hspace|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b=".toRegex()
+    private val params = "\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b:".toRegex()
+    private val comments = "/\\**?\\*/|<!--.*".toRegex()
+    private val commentsOther = "/\\*(?:.|[\\n\\r])*?\\*/|//.*".toRegex()
+    private val endings = "(em|rem|px|pt|%)".toRegex()
+    private val dataTypes = "\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b ".toRegex()
+    private val symbols = "(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|do|!|finally|default|case|switch|native|let|super|throws|return)".toRegex()
+    private val functions = "n\\((.*?)\\)".toRegex()
+    private val numbers = "\\b(\\d*[.]?\\d+)\\b".toRegex()
+    private val booleans = "\\b(true|false)\\b".toRegex()
+    private val strings = "([\"'])(?:(?=(\\\\?))\\2.)*?\\1".toRegex()
+    private val nullMatch = "null".toRegex()
+    private val colonToSemi = ":.*;".toRegex()
+    private val classMatch = "\\..*\\{".toRegex()
+    private val idMatch = "#.*\\{".toRegex()
 
     private val updateRunnable = Runnable {
         if (!isHighlighting) {
@@ -75,6 +92,7 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
             highlightWithoutChange(e)
         }
     }
+
     private var hasLineNumbers: Boolean = false
 
     private var prefs: SharedPreferences? = null
@@ -112,37 +130,29 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
         }
 
     init {
-        init()
-    }
-
-    fun setTextHighlighted(text: CharSequence) {
-        cancelUpdate()
-
-        fileModified = false
-        setText(highlight(SpannableStringBuilder(text)))
-        fileModified = true
-
-        if (onTextChangedListener != null) onTextChangedListener!!.onTextChanged(text.toString())
-    }
-
-    private fun init() {
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        colors = Colors(!prefs!!.getBoolean("dark_theme_editor", false))
-        patterns = Patterns()
+        colors = context.resources.getIntArray(if (prefs!!.getBoolean("dark_theme_editor", false)) {
+            R.array.code_dark
+        } else {
+            R.array.code_light
+        })
+
         lineRect = Rect()
         hasLineNumbers = prefs!!.getBoolean("show_line_numbers", true)
 
-        lineShadowPaint = Paint()
-        lineShadowPaint!!.style = Paint.Style.FILL
-        lineShadowPaint!!.color = colors!!.getColorLineShadow()
+        lineShadowPaint = Paint().apply {
+            style = Paint.Style.FILL
+            color = colors[7]
+        }
 
         if (hasLineNumbers) {
-            numberPaint = Paint()
-            numberPaint!!.style = Paint.Style.FILL
-            numberPaint!!.isAntiAlias = true
-            numberPaint!!.textSize = ResourceHelper.dpToPx(context, 14).toFloat()
-            numberPaint!!.textAlign = Paint.Align.RIGHT
-            numberPaint!!.color = colors!!.getColorNumber()
+            numberPaint = Paint().apply {
+                style = Paint.Style.FILL
+                isAntiAlias = true
+                textSize = ResourceHelper.dpToPx(context, 14).toFloat()
+                textAlign = Paint.Align.RIGHT
+                color = colors[8]
+            }
         } else {
             val padding = ResourceHelper.dpToPx(context, 8)
             if (Build.VERSION.SDK_INT > 15) {
@@ -153,8 +163,8 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
         }
 
         setLineSpacing(0f, 1.2f)
-        setBackgroundColor(colors!!.getColorBackground())
-        setTextColor(colors!!.getColorText())
+        setBackgroundColor(colors[9])
+        setTextColor(colors[10])
         typeface = Typeface.createFromAsset(context.assets, "fonts/Inconsolata-Regular.ttf")
         setHorizontallyScrolling(true)
         customSelectionActionModeCallback = EditorCallback()
@@ -169,6 +179,16 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
         })
 
         viewTreeObserver.addOnGlobalLayoutListener { setupAutoComplete() }
+    }
+
+    fun setTextHighlighted(text: CharSequence) {
+        cancelUpdate()
+
+        fileModified = false
+        setText(highlight(SpannableStringBuilder(text)))
+        fileModified = true
+
+        if (onTextChangedListener != null) onTextChangedListener!!.onTextChanged(text.toString())
     }
 
     private fun cancelUpdate() {
@@ -188,132 +208,44 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
             if (e.isEmpty()) return e
             if (hasSpans(e)) clearSpans(e)
 
-            var m: Matcher
             when (codeType) {
                 Editor.CodeType.HTML -> {
-                    m = patterns!!.patternKeywords.matcher(e)
-                    while (m.find()) {
-                        if (e.toString()[m.start() - 1] == '<' || e.toString()[m.start() - 1] == '/') {
-                            e.setSpan(ForegroundColorSpan(colors!!.colorKeyword), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-
-                    m = patterns!!.patternBuiltins.matcher(e)
-                    while (m.find()) {
-                        if (e.toString()[m.start() - 1] == ' ' && e.toString()[m.end()] == '=') {
-                            e.setSpan(ForegroundColorSpan(colors!!.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-
-                    m = patterns!!.patternStrings.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternComments.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    with (e) {
+                        color(keywords, colors[0])
+                        color(builtIns, colors[4])
+                        color(strings, colors[6])
+                        color(comments, colors[5])
                     }
                 }
+
                 Editor.CodeType.CSS -> {
-                    m = patterns!!.patternKeywords.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.colorKeyword), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternParams.matcher(e)
-                    while (m.find()) {
-                        if (e.toString()[m.end()] == ':') {
-                            e.setSpan(ForegroundColorSpan(colors!!.colorParams), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-
-                    run {
-                        var index = e.toString().indexOf(":")
-                        while (index >= 0) {
-                            e.setSpan(ForegroundColorSpan(colors!!.colorEnding), index + 1, e.toString().indexOf(";", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            index = e.toString().indexOf(":", index + 1)
-                        }
-                    }
-
-                    run {
-                        var index = e.toString().indexOf(".")
-                        while (index >= 0) {
-                            e.setSpan(ForegroundColorSpan(colors!!.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            index = e.toString().indexOf(".", index + 1)
-                        }
-                    }
-
-                    run {
-                        var index = e.toString().indexOf("#")
-                        while (index >= 0) {
-                            e.setSpan(ForegroundColorSpan(colors!!.getColorBuiltin()), index + 1, e.toString().indexOf("{", index + 1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            index = e.toString().indexOf("#", index + 1)
-                        }
-                    }
-
-                    m = patterns!!.patternEndings.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.colorEnding), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternStrings.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternCommentsOther.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    with (e) {
+                        color(keywords, colors[0])
+                        color(params, colors[1])
+                        color(colonToSemi, colors[2])
+                        color(classMatch, colors[4])
+                        color(idMatch, colors[4])
+                        color(endings, colors[2])
+                        color(strings, colors[6])
+                        color(commentsOther, colors[5])
                     }
                 }
+
                 Editor.CodeType.JS -> {
-                    m = patterns!!.patternDatatypes.matcher(e)
-                    while (m.find()) {
-                        if (e.toString()[m.end()] == ' ') {
-                            e.setSpan(ForegroundColorSpan(colors!!.colorParams), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-
-                    m = patterns!!.patternFunctions.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.colorFunctions), m.start() + 2, m.end() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternSymbols.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.colorKeyword), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    var index = e.toString().indexOf("null")
-                    while (index >= 0) {
-                        e.setSpan(ForegroundColorSpan(colors!!.colorEnding), index, index + 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        index = e.toString().indexOf("null", index + 1)
-                    }
-
-                    m = patterns!!.patternNumbers.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternBooleans.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorBuiltin()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternStrings.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorStrings()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-
-                    m = patterns!!.patternCommentsOther.matcher(e)
-                    while (m.find()) {
-                        e.setSpan(ForegroundColorSpan(colors!!.getColorComment()), m.start(), m.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    with (e) {
+                        color(dataTypes, colors[1])
+                        color(functions, colors[3])
+                        color(symbols, colors[0])
+                        color(nullMatch, colors[2])
+                        color(numbers, colors[4])
+                        color(booleans, colors[4])
+                        color(strings, colors[5])
+                        color(commentsOther, colors[6])
                     }
                 }
             }
-        } catch (ex: Exception) {
-            Log.e(TAG, ex.toString())
+        } catch (e: Exception) {
+            Timber.e(e)
         }
 
         isHighlighting = false
@@ -355,7 +287,7 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
 
                 if (i == cursorLine) {
                     if (hasLineNumbers) {
-                        canvas.drawRect(0f, (10 + lineBounds - lineHeight).toFloat(), 72f, (lineBounds + 8).toFloat(), lineShadowPaint!!)
+                        canvas.drawRect(0f, (10 + lineBounds - lineHeight).toFloat(), 72f, (lineBounds + 8).toFloat(), lineShadowPaint)
                     }
                 }
 
@@ -370,7 +302,7 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
             val lineHeight = lineHeight
 
             lineBounds = getLineBounds(cursorLine - lineDiff, lineRect)
-            canvas.drawRect(0f, (8 + lineBounds - lineHeight).toFloat(), width.toFloat(), (lineBounds + 12).toFloat(), lineShadowPaint!!)
+            canvas.drawRect(0f, (8 + lineBounds - lineHeight).toFloat(), width.toFloat(), (lineBounds + 12).toFloat(), lineShadowPaint)
         }
 
         super.onDraw(canvas)
@@ -433,7 +365,12 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
     }
 
     private fun setupAutoComplete() {
-        val items = patterns!!.patternKeywords.pattern().replace("(", "").replace(")", "").substring(2, patterns!!.patternKeywords.pattern().length - 2).split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val items = keywords.toPattern().pattern().replace("(", "")
+                .replace(")", "")
+                .substring(2, keywords.toPattern().pattern().length - 2)
+                .split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+
         val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, items)
         setAdapter(adapter)
 
@@ -449,7 +386,6 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
                 return if (i < 1 || text[i - 1] != '<') {
                     cursor
                 } else i
-
             }
 
             override fun findTokenEnd(text: CharSequence, cursor: Int): Int {
@@ -575,6 +511,7 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
 
                     return true
                 }
+
                 2 -> {
                     var startComment = ""
                     var endComment = ""
@@ -601,67 +538,6 @@ class Editor @JvmOverloads constructor(context: Context, attrs: AttributeSet? = 
             return false
         }
 
-        override fun onDestroyActionMode(mode: ActionMode) {
-
-        }
-    }
-
-    internal inner class Colors(private val darkTheme: Boolean) {
-        val colorKeyword = -0x6d98e
-        val colorParams = -0x9b340c
-        val colorEnding = -0x658623
-        val colorFunctions = -0x12a400
-
-        private val colorBuiltin = -0x8d5000
-        private val colorComment = -0x5f5f60
-        private val colorStrings = -0x12a400
-
-        private val colorBuiltinDark = -0x591dd2
-        private val colorCommentDark = -0x8a8ea2
-        private val colorStringsDark = -0x19248c
-
-        private val colorLineShadow = 0x10000000
-        private val colorNumber = -0x5f5f60
-        private val colorBackground = -0x70708
-        private val colorText = -0xddddde
-
-        private val colorLineShadowDark = 0x10FFFFFF
-        private val colorNumberDark = -0x2c2c2d
-        private val colorBackgroundDark = -0xddddde
-        private val colorTextDark = -0x70708
-
-        fun getColorBuiltin(): Int = if (darkTheme) colorBuiltin else colorBuiltinDark
-
-        fun getColorComment(): Int = if (darkTheme) colorComment else colorCommentDark
-
-        fun getColorStrings(): Int = if (darkTheme) colorStrings else colorStringsDark
-
-        fun getColorLineShadow(): Int = if (darkTheme) colorLineShadow else colorLineShadowDark
-
-        fun getColorNumber(): Int = if (darkTheme) colorNumber else colorNumberDark
-
-        fun getColorBackground(): Int = if (darkTheme) colorBackground else colorBackgroundDark
-
-        fun getColorText(): Int = if (darkTheme) colorText else colorTextDark
-    }
-
-    internal inner class Patterns {
-        val patternKeywords = Pattern.compile("\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b")!!
-        val patternBuiltins = Pattern.compile("\\b(charset|lang|href|onclick|onmouseover|onmouseout|code|codebase|width|height|align|vspace|hspace|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b")!!
-        val patternParams = Pattern.compile("\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b")!!
-        val patternComments = Pattern.compile("/\\**?\\*/|<!--.*")!!
-        val patternCommentsOther = Pattern.compile("/\\*(?:.|[\\n\\r])*?\\*/|//.*")!!
-        val patternEndings = Pattern.compile("(em|rem|px|pt|%)")!!
-        val patternDatatypes = Pattern.compile("\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b")!!
-        val patternSymbols = Pattern.compile("(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|do|!|finally|default|case|switch|native|let|super|throws|return)")!!
-        val patternFunctions = Pattern.compile("n\\((.*?)\\)")!!
-        val patternNumbers = Pattern.compile("\\b(\\d*[.]?\\d+)\\b")!!
-        val patternBooleans = Pattern.compile("\\b(true|false)\\b")!!
-        val patternStrings = Pattern.compile("([\"'])(?:(?=(\\\\?))\\2.)*?\\1")!!
-    }
-
-    companion object {
-
-        private val TAG = Editor::class.java.simpleName
+        override fun onDestroyActionMode(mode: ActionMode) {}
     }
 }

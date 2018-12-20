@@ -4,6 +4,9 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.text.Editable
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -105,9 +108,8 @@ fun Snackbar.callback(callback: () -> Unit) {
     })
 }
 
-fun Context.compatColor(@ColorRes color: Int): Int {
-    return ContextCompat.getColor(this, color)
-}
+fun Context.compatColor(@ColorRes color: Int) =
+        ContextCompat.getColor(this, color)
 
 fun Activity.startAndFinish(intent: Intent) {
     startActivity(intent)
@@ -116,3 +118,12 @@ fun Activity.startAndFinish(intent: Intent) {
 
 fun String.replace(vararg pairs: Pair<String, String>) =
         pairs.fold(this) { it, (old, new) -> it.replace(old, new, true) }
+
+fun Editable.span(color: Int, range: IntRange) =
+        setSpan(ForegroundColorSpan(color), range.start, range.endInclusive, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+fun Editable.color(regex: Regex, color: Int) {
+    regex.findAll(this).forEach {
+        span(color, it.range)
+    }
+}
