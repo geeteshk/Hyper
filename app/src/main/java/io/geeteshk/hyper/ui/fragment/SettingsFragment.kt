@@ -31,6 +31,7 @@ import io.geeteshk.hyper.ui.activity.SettingsActivity
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
+import io.geeteshk.hyper.util.startAndFinish
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
@@ -47,9 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val darkTheme = preferenceManager.findPreference<SwitchPreference>("dark_theme")
         darkTheme.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, o ->
             prefs["dark_theme"] = o
-            val intent = Intent(activity, SettingsActivity::class.java)
-            startActivity(intent)
-            activity!!.finish()
+            activity!!.startAndFinish(Intent(activity, SettingsActivity::class.java))
             true
         }
 

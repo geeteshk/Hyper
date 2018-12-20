@@ -17,13 +17,12 @@
 package io.geeteshk.hyper.git
 
 import android.content.Context
-import com.google.android.material.snackbar.Snackbar
 import android.text.SpannableString
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
+import io.geeteshk.hyper.util.snack
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.diff.DiffFormatter
@@ -45,10 +44,10 @@ object GitWrapper {
             val git = Git.init()
                     .setDirectory(repo)
                     .call()
-            Snackbar.make(view, context.getString(R.string.repo_init) + git.repository.directory, Snackbar.LENGTH_LONG).show()
+            view.snack(context.getString(R.string.repo_init, git.repository.directory))
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
     }
@@ -60,11 +59,11 @@ object GitWrapper {
                 git.add()
                         .addFilepattern(".")
                         .call()
-                Snackbar.make(view, R.string.added_to_stage, Snackbar.LENGTH_LONG).show()
+                view.snack(R.string.added_to_stage)
             }
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
     }
@@ -152,7 +151,7 @@ object GitWrapper {
             }
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
     }
@@ -168,7 +167,7 @@ object GitWrapper {
             }
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
             return null
         }
 
@@ -189,7 +188,7 @@ object GitWrapper {
             }
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
             return null
         }
 
@@ -205,7 +204,7 @@ object GitWrapper {
                 git?.branchCreate()?.setName(branchName)?.call()
             } catch (e: GitAPIException) {
                 Timber.e(e)
-                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+                view.snack(e.toString())
             }
 
         }
@@ -217,7 +216,7 @@ object GitWrapper {
             git?.branchDelete()?.setBranchNames(*branches)?.call()
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
     }
@@ -235,7 +234,7 @@ object GitWrapper {
             }
         } catch (e: IOException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
             return null
         }
 
@@ -246,7 +245,7 @@ object GitWrapper {
         if (!repo.exists()) {
             CloneTask(context, view, repo, adapter).execute(remoteUrl, username, password)
         } else {
-            Snackbar.make(view, R.string.folder_exists, Snackbar.LENGTH_LONG).show()
+            view.snack(R.string.folder_exists)
         }
     }
 
@@ -267,7 +266,7 @@ object GitWrapper {
             return Git.open(repo)
         } catch (e: IOException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
         return null
@@ -307,7 +306,7 @@ object GitWrapper {
                 config.save()
             } catch (e: IOException) {
                 Timber.e(e)
-                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+                view.snack(e.toString())
             }
 
         }
@@ -321,7 +320,7 @@ object GitWrapper {
                 config.save()
             } catch (e: IOException) {
                 Timber.e(e)
-                Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+                view.snack(e.toString())
             }
 
         }
@@ -335,7 +334,7 @@ object GitWrapper {
             }
         } catch (e: GitAPIException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
         return false
@@ -359,7 +358,7 @@ object GitWrapper {
             }
         } catch (e: IOException) {
             Timber.e(e)
-            Snackbar.make(view, e.toString(), Snackbar.LENGTH_LONG).show()
+            view.snack(e.toString())
         }
 
         return string

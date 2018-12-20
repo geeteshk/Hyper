@@ -17,14 +17,15 @@
 package io.geeteshk.hyper.ui.widget.holder
 
 import android.content.Context
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
 import android.view.View
-import android.widget.PopupMenu
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
+import com.google.android.material.snackbar.Snackbar
 import com.unnamed.b.atv.model.TreeNode
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.util.editor.Clipboard
 import io.geeteshk.hyper.util.editor.ResourceHelper
+import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.item_file_browser.view.*
 import org.apache.commons.io.FileUtils
@@ -88,10 +89,10 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
                                 } catch (e: IOException) {
                                     Timber.e(e)
-                                    Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                    value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                 }
 
-                                Snackbar.make(value.view, "Created $fileStr.", Snackbar.LENGTH_SHORT).show()
+                                value.view.snack("Created $fileStr.", Snackbar.LENGTH_SHORT)
                                 val newFileNode = TreeNode(FileTreeItem(newFile, value.view))
                                 node.addChild(newFileNode)
                                 view.fileBrowserArrow.visibility = View.VISIBLE
@@ -101,6 +102,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                         true
                     }
+
                     R.id.action_new_folder -> {
                         val newFolderRootView = View.inflate(context, R.layout.dialog_input_single, null)
                         newFolderRootView.inputText.setHint(R.string.folder_name)
@@ -124,10 +126,10 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                     FileUtils.forceMkdir(newFolder)
                                 } catch (e: IOException) {
                                     Timber.e(e)
-                                    Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                    value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                 }
 
-                                Snackbar.make(value.view, "Created $folderStr.", Snackbar.LENGTH_SHORT).show()
+                                value.view.snack("Created $folderStr.", Snackbar.LENGTH_SHORT)
                                 val newFolderNode = TreeNode(FileTreeItem(newFolder, value.view))
                                 node.addChild(newFolderNode)
                                 view.fileBrowserArrow.visibility = View.VISIBLE
@@ -137,6 +139,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                         true
                     }
+
                     R.id.action_rename -> {
                         val renameRootView = View.inflate(context, R.layout.dialog_input_single, null)
                         renameRootView.inputText.setHint(R.string.new_name)
@@ -162,7 +165,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                         FileUtils.moveFile(file, rename)
                                     } catch (e: IOException) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 } else {
@@ -170,12 +173,12 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                         FileUtils.moveDirectory(file, rename)
                                     } catch (e: IOException) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 }
 
-                                Snackbar.make(value.view, "Renamed " + value.file.name + " to " + renameStr + ".", Snackbar.LENGTH_SHORT).show()
+                                value.view.snack("Renamed ${value.file.name} to $renameStr.", Snackbar.LENGTH_SHORT)
                                 value.file = rename
                                 view.fileBrowserName.text = value.file.name
                                 ResourceHelper.setIcon(view.fileBrowserIcon, value.file, 0xFF448AFF.toInt())
@@ -184,20 +187,23 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                         true
                     }
+
                     R.id.action_copy -> {
                         Clipboard.instance.currentFile = file
                         Clipboard.instance.currentNode = node
                         Clipboard.instance.type = Clipboard.Type.COPY
-                        Snackbar.make(value.view, value.file.name + " selected to be copied.", Snackbar.LENGTH_SHORT).show()
+                        value.view.snack("${value.file.name} selected to be copied.", Snackbar.LENGTH_SHORT)
                         true
                     }
+
                     R.id.action_cut -> {
                         Clipboard.instance.currentFile = file
                         Clipboard.instance.currentNode = node
                         Clipboard.instance.type = Clipboard.Type.CUT
-                        Snackbar.make(value.view, value.file.name + " selected to be moved.", Snackbar.LENGTH_SHORT).show()
+                        value.view.snack("${value.file.name} selected to be moved.", Snackbar.LENGTH_SHORT)
                         true
                     }
+
                     R.id.action_paste -> {
                         val currentFile = Clipboard.instance.currentFile
                         val currentNode = Clipboard.instance.currentNode
@@ -209,7 +215,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                         FileUtils.copyDirectoryToDirectory(currentFile, file)
                                     } catch (e: Exception) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 } else {
@@ -217,25 +223,26 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                         FileUtils.copyFileToDirectory(currentFile, file)
                                     } catch (e: Exception) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 }
 
-                                Snackbar.make(value.view, "Successfully copied " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
+                                value.view.snack("Successfully copied ${currentFile.name}.", Snackbar.LENGTH_SHORT)
                                 val copyFile = File(file, currentFile.name)
                                 val copyNode = TreeNode(FileTreeItem(copyFile, currentItem.view))
                                 node.addChild(copyNode)
                                 view.fileBrowserArrow!!.visibility = View.VISIBLE
                                 tView.expandNode(node)
                             }
+
                             Clipboard.Type.CUT -> {
                                 if (currentFile!!.isDirectory) {
                                     try {
                                         FileUtils.moveDirectoryToDirectory(currentFile, file, false)
                                     } catch (e: Exception) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 } else {
@@ -243,12 +250,12 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                         FileUtils.moveFileToDirectory(currentFile, file, false)
                                     } catch (e: Exception) {
                                         Timber.e(e)
-                                        Snackbar.make(value.view, e.toString(), Snackbar.LENGTH_SHORT).show()
+                                        value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
                                     }
 
                                 }
 
-                                Snackbar.make(value.view, "Successfully moved " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
+                                value.view.snack("Successfully moved ${currentFile.name}.", Snackbar.LENGTH_SHORT)
                                 Clipboard.instance.currentFile = null
                                 val cutFile = File(file, currentFile.name)
                                 val cutNode = TreeNode(FileTreeItem(cutFile, currentItem.view))

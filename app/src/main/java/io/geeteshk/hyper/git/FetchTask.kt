@@ -17,8 +17,8 @@
 package io.geeteshk.hyper.git
 
 import android.content.Context
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import io.geeteshk.hyper.util.snack
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.lib.BatchingProgressMonitor
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
@@ -59,7 +59,7 @@ class FetchTask internal constructor(context: Context, view: View, repo: File, v
                         .call()
             } catch (e: GitAPIException) {
                 Timber.e(e)
-                Snackbar.make(rootView, e.toString(), Snackbar.LENGTH_LONG).show()
+                rootView.snack(e.toString())
                 return false
             }
 

@@ -20,15 +20,16 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Typeface
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.item_git_log.view.*
 import org.eclipse.jgit.revwalk.RevCommit
 
@@ -62,7 +63,7 @@ class GitLogsAdapter(private val context: Context, private val gitLogs: List<Rev
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("hash", commit.id.name)
             clipboard.primaryClip = clip
-            Snackbar.make(holder.view, R.string.commit_hash_copy, Snackbar.LENGTH_SHORT).show()
+            holder.view.snack(R.string.commit_hash_copy, Snackbar.LENGTH_SHORT)
             true
         }
 

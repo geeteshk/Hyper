@@ -18,16 +18,15 @@ package io.geeteshk.hyper.ui.activity
 
 import android.app.Activity
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
 import com.unnamed.b.atv.model.TreeNode
 import com.unnamed.b.atv.view.AndroidTreeView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.ui.Styles
 import io.geeteshk.hyper.ui.widget.holder.TagTreeHolder
+import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.activity_view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
 import org.apache.commons.io.FileUtils
@@ -39,13 +38,12 @@ import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
 
-class ViewActivity : AppCompatActivity() {
+class ViewActivity : ThemedActivity() {
 
     private lateinit var htmlDoc: Document
     private lateinit var htmlFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view)
 
@@ -85,7 +83,7 @@ class ViewActivity : AppCompatActivity() {
                 }
 
                 setResult(Activity.RESULT_OK)
-                Snackbar.make(viewLayout, R.string.save_changes_done, Snackbar.LENGTH_SHORT).show()
+                viewLayout.snack(R.string.save_changes_done, Snackbar.LENGTH_SHORT)
             }
         }
 

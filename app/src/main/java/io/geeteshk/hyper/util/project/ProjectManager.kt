@@ -20,13 +20,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.copyInputStreamToFile
 import io.geeteshk.hyper.util.editor.ProjectFiles
+import io.geeteshk.hyper.util.snack
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOCase
 import org.apache.commons.io.filefilter.DirectoryFileFilter
@@ -53,18 +54,18 @@ object ProjectManager {
 
         var status = false
         when (type) {
-            0 -> status = generateDefault(context, nameNew, author, description, keywords, stream, type)
+            0 -> status = generateDefault(context, nameNew, author, description, keywords, stream)
         }
 
         if (status) {
             adapter.insert(nameNew)
-            Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show()
+            view.snack(R.string.project_success, Snackbar.LENGTH_SHORT)
         } else {
-            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show()
+            view.snack(R.string.project_fail, Snackbar.LENGTH_SHORT)
         }
     }
 
-    private fun generateDefault(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream?, type: Int): Boolean {
+    private fun generateDefault(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream?): Boolean {
         val projectFile = File(Constants.HYPER_ROOT + File.separator + name)
         val cssFile = File(projectFile, "css")
         val jsFile = File(projectFile, "js")
@@ -110,12 +111,12 @@ object ProjectManager {
             }
         } catch (e: IOException) {
             Timber.e(e)
-            Snackbar.make(view, R.string.project_fail, Snackbar.LENGTH_SHORT).show()
+            view.snack(R.string.project_fail, Snackbar.LENGTH_SHORT)
             return
         }
 
         adapter.insert(nameNew)
-        Snackbar.make(view, R.string.project_success, Snackbar.LENGTH_SHORT).show()
+        view.snack(R.string.project_success, Snackbar.LENGTH_SHORT)
     }
 
     fun isValid(string: String): Boolean = getIndexFile(string) != null
@@ -203,7 +204,7 @@ object ProjectManager {
             return other != 0 && 100 * other / (ascii + other) > 95
 
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.e(e, result.toString())
         }
 
         return true

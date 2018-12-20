@@ -18,19 +18,16 @@ package io.geeteshk.hyper.ui.activity
 
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.AnalyzeAdapter
 import io.geeteshk.hyper.ui.fragment.analyze.AnalyzeFileFragment
-import io.geeteshk.hyper.util.ui.Styles
 import kotlinx.android.synthetic.main.activity_analyze.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
 import java.io.File
 
-class AnalyzeActivity : AppCompatActivity() {
+class AnalyzeActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analyze)
         toolbar.title = File(intent.getStringExtra("project_file")).name

@@ -20,29 +20,28 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.ui.adapter.ProjectAdapter
 import io.geeteshk.hyper.git.GitWrapper
-import io.geeteshk.hyper.util.*
+import io.geeteshk.hyper.ui.adapter.ProjectAdapter
+import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.Prefs.set
 import io.geeteshk.hyper.util.editor.ResourceHelper
 import io.geeteshk.hyper.util.project.DataValidator
 import io.geeteshk.hyper.util.project.ProjectManager
-import io.geeteshk.hyper.util.ui.Styles
+import io.geeteshk.hyper.util.startAndFinish
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_clone.view.*
 import kotlinx.android.synthetic.main.dialog_create.view.*
@@ -53,7 +52,7 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     private var contents: Array<String>? = null
     private var contentsList: ArrayList<String>? = null
@@ -64,7 +63,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
     private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -253,13 +251,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, Search
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
+            }
 
-            }
-            SETTINGS_CODE -> {
-                val intent = Intent(this@MainActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+            SETTINGS_CODE -> startAndFinish(Intent(this@MainActivity, MainActivity::class.java))
+
             IMPORT_PROJECT -> if (resultCode == Activity.RESULT_OK) {
                 val fileUri = data!!.data
                 val file = File(fileUri.path)

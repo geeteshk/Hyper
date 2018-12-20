@@ -17,7 +17,6 @@
 package io.geeteshk.hyper.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.widget.Editor
 import io.geeteshk.hyper.util.editor.ResourceHelper
@@ -143,6 +143,13 @@ class EditorFragment : Fragment() {
             val end = Math.max(mEditor.selectionEnd, 0)
             mEditor.text.replace(Math.min(start, end), Math.max(start, end),
                     mSymbol, 0, mSymbol.length)
+        }
+    }
+
+    companion object {
+
+        fun newInstance(args: Bundle) = EditorFragment().apply {
+            arguments = args
         }
     }
 }

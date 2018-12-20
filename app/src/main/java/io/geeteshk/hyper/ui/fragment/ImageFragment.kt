@@ -18,16 +18,18 @@ package io.geeteshk.hyper.ui.fragment
 
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.util.action
 import io.geeteshk.hyper.util.editor.ResourceHelper
+import io.geeteshk.hyper.util.snack
 import java.io.File
 
 class ImageFragment : Fragment() {
@@ -58,10 +60,11 @@ class ImageFragment : Fragment() {
         imageView.scaleType = ImageView.ScaleType.FIT_CENTER
         imageView.setImageDrawable(drawable)
         imageView.setOnClickListener {
-            val snackbar = Snackbar.make(imageView, drawable.intrinsicWidth.toString() + "x" + drawable.intrinsicHeight + "px " + fileSize, Snackbar.LENGTH_INDEFINITE)
-            snackbar.setAction("OK") { snackbar.dismiss() }
-
-            snackbar.show()
+            imageView.snack(
+                    "${drawable.intrinsicWidth} x ${drawable.intrinsicHeight}px $fileSize",
+                    Snackbar.LENGTH_INDEFINITE) {
+                action("OK") { dismiss() }
+            }
         }
 
         return imageView
@@ -73,6 +76,13 @@ class ImageFragment : Fragment() {
             (size / 1024).toString() + " MB"
         } else {
             size.toString() + " KB"
+        }
+    }
+
+    companion object {
+
+        fun newInstance(args: Bundle) = ImageFragment().apply {
+            arguments = args
         }
     }
 }

@@ -20,16 +20,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.IntroAdapter
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
 import io.geeteshk.hyper.util.net.HtmlCompat
+import io.geeteshk.hyper.util.startAndFinish
 import kotlinx.android.synthetic.main.activity_intro.*
 
 class IntroActivity : AppCompatActivity() {
@@ -89,12 +90,10 @@ class IntroActivity : AppCompatActivity() {
     }
 
     private fun endIntro() {
-        val prefs = defaultPrefs(this)
-        prefs["intro_done"] = true
-        val intent = Intent(this@IntroActivity, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        finish()
+        defaultPrefs(this)["intro_done"] = true
+        startAndFinish(Intent(this@IntroActivity, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        })
     }
 
     private fun addBottomDots(currentPage: Int) {

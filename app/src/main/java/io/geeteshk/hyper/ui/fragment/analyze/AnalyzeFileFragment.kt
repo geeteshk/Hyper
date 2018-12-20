@@ -19,12 +19,11 @@ package io.geeteshk.hyper.ui.fragment.analyze
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
@@ -38,8 +37,9 @@ import com.github.mikephil.charting.utils.ViewPortHandler
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
-import io.geeteshk.hyper.util.project.ProjectManager
+import io.geeteshk.hyper.util.compatColor
 import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.util.project.ProjectManager
 import kotlinx.android.synthetic.main.fragment_analyze_file.*
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
@@ -60,10 +60,13 @@ class AnalyzeFileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val prefs = defaultPrefs(activity)
         val darkTheme = prefs["dark_theme", false]!!
-        val lightColor = ContextCompat.getColor(activity, androidx.appcompat.R.color.abc_primary_text_material_light)
-        val darkColor = ContextCompat.getColor(activity, androidx.appcompat.R.color.abc_primary_text_material_dark)
+
+        val lightColor = activity.compatColor(androidx.appcompat.R.color.abc_primary_text_material_light)
+        val darkColor = activity.compatColor(androidx.appcompat.R.color.abc_primary_text_material_dark)
+
         projectDir = File(arguments!!.getString("project_file")!!)
         pieColors = ArrayList()
+
         for (c in ColorTemplate.VORDIPLOM_COLORS)
             pieColors.add(c)
 

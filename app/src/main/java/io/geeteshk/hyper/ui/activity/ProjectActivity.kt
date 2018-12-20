@@ -24,40 +24,38 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.PopupMenu
 import android.widget.Spinner
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.unnamed.b.atv.model.TreeNode
-import com.unnamed.b.atv.view.AndroidTreeView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.git.GitWrapper
 import io.geeteshk.hyper.ui.adapter.FileAdapter
 import io.geeteshk.hyper.ui.adapter.GitLogsAdapter
 import io.geeteshk.hyper.ui.fragment.EditorFragment
 import io.geeteshk.hyper.ui.fragment.ImageFragment
-import io.geeteshk.hyper.git.GitWrapper
+import io.geeteshk.hyper.ui.helper.MenuPrepareHelper
+import io.geeteshk.hyper.ui.viewmodel.ProjectViewModel
+import io.geeteshk.hyper.ui.widget.ProjectTreeView
+import io.geeteshk.hyper.ui.widget.RootOverflowPopupMenu
+import io.geeteshk.hyper.ui.widget.holder.FileTreeHolder
 import io.geeteshk.hyper.util.*
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
-import io.geeteshk.hyper.ui.widget.holder.FileTreeHolder
-import io.geeteshk.hyper.util.editor.Clipboard
 import io.geeteshk.hyper.util.net.HtmlParser
 import io.geeteshk.hyper.util.project.ProjectManager
-import io.geeteshk.hyper.util.ui.Styles
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.dialog_diff.view.*
 import kotlinx.android.synthetic.main.dialog_git_branch.view.*
@@ -72,15 +70,13 @@ import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
-import java.util.*
 
-class ProjectActivity : AppCompatActivity() {
+class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNode.TreeNodeLongClickListener {
 
-    private var openFiles: ArrayList<String>? = null
+    private lateinit var projectViewModel: ProjectViewModel
 
     private lateinit var fileSpinner: Spinner
-    private lateinit var fileAdapter: ArrayAdapter<String>
+    private lateinit var fileAdapter: FileAdapter
 
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -88,158 +84,62 @@ class ProjectActivity : AppCompatActivity() {
     private lateinit var projectDir: File
     private lateinit var indexFile: File
     private lateinit var rootNode: TreeNode
-    private lateinit var treeView: AndroidTreeView
+    private lateinit var treeView: ProjectTreeView
     private lateinit var props: Array<String?>
     private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         projectName = intent.getStringExtra("project")
-        projectDir = File(Constants.HYPER_ROOT + File.separator + projectName)
+        projectDir = File("${Constants.HYPER_ROOT}/$projectName")
         indexFile = ProjectManager.getIndexFile(projectName)!!
 
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
 
         prefs = defaultPrefs(this)
-        if (intent.hasExtra("files")) {
-            openFiles = intent.getStringArrayListExtra("files")
+        props = HtmlParser.getProperties(projectName)
+        fileAdapter = FileAdapter(this, ArrayList())
+
+        projectViewModel = ViewModelProviders.of(this).get(ProjectViewModel::class.java)
+        projectViewModel.openFiles.observe(this, Observer { fileAdapter.update(it) })
+        projectViewModel.openFiles.value = if (intent.hasExtra("files")) {
+            intent.getStringArrayListExtra("files")
         } else {
-            openFiles = ArrayList()
-            openFiles!!.add(indexFile.path)
+            arrayListOf(indexFile.path)
         }
 
-        props = HtmlParser.getProperties(projectName)
-        fileSpinner = Spinner(this)
-        fileAdapter = FileAdapter(this, openFiles!!)
-        fileSpinner.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        fileSpinner.adapter = fileAdapter
-        toolbar.addView(fileSpinner)
-        fileSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        fileSpinner = Spinner(this).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            adapter = fileAdapter
+            onItemSelected {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.editorFragment, getFragment(openFiles!![position]))
+                        .replace(R.id.editorFragment, getFragment(projectViewModel.openFiles.value!![it]))
                         .commit()
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
         }
 
+        toolbar.addView(fileSpinner)
         setSupportActionBar(toolbar)
         supportActionBar!!.title = ""
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.action_drawer_open, R.string.action_drawer_close)
-        drawerLayout.addDrawerListener(toggle)
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-
-            }
-
-            override fun onDrawerOpened(drawerView: View) {
+        with (drawerLayout) {
+            addDrawerListener(toggle)
+            setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
+            setStatusBarBackgroundColor(this@ProjectActivity.compatColor(R.color.colorPrimaryDark))
+            onDrawerOpened {
                 props = HtmlParser.getProperties(projectName)
                 headerTitle.text = props[0]
                 headerDesc.text = props[1]
             }
-
-            override fun onDrawerClosed(drawerView: View) {
-
-            }
-
-            override fun onDrawerStateChanged(newState: Int) {
-
-            }
-        })
-
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
-        drawerLayout.setStatusBarBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+        }
 
         rootNode = TreeNode.root()
         setupFileTree(rootNode, projectDir)
-        treeView = AndroidTreeView(this@ProjectActivity, rootNode)
-        treeView.setDefaultAnimation(true)
-        treeView.setDefaultViewHolder(FileTreeHolder::class.java)
-        treeView.setDefaultContainerStyle(R.style.TreeNodeStyle)
-        treeView.setDefaultNodeClickListener { node, value ->
-            val item = value as FileTreeHolder.FileTreeItem
-            if (node.isLeaf && item.file.isFile) {
-                if (openFiles!!.contains(item.file.path)) {
-                    setFragment(item.file.path, false)
-                    drawerLayout.closeDrawers()
-                } else {
-                    if (!ProjectManager.isBinaryFile(item.file)) {
-                        setFragment(item.file.path, true)
-                        drawerLayout.closeDrawers()
-                    } else if (ProjectManager.isImageFile(item.file)) {
-                        setFragment(item.file.path, true)
-                        drawerLayout.closeDrawers()
-                    } else {
-                        Snackbar.make(drawerLayout, R.string.not_text_file, Snackbar.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
 
-        treeView.setDefaultNodeLongClickListener { node, value ->
-            val item = value as FileTreeHolder.FileTreeItem
-            when (item.file.name) {
-                "index.html" -> false
-                else -> {
-                    AlertDialog.Builder(this@ProjectActivity)
-                            .setTitle(getString(R.string.delete) + " " + item.file.name + "?")
-                            .setPositiveButton(R.string.delete) { _, _ ->
-                                val delete = booleanArrayOf(true, false)
-                                val file = item.file.name
-                                val parent = node.parent
-                                treeView.removeNode(node)
-                                removeFragment(item.file.path)
-
-                                val snackbar = Snackbar.make(
-                                        drawerLayout,
-                                        "Deleted $file.",
-                                        Snackbar.LENGTH_LONG
-                                )
-
-                                snackbar.setAction("UNDO") {
-                                    delete[0] = false
-                                    snackbar.dismiss()
-                                }
-
-                                snackbar.addCallback(object : Snackbar.Callback() {
-                                    override fun onDismissed(snackbar: Snackbar?, event: Int) {
-                                        super.onDismissed(snackbar, event)
-                                        if (!delete[1]) {
-                                            if (delete[0]) {
-                                                if (item.file.isDirectory) {
-                                                    try {
-                                                        FileUtils.deleteDirectory(item.file)
-                                                    } catch (e: IOException) {
-                                                        Timber.e(e)
-                                                    }
-
-                                                } else {
-                                                    if (!item.file.delete()) {
-                                                        Timber.d("Failed to delete %s", item.file.path)
-                                                    }
-                                                }
-                                            } else {
-                                                treeView.addNode(parent, node)
-                                            }
-
-                                            delete[1] = true
-                                        }
-                                    }
-                                })
-
-                                snackbar.show()
-                            }
-                            .setNegativeButton(R.string.cancel, null)
-                            .show()
-
-                    true
-                }
-            }
+        treeView = ProjectTreeView(this, rootNode).apply {
+            setDefaultNodeClickListener(this@ProjectActivity)
+            setDefaultNodeLongClickListener(this@ProjectActivity)
         }
 
         fileBrowser.addView(treeView.view)
@@ -248,153 +148,8 @@ class ProjectActivity : AppCompatActivity() {
         headerDesc.text = props[1]
 
         rootOverflow.setOnClickListener {
-            val menu = PopupMenu(this@ProjectActivity, rootOverflow)
-            menu.menuInflater.inflate(R.menu.menu_file_options, menu.menu)
-            menu.menu.findItem(R.id.action_copy).isVisible = false
-            menu.menu.findItem(R.id.action_cut).isVisible = false
-            menu.menu.findItem(R.id.action_rename).isVisible = false
-            menu.menu.findItem(R.id.action_paste).isEnabled = Clipboard.instance.currentFile != null
-            menu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.action_new_file -> {
-                        val newFileRootView = View.inflate(this@ProjectActivity, R.layout.dialog_input_single, null)
-                        newFileRootView.inputText.setHint(R.string.file_name)
-                        val newFileDialog = AlertDialog.Builder(this@ProjectActivity)
-                                .setTitle("New file")
-                                .setView(newFileRootView)
-                                .setPositiveButton(R.string.create, null)
-                                .setNegativeButton(R.string.cancel, null)
-                                .create()
-
-                        newFileDialog.show()
-                        newFileDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                            if (newFileRootView.inputText.text.toString().isEmpty()) {
-                                newFileRootView.inputText.error = "Please enter a file name"
-                            } else {
-                                newFileDialog.dismiss()
-                                val fileStr = newFileRootView.inputText.text.toString()
-                                val newFile = File(projectDir, fileStr)
-                                try {
-                                    FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
-                                } catch (e: IOException) {
-                                    Timber.e(e)
-                                    Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                }
-
-                                Snackbar.make(drawerLayout, "Created $fileStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFileNode = TreeNode(FileTreeHolder.FileTreeItem(newFile, drawerLayout))
-                                rootNode.addChild(newFileNode)
-                                treeView.setRoot(rootNode)
-                                treeView.addNode(rootNode, newFileNode)
-                            }
-                        }
-
-                        return@OnMenuItemClickListener true
-                    }
-                    R.id.action_new_folder -> {
-                        val newFolderRootView = View.inflate(this@ProjectActivity, R.layout.dialog_input_single, null)
-                        newFolderRootView.inputText.setHint(R.string.folder_name)
-
-                        val newFolderDialog = AlertDialog.Builder(this@ProjectActivity)
-                                .setTitle("New folder")
-                                .setView(newFolderRootView)
-                                .setPositiveButton(R.string.create, null)
-                                .setNegativeButton(R.string.cancel, null)
-                                .create()
-
-                        newFolderDialog.show()
-                        newFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                            if (newFolderRootView.inputText.text.toString().isEmpty()) {
-                                newFolderRootView.inputText.error = "Please enter a folder name"
-                            } else {
-                                newFolderDialog.dismiss()
-                                val folderStr = newFolderRootView.inputText.text.toString()
-                                val newFolder = File(projectDir, folderStr)
-                                try {
-                                    FileUtils.forceMkdir(newFolder)
-                                } catch (e: IOException) {
-                                    Timber.e(e)
-                                    Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                }
-
-                                Snackbar.make(drawerLayout, "Created $folderStr.", Snackbar.LENGTH_SHORT).show()
-                                val newFolderNode = TreeNode(FileTreeHolder.FileTreeItem(newFolder, drawerLayout))
-                                rootNode.addChild(newFolderNode)
-                                treeView.setRoot(rootNode)
-                                treeView.addNode(rootNode, newFolderNode)
-                            }
-                        }
-
-                        return@OnMenuItemClickListener true
-                    }
-                    R.id.action_paste -> {
-                        val currentFile = Clipboard.instance.currentFile
-                        val currentNode = Clipboard.instance.currentNode
-                        val currentItem = currentNode?.value as FileTreeHolder.FileTreeItem
-                        when (Clipboard.instance.type) {
-                            Clipboard.Type.COPY -> {
-                                if (currentFile!!.isDirectory) {
-                                    try {
-                                        FileUtils.copyDirectoryToDirectory(currentFile, projectDir)
-                                    } catch (e: Exception) {
-                                        Timber.e(e)
-                                        Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                    }
-
-                                } else {
-                                    try {
-                                        FileUtils.copyFileToDirectory(currentFile, projectDir)
-                                    } catch (e: Exception) {
-                                        Timber.e(e)
-                                        Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                    }
-
-                                }
-
-                                Snackbar.make(drawerLayout, "Successfully copied " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
-                                val copyFile = File(projectDir, currentFile.name)
-                                val copyNode = TreeNode(FileTreeHolder.FileTreeItem(copyFile, currentItem.view))
-                                rootNode.addChild(copyNode)
-                                treeView.setRoot(rootNode)
-                                treeView.addNode(rootNode, copyNode)
-                            }
-                            Clipboard.Type.CUT -> {
-                                if (currentFile!!.isDirectory) {
-                                    try {
-                                        FileUtils.moveDirectoryToDirectory(currentFile, projectDir, false)
-                                    } catch (e: Exception) {
-                                        Timber.e(e)
-                                        Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                    }
-
-                                } else {
-                                    try {
-                                        FileUtils.moveFileToDirectory(currentFile, projectDir, false)
-                                    } catch (e: Exception) {
-                                        Timber.e(e)
-                                        Snackbar.make(drawerLayout, e.toString(), Snackbar.LENGTH_SHORT).show()
-                                    }
-
-                                }
-
-                                Snackbar.make(drawerLayout, "Successfully moved " + currentFile.name + ".", Snackbar.LENGTH_SHORT).show()
-                                Clipboard.instance.currentFile = null
-                                val cutFile = File(projectDir, currentFile.name)
-                                val cutNode = TreeNode(FileTreeHolder.FileTreeItem(cutFile, currentItem.view))
-                                rootNode.addChild(cutNode)
-                                treeView.setRoot(rootNode)
-                                treeView.addNode(rootNode, cutNode)
-                                treeView.removeNode(Clipboard.instance.currentNode)
-                            }
-                        }
-                        return@OnMenuItemClickListener true
-                    }
-                }
-
-                false
-            })
-
-            menu.show()
+            RootOverflowPopupMenu(
+                    this, it, drawerLayout, rootNode, treeView, projectDir).show()
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -419,17 +174,78 @@ class ProjectActivity : AppCompatActivity() {
         }
     }
 
-    private fun removeFragment(file: String) {
-        openFiles!!.remove(file)
-        fileAdapter.remove(file)
-        fileAdapter.notifyDataSetChanged()
+    override fun onClick(node: TreeNode, value: Any) {
+        val item = value as FileTreeHolder.FileTreeItem
+        if (node.isLeaf && item.file.isFile) {
+            if (projectViewModel.openFiles.value!!.contains(item.file.path)) {
+                setFragment(item.file.path, false)
+                drawerLayout.closeDrawers()
+            } else {
+                if (!ProjectManager.isBinaryFile(item.file) || ProjectManager.isImageFile(item.file)) {
+                    setFragment(item.file.path, true)
+                    drawerLayout.closeDrawers()
+                } else {
+                    drawerLayout.snack(R.string.not_text_file)
+                }
+            }
+        }
+    }
+
+    override fun onLongClick(node: TreeNode, value: Any): Boolean {
+        val item = value as FileTreeHolder.FileTreeItem
+        return when (item.file.name) {
+            "index.html" -> false
+            else -> {
+                AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.delete) + " " + item.file.name + "?")
+                        .setPositiveButton(R.string.delete) { _, _ ->
+                            val delete = booleanArrayOf(true, false)
+                            val file = item.file.name
+                            val parent = node.parent
+                            treeView.removeNode(node)
+
+                            projectViewModel.removeOpenFile(item.file.path)
+
+                            drawerLayout.snack("Deleted $file.") {
+                                action("UNDO") {
+                                    delete[0] = false
+                                    dismiss()
+                                }
+
+                                callback {
+                                    if (!delete[1]) {
+                                        if (delete[0]) {
+                                            if (item.file.isDirectory) {
+                                                try {
+                                                    FileUtils.deleteDirectory(item.file)
+                                                } catch (e: IOException) {
+                                                    Timber.e(e)
+                                                }
+
+                                            } else {
+                                                if (!item.file.delete()) {
+                                                    Timber.d("Failed to delete %s", item.file.path)
+                                                }
+                                            }
+                                        } else {
+                                            treeView.addNode(parent, node)
+                                        }
+
+                                        delete[1] = true
+                                    }
+                                }
+                            }
+                        }
+                        .setNegativeButton(R.string.cancel, null)
+                        .show()
+
+                true
+            }
+        }
     }
 
     private fun setFragment(file: String, add: Boolean) {
-        if (add) {
-            fileAdapter.add(file)
-            fileAdapter.notifyDataSetChanged()
-        }
+        if (add) projectViewModel.addOpenFile(file)
 
         fileSpinner.setSelection(fileAdapter.getPosition(file), true)
         supportFragmentManager.beginTransaction()
@@ -437,42 +253,30 @@ class ProjectActivity : AppCompatActivity() {
                 .commit()
     }
 
-    fun getFragment(title: String): Fragment {
-        val bundle = Bundle()
-        bundle.putInt("position", fileAdapter.count)
-        bundle.putString("location", title)
+    private fun getFragment(title: String): Fragment {
+        val bundle = Bundle().apply {
+            putInt("position", fileAdapter.count)
+            putString("location", title)
+        }
+
         return if (ProjectManager.isImageFile(File(title))) {
-            Fragment.instantiate(this, ImageFragment::class.java.name, bundle)
+            ImageFragment.newInstance(bundle)
         } else {
-            Fragment.instantiate(this, EditorFragment::class.java.name, bundle)
+            EditorFragment.newInstance(bundle)
         }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val isGitRepo = File(projectDir, ".git").exists() && File(projectDir, ".git").isDirectory
-        var canCommit = false
-        var canCheckout = false
-        var hasRemotes = false
-        val isHtml = (fileSpinner.selectedItem as String).endsWith(".html")
+        val params = arrayOf((fileSpinner.selectedItem as String).endsWith(".html"), isGitRepo, false, false, false)
         if (isGitRepo) {
-            canCommit = GitWrapper.canCommit(drawerLayout, projectDir)
-            canCheckout = GitWrapper.canCheckout(drawerLayout, projectDir)
-            hasRemotes = GitWrapper.getRemotes(drawerLayout, projectDir) != null && GitWrapper.getRemotes(drawerLayout, projectDir)!!.size > 0
+            params[2] = GitWrapper.canCommit(drawerLayout, projectDir)
+            params[3] = GitWrapper.getRemotes(drawerLayout, projectDir) != null &&
+                    GitWrapper.getRemotes(drawerLayout, projectDir)!!.size > 0
+            params[4] = GitWrapper.canCheckout(drawerLayout, projectDir)
         }
 
-        menu.findItem(R.id.action_view).isEnabled = isHtml
-        menu.findItem(R.id.action_git_add).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_commit).isEnabled = canCommit
-        menu.findItem(R.id.action_git_push).isEnabled = hasRemotes
-        menu.findItem(R.id.action_git_pull).isEnabled = hasRemotes
-        menu.findItem(R.id.action_git_log).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_diff).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_status).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_branch).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_remote).isEnabled = isGitRepo
-        menu.findItem(R.id.action_git_branch_checkout).isEnabled = canCheckout
-
-        return true
+        return MenuPrepareHelper.prepare(menu, *params.toBooleanArray())
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -494,46 +298,31 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_project, menu)
+        menuInflater.inflate(R.menu.menu_project, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_run -> {
-                val runIntent = Intent(this@ProjectActivity, WebActivity::class.java)
-                runIntent.putExtra("url", "file:///" + indexFile.path)
-                runIntent.putExtra("name", projectName)
-                startActivity(runIntent)
-                return true
-            }
-            R.id.action_view -> {
-                val viewIntent = Intent(this@ProjectActivity, ViewActivity::class.java)
-                viewIntent.putExtra("html_path", openFiles!![fileSpinner.selectedItemPosition])
-                startActivityForResult(viewIntent, VIEW_CODE)
-                return true
-            }
-            R.id.action_import_file -> {
-                val fontIntent = Intent(Intent.ACTION_GET_CONTENT)
-                fontIntent.type = "file/*"
-                fontIntent.resolveActivity(packageManager)?.let {
-                    startActivityForResult(fontIntent, IMPORT_FILE)
+            R.id.action_run -> startActivity(Intent(this, WebActivity::class.java).apply {
+                putExtra("url", "file:///" + indexFile.path)
+                putExtra("name", projectName)
+            })
+
+            R.id.action_view -> startActivityForResult(Intent(this, ViewActivity::class.java).apply {
+                putExtra("html_path", projectViewModel.openFiles.value!![fileSpinner.selectedItemPosition])
+            }, VIEW_CODE)
+
+            R.id.action_import_file -> with (Intent(Intent.ACTION_GET_CONTENT)) {
+                type = "file/*"
+                resolveActivity(packageManager)?.let {
+                    startActivityForResult(this, IMPORT_FILE)
                 }
-                return true
             }
-            R.id.action_about -> {
-                showAbout()
-                return true
-            }
-            R.id.action_git_init -> {
-                GitWrapper.init(this@ProjectActivity, projectDir, drawerLayout)
-                return true
-            }
-            R.id.action_git_add -> {
-                GitWrapper.add(drawerLayout, projectDir)
-                return true
-            }
+
+            R.id.action_about -> showAbout()
+            R.id.action_git_init -> GitWrapper.init(this@ProjectActivity, projectDir, drawerLayout)
+            R.id.action_git_add ->  GitWrapper.add(drawerLayout, projectDir)
             R.id.action_git_commit -> {
                 val view = View.inflate(this@ProjectActivity, R.layout.dialog_input_single, null)
                 view.inputText.setHint(R.string.commit_message)
@@ -548,15 +337,15 @@ class ProjectActivity : AppCompatActivity() {
 
                 commitDialog.show()
                 commitDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                    if (!view.inputText.text.toString().isEmpty()) {
-                        GitWrapper.commit(this@ProjectActivity, drawerLayout, projectDir, view.inputText.text.toString())
+                    if (!view.inputText.string().isEmpty()) {
+                        GitWrapper.commit(this@ProjectActivity, drawerLayout, projectDir, view.inputText.string())
                         commitDialog.dismiss()
                     } else {
                         view.inputText.error = getString(R.string.commit_message_empty)
                     }
                 }
-                return true
             }
+
             R.id.action_git_push -> {
                 val pushView = View.inflate(this@ProjectActivity, R.layout.dialog_push, null)
                 pushView.pushSpinner.adapter = ArrayAdapter(this@ProjectActivity, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
@@ -565,13 +354,12 @@ class ProjectActivity : AppCompatActivity() {
                         .setView(pushView)
                         .setPositiveButton("PUSH") { dialogInterface, _ ->
                             dialogInterface.dismiss()
-                            GitWrapper.push(this@ProjectActivity, drawerLayout, projectDir, pushView.pushSpinner.selectedItem as String, booleanArrayOf(pushView.dryRun.isChecked, pushView.force.isChecked, pushView.thin.isChecked, pushView.tags.isChecked), pushView.pushUsername.text.toString(), pushView.pushPassword.text.toString())
+                            GitWrapper.push(this@ProjectActivity, drawerLayout, projectDir, pushView.pushSpinner.selectedItem as String, booleanArrayOf(pushView.dryRun.isChecked, pushView.force.isChecked, pushView.thin.isChecked, pushView.tags.isChecked), pushView.pushUsername.string(), pushView.pushPassword.string())
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .show()
-
-                return true
             }
+
             R.id.action_git_pull -> {
                 val pullView = View.inflate(this@ProjectActivity, R.layout.dialog_pull, null)
                 pullView.remotesSpinner.adapter = ArrayAdapter(this@ProjectActivity, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
@@ -580,13 +368,12 @@ class ProjectActivity : AppCompatActivity() {
                         .setView(pullView)
                         .setPositiveButton("PULL") { dialogInterface, _ ->
                             dialogInterface.dismiss()
-                            GitWrapper.pull(this@ProjectActivity, drawerLayout, projectDir, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.text.toString(), pullView.pullPassword.text.toString())
+                            GitWrapper.pull(this@ProjectActivity, drawerLayout, projectDir, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.string(), pullView.pullPassword.string())
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .show()
-
-                return true
             }
+
             R.id.action_git_log -> {
                 val commits = GitWrapper.getCommits(drawerLayout, projectDir)
                 val layoutLog = View.inflate(this, R.layout.sheet_logs, null)
@@ -603,8 +390,8 @@ class ProjectActivity : AppCompatActivity() {
                 val dialogLog = BottomSheetDialog(this)
                 dialogLog.setContentView(layoutLog)
                 dialogLog.show()
-                return true
             }
+
             R.id.action_git_diff -> {
                 val chosen = intArrayOf(-1, -1)
                 val commitsToDiff = GitWrapper.getCommits(drawerLayout, projectDir)
@@ -634,9 +421,8 @@ class ProjectActivity : AppCompatActivity() {
                                     .show()
                         }
                         .show()
-
-                return true
             }
+
             R.id.action_git_status -> {
                 val status = View.inflate(this, R.layout.item_git_status, null)
                 if (prefs["dark_theme", false]!!) {
@@ -647,8 +433,8 @@ class ProjectActivity : AppCompatActivity() {
                 val dialogStatus = BottomSheetDialog(this)
                 dialogStatus.setContentView(status)
                 dialogStatus.show()
-                return true
             }
+
             R.id.action_git_branch_new -> {
                 val branchView = View.inflate(this@ProjectActivity, R.layout.dialog_git_branch, null)
                 branchView.checkout.setText(R.string.checkout)
@@ -662,15 +448,15 @@ class ProjectActivity : AppCompatActivity() {
 
                 branchDialog.show()
                 branchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                    if (!branchView.branchName.text.toString().isEmpty()) {
-                        GitWrapper.createBranch(this@ProjectActivity, drawerLayout, projectDir, branchView.branchName.text.toString(), branchView.checkout.isChecked)
+                    if (!branchView.branchName.string().isEmpty()) {
+                        GitWrapper.createBranch(this@ProjectActivity, drawerLayout, projectDir, branchView.branchName.string(), branchView.checkout.isChecked)
                         branchDialog.dismiss()
                     } else {
                         branchView.branchName.error = getString(R.string.branch_name_empty)
                     }
                 }
-                return true
             }
+
             R.id.action_git_branch_remove -> {
                 val branchesList = GitWrapper.getBranches(drawerLayout, projectDir)
                 val itemsMultiple = arrayOfNulls<CharSequence>(branchesList!!.size)
@@ -696,9 +482,8 @@ class ProjectActivity : AppCompatActivity() {
                         .setNegativeButton(R.string.close, null)
                         .setTitle("Delete branches")
                         .show()
-
-                return true
             }
+
             R.id.action_git_branch_checkout -> {
                 val branches = GitWrapper.getBranches(drawerLayout, projectDir)
                 var checkedItem = -1
@@ -724,24 +509,20 @@ class ProjectActivity : AppCompatActivity() {
                         .setNegativeButton(R.string.close, null)
                         .setTitle("Checkout branch")
                         .show()
+            }
 
-                return true
-            }
-            R.id.action_git_remote -> {
-                val remoteIntent = Intent(this@ProjectActivity, RemotesActivity::class.java)
-                remoteIntent.putExtra("project_file", projectDir.path)
-                startActivity(remoteIntent)
-                return true
-            }
-            R.id.action_analyze -> {
-                val analyzeIntent = Intent(this@ProjectActivity, AnalyzeActivity::class.java)
-                analyzeIntent.putExtra("project_file", projectDir.path)
-                startActivity(analyzeIntent)
-                return true
-            }
+            R.id.action_git_remote -> startActivity(Intent(this@ProjectActivity, RemotesActivity::class.java).apply {
+                putExtra("project_file", projectDir.path)
+            })
+
+            R.id.action_analyze -> startActivity(Intent(this@ProjectActivity, AnalyzeActivity::class.java).apply {
+                putExtra("project_file", projectDir.path)
+            })
+
+            else -> return false
         }
 
-        return false
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -762,25 +543,25 @@ class ProjectActivity : AppCompatActivity() {
 
                 dialog.show()
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                    if (view.inputText.text.toString().isEmpty()) {
+                    if (view.inputText.string().isEmpty()) {
                         view.inputText.error = "Please enter a name"
                     } else {
                         dialog.dismiss()
-                        if (ProjectManager.importFile(this@ProjectActivity, projectName, fileUri!!, view.inputText.text.toString())) {
-                            Snackbar.make(drawerLayout, R.string.file_success, Snackbar.LENGTH_SHORT).show()
+                        if (ProjectManager.importFile(this, projectName, fileUri!!, view.inputText.string())) {
+                            drawerLayout.snack(R.string.file_success, Snackbar.LENGTH_SHORT)
                         } else {
-                            Snackbar.make(drawerLayout, R.string.file_fail, Snackbar.LENGTH_LONG).show()
+                            drawerLayout.snack(R.string.file_fail)
                         }
                     }
                 }
             }
+
             VIEW_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val intent = Intent(this@ProjectActivity, ProjectActivity::class.java)
-                intent.putExtras(getIntent().extras)
-                intent.addFlags(getIntent().flags)
-                intent.putStringArrayListExtra("files", openFiles)
-                startActivity(intent)
-                finish()
+                startAndFinish(Intent(this, this::class.java).apply {
+                    putExtras(intent.extras!!)
+                    addFlags(intent.flags)
+                    putStringArrayListExtra("files", projectViewModel.openFiles.value)
+                })
             }
         }
 
@@ -790,25 +571,25 @@ class ProjectActivity : AppCompatActivity() {
 
     private fun showAbout() {
         props = HtmlParser.getProperties(projectName)
-        val layout = View.inflate(this@ProjectActivity, R.layout.sheet_about, null)
+        with (BottomSheetDialog(this)) {
+            setContentView(View.inflate(this@ProjectActivity, R.layout.sheet_about, null).apply {
+                projName.text = props[0]
+                projAuthor.text = props[1]
+                projDesc.text = props[2]
+                projKey.text = props[3]
 
-        layout.projName.text = props[0]
-        layout.projAuthor.text = props[1]
-        layout.projDesc.text = props[2]
-        layout.projKey.text = props[3]
+                if (prefs["dark_theme", false]!!) {
+                    setBackgroundColor(-0xcccccd)
+                }
+            })
 
-        if (prefs["dark_theme", false]!!) {
-            layout.setBackgroundColor(-0xcccccd)
+            show()
         }
-
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(layout)
-        dialog.show()
     }
 
     companion object {
 
-        private val VIEW_CODE = 99
-        private val IMPORT_FILE = 101
+        private const val VIEW_CODE = 99
+        private const val IMPORT_FILE = 101
     }
 }

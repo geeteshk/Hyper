@@ -17,25 +17,22 @@
 package io.geeteshk.hyper.ui.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.ui.adapter.RemotesAdapter
 import io.geeteshk.hyper.git.GitWrapper
-import io.geeteshk.hyper.util.ui.Styles
+import io.geeteshk.hyper.ui.adapter.RemotesAdapter
 import kotlinx.android.synthetic.main.activity_remotes.*
 import kotlinx.android.synthetic.main.dialog_remote_add.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
 import java.io.File
 
-class RemotesActivity : AppCompatActivity() {
+class RemotesActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_remotes)
         setSupportActionBar(toolbar)

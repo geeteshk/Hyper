@@ -19,21 +19,21 @@ package io.geeteshk.hyper.ui.adapter
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.activity.ProjectActivity
+import io.geeteshk.hyper.util.inflate
 import io.geeteshk.hyper.util.net.HtmlParser
 import io.geeteshk.hyper.util.project.ProjectManager
-import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.item_project.view.*
 import java.util.*
 
@@ -84,12 +84,7 @@ class ProjectAdapter(private val context: Context, private val projects: ArrayLi
                         val project = projects[holder.adapterPosition]
                         ProjectManager.deleteProject(project)
                         remove(holder.adapterPosition)
-
-                        Snackbar.make(
-                                layout,
-                                "Deleted $project.",
-                                Snackbar.LENGTH_LONG
-                        ).show()
+                        layout.snack("Deleted $project.")
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()

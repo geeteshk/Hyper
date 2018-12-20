@@ -27,7 +27,7 @@ import io.geeteshk.hyper.util.inflate
 import kotlinx.android.synthetic.main.item_file_project.view.*
 import java.io.File
 
-class FileAdapter(context: Context, private val openFiles: List<String>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, openFiles) {
+class FileAdapter(context: Context, private var openFiles: ArrayList<String>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, openFiles) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val rootView: View = convertView ?: parent.inflate(R.layout.item_file_project)
@@ -48,4 +48,10 @@ class FileAdapter(context: Context, private val openFiles: List<String>) : Array
     private fun getPageTitle(position: Int): CharSequence = File(openFiles[position]).name
 
     override fun getCount(): Int = openFiles.size
+
+    fun update(newFiles: ArrayList<String>) {
+        openFiles.clear()
+        openFiles.addAll(newFiles)
+        notifyDataSetChanged()
+    }
 }

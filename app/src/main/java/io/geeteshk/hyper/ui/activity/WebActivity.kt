@@ -21,24 +21,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.*
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.LogsAdapter
-import io.geeteshk.hyper.util.*
+import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.net.HyperServer
 import io.geeteshk.hyper.util.net.NetworkUtils
 import io.geeteshk.hyper.util.project.ProjectManager
-import io.geeteshk.hyper.util.ui.Styles
 import kotlinx.android.synthetic.main.activity_web.*
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.sheet_logs.view.*
@@ -49,9 +47,9 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class WebActivity : AppCompatActivity() {
+class WebActivity : ThemedActivity() {
 
-    private lateinit var jsLogs: ArrayList<ConsoleMessage>
+    private var jsLogs = ArrayList<ConsoleMessage>()
 
     private lateinit var localUrl: String
     private lateinit var localWithoutIndex: String
@@ -60,9 +58,7 @@ class WebActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         val project = intent.getStringExtra("name")
-        jsLogs = ArrayList()
         NetworkUtils.server = HyperServer(project)
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
 
         try {

@@ -17,63 +17,62 @@
 package io.geeteshk.hyper.ui.activity
 
 import android.Manifest
-import android.animation.Animator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import com.google.android.material.snackbar.Snackbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.ui.FontsOverride
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
-import io.geeteshk.hyper.util.ui.Styles
+import io.geeteshk.hyper.util.action
+import io.geeteshk.hyper.util.onAnimationStop
+import io.geeteshk.hyper.util.snack
+import io.geeteshk.hyper.util.startAndFinish
+import io.geeteshk.hyper.util.ui.FontsOverride
 import kotlinx.android.synthetic.main.activity_splash.*
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        FontsOverride.setDefaultFont(applicationContext, "MONOSPACE", "fonts/Inconsolata-Regular.ttf")
+        FontsOverride.setDefaultFont(applicationContext,
+                "MONOSPACE", "fonts/Inconsolata-Regular.ttf")
 
-        setTheme(Styles.getThemeInt(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         supportActionBar?.hide()
 
-        hyperLogo.animate().alpha(1F).setDuration(1000).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animator: Animator) {
-
-            }
-
-            override fun onAnimationEnd(animator: Animator) {
-                setupPermissions()
-            }
-
-            override fun onAnimationCancel(animator: Animator) {
-                setupPermissions()
-            }
-
-            override fun onAnimationRepeat(animator: Animator) {
-
-            }
-        })
+        hyperLogo.animate().alpha(1F).setDuration(1000).onAnimationStop {
+            setupPermissions()
+        }
     }
 
     private fun startIntro() {
         val prefs = defaultPrefs(this)
-        var classTo: Class<*> = IntroActivity::class.java
-        if (prefs["intro_done", false]!!) {
-            classTo = MainActivity::class.java
+        val classTo = if (prefs["intro_done", false]!!) {
+            MainActivity::class.java
+        } else {
+            IntroActivity::class.java
         }
 
-        val intent = Intent(this@SplashActivity, classTo)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        finish()
+        startAndFinish(Intent(this, classTo).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        })
+    }
+
+    private fun showPermissionSnack() {
+        splashLayout.snack(R.string.permission_storage_rationale, Snackbar.LENGTH_INDEFINITE) {
+            action("GRANT") {
+                dismiss()
+                startActivityForResult(Intent().apply {
+                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    data = Uri.fromParts("package", packageName, null)
+                }, WRITE_PERMISSION_REQUEST)
+            }
+        }
     }
 
     private fun setupPermissions() {
@@ -81,17 +80,7 @@ class SplashActivity : AppCompatActivity() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                val snackbar = Snackbar.make(splashLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE)
-                snackbar.setAction("GRANT") {
-                    snackbar.dismiss()
-                    val intent = Intent()
-                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    val uri = Uri.fromParts("package", packageName, null)
-                    intent.data = uri
-                    startActivityForResult(intent, WRITE_PERMISSION_REQUEST)
-                }
-
-                snackbar.show()
+                showPermissionSnack()
             } else {
                 ActivityCompat.requestPermissions(this,
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
@@ -108,17 +97,7 @@ class SplashActivity : AppCompatActivity() {
                 startIntro()
             }
         } else {
-            val snackbar = Snackbar.make(splashLayout, getString(R.string.permission_storage_rationale), Snackbar.LENGTH_INDEFINITE)
-            snackbar.setAction("GRANT") {
-                snackbar.dismiss()
-                val intent = Intent()
-                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                val uri = Uri.fromParts("package", packageName, null)
-                intent.data = uri
-                startActivityForResult(intent, WRITE_PERMISSION_REQUEST)
-            }
-
-            snackbar.show()
+            showPermissionSnack()
         }
     }
 
@@ -130,6 +109,6 @@ class SplashActivity : AppCompatActivity() {
 
     companion object {
 
-        private val WRITE_PERMISSION_REQUEST = 0
+        private const val WRITE_PERMISSION_REQUEST = 0
     }
 }
