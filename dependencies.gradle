@@ -31,14 +31,12 @@ ext.versions = [
         playServicesLicensesPlugin : '16.0.0',
         mpchart                    : '3.0.3',
 
-        rxJava                     : '2.2.4',
         timber                     : '4.7.1',
 
         nanohttpd                  : '2.3.1',
         jgit                       : '3.7.1.201504261725-r', // no-update
         jsoup                      : '1.11.3',
-        commonsIO                  : '2.6',
-        uaUtils                    : '1.21',
+        uaUtils                    : '1.21'
 ]
 
 ext.gradlePlugins = [
@@ -51,8 +49,6 @@ ext.gradlePlugins = [
 
 ext.libraries = [
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinPlugin",
-
-        rxJava                  : "io.reactivex.rxjava2:rxjava:$versions.rxJava",
         timber                  : "com.jakewharton.timber:timber:$versions.timber",
 
         atv                     : "com.github.bmelnychuk:atv:$versions.atv",
@@ -62,7 +58,6 @@ ext.libraries = [
         nanohttpd               : "org.nanohttpd:nanohttpd-webserver:$versions.nanohttpd",
         jgit                    : "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit",
         jsoup                   : "org.jsoup:jsoup:$versions.jsoup",
-        commonsIO               : "commons-io:commons-io:$versions.commonsIO",
         uaUtils                 : "eu.bitwalker:UserAgentUtils:$versions.uaUtils",
 ]
 

@@ -66,7 +66,6 @@ import kotlinx.android.synthetic.main.item_git_status.view.*
 import kotlinx.android.synthetic.main.sheet_about.view.*
 import kotlinx.android.synthetic.main.sheet_logs.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -217,7 +216,7 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
                                         if (delete[0]) {
                                             if (item.file.isDirectory) {
                                                 try {
-                                                    FileUtils.deleteDirectory(item.file)
+                                                    item.file.deleteRecursively()
                                                 } catch (e: IOException) {
                                                     Timber.e(e)
                                                 }

@@ -67,11 +67,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.preference:preference:1.1.0-alpha02'
 
-    implementation libraries.rxJava
     implementation libraries.timber
 
     implementation libraries.nanohttpd
-    implementation libraries.commonsIO
     implementation libraries.jsoup
     implementation libraries.uaUtils
     implementation(libraries.jgit) {

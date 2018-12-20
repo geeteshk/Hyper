@@ -32,7 +32,6 @@ import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
 import io.geeteshk.hyper.util.startAndFinish
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -73,7 +72,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     .setMessage("Are you sure you want to delete ALL of your projects? This change cannot be undone!")
                     .setPositiveButton("RESET") { _, _ ->
                         try {
-                            FileUtils.cleanDirectory(File(Constants.HYPER_ROOT))
+                            File(Constants.HYPER_ROOT).walkTopDown().forEach { it -> it.deleteRecursively() }
                             factoryReset.isEnabled = false
                         } catch (e: IOException) {
                             Timber.e(e)

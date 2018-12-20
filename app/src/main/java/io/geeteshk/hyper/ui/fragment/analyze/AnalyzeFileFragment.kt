@@ -41,9 +41,6 @@ import io.geeteshk.hyper.util.compatColor
 import io.geeteshk.hyper.util.inflate
 import io.geeteshk.hyper.util.project.ProjectManager
 import kotlinx.android.synthetic.main.fragment_analyze_file.*
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.FilenameUtils
-import org.apache.commons.io.filefilter.TrueFileFilter
 import java.io.File
 import java.util.*
 
@@ -92,7 +89,11 @@ class AnalyzeFileFragment : Fragment() {
         pieChart.rotationAngle = 0f
         pieChart.isRotationEnabled = false
         pieChart.isHighlightPerTapEnabled = true
-        pieChart.centerText = ProjectManager.humanReadableByteCount(FileUtils.sizeOfDirectory(projectDir))
+
+        var byteSize = 0L
+        projectDir.walkTopDown().forEach { byteSize += it.length() }
+        pieChart.centerText = ProjectManager.humanReadableByteCount(byteSize)
+
         pieChart.setCenterTextSize(48f)
         pieChart.setCenterTextColor(if (darkTheme) darkColor else lightColor)
         pieChart.setDrawCenterText(true)
@@ -129,10 +130,9 @@ class AnalyzeFileFragment : Fragment() {
     private fun setData(isCount: Boolean) {
         if (isCount) {
             val entries = ArrayList<PieEntry>()
-            val files = FileUtils.listFiles(projectDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE) as List<*>
+            val files = projectDir.listFiles()
             val filesAndCounts = HashMap<String, Int>()
-            files
-                    .map { FilenameUtils.getExtension((it as File).name) }
+            files.map { it.extension }
                     .forEach {
                         if (filesAndCounts.containsKey(it)) {
                             filesAndCounts[it] = filesAndCounts[it]!!.plus(1)
@@ -159,10 +159,10 @@ class AnalyzeFileFragment : Fragment() {
             pieChart.data = pieData
         } else {
             val entries = ArrayList<PieEntry>()
-            val files = FileUtils.listFiles(projectDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE) as List<*>
+            val files = projectDir.listFiles()
             val filesAndCounts = HashMap<String, Long>()
             for (file in files) {
-                val extension = FilenameUtils.getExtension((file as File).name)
+                val extension = file.extension
                 if (filesAndCounts.containsKey(extension)) {
                     filesAndCounts[extension] = filesAndCounts[extension]!!.plus(file.length())
                 } else {

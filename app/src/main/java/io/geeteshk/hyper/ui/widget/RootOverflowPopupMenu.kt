@@ -14,11 +14,9 @@ import io.geeteshk.hyper.util.editor.Clipboard
 import io.geeteshk.hyper.util.snack
 import io.geeteshk.hyper.util.string
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
 
 class RootOverflowPopupMenu(private var context: Context, view: View,
                             private var drawerLayout: DrawerLayout, private var rootNode: TreeNode,
@@ -56,7 +54,7 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
                         val fileStr = newFileRootView.inputText.string()
                         val newFile = File(projectDir, fileStr)
                         try {
-                            FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
+                            newFile.writeText("\n")
                         } catch (e: IOException) {
                             Timber.e(e)
                             drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -91,7 +89,7 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
                         val folderStr = newFolderRootView.inputText.string()
                         val newFolder = File(projectDir, folderStr)
                         try {
-                            FileUtils.forceMkdir(newFolder)
+                            newFolder.mkdirs()
                         } catch (e: IOException) {
                             Timber.e(e)
                             drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -114,7 +112,7 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
                     Clipboard.Type.COPY -> {
                         if (currentFile!!.isDirectory) {
                             try {
-                                FileUtils.copyDirectoryToDirectory(currentFile, projectDir)
+                                currentFile.copyRecursively(projectDir)
                             } catch (e: Exception) {
                                 Timber.e(e)
                                 drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -122,7 +120,7 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
 
                         } else {
                             try {
-                                FileUtils.copyFileToDirectory(currentFile, projectDir)
+                                currentFile.copyRecursively(projectDir)
                             } catch (e: Exception) {
                                 Timber.e(e)
                                 drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -140,7 +138,8 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
                     Clipboard.Type.CUT -> {
                         if (currentFile!!.isDirectory) {
                             try {
-                                FileUtils.moveDirectoryToDirectory(currentFile, projectDir, false)
+                                currentFile.copyRecursively(projectDir)
+                                currentFile.deleteRecursively()
                             } catch (e: Exception) {
                                 Timber.e(e)
                                 drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -148,7 +147,8 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
 
                         } else {
                             try {
-                                FileUtils.moveFileToDirectory(currentFile, projectDir, false)
+                                currentFile.copyRecursively(projectDir)
+                                currentFile.deleteRecursively()
                             } catch (e: Exception) {
                                 Timber.e(e)
                                 drawerLayout.snack(e.toString(), Snackbar.LENGTH_SHORT)

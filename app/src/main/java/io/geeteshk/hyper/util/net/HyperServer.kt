@@ -19,13 +19,9 @@ package io.geeteshk.hyper.util.net
 import fi.iki.elonen.NanoHTTPD
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.project.ProjectManager
-import org.apache.commons.io.IOUtils
 import timber.log.Timber
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
-import java.nio.charset.Charset
 
 class HyperServer(private val project: String) : NanoHTTPD(8080) {
 
@@ -40,15 +36,8 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
             uri = File.separator + indexPath
         }
 
-        var inputStream: InputStream? = null
-        try {
-            inputStream = FileInputStream(Constants.HYPER_ROOT + File.separator + project + uri)
-        } catch (e: IOException) {
-            Timber.e(e)
-        }
-
         return try {
-            NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mimeType, IOUtils.toString(inputStream, Charset.defaultCharset()))
+            NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mimeType, File("${Constants.HYPER_ROOT}/$project$uri").readText())
         } catch (e: IOException) {
             Timber.e(e)
             NanoHTTPD.newFixedLengthResponse(e.toString())
@@ -65,7 +54,7 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
 
     companion object {
 
-        private val TYPES = arrayOf("css", "js", "ico", "png", "jpg", "jpe", "svg", "bm", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt")
+        private val TYPES = arrayOf("css", "js", "ico", "png", "jpg", "jpeg", "svg", "bmp", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt")
         private val MIMES = arrayOf("text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt")
     }
 }

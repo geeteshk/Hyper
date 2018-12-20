@@ -29,14 +29,13 @@ import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.widget.Editor
 import io.geeteshk.hyper.util.editor.ResourceHelper
 import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.util.string
 import kotlinx.android.synthetic.main.fragment_editor.*
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.nio.charset.Charset
 
 class EditorFragment : Fragment() {
 
@@ -107,7 +106,7 @@ class EditorFragment : Fragment() {
         fileContent.onTextChangedListener = object : Editor.OnTextChangedListener {
             override fun onTextChanged(text: String) {
                 try {
-                    FileUtils.writeStringToFile(finalFile, fileContent.text.toString(), Charset.defaultCharset(), false)
+                    finalFile.writeText(fileContent.string())
                 } catch (e: IOException) {
                     Timber.wtf(e)
                 }

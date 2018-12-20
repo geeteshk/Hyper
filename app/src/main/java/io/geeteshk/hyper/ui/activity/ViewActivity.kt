@@ -29,14 +29,12 @@ import io.geeteshk.hyper.ui.widget.holder.TagTreeHolder
 import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.activity_view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
-import org.apache.commons.io.FileUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
 
 class ViewActivity : ThemedActivity() {
 
@@ -77,7 +75,7 @@ class ViewActivity : ThemedActivity() {
         when (item.itemId) {
             R.id.action_save -> {
                 try {
-                    FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false)
+                    htmlFile.writeText(htmlDoc.outerHtml())
                 } catch (e: IOException) {
                     Timber.e(e)
                 }
@@ -120,7 +118,7 @@ class ViewActivity : ThemedActivity() {
                 .setMessage("This will append any changes to the html file. If you choose to discard unsaved changes will not be saved.")
                 .setPositiveButton("SAVE") { _, _ ->
                     try {
-                        FileUtils.writeStringToFile(htmlFile, htmlDoc.outerHtml(), Charset.defaultCharset(), false)
+                        htmlFile.writeText(htmlDoc.outerHtml())
                     } catch (e: IOException) {
                         Timber.e(e)
                     }

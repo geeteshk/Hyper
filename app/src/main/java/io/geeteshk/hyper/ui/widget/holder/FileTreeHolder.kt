@@ -28,11 +28,9 @@ import io.geeteshk.hyper.util.editor.ResourceHelper
 import io.geeteshk.hyper.util.snack
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.item_file_browser.view.*
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
 
 class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHolder.FileTreeItem>(context) {
 
@@ -86,7 +84,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 val fileStr = newFileRootView.inputText.text.toString()
                                 val newFile = File(file, fileStr)
                                 try {
-                                    FileUtils.writeStringToFile(newFile, "\n", Charset.defaultCharset())
+                                    newFile.writeText("\n")
                                 } catch (e: IOException) {
                                     Timber.e(e)
                                     value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -123,7 +121,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 val folderStr = newFolderRootView.inputText.text.toString()
                                 val newFolder = File(file, folderStr)
                                 try {
-                                    FileUtils.forceMkdir(newFolder)
+                                    newFolder.mkdirs()
                                 } catch (e: IOException) {
                                     Timber.e(e)
                                     value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -162,7 +160,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 val rename = File(file.path.replace(file.name, renameStr))
                                 if (!file.isDirectory) {
                                     try {
-                                        FileUtils.moveFile(file, rename)
+                                        file.copyTo(rename)
+                                        file.delete()
                                     } catch (e: IOException) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -170,7 +169,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                                 } else {
                                     try {
-                                        FileUtils.moveDirectory(file, rename)
+                                        file.copyRecursively(rename)
+                                        file.deleteRecursively()
                                     } catch (e: IOException) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -212,7 +212,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                             Clipboard.Type.COPY -> {
                                 if (currentFile!!.isDirectory) {
                                     try {
-                                        FileUtils.copyDirectoryToDirectory(currentFile, file)
+                                        currentFile.copyRecursively(file)
                                     } catch (e: Exception) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -220,7 +220,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                                 } else {
                                     try {
-                                        FileUtils.copyFileToDirectory(currentFile, file)
+                                        currentFile.copyTo(file)
                                     } catch (e: Exception) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -239,7 +239,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                             Clipboard.Type.CUT -> {
                                 if (currentFile!!.isDirectory) {
                                     try {
-                                        FileUtils.moveDirectoryToDirectory(currentFile, file, false)
+                                        currentFile.copyRecursively(file)
+                                        currentFile.deleteRecursively()
                                     } catch (e: Exception) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)
@@ -247,7 +248,8 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
 
                                 } else {
                                     try {
-                                        FileUtils.moveFileToDirectory(currentFile, file, false)
+                                        currentFile.copyTo(file)
+                                        currentFile.delete()
                                     } catch (e: Exception) {
                                         Timber.e(e)
                                         value.view.snack(e.toString(), Snackbar.LENGTH_SHORT)

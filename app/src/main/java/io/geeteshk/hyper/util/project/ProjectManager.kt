@@ -28,16 +28,11 @@ import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.copyInputStreamToFile
 import io.geeteshk.hyper.util.editor.ProjectFiles
 import io.geeteshk.hyper.util.snack
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOCase
-import org.apache.commons.io.filefilter.DirectoryFileFilter
-import org.apache.commons.io.filefilter.NameFileFilter
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.nio.charset.Charset
 import java.util.*
 
 object ProjectManager {
@@ -66,19 +61,19 @@ object ProjectManager {
     }
 
     private fun generateDefault(context: Context, name: String, author: String, description: String, keywords: String, stream: InputStream?): Boolean {
-        val projectFile = File(Constants.HYPER_ROOT + File.separator + name)
+        val projectFile = File("${Constants.HYPER_ROOT}/$name")
         val cssFile = File(projectFile, "css")
         val jsFile = File(projectFile, "js")
         try {
-            FileUtils.forceMkdir(projectFile)
-            FileUtils.forceMkdir(File(projectFile, "images"))
-            FileUtils.forceMkdir(File(projectFile, "fonts"))
-            FileUtils.forceMkdir(cssFile)
-            FileUtils.forceMkdir(jsFile)
+            projectFile.mkdirs()
+            File(projectFile, "images").mkdirs()
+            File(projectFile, "fonts").mkdirs()
+            cssFile.mkdirs()
+            jsFile.mkdirs()
 
-            FileUtils.writeStringToFile(File(projectFile, "index.html"), ProjectFiles.Default.getIndex(name, author, description, keywords), Charset.defaultCharset())
-            FileUtils.writeStringToFile(File(cssFile, "style.css"), ProjectFiles.Default.STYLE, Charset.defaultCharset())
-            FileUtils.writeStringToFile(File(jsFile, "main.js"), ProjectFiles.Default.MAIN, Charset.defaultCharset())
+            File(projectFile, "index.html").writeText(ProjectFiles.Default.getIndex(name, author, description, keywords))
+            File(cssFile, "style.css").writeText(ProjectFiles.Default.STYLE)
+            File(jsFile, "main.js").writeText(ProjectFiles.Default.MAIN)
 
             if (stream == null) {
                 copyIcon(context, name)
@@ -104,10 +99,12 @@ object ProjectManager {
 
         val outFile = File(Constants.HYPER_ROOT + File.separator + nameNew)
         try {
-            FileUtils.forceMkdir(outFile)
-            FileUtils.copyDirectory(file, outFile)
-            if (!File(outFile, "index.html").exists()) {
-                FileUtils.writeStringToFile(File(outFile, "index.html"), ProjectFiles.Import.getIndex(nameNew, author, description, keywords), Charset.defaultCharset())
+            outFile.mkdirs()
+            file.copyRecursively(outFile)
+
+            val index = File(outFile, "index.html")
+            if (!index.exists()) {
+                index.writeText(ProjectFiles.Import.getIndex(nameNew, author, description, keywords))
             }
         } catch (e: IOException) {
             Timber.e(e)
@@ -122,29 +119,20 @@ object ProjectManager {
     fun isValid(string: String): Boolean = getIndexFile(string) != null
 
     fun deleteProject(name: String) {
-        val projectDir = File(Constants.HYPER_ROOT + File.separator + name)
         try {
-            FileUtils.deleteDirectory(projectDir)
+            File("${Constants.HYPER_ROOT}/$name").deleteRecursively()
         } catch (e: IOException) {
             Timber.e(e)
         }
 
     }
 
-    private fun getFaviconFile(dir: File): File? {
-        val filter = NameFileFilter("favicon.ico", IOCase.INSENSITIVE)
-        val iterator = FileUtils.iterateFiles(dir, filter, DirectoryFileFilter.DIRECTORY)
-        return if (iterator.hasNext()) {
-            iterator.next()
-        } else null
+    private fun getFaviconFile(dir: File) =
+            dir.walkTopDown().filter { it.name == "favicon.ico" }.firstOrNull()
 
-    }
-
-    fun getIndexFile(project: String): File? {
-        val filter = NameFileFilter("index.html", IOCase.INSENSITIVE)
-        val iterator = FileUtils.iterateFiles(File(Constants.HYPER_ROOT + File.separator + project), filter, DirectoryFileFilter.DIRECTORY)
-        return iterator.next()
-    }
+    fun getIndexFile(project: String) =
+            File("${Constants.HYPER_ROOT}/$project").walkTopDown()
+                    .filter { it.name == "index" }.firstOrNull()
 
     fun getFavicon(context: Context, name: String): Bitmap {
         val faviconFile = getFaviconFile(File(Constants.HYPER_ROOT + File.separator + name))
@@ -221,8 +209,8 @@ object ProjectManager {
         try {
             val inputStream = context.contentResolver.openInputStream(fileUri)
             val output = File(Constants.HYPER_ROOT + File.separator + name + File.separator + fileName)
-            output.copyInputStreamToFile(inputStream)
-            inputStream?.close()
+            output.copyInputStreamToFile(inputStream!!)
+            inputStream.close()
         } catch (e: Exception) {
             Timber.e(e)
             return false
