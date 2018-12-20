@@ -291,15 +291,14 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
                         prefs["type"] = type
 
                         ProjectManager.importProject(
+                                this,
                                 file.parentFile.path,
                                 name,
                                 author,
                                 description,
                                 keywords,
-                                type,
                                 projectAdapter,
-                                coordinatorLayout
-                        )
+                                coordinatorLayout)
 
                         createDialog.dismiss()
                     }

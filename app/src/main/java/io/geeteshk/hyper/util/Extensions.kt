@@ -113,3 +113,6 @@ fun Activity.startAndFinish(intent: Intent) {
     startActivity(intent)
     finish()
 }
+
+fun String.replace(vararg pairs: Pair<String, String>) =
+        pairs.fold(this) { it, (old, new) -> it.replace(old, new, true) }

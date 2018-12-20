@@ -71,9 +71,9 @@ object ProjectManager {
             cssFile.mkdirs()
             jsFile.mkdirs()
 
-            File(projectFile, "index.html").writeText(ProjectFiles.Default.getIndex(name, author, description, keywords))
-            File(cssFile, "style.css").writeText(ProjectFiles.Default.STYLE)
-            File(jsFile, "main.js").writeText(ProjectFiles.Default.MAIN)
+            File(projectFile, "index.html").writeText(ProjectFiles.getHtml(context, "default", name, author, description, keywords))
+            File(cssFile, "style.css").writeText(ProjectFiles.getCss(context, "default"))
+            File(jsFile, "main.js").writeText(ProjectFiles.getJs(context, "default"))
 
             if (stream == null) {
                 copyIcon(context, name)
@@ -88,7 +88,7 @@ object ProjectManager {
         return true
     }
 
-    fun importProject(fileStr: String, name: String, author: String, description: String, keywords: String, type: Int, adapter: ProjectAdapter, view: View) {
+    fun importProject(context: Context, fileStr: String, name: String, author: String, description: String, keywords: String, adapter: ProjectAdapter, view: View) {
         val file = File(fileStr)
         var nameNew = name
         var counter = 1
@@ -104,7 +104,7 @@ object ProjectManager {
 
             val index = File(outFile, "index.html")
             if (!index.exists()) {
-                index.writeText(ProjectFiles.Import.getIndex(nameNew, author, description, keywords))
+                index.writeText(ProjectFiles.getHtml(context, "import", nameNew, author, description, keywords))
             }
         } catch (e: IOException) {
             Timber.e(e)

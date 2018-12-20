@@ -16,54 +16,29 @@
 
 package io.geeteshk.hyper.util.editor
 
-internal class ProjectFiles {
+import android.content.Context
 
-    internal object Default {
+import io.geeteshk.hyper.util.replace
 
-        private val INDEX = "<!doctype html>\n" +
-                "<html>\n" +
-                "  <head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>@name</title>\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-                "    <meta name=\"author\" content=\"@author\">\n" +
-                "    <meta name=\"description\" content=\"@description\">\n" +
-                "    <meta name=\"keywords\" content=\"@keywords\">\n" +
-                "    <link rel=\"shortcut icon\" href=\"images/favicon.ico\" type=\"image/vnd.microsoft.icon\">\n" +
-                "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" +
-                "  </head>\n" +
-                "  <body>\n" +
-                "    <h1>Hello World!</h1>\n" +
-                "    <script src=\"js/main.js\"></script>\n" +
-                "  </body>\n" +
-                "</html>"
+class ProjectFiles {
 
-        val STYLE = "/* Add all your styles here */"
+    companion object {
 
-        val MAIN = "// Add all your JS here"
+        private fun readTextFromAsset(context: Context, name: String) =
+                context.assets.open(name).bufferedReader().use { it.readText() }
 
-        fun getIndex(name: String, author: String, description: String, keywords: String): String =
-                INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords)
-    }
+        fun getHtml(context: Context, type: String, name: String, author: String, description: String, keywords: String) =
+                readTextFromAsset(context, "files/${type}_index.html")
+                        .replace(
+                                "@name" to  name,
+                                "@author" to author,
+                                "@description" to description,
+                                "@keywords" to keywords)
 
-    internal object Import {
+        fun getCss(context: Context, type: String) =
+                readTextFromAsset(context, "files/${type}_style.css")
 
-        private val INDEX = "<!doctype html>\n" +
-                "<html>\n" +
-                "  <head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>@name</title>\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-                "    <meta name=\"author\" content=\"@author\">\n" +
-                "    <meta name=\"description\" content=\"@description\">\n" +
-                "    <meta name=\"keywords\" content=\"@keywords\">\n" +
-                "  </head>\n" +
-                "  <body>\n" +
-                "    <h1>Hello World!</h1>\n" +
-                "  </body>\n" +
-                "</html>"
-
-        fun getIndex(name: String, author: String, description: String, keywords: String): String =
-                INDEX.replace("@name", name).replace("@author", author).replace("@description", description).replace("@keywords", keywords)
+        fun getJs(context: Context, type: String) =
+                readTextFromAsset(context, "files/${type}_main.js")
     }
 }
