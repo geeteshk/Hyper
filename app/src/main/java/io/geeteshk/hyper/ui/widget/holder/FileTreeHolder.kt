@@ -59,7 +59,7 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                     menu.menu.findItem(R.id.action_rename).isVisible = false
                 }
             } else {
-                menu.menu.findItem(R.id.action_paste).isEnabled = Clipboard.instance.currentFile != null
+                menu.menu.findItem(R.id.action_paste).isEnabled = Clipboard.currentFile != null
             }
 
             menu.setOnMenuItemClickListener { menuItem ->
@@ -189,26 +189,26 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                     }
 
                     R.id.action_copy -> {
-                        Clipboard.instance.currentFile = file
-                        Clipboard.instance.currentNode = node
-                        Clipboard.instance.type = Clipboard.Type.COPY
+                        Clipboard.currentFile = file
+                        Clipboard.currentNode = node
+                        Clipboard.type = Clipboard.Type.COPY
                         value.view.snack("${value.file.name} selected to be copied.", Snackbar.LENGTH_SHORT)
                         true
                     }
 
                     R.id.action_cut -> {
-                        Clipboard.instance.currentFile = file
-                        Clipboard.instance.currentNode = node
-                        Clipboard.instance.type = Clipboard.Type.CUT
+                        Clipboard.currentFile = file
+                        Clipboard.currentNode = node
+                        Clipboard.type = Clipboard.Type.CUT
                         value.view.snack("${value.file.name} selected to be moved.", Snackbar.LENGTH_SHORT)
                         true
                     }
 
                     R.id.action_paste -> {
-                        val currentFile = Clipboard.instance.currentFile
-                        val currentNode = Clipboard.instance.currentNode
+                        val currentFile = Clipboard.currentFile
+                        val currentNode = Clipboard.currentNode
                         val currentItem = currentNode!!.value as FileTreeItem
-                        when (Clipboard.instance.type) {
+                        when (Clipboard.type) {
                             Clipboard.Type.COPY -> {
                                 if (currentFile!!.isDirectory) {
                                     try {
@@ -258,13 +258,13 @@ class FileTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<FileTreeHol
                                 }
 
                                 value.view.snack("Successfully moved ${currentFile.name}.", Snackbar.LENGTH_SHORT)
-                                Clipboard.instance.currentFile = null
+                                Clipboard.currentFile = null
                                 val cutFile = File(file, currentFile.name)
                                 val cutNode = TreeNode(FileTreeItem(cutFile, currentItem.view))
                                 node.addChild(cutNode)
                                 view.fileBrowserArrow!!.visibility = View.VISIBLE
                                 tView.expandNode(node)
-                                tView.removeNode(Clipboard.instance.currentNode)
+                                tView.removeNode(Clipboard.currentNode)
                             }
                         }
 

@@ -24,11 +24,11 @@ class ProjectFiles {
 
     companion object {
 
-        private fun readTextFromAsset(context: Context, name: String) =
+        fun readTextFromAsset(context: Context, name: String) =
                 context.assets.open(name).bufferedReader().use { it.readText() }
 
         fun getHtml(context: Context, type: String, name: String, author: String, description: String, keywords: String) =
-                readTextFromAsset(context, "files/${type}_index.html")
+                readTextFromAsset(context, "files/$type/index.html")
                         .replace(
                                 "@name" to  name,
                                 "@author" to author,
@@ -36,9 +36,9 @@ class ProjectFiles {
                                 "@keywords" to keywords)
 
         fun getCss(context: Context, type: String) =
-                readTextFromAsset(context, "files/${type}_style.css")
+                readTextFromAsset(context, "files/$type/style.css")
 
         fun getJs(context: Context, type: String) =
-                readTextFromAsset(context, "files/${type}_main.js")
+                readTextFromAsset(context, "files/$type/main.js")
     }
 }

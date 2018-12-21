@@ -65,8 +65,8 @@ class EditorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val filename = file.name
+        fileContent.fileEnding = filename.substringAfterLast('.', "")
         if (filename.endsWith(".html") || filename == "imports.txt") {
-            fileContent.setType(Editor.CodeType.HTML)
             setSymbol(fileContent, symbolTab, "\t\t")
             setSymbol(fileContent, symbolOne, "<")
             setSymbol(fileContent, symbolTwo, "/")
@@ -77,7 +77,6 @@ class EditorFragment : Fragment() {
             setSymbol(fileContent, symbolSeven, "-")
             setSymbol(fileContent, symbolEight, "/")
         } else if (filename.endsWith(".css")) {
-            fileContent.setType(Editor.CodeType.CSS)
             setSymbol(fileContent, symbolTab, "\t\t\t\t")
             setSymbol(fileContent, symbolOne, "{")
             setSymbol(fileContent, symbolTwo, "}")
@@ -88,7 +87,6 @@ class EditorFragment : Fragment() {
             setSymbol(fileContent, symbolSeven, ";")
             setSymbol(fileContent, symbolEight, "-")
         } else if (filename.endsWith(".js")) {
-            fileContent.setType(Editor.CodeType.JS)
             setSymbol(fileContent, symbolTab, "\t\t\t\t")
             setSymbol(fileContent, symbolOne, "{")
             setSymbol(fileContent, symbolTwo, "}")
@@ -135,13 +133,13 @@ class EditorFragment : Fragment() {
     }
 
     private inner class SymbolClickListener
-    internal constructor(private val mEditor: Editor, private val mSymbol: String) : View.OnClickListener {
+    internal constructor(private val editor: Editor, private val symbol: String) : View.OnClickListener {
 
         override fun onClick(v: View) {
-            val start = Math.max(mEditor.selectionStart, 0)
-            val end = Math.max(mEditor.selectionEnd, 0)
-            mEditor.text.replace(Math.min(start, end), Math.max(start, end),
-                    mSymbol, 0, mSymbol.length)
+            val start = Math.max(editor.selectionStart, 0)
+            val end = Math.max(editor.selectionEnd, 0)
+            editor.text.replace(Math.min(start, end), Math.max(start, end),
+                    symbol, 0, symbol.length)
         }
     }
 

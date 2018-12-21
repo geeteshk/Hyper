@@ -61,35 +61,17 @@
 
     <color name="colorHeader">@color/colorAccent</color>
 
-    <color name="code_keyword">#f92672</color>
-    <color name="code_param">#64cbf4</color>
-    <color name="code_ending">#9a79dd</color>
-    <color name="code_func">#ed5c00</color>
-
-    <color name="code_built">#72b000</color>
-    <color name="code_comment">#a0a0a0</color>
-    <color name="code_string">#ed5c00</color>
     <color name="code_line_shadow">#10000000</color>
     <color name="code_number">#a0a0a0</color>
     <color name="code_bg">#f8f8f8</color>
     <color name="code_text">#222222</color>
 
-    <color name="code_built_dark">#a6e22e</color>
-    <color name="code_comment_dark">#75715e</color>
-    <color name="code_string_dark">#e6db74</color>
     <color name="code_line_shadow_dark">#10ffffff</color>
     <color name="code_number_dark">#d3d3d3</color>
     <color name="code_bg_dark">#222222</color>
     <color name="code_text_dark">#f8f8f8</color>
 
     <array name="code_light">
-        <item>@color/code_keyword</item>
-        <item>@color/code_param</item>
-        <item>@color/code_ending</item>
-        <item>@color/code_func</item>
-        <item>@color/code_built</item>
-        <item>@color/code_comment</item>
-        <item>@color/code_string</item>
         <item>@color/code_line_shadow</item>
         <item>@color/code_number</item>
         <item>@color/code_bg</item>
@@ -97,13 +79,6 @@
     </array>
 
     <array name="code_dark">
-        <item>@color/code_keyword</item>
-        <item>@color/code_param</item>
-        <item>@color/code_ending</item>
-        <item>@color/code_func</item>
-        <item>@color/code_built_dark</item>
-        <item>@color/code_comment_dark</item>
-        <item>@color/code_string_dark</item>
         <item>@color/code_line_shadow_dark</item>
         <item>@color/code_number_dark</item>
         <item>@color/code_bg_dark</item>

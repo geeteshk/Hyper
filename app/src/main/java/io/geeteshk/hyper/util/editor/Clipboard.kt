@@ -20,17 +20,13 @@ import com.unnamed.b.atv.model.TreeNode
 
 import java.io.File
 
-class Clipboard {
+object Clipboard {
+
     var currentFile: File? = null
     var type = Type.COPY
     var currentNode: TreeNode? = null
 
     enum class Type {
         COPY, CUT
-    }
-
-    companion object {
-
-        val instance = Clipboard()
     }
 }

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "data_type",
+    "pattern": "\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b",
+    "color": "#64cbf4",
+    "dark": "#64cbf4"
+  },
+  {
+    "id": "function",
+    "pattern": "n\\((.*?)\\)",
+    "color": "#ed5c00",
+    "dark": "#ed5c00"
+  },
+  {
+    "id": "symbol",
+    "pattern": "(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|do|!|finally|default|case|switch|native|let|super|throws|return)",
+    "color": "#f92672",
+    "dark": "#f92672"
+  },
+  {
+    "id": "null",
+    "pattern": "null",
+    "color": "#9a79dd",
+    "dark": "#9a79dd"
+  },
+  {
+    "id": "number",
+    "pattern": "\\b(\\d*[.]?\\d+)\\b",
+    "color": "#72b000",
+    "dark": "#a6e22e"
+  },
+  {
+    "id": "boolean",
+    "pattern": "\\b(true|false)\\b",
+    "color": "#72b000",
+    "dark": "#a6e22e"
+  },
+  {
+    "id": "string",
+    "pattern": "([\"'])(?:(?=(\\?))\\2.)*?\\1",
+    "color": "#ed5c00",
+    "dark": "#e6db74"
+  },
+  {
+    "id": "comment",
+    "pattern": "/\\*(?:.|[\\n\\r])*?\\*/|//.*",
+    "color": "#a0a0a0",
+    "dark": "#75715e"
+  }
+]

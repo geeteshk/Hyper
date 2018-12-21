@@ -28,7 +28,7 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
         menu.findItem(R.id.action_copy).isVisible = false
         menu.findItem(R.id.action_cut).isVisible = false
         menu.findItem(R.id.action_rename).isVisible = false
-        menu.findItem(R.id.action_paste).isEnabled = Clipboard.instance.currentFile != null
+        menu.findItem(R.id.action_paste).isEnabled = Clipboard.currentFile != null
 
         setOnMenuItemClickListener(this)
     }
@@ -105,10 +105,10 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
             }
 
             R.id.action_paste -> {
-                val currentFile = Clipboard.instance.currentFile
-                val currentNode = Clipboard.instance.currentNode
+                val currentFile = Clipboard.currentFile
+                val currentNode = Clipboard.currentNode
                 val currentItem = currentNode?.value as FileTreeHolder.FileTreeItem
-                when (Clipboard.instance.type) {
+                when (Clipboard.type) {
                     Clipboard.Type.COPY -> {
                         if (currentFile!!.isDirectory) {
                             try {
@@ -157,13 +157,13 @@ class RootOverflowPopupMenu(private var context: Context, view: View,
                         }
 
                         drawerLayout.snack("Successfully moved {currentFile.name}.", Snackbar.LENGTH_SHORT)
-                        Clipboard.instance.currentFile = null
+                        Clipboard.currentFile = null
                         val cutFile = File(projectDir, currentFile.name)
                         val cutNode = TreeNode(FileTreeHolder.FileTreeItem(cutFile, currentItem.view))
                         rootNode.addChild(cutNode)
                         treeView.setRoot(rootNode)
                         treeView.addNode(rootNode, cutNode)
-                        treeView.removeNode(Clipboard.instance.currentNode)
+                        treeView.removeNode(Clipboard.currentNode)
                     }
                 }
             }

@@ -26,7 +26,6 @@ import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.*
-import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.ActionMode
 import android.view.Menu
@@ -38,24 +37,23 @@ import android.widget.MultiAutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.color
+import io.geeteshk.hyper.util.editor.Highlighter
 import io.geeteshk.hyper.util.editor.ResourceHelper
-import timber.log.Timber
 import java.util.*
 
 class Editor constructor(context: Context, attrs: AttributeSet? = null)
     : AppCompatMultiAutoCompleteTextView(context, attrs) {
 
+    lateinit var fileEnding: String
+
     private val updateHandler = Handler()
 
     var onTextChangedListener: OnTextChangedListener? = null
 
-    var updateDelay = 2000
+    var updateDelay = 3000
 
     private var currentLine = 0
     private var lineDiff = 0
-
-    private var codeType: CodeType? = null
 
     private var fileModified = true
 
@@ -63,37 +61,17 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
 
     private var numberPaint: Paint? = null
     private var lineShadowPaint: Paint
-    private var isHighlighting: Boolean = false
     private var colors: IntArray
 
-    /* Patterns */
-    private val keywords = "(<|<\\\\)\\b(a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import)\\b>".toRegex()
-    private val builtIns = "\\b(charset|lang|href|onclick|onmouseover|onmouseout|code|codebase|width|height|align|vspace|hspace|name|archive|mayscript|alt|shape|coords|target|nohref|size|color|face|src|loop|bgcolor|background|text|vlink|alink|bgproperties|topmargin|leftmargin|marginheight|marginwidth|onload|onunload|onfocus|onblur|stylesrc|scroll|clear|type|value|valign|span|compact|pluginspage|pluginurl|hidden|autostart|playcount|volume|controller|mastersound|starttime|endtime|point-size|weight|action|method|enctype|onsubmit|onreset|scrolling|noresize|frameborder|bordercolor|cols|rows|framespacing|border|noshade|longdesc|ismap|usemap|lowsrc|naturalsizeflag|nosave|dynsrc|controls|start|suppress|maxlength|checked|language|onchange|onkeypress|onkeyup|onkeydown|autocomplete|prompt|for|rel|rev|media|direction|behaviour|scrolldelay|scrollamount|http-equiv|content|gutter|defer|event|multiple|readonly|cellpadding|cellspacing|rules|bordercolorlight|bordercolordark|summary|colspan|rowspan|nowrap|halign|disabled|accesskey|tabindex|id|class)\\b=".toRegex()
-    private val params = "\\b(azimuth|background-attachment|background-color|background-image|background-position|background-repeat|background|border-collapse|border-color|border-spacing|border-style|border-top|border-right|border-bottom|border-left|border-top-color|border-right-color|border-left-color|border-bottom-color|border-top-style|border-right-style|border-bottom-style|border-left-style|border-top-width|border-right-width|border-bottom-width|border-left-width|border-width|border|bottom|caption-side|clear|clip|color|content|counter-increment|counter-reset|cue-after|cue-before|cue|cursor|direction|display|elevation|empty-cells|float|font-family|font-size|font-style|font-variant|font-weight|font|height|left|letter-spacing|line-height|list-style-image|list-style-position|list-style-type|list-style|margin-left|margin-right|margin-top|margin-bottom|margin|max-height|max-width|min-height|min-width|orphans|outline-color|outline-style|outline-width|outline|overflow|padding-top|padding-right|padding-bottom|padding-left|padding|page-break-after|page-break-before|page-break-inside|pause-after|pause-before|pause|pitch-range|pitch|play-during|position|quotes|richness|right|speak-header|speak-numeral|speak-punctuation|speak|speech-rate|stress|table-layout|text-align|text-decoration|text-indent|text-transform|top|unicode-bidi|vertical-align|visibility|voice-family|volume|white-space|widows|width|word-spacing|z-index)\\b:".toRegex()
-    private val comments = "/\\**?\\*/|<!--.*".toRegex()
-    private val commentsOther = "/\\*(?:.|[\\n\\r])*?\\*/|//.*".toRegex()
-    private val endings = "(em|rem|px|pt|%)".toRegex()
-    private val dataTypes = "\\b(abstract|arguments|boolean|byte|char|class|const|double|enum|final|float|function|int|interface|long|native|package|private|protected|public|short|static|synchronized|transient|var|void|volatile)\\b ".toRegex()
-    private val symbols = "(&|=|throw|new|for|if|else|>|<|^|\\+|-|\\s\\|\\s|break|try|catch|do|!|finally|default|case|switch|native|let|super|throws|return)".toRegex()
-    private val functions = "n\\((.*?)\\)".toRegex()
-    private val numbers = "\\b(\\d*[.]?\\d+)\\b".toRegex()
-    private val booleans = "\\b(true|false)\\b".toRegex()
-    private val strings = "([\"'])(?:(?=(\\\\?))\\2.)*?\\1".toRegex()
-    private val nullMatch = "null".toRegex()
-    private val colonToSemi = ":.*;".toRegex()
-    private val classMatch = "\\..*\\{".toRegex()
-    private val idMatch = "#.*\\{".toRegex()
-
     private val updateRunnable = Runnable {
-        if (!isHighlighting) {
-            val e = text
-            if (onTextChangedListener != null)
-                onTextChangedListener!!.onTextChanged(e.toString())
-            highlightWithoutChange(e)
-        }
+        val e = text
+        if (onTextChangedListener != null)
+            onTextChangedListener!!.onTextChanged(e.toString())
+        highlightWithoutChange(e)
     }
 
-    private var hasLineNumbers: Boolean = false
+    private var hasLineNumbers = false
+    private var darkTheme = false
 
     private var prefs: SharedPreferences? = null
 
@@ -115,6 +93,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
                     i++
                 }
             }
+
             return lines
         }
 
@@ -130,8 +109,9 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
         }
 
     init {
+        darkTheme = prefs!!.getBoolean("dark_theme_editor", false)
         prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        colors = context.resources.getIntArray(if (prefs!!.getBoolean("dark_theme_editor", false)) {
+        colors = context.resources.getIntArray(if (darkTheme) {
             R.array.code_dark
         } else {
             R.array.code_light
@@ -142,7 +122,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
 
         lineShadowPaint = Paint().apply {
             style = Paint.Style.FILL
-            color = colors[7]
+            color = colors[0]
         }
 
         if (hasLineNumbers) {
@@ -151,7 +131,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
                 isAntiAlias = true
                 textSize = ResourceHelper.dpToPx(context, 14).toFloat()
                 textAlign = Paint.Align.RIGHT
-                color = colors[8]
+                color = colors[1]
             }
         } else {
             val padding = ResourceHelper.dpToPx(context, 8)
@@ -163,8 +143,8 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
         }
 
         setLineSpacing(0f, 1.2f)
-        setBackgroundColor(colors[9])
-        setTextColor(colors[10])
+        setBackgroundColor(colors[2])
+        setTextColor(colors[3])
         typeface = Typeface.createFromAsset(context.assets, "fonts/Inconsolata-Regular.ttf")
         setHorizontallyScrolling(true)
         customSelectionActionModeCallback = EditorCallback()
@@ -184,9 +164,8 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
     fun setTextHighlighted(text: CharSequence) {
         cancelUpdate()
 
+        highlight(SpannableStringBuilder(text))
         fileModified = false
-        setText(highlight(SpannableStringBuilder(text)))
-        fileModified = true
 
         if (onTextChangedListener != null) onTextChangedListener!!.onTextChanged(text.toString())
     }
@@ -196,76 +175,15 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
     }
 
     private fun highlightWithoutChange(e: Editable) {
-        fileModified = false
         highlight(e)
-        fileModified = true
+        fileModified = false
     }
 
     private fun highlight(e: Editable): Editable {
-        isHighlighting = true
-
-        try {
-            if (e.isEmpty()) return e
-            if (hasSpans(e)) clearSpans(e)
-
-            when (codeType) {
-                Editor.CodeType.HTML -> {
-                    with (e) {
-                        color(keywords, colors[0])
-                        color(builtIns, colors[4])
-                        color(strings, colors[6])
-                        color(comments, colors[5])
-                    }
-                }
-
-                Editor.CodeType.CSS -> {
-                    with (e) {
-                        color(keywords, colors[0])
-                        color(params, colors[1])
-                        color(colonToSemi, colors[2])
-                        color(classMatch, colors[4])
-                        color(idMatch, colors[4])
-                        color(endings, colors[2])
-                        color(strings, colors[6])
-                        color(commentsOther, colors[5])
-                    }
-                }
-
-                Editor.CodeType.JS -> {
-                    with (e) {
-                        color(dataTypes, colors[1])
-                        color(functions, colors[3])
-                        color(symbols, colors[0])
-                        color(nullMatch, colors[2])
-                        color(numbers, colors[4])
-                        color(booleans, colors[4])
-                        color(strings, colors[5])
-                        color(commentsOther, colors[6])
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-
-        isHighlighting = false
+        if (e.isEmpty()) return e
+        Highlighter.run(context, this, e, fileEnding, darkTheme)
         return e
     }
-
-    fun setType(type: CodeType) {
-        codeType = type
-    }
-
-    private fun clearSpans(e: Editable) {
-        run {
-            val spans = e.getSpans(0, e.length, ForegroundColorSpan::class.java)
-            var n = spans.size
-            while (n-- > 0) e.removeSpan(spans[n])
-        }
-    }
-
-    private fun hasSpans(e: Editable): Boolean =
-            e.getSpans(0, e.length, ForegroundColorSpan::class.java).isNotEmpty()
 
     override fun onDraw(canvas: Canvas) {
         if (hasLineNumbers) {
@@ -318,9 +236,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
 
         while (istart > -1) {
             val c = dest[istart]
-
             if (c == '\n') break
-
             if (c != ' ' && c != '\t') {
                 if (!dataBefore) {
                     if (arrayOf('{', '+', '-', '*', '/', '%', '^', '=').contains(c)) --pt
@@ -365,12 +281,8 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
     }
 
     private fun setupAutoComplete() {
-        val items = keywords.toPattern().pattern().replace("(", "")
-                .replace(")", "")
-                .substring(2, keywords.toPattern().pattern().length - 2)
-                .split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
-
+        val keywords = "a|address|app|applet|area|b|base|basefont|bgsound|big|blink|blockquote|body|br|button|caption|center|cite|code|col|colgroup|comment|dd|dfn|dir|div|dl|dt|em|embed|fieldset|font|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|hr|html|htmlplus|hype|i|iframe|img|input|ins|del|isindex|kbd|label|legend|li|link|listing|map|marquee|menu|meta|multicol|nobr|noembed|noframes|noscript|ol|option|p|param|plaintext|pre|s|samp|script|select|small|sound|spacer|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var|wbr|xmp|import"
+        val items = keywords.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, items)
         setAdapter(adapter)
 
@@ -458,10 +370,6 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
         })
     }
 
-    enum class CodeType {
-        HTML, CSS, JS
-    }
-
     interface OnTextChangedListener {
         fun onTextChanged(text: String)
     }
@@ -489,7 +397,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
                     val replaceTo = layout.findViewById<EditText>(R.id.replaceTo)
                     replaceFrom.setText(selected)
 
-                    val dialog = AlertDialog.Builder(context, if (prefs!!.getBoolean("dark_theme", false)) R.style.Hyper_Dark else R.style.Hyper)
+                    val dialog = AlertDialog.Builder(context, if (darkTheme) R.style.Hyper_Dark else R.style.Hyper)
                             .setView(layout)
                             .setPositiveButton(R.string.replace, null)
                             .create()
@@ -515,16 +423,19 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
                 2 -> {
                     var startComment = ""
                     var endComment = ""
-                    when (codeType) {
-                        Editor.CodeType.HTML -> {
+                    when (fileEnding) {
+
+                        "html" -> {
                             startComment = "<!-- "
                             endComment = " -->"
                         }
-                        Editor.CodeType.CSS -> {
+
+                        "css" -> {
                             startComment = "/* "
                             endComment = " */"
                         }
-                        Editor.CodeType.JS -> {
+
+                        "js" -> {
                             startComment = "/** "
                             endComment = " */"
                         }
