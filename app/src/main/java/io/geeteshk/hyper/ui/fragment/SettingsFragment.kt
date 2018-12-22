@@ -47,7 +47,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val darkTheme = preferenceManager.findPreference<SwitchPreference>("dark_theme")
         darkTheme.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, o ->
             prefs["dark_theme"] = o
-            activity!!.startAndFinish(Intent(activity, SettingsActivity::class.java))
+            activity?.let { it.startAndFinish(Intent(it, SettingsActivity::class.java)) }
             true
         }
 

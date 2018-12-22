@@ -303,8 +303,8 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_run -> startActivity(Intent(this, WebActivity::class.java).apply {
-                putExtra("url", "file:///" + indexFile.path)
+            R.id.action_run -> startActivity(Intent().apply {
+                putExtra("url", "file:///${indexFile.path}")
                 putExtra("name", projectName)
             })
 
@@ -510,13 +510,8 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
                         .show()
             }
 
-            R.id.action_git_remote -> startActivity(Intent(this@ProjectActivity, RemotesActivity::class.java).apply {
-                putExtra("project_file", projectDir.path)
-            })
-
-            R.id.action_analyze -> startActivity(Intent(this@ProjectActivity, AnalyzeActivity::class.java).apply {
-                putExtra("project_file", projectDir.path)
-            })
+            R.id.action_git_remote -> startActivity(Intent(this, RemotesActivity::class.java).apply { putExtra("project_file", projectDir.path) })
+            R.id.action_analyze -> startActivity(Intent(this, AnalyzeActivity::class.java).apply { putExtra("project_file", projectDir.path) })
 
             else -> return false
         }

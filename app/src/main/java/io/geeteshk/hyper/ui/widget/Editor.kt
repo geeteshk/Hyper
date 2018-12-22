@@ -32,13 +32,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.util.editor.Highlighter
 import io.geeteshk.hyper.util.editor.ResourceHelper
+import kotlinx.android.synthetic.main.dialog_refactor.view.*
 import java.util.*
 
 class Editor constructor(context: Context, attrs: AttributeSet? = null)
@@ -393,9 +393,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
                     val selected = selectedString
                     val layout = View.inflate(context, R.layout.dialog_refactor, null)
 
-                    val replaceFrom = layout.findViewById<EditText>(R.id.replaceFrom)
-                    val replaceTo = layout.findViewById<EditText>(R.id.replaceTo)
-                    replaceFrom.setText(selected)
+                    layout.replaceFrom.setText(selected)
 
                     val dialog = AlertDialog.Builder(context, if (darkTheme) R.style.Hyper_Dark else R.style.Hyper)
                             .setView(layout)
@@ -404,12 +402,12 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
 
                     dialog.show()
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        val replaceFromStr = replaceFrom.text.toString()
-                        val replaceToStr = replaceTo.text.toString()
+                        val replaceFromStr = layout.replaceFrom.text.toString()
+                        val replaceToStr = layout.replaceTo.text.toString()
 
                         when {
-                            replaceFromStr.isEmpty() -> replaceFrom.error = context.getString(R.string.empty_field_no_no)
-                            replaceToStr.isEmpty() -> replaceTo.error = context.getString(R.string.empty_field_no_no)
+                            replaceFromStr.isEmpty() -> layout.replaceFrom.error = context.getString(R.string.empty_field_no_no)
+                            replaceToStr.isEmpty() -> layout.replaceTo.error = context.getString(R.string.empty_field_no_no)
                             else -> {
                                 setText(text.toString().replace(replaceFromStr, replaceToStr))
                                 dialog.dismiss()

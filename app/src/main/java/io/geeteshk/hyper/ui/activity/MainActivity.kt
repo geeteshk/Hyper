@@ -228,14 +228,11 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> {
-                val settingsIntent = Intent(this, SettingsActivity::class.java)
-                startActivityForResult(settingsIntent, SETTINGS_CODE)
-                return true
-            }
+            R.id.action_settings -> startActivityForResult(Intent(this, ProjectActivity::class.java), SETTINGS_CODE)
+            else -> return super.onOptionsItemSelected(item)
         }
 
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -253,10 +250,10 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
                 }
             }
 
-            SETTINGS_CODE -> startAndFinish(Intent(this@MainActivity, MainActivity::class.java))
+            SETTINGS_CODE -> startAndFinish(Intent(this, MainActivity::class.java))
 
             IMPORT_PROJECT -> if (resultCode == Activity.RESULT_OK) {
-                val fileUri = data!!.data
+                val fileUri = data!!.data!!
                 val file = File(fileUri.path)
                 val rootView = View.inflate(this@MainActivity, R.layout.dialog_import, null)
                 rootView.impTypeSpinner.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, ProjectManager.TYPES)
@@ -334,8 +331,8 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
 
     companion object {
 
-        val SELECT_ICON = 100
-        val SETTINGS_CODE = 101
-        private val IMPORT_PROJECT = 102
+        private const val SELECT_ICON = 100
+        private const val SETTINGS_CODE = 101
+        private const val IMPORT_PROJECT = 102
     }
 }

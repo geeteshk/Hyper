@@ -17,14 +17,15 @@
 package io.geeteshk.hyper.ui.widget.holder
 
 import android.content.Context
+import android.view.View
+import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.View
-import android.widget.PopupMenu
 import com.unnamed.b.atv.model.TreeNode
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.ui.adapter.AttrsAdapter
+import io.geeteshk.hyper.util.flip
 import io.geeteshk.hyper.util.net.HtmlCompat
 import kotlinx.android.synthetic.main.dialog_element_add.view.*
 import kotlinx.android.synthetic.main.dialog_element_info.view.*
@@ -161,9 +162,7 @@ class TagTreeHolder(context: Context) : TreeNode.BaseNodeViewHolder<TagTreeHolde
         return view
     }
 
-    override fun toggle(active: Boolean) {
-        view.elementArrow.animate().rotation((if (active) 0 else -90).toFloat()).duration = 150
-    }
+    override fun toggle(active: Boolean) = view.elementArrow.flip(active)
 
     class TagTreeItem(internal var element: Element)
 }

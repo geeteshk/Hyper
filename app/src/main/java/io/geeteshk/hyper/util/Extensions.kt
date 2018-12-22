@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
@@ -21,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 
@@ -125,5 +127,30 @@ fun Editable.span(color: Int, range: IntRange) =
 fun Editable.color(regex: Regex, color: Int) {
     regex.findAll(this).forEach {
         span(color, it.range)
+    }
+}
+
+fun ImageView.flip(active: Boolean) {
+    animate().rotation((if (active) 0 else -90).toFloat()).duration = 150
+}
+
+fun File.copy(newFile: File, view: View): Boolean {
+    return try {
+        copyRecursively(newFile)
+    } catch (e: Exception) {
+        Timber.e(e)
+        view.snack(e.toString(), Snackbar.LENGTH_SHORT)
+        false
+    }
+}
+
+fun File.move(newFile: File, view: View): Boolean {
+    return try {
+        copyRecursively(newFile)
+        deleteRecursively()
+    } catch (e: Exception) {
+        Timber.e(e)
+        view.snack(e.toString(), Snackbar.LENGTH_SHORT)
+        false
     }
 }

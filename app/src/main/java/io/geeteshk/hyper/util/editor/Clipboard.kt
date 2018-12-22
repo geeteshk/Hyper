@@ -16,7 +16,10 @@
 
 package io.geeteshk.hyper.util.editor
 
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.unnamed.b.atv.model.TreeNode
+import io.geeteshk.hyper.util.snack
 
 import java.io.File
 
@@ -25,6 +28,20 @@ object Clipboard {
     var currentFile: File? = null
     var type = Type.COPY
     var currentNode: TreeNode? = null
+
+    fun update(file: File, node: TreeNode, t: Type, view: View) {
+        currentFile = file
+        currentNode = node
+        type = t
+
+        val msg = if (t == Type.COPY) {
+            "copied"
+        } else {
+            "moved"
+        }
+
+        view.snack("${file.name} selected to be $msg.", Snackbar.LENGTH_SHORT)
+    }
 
     enum class Type {
         COPY, CUT

@@ -27,7 +27,7 @@ class AnalyzeAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
     private val fragmentList = ArrayList<Fragment>()
     private val titleList = ArrayList<String>()
 
-    fun addFragment(fragment: Fragment, title: String, args: Bundle) {
+    fun addFragment(fragment: Fragment, title: String, args: Bundle?) {
         fragment.arguments = args
         fragmentList.add(fragment)
         titleList.add(title)

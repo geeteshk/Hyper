@@ -65,15 +65,17 @@ class ProjectAdapter(private val context: Context, private val projects: ArrayLi
         holder.favicon.setImageBitmap(ProjectManager.getFavicon(context, projects[holder.adapterPosition]))
 
         holder.layout.setOnClickListener {
-            val intent = Intent(context, ProjectActivity::class.java)
-            intent.putExtra("project", projects[holder.adapterPosition])
-            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            with (context) {
+                (this as AppCompatActivity).startActivityForResult(
+                        Intent(this, ProjectActivity::class.java).apply {
+                            putExtra("project", projects[holder.adapterPosition])
+                            addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
 
-            if (Build.VERSION.SDK_INT >= 21) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                            }
+                        }, 0)
             }
-
-            (context as AppCompatActivity).startActivityForResult(intent, 0)
         }
 
         holder.layout.setOnLongClickListener {
