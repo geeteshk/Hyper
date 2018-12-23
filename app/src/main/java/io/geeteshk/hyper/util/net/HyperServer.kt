@@ -23,7 +23,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-class HyperServer(private val project: String) : NanoHTTPD(8080) {
+class HyperServer(private val project: String) : NanoHTTPD(PORT_NUMBER) {
 
     override fun serve(session: NanoHTTPD.IHTTPSession): NanoHTTPD.Response {
         var uri = session.uri
@@ -31,9 +31,7 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
 
         if (uri == "/") {
             val indexFile = ProjectManager.getIndexFile(project)
-            var indexPath = indexFile!!.path
-            indexPath = indexPath.replace(File(Constants.HYPER_ROOT + File.separator + project).path, "")
-            uri = File.separator + indexPath
+            uri = "/${ProjectManager.getRelativePath(indexFile!!, project)}"
         }
 
         return try {
@@ -42,19 +40,33 @@ class HyperServer(private val project: String) : NanoHTTPD(8080) {
             Timber.e(e)
             NanoHTTPD.newFixedLengthResponse(e.toString())
         }
-
     }
 
-    private fun getMimeType(uri: String): String {
-        return TYPES.indices
-                .firstOrNull { uri.endsWith("" + TYPES[it]) }
-                ?.let { MIMES[it] }
-                ?: NanoHTTPD.MIME_HTML
-    }
+    private fun getMimeType(uri: String) = MIME_TYPES.keys.firstOrNull { uri.endsWith(it) }
+            ?.let { MIME_TYPES[it] } ?: NanoHTTPD.MIME_HTML
 
     companion object {
 
-        private val TYPES = arrayOf("css", "js", "ico", "png", "jpg", "jpeg", "svg", "bmp", "gif", "ttf", "otf", "woff", "woff2", "eot", "sfnt")
-        private val MIMES = arrayOf("text/css", "text/js", "image/x-icon", "image/png", "image/jpg", "image/jpeg", "image/svg+xml", "image/bmp", "image/gif", "application/x-font-ttf", "application/x-font-opentype", "application/font-woff", "application/font-woff2", "application/vnd.ms-fontobject", "application/font-sfnt")
+        private val MIME_TYPES = mapOf(
+                "css" to "text/css",
+                "js" to "text/javascript",
+                "ico" to "image/x-icon",
+                "png" to "image/png",
+                "jpg" to "image/jpeg",
+                "jpeg" to "image/jpeg",
+                "svg" to "image/svg+xml",
+                "bmp" to "image/bmp",
+                "gif" to "image/gif",
+                "ttf" to "application/x-font-ttf",
+                "otf" to "application/x-font-opentype",
+                "woff" to "application/font-woff",
+                "woff2" to "application/font-woff2",
+                "eot" to "application/vnd.ms-fontobject",
+                "sfnt" to "application/font-sfnt",
+                "json" to "application/json",
+                "txt" to "text/plain",
+                "xml" to "text/xml")
+
+        const val PORT_NUMBER = 8080
     }
 }

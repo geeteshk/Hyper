@@ -43,7 +43,6 @@ import kotlinx.android.synthetic.main.sheet_logs.view.*
 import kotlinx.android.synthetic.main.sheet_web_settings.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
 import timber.log.Timber
-import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -69,14 +68,13 @@ class WebActivity : ThemedActivity() {
 
         setContentView(R.layout.activity_web)
         val indexFile = ProjectManager.getIndexFile(project)
-        var indexPath = indexFile!!.path
-        indexPath = indexPath.replace(File(Constants.HYPER_ROOT + File.separator + project).path, "")
+        val indexPath = ProjectManager.getRelativePath(indexFile!!, project)
 
         toolbar.title = project
         setSupportActionBar(toolbar)
         webView.settings.javaScriptEnabled = true
         localUrl = if (NetworkUtils.server!!.wasStarted() && NetworkUtils.server!!.isAlive && NetworkUtils.ipAddress != null)
-            "http://" + NetworkUtils.ipAddress + ":8080" + indexPath
+            "http://${NetworkUtils.ipAddress}:${HyperServer.PORT_NUMBER}/$indexPath"
         else
             intent.getStringExtra("localUrl")
 

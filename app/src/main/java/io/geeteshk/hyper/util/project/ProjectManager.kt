@@ -134,6 +134,8 @@ object ProjectManager {
             File("${Constants.HYPER_ROOT}/$project").walkTopDown()
                     .filter { it.name == "index" }.firstOrNull()
 
+    fun getRelativePath(file: File, projectName: String) = file.path.replace(File("${Constants.HYPER_ROOT}/$projectName").path, "")
+
     fun getFavicon(context: Context, name: String): Bitmap {
         val faviconFile = getFaviconFile(File(Constants.HYPER_ROOT + File.separator + name))
         return if (faviconFile != null) {
