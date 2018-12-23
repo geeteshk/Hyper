@@ -36,16 +36,6 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
-    <style name="Hyper.Project" parent="Hyper">
-    </style>
-
-    <style name="Hyper.Project.Dark" parent="Hyper.Dark">
-    </style>
-
-    <style name="Hyper.FileTree">
-        <item name="android:paddingLeft">20dp</item>
-    </style>
-
     <style name="Hyper.Toolbar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>

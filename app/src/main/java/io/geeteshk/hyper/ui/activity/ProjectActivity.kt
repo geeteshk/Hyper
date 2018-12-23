@@ -36,21 +36,19 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import com.unnamed.b.atv.model.TreeNode
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.git.GitWrapper
 import io.geeteshk.hyper.ui.adapter.FileAdapter
+import io.geeteshk.hyper.ui.adapter.FileBrowserAdapter
 import io.geeteshk.hyper.ui.adapter.GitLogsAdapter
 import io.geeteshk.hyper.ui.fragment.EditorFragment
 import io.geeteshk.hyper.ui.fragment.ImageFragment
 import io.geeteshk.hyper.ui.helper.MenuPrepareHelper
 import io.geeteshk.hyper.ui.viewmodel.ProjectViewModel
-import io.geeteshk.hyper.ui.widget.ProjectTreeView
-import io.geeteshk.hyper.ui.widget.RootOverflowPopupMenu
-import io.geeteshk.hyper.ui.widget.holder.FileTreeHolder
 import io.geeteshk.hyper.util.*
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
@@ -70,7 +68,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNode.TreeNodeLongClickListener {
+class ProjectActivity : ThemedActivity() {
 
     private lateinit var projectViewModel: ProjectViewModel
 
@@ -82,10 +80,10 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
     private lateinit var projectName: String
     private lateinit var projectDir: File
     private lateinit var indexFile: File
-    private lateinit var rootNode: TreeNode
-    private lateinit var treeView: ProjectTreeView
     private lateinit var props: Array<String?>
     private lateinit var prefs: SharedPreferences
+
+    private lateinit var adapter: FileBrowserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         projectName = intent.getStringExtra("project")
@@ -133,23 +131,28 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
             }
         }
 
-        rootNode = TreeNode.root()
-        setupFileTree(rootNode, projectDir)
+        fileBrowser.layoutManager = LinearLayoutManager(this)
+        fileBrowser.itemAnimator = DefaultItemAnimator()
+        adapter = FileBrowserAdapter(this, projectName, drawerLayout, {
+            if (it.isFile) {
+                if (projectViewModel.openFiles.value!!.contains(it.path)) {
+                    setFragment(it.path, false)
+                    drawerLayout.closeDrawers()
+                } else {
+                    if (!ProjectManager.isBinaryFile(it) || ProjectManager.isImageFile(it)) {
+                        setFragment(it.path, true)
+                        drawerLayout.closeDrawers()
+                    } else {
+                        drawerLayout.snack(R.string.not_text_file)
+                    }
+                }
+            }
+        }) { deleteFile(it) }
+        fileBrowser.adapter = adapter
 
-        treeView = ProjectTreeView(this, rootNode).apply {
-            setDefaultNodeClickListener(this@ProjectActivity)
-            setDefaultNodeLongClickListener(this@ProjectActivity)
-        }
-
-        fileBrowser.addView(treeView.view)
         headerIcon.setImageBitmap(ProjectManager.getFavicon(this@ProjectActivity, projectName))
         headerTitle.text = props[0]
         headerDesc.text = props[1]
-
-        rootOverflow.setOnClickListener {
-            RootOverflowPopupMenu(
-                    this, it, drawerLayout, rootNode, treeView, projectDir).show()
-        }
 
         if (Build.VERSION.SDK_INT >= 21) {
             window.statusBarColor = 0x00000000
@@ -158,89 +161,32 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
         }
     }
 
-    private fun setupFileTree(root: TreeNode?, f: File?) {
-        val files = f!!.listFiles { _, name -> !name.startsWith(".") }
+    private fun deleteFile(file: File) {
+        AlertDialog.Builder(this)
+                .setTitle("${getString(R.string.delete)} ${file.name}?")
+                .setPositiveButton(R.string.delete) { _, _ ->
+                    var deleteFlag = true
+                    projectViewModel.removeOpenFile(file.path)
 
-        for (file in files) {
-            if (file.isDirectory) {
-                val folderNode = TreeNode(FileTreeHolder.FileTreeItem(file, drawerLayout))
-                setupFileTree(folderNode, file)
-                root!!.addChild(folderNode)
-            } else {
-                val fileNode = TreeNode(FileTreeHolder.FileTreeItem(file, drawerLayout))
-                root!!.addChild(fileNode)
-            }
-        }
-    }
+                    drawerLayout.snack("Deleted $file.") {
+                        action("UNDO") {
+                            deleteFlag = false
+                            dismiss()
+                        }
 
-    override fun onClick(node: TreeNode, value: Any) {
-        val item = value as FileTreeHolder.FileTreeItem
-        if (node.isLeaf && item.file.isFile) {
-            if (projectViewModel.openFiles.value!!.contains(item.file.path)) {
-                setFragment(item.file.path, false)
-                drawerLayout.closeDrawers()
-            } else {
-                if (!ProjectManager.isBinaryFile(item.file) || ProjectManager.isImageFile(item.file)) {
-                    setFragment(item.file.path, true)
-                    drawerLayout.closeDrawers()
-                } else {
-                    drawerLayout.snack(R.string.not_text_file)
-                }
-            }
-        }
-    }
-
-    override fun onLongClick(node: TreeNode, value: Any): Boolean {
-        val item = value as FileTreeHolder.FileTreeItem
-        return when (item.file.name) {
-            "index.html" -> false
-            else -> {
-                AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.delete) + " " + item.file.name + "?")
-                        .setPositiveButton(R.string.delete) { _, _ ->
-                            val delete = booleanArrayOf(true, false)
-                            val file = item.file.name
-                            val parent = node.parent
-                            treeView.removeNode(node)
-
-                            projectViewModel.removeOpenFile(item.file.path)
-
-                            drawerLayout.snack("Deleted $file.") {
-                                action("UNDO") {
-                                    delete[0] = false
-                                    dismiss()
-                                }
-
-                                callback {
-                                    if (!delete[1]) {
-                                        if (delete[0]) {
-                                            if (item.file.isDirectory) {
-                                                try {
-                                                    item.file.deleteRecursively()
-                                                } catch (e: IOException) {
-                                                    Timber.e(e)
-                                                }
-
-                                            } else {
-                                                if (!item.file.delete()) {
-                                                    Timber.d("Failed to delete %s", item.file.path)
-                                                }
-                                            }
-                                        } else {
-                                            treeView.addNode(parent, node)
-                                        }
-
-                                        delete[1] = true
-                                    }
+                        callback {
+                            if (deleteFlag) {
+                                try {
+                                    file.deleteRecursively()
+                                } catch (e: IOException) {
+                                    Timber.e(e)
                                 }
                             }
                         }
-                        .setNegativeButton(R.string.cancel, null)
-                        .show()
-
-                true
-            }
-        }
+                    }
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
     }
 
     private fun setFragment(file: String, add: Boolean) {
@@ -307,10 +253,6 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
                 putExtra("url", "file:///${indexFile.path}")
                 putExtra("name", projectName)
             })
-
-            R.id.action_view -> startActivityForResult(Intent(this, ViewActivity::class.java).apply {
-                putExtra("html_path", projectViewModel.openFiles.value!![fileSpinner.selectedItemPosition])
-            }, VIEW_CODE)
 
             R.id.action_import_file -> with (Intent(Intent.ACTION_GET_CONTENT)) {
                 type = "file/*"
@@ -549,18 +491,9 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
                     }
                 }
             }
-
-            VIEW_CODE -> if (resultCode == Activity.RESULT_OK) {
-                startAndFinish(Intent(this, this::class.java).apply {
-                    putExtras(intent.extras!!)
-                    addFlags(intent.flags)
-                    putStringArrayListExtra("files", projectViewModel.openFiles.value)
-                })
-            }
         }
 
-        setupFileTree(rootNode, projectDir)
-        treeView.setRoot(rootNode)
+        adapter.updateFiles()
     }
 
     private fun showAbout() {
@@ -583,7 +516,6 @@ class ProjectActivity : ThemedActivity(), TreeNode.TreeNodeClickListener, TreeNo
 
     companion object {
 
-        private const val VIEW_CODE = 99
         private const val IMPORT_FILE = 101
     }
 }

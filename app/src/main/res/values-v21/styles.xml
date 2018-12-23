@@ -15,13 +15,5 @@
    -->
 
 <resources>
-    <style name="Hyper.Project" parent="Hyper">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
 
-    <style name="Hyper.Project.Dark" parent="Hyper.Dark">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
 </resources>

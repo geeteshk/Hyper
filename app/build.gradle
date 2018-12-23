@@ -78,7 +78,6 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    implementation libraries.atv
     implementation libraries.playServicesLicenses
     implementation libraries.mpchart
 }

@@ -19,7 +19,6 @@
     <string name="action_drawer_open">Open</string>
     <string name="action_drawer_close">Close</string>
     <string name="create">Create</string>
-    <string name="hyper"><![CDATA[</hyper>]]></string>
 
     <string name="action_settings">Settings</string>
     <string name="about_name">Name</string>
@@ -66,8 +65,6 @@
     <string name="load_with_overview_mode_desc">Set whether pages are loaded in overview mode.</string>
     <string name="loads_images_automatically">Automatic Image Loading</string>
     <string name="loads_images_automatically_desc">Set whether images are loaded automatically.</string>
-    <string name="save_form_dats">Save Form Data</string>
-    <string name="save_form_data_desc">Set whether form data is saved.</string>
     <string name="use_wide_view_port">Wide View Port</string>
     <string name="use_wide_view_port_desc">Set whether the \"viewport\" HTML meta tag is supported or will a wide viewport be used.</string>
     <string name="web_settings">Settings</string>
@@ -127,7 +124,6 @@
     <string name="slide_4_title">Get Started</string>
     <string name="slide_4_desc">Hope those features have got you excited. Many more await you. Get started by creating a project!</string>
     <string name="branch_name_empty">Please enter a branch name.</string>
-    <string name="save_changes_done">Saved changes.</string>
     <string name="commit_hash_copy">Commit hash copied.</string>
     <string name="added_to_stage">Added all files to stage.</string>
     <string name="repo_init">"Initialized repository at: %s"</string>
@@ -156,29 +152,6 @@
     <string name="dark_theme_editor">Dark Coding Theme</string>
     <string name="dark_theme_editor_desc">Less stress on your eyes… while coding!</string>
 
-    <string name="custom_notices_format_style" translatable="false">
-        p.license {
-        %1$s
-        }
-        body {
-        font-family: sans-serif;
-        overflow-wrap: break-word;
-        %2$s
-        }
-        pre {
-        %3$s
-        padding: 1em;
-        white-space: pre-wrap;
-        }
-        li {
-        %4$s
-        }
-        li a {
-        %5$s
-        }
-    </string>
-
-    <string name="rgba_background_format">background-color:rgba(%1$d,%2$d,%3$d,%4$1f);</string>
     <string name="key">Key</string>
     <string name="value">Value</string>
     <string name="git_user_format">%1$s &lt;%2$s&gt;</string>

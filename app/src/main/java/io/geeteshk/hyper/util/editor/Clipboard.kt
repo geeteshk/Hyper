@@ -18,20 +18,16 @@ package io.geeteshk.hyper.util.editor
 
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
-import com.unnamed.b.atv.model.TreeNode
 import io.geeteshk.hyper.util.snack
-
 import java.io.File
 
 object Clipboard {
 
     var currentFile: File? = null
     var type = Type.COPY
-    var currentNode: TreeNode? = null
 
-    fun update(file: File, node: TreeNode, t: Type, view: View) {
+    fun update(file: File, t: Type, view: View) {
         currentFile = file
-        currentNode = node
         type = t
 
         val msg = if (t == Type.COPY) {

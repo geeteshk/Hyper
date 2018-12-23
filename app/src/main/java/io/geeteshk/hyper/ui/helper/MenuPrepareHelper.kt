@@ -9,7 +9,6 @@ class MenuPrepareHelper {
 
         fun prepare(menu: Menu, vararg params: Boolean): Boolean {
             with (menu) {
-                findItem(R.id.action_view).isEnabled = params[0] // is the file html?
                 findItem(R.id.action_git_add).isEnabled = params[1] // is the file a git repo?
                 findItem(R.id.action_git_log).isEnabled = params[1]
                 findItem(R.id.action_git_diff).isEnabled = params[1]

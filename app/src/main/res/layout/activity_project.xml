@@ -56,7 +56,6 @@
         app:insetForeground="#4000">
 
         <LinearLayout
-            android:id="@+id/fileBrowser"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -108,17 +107,13 @@
                     android:textColor="#fff"
                     android:textSize="14sp" />
 
-                <ImageButton
-                    android:id="@+id/rootOverflow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_overflow_root" />
-
             </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fileBrowser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 

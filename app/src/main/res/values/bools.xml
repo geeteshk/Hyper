@@ -14,6 +14,4 @@
    limitations under the License.
    -->
 
-<resources>
-    <bool name="isTablet">false</bool>
-</resources>
+<resources></resources>

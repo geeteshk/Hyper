@@ -62,9 +62,6 @@
             android:name="io.geeteshk.hyper.ui.activity.RemotesActivity"
             android:label="Remotes" />
         <activity
-            android:name="io.geeteshk.hyper.ui.activity.ViewActivity"
-            android:label="View Mode" />
-        <activity
             android:name="io.geeteshk.hyper.ui.activity.SettingsActivity"
             android:label="@string/action_settings" />
         <activity android:name="io.geeteshk.hyper.ui.activity.AnalyzeActivity" />

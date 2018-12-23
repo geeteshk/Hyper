@@ -27,7 +27,6 @@ ext.versions = [
         versionsPlugin             : '0.20.0',
         ossLicensesPlugin          : '0.9.3',
 
-        atv                        : '1.2.9',
         playServicesLicensesPlugin : '16.0.0',
         mpchart                    : '3.0.3',
 
@@ -51,7 +50,6 @@ ext.libraries = [
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinPlugin",
         timber                  : "com.jakewharton.timber:timber:$versions.timber",
 
-        atv                     : "com.github.bmelnychuk:atv:$versions.atv",
         playServicesLicenses    : "com.google.android.gms:play-services-oss-licenses:$versions.playServicesLicensesPlugin",
         mpchart                 : "com.github.PhilJay:MPAndroidChart:$versions.mpchart",
 

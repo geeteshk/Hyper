@@ -21,7 +21,6 @@
     <color name="colorAccentNight">#FF7163</color>
 
     <!-- WHY IS THIS A THING??? -->
-    <color name="whiteButNotAndroidWhite">#FFFFFF</color>
 
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>
@@ -58,8 +57,6 @@
         <item>@color/dot_dark_screen3</item>
         <item>@color/dot_dark_screen4</item>
     </array>
-
-    <color name="colorHeader">@color/colorAccent</color>
 
     <color name="code_line_shadow">#10000000</color>
     <color name="code_number">#a0a0a0</color>
