@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.git.GitWrapper
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
 import io.geeteshk.hyper.util.Constants
@@ -41,7 +42,6 @@ import io.geeteshk.hyper.util.Prefs.set
 import io.geeteshk.hyper.util.editor.ResourceHelper
 import io.geeteshk.hyper.util.project.DataValidator
 import io.geeteshk.hyper.util.project.ProjectManager
-import io.geeteshk.hyper.util.startAndFinish
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_clone.view.*
 import kotlinx.android.synthetic.main.dialog_create.view.*

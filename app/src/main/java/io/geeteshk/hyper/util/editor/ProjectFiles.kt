@@ -18,7 +18,7 @@ package io.geeteshk.hyper.util.editor
 
 import android.content.Context
 
-import io.geeteshk.hyper.util.replace
+import io.geeteshk.hyper.extensions.replace
 
 class ProjectFiles {
 

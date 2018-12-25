@@ -17,14 +17,14 @@
 package io.geeteshk.hyper.ui.adapter
 
 import android.graphics.Color
-import androidx.annotation.ColorInt
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.extensions.inflate
 import kotlinx.android.synthetic.main.item_log.view.*
 
 class LogsAdapter(private val localWithoutIndex: String, private val jsLogs: List<ConsoleMessage>, private val darkTheme: Boolean) : RecyclerView.Adapter<LogsAdapter.ViewHolder>() {

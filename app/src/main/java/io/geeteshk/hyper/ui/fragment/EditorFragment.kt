@@ -26,10 +26,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.inflate
+import io.geeteshk.hyper.extensions.string
 import io.geeteshk.hyper.ui.widget.Editor
 import io.geeteshk.hyper.util.editor.ResourceHelper
-import io.geeteshk.hyper.util.inflate
-import io.geeteshk.hyper.util.string
 import kotlinx.android.synthetic.main.fragment_editor.*
 import timber.log.Timber
 import java.io.BufferedReader

@@ -19,7 +19,7 @@ package io.geeteshk.hyper.git
 import android.app.Activity
 import android.content.Context
 import android.view.View
-import io.geeteshk.hyper.util.snack
+import io.geeteshk.hyper.extensions.snack
 import org.eclipse.jgit.api.errors.GitAPIException
 import timber.log.Timber
 import java.io.File

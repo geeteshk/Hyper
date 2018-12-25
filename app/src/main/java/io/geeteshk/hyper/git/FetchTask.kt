@@ -18,7 +18,7 @@ package io.geeteshk.hyper.git
 
 import android.content.Context
 import android.view.View
-import io.geeteshk.hyper.util.snack
+import io.geeteshk.hyper.extensions.snack
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import timber.log.Timber

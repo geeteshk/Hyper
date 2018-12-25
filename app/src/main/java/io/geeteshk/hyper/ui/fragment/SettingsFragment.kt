@@ -27,11 +27,11 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.ui.activity.SettingsActivity
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
-import io.geeteshk.hyper.util.startAndFinish
 import timber.log.Timber
 import java.io.File
 import java.io.IOException

@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.*
 import io.geeteshk.hyper.git.GitWrapper
 import io.geeteshk.hyper.ui.adapter.FileAdapter
 import io.geeteshk.hyper.ui.adapter.FileBrowserAdapter
@@ -49,7 +50,7 @@ import io.geeteshk.hyper.ui.fragment.EditorFragment
 import io.geeteshk.hyper.ui.fragment.ImageFragment
 import io.geeteshk.hyper.ui.helper.MenuPrepareHelper
 import io.geeteshk.hyper.ui.viewmodel.ProjectViewModel
-import io.geeteshk.hyper.util.*
+import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.net.HtmlParser

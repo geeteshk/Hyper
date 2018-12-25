@@ -26,11 +26,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.ui.adapter.IntroAdapter
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
 import io.geeteshk.hyper.util.net.HtmlCompat
-import io.geeteshk.hyper.util.startAndFinish
 import kotlinx.android.synthetic.main.activity_intro.*
 
 class IntroActivity : AppCompatActivity() {

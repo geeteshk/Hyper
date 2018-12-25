@@ -2,14 +2,14 @@ package io.geeteshk.hyper.ui.adapter
 
 import android.content.Context
 import android.graphics.Typeface
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.inflate
+import io.geeteshk.hyper.extensions.inflate
 import kotlinx.android.synthetic.main.dialog_input_single.view.*
 import kotlinx.android.synthetic.main.item_attr.view.*
 import org.eclipse.jgit.util.StringUtils

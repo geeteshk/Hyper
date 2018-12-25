@@ -17,15 +17,15 @@
 package io.geeteshk.hyper.ui.adapter
 
 import android.content.Context
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.inflate
 import io.geeteshk.hyper.git.GitWrapper
-import io.geeteshk.hyper.util.inflate
 import kotlinx.android.synthetic.main.dialog_pull.view.*
 import kotlinx.android.synthetic.main.item_remote.view.*
 import java.io.File

@@ -35,10 +35,10 @@ import com.github.mikephil.charting.formatter.IValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.ViewPortHandler
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.compatColor
+import io.geeteshk.hyper.extensions.inflate
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
-import io.geeteshk.hyper.util.compatColor
-import io.geeteshk.hyper.util.inflate
 import io.geeteshk.hyper.util.project.ProjectManager
 import kotlinx.android.synthetic.main.fragment_analyze_file.*
 import java.io.File

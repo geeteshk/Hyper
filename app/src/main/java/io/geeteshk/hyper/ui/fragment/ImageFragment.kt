@@ -27,9 +27,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.action
+import io.geeteshk.hyper.extensions.action
+import io.geeteshk.hyper.extensions.snack
 import io.geeteshk.hyper.util.editor.ResourceHelper
-import io.geeteshk.hyper.util.snack
 import java.io.File
 
 class ImageFragment : Fragment() {

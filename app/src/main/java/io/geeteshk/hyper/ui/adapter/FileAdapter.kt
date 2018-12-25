@@ -22,8 +22,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.inflate
 import io.geeteshk.hyper.util.editor.ResourceHelper
-import io.geeteshk.hyper.util.inflate
 import kotlinx.android.synthetic.main.item_file_project.view.*
 import java.io.File
 

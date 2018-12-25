@@ -3,8 +3,8 @@ package io.geeteshk.hyper.util.editor
 import android.content.Context
 import android.text.Editable
 import android.text.style.ForegroundColorSpan
+import io.geeteshk.hyper.extensions.color
 import io.geeteshk.hyper.ui.widget.Editor
-import io.geeteshk.hyper.util.color
 import io.geeteshk.hyper.util.json.ColorReader
 import timber.log.Timber
 

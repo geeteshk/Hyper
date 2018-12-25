@@ -26,12 +26,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.action
+import io.geeteshk.hyper.extensions.onAnimationStop
+import io.geeteshk.hyper.extensions.snack
+import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
-import io.geeteshk.hyper.util.action
-import io.geeteshk.hyper.util.onAnimationStop
-import io.geeteshk.hyper.util.snack
-import io.geeteshk.hyper.util.startAndFinish
 import io.geeteshk.hyper.util.ui.FontsOverride
 import kotlinx.android.synthetic.main.activity_splash.*
 

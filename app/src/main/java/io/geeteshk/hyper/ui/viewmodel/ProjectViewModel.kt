@@ -2,7 +2,7 @@ package io.geeteshk.hyper.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.geeteshk.hyper.util.notify
+import io.geeteshk.hyper.extensions.notify
 
 class ProjectViewModel : ViewModel() {
 

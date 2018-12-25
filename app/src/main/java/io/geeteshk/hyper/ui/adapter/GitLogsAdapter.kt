@@ -28,8 +28,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.inflate
-import io.geeteshk.hyper.util.snack
+import io.geeteshk.hyper.extensions.inflate
+import io.geeteshk.hyper.extensions.snack
 import kotlinx.android.synthetic.main.item_git_log.view.*
 import org.eclipse.jgit.revwalk.RevCommit
 

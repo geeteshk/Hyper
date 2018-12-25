@@ -23,11 +23,11 @@ import android.net.Uri
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.copyInputStreamToFile
+import io.geeteshk.hyper.extensions.snack
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
 import io.geeteshk.hyper.util.Constants
-import io.geeteshk.hyper.util.copyInputStreamToFile
 import io.geeteshk.hyper.util.editor.ProjectFiles
-import io.geeteshk.hyper.util.snack
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream

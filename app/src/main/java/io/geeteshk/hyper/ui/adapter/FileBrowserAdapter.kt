@@ -8,7 +8,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.util.*
+import io.geeteshk.hyper.extensions.*
+import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.editor.Clipboard
 import io.geeteshk.hyper.util.editor.ResourceHelper
 import kotlinx.android.synthetic.main.dialog_input_single.view.*

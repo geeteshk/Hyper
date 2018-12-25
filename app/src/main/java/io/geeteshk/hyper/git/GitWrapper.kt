@@ -21,8 +21,8 @@ import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.snack
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
-import io.geeteshk.hyper.util.snack
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.diff.DiffFormatter

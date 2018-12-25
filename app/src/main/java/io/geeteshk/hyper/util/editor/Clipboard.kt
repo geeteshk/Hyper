@@ -18,7 +18,7 @@ package io.geeteshk.hyper.util.editor
 
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
-import io.geeteshk.hyper.util.snack
+import io.geeteshk.hyper.extensions.snack
 import java.io.File
 
 object Clipboard {
