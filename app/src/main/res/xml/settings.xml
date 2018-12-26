@@ -23,7 +23,8 @@
             android:key="dark_theme"
             android:title="@string/dark_theme"
             android:summary="@string/dark_theme_desc"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            android:icon="@drawable/ic_night_mode" />
 
     </PreferenceCategory>
 
@@ -34,13 +35,15 @@
             android:key="dark_theme_editor"
             android:title="@string/dark_theme_editor"
             android:summary="@string/dark_theme_editor_desc"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            android:icon="@drawable/ic_dark_theme_code" />
 
         <SwitchPreference
             android:key="show_line_numbers"
             android:title="Show Line Numbers"
             android:summary="Display line numbers next to Editor."
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            android:icon="@drawable/ic_line_numbers" />
 
     </PreferenceCategory>
 
@@ -50,7 +53,8 @@
         <Preference
             android:key="factory_reset"
             android:title="Factory Reset"
-            android:summary="This will delete all of your projects! Use with caution." />
+            android:summary="This will delete all of your projects! Use with caution."
+            android:icon="@drawable/ic_factory_reset" />
 
     </PreferenceCategory>
 
@@ -59,7 +63,8 @@
 
         <Preference
             android:key="notices"
-            android:title="@string/notices" />
+            android:title="@string/notices"
+            android:icon="@drawable/ic_notices" />
 
     </PreferenceCategory>
 

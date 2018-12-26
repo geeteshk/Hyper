@@ -17,6 +17,8 @@
 package io.geeteshk.hyper.ui.fragment
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +33,7 @@ import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.ui.activity.SettingsActivity
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
+import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.Prefs.set
 import timber.log.Timber
 import java.io.File
@@ -45,6 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val prefs = defaultPrefs(activity!!)
         val darkTheme = preferenceManager.findPreference<SwitchPreference>("dark_theme")
+
         darkTheme.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, o ->
             prefs["dark_theme"] = o
             activity?.let { it.startAndFinish(Intent(it, SettingsActivity::class.java)) }
@@ -88,6 +92,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         notices!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             startActivity(Intent(activity, OssLicensesMenuActivity::class.java))
             true
+        }
+
+        if (prefs["dark_theme", false]!!) {
+            arrayOf(darkTheme, darkThemeEditor, lineNumbers, factoryReset, notices).forEach {
+                it.icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+            }
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
