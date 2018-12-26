@@ -40,7 +40,7 @@ import java.io.IOException
 class EditorFragment : Fragment() {
 
     private var location: String? = null
-    private lateinit var file: File
+    private var file: File? = null
 
     init {
         retainInstance = true
@@ -49,7 +49,8 @@ class EditorFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         location = arguments!!.getString("location")
         file = File(location)
-        if (!file.exists()) {
+        if (!file!!.exists()) {
+            file = null
             val textView = TextView(activity)
             val padding = ResourceHelper.dpToPx(activity!!, 48)
             textView.setPadding(padding, padding, padding, padding)
@@ -64,51 +65,52 @@ class EditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val filename = file.name
-        fileContent.fileEnding = filename.substringAfterLast('.', "")
-        if (filename.endsWith(".html") || filename == "imports.txt") {
-            setSymbol(fileContent, symbolTab, "\t\t")
-            setSymbol(fileContent, symbolOne, "<")
-            setSymbol(fileContent, symbolTwo, "/")
-            setSymbol(fileContent, symbolThree, ">")
-            setSymbol(fileContent, symbolFour, "\"")
-            setSymbol(fileContent, symbolFive, "=")
-            setSymbol(fileContent, symbolSix, "!")
-            setSymbol(fileContent, symbolSeven, "-")
-            setSymbol(fileContent, symbolEight, "/")
-        } else if (filename.endsWith(".css")) {
-            setSymbol(fileContent, symbolTab, "\t\t\t\t")
-            setSymbol(fileContent, symbolOne, "{")
-            setSymbol(fileContent, symbolTwo, "}")
-            setSymbol(fileContent, symbolThree, ":")
-            setSymbol(fileContent, symbolFour, ",")
-            setSymbol(fileContent, symbolFive, "#")
-            setSymbol(fileContent, symbolSix, ".")
-            setSymbol(fileContent, symbolSeven, ";")
-            setSymbol(fileContent, symbolEight, "-")
-        } else if (filename.endsWith(".js")) {
-            setSymbol(fileContent, symbolTab, "\t\t\t\t")
-            setSymbol(fileContent, symbolOne, "{")
-            setSymbol(fileContent, symbolTwo, "}")
-            setSymbol(fileContent, symbolThree, "(")
-            setSymbol(fileContent, symbolFour, ")")
-            setSymbol(fileContent, symbolFive, "!")
-            setSymbol(fileContent, symbolSix, "=")
-            setSymbol(fileContent, symbolSeven, ":")
-            setSymbol(fileContent, symbolEight, "?")
-        }
+        file?.let {
+            val filename = it.name
+            fileContent.fileEnding = filename.substringAfterLast('.', "")
+            if (filename.endsWith(".html") || filename == "imports.txt") {
+                setSymbol(fileContent, symbolTab, "\t\t")
+                setSymbol(fileContent, symbolOne, "<")
+                setSymbol(fileContent, symbolTwo, "/")
+                setSymbol(fileContent, symbolThree, ">")
+                setSymbol(fileContent, symbolFour, "\"")
+                setSymbol(fileContent, symbolFive, "=")
+                setSymbol(fileContent, symbolSix, "!")
+                setSymbol(fileContent, symbolSeven, "-")
+                setSymbol(fileContent, symbolEight, "/")
+            } else if (filename.endsWith(".css")) {
+                setSymbol(fileContent, symbolTab, "\t\t\t\t")
+                setSymbol(fileContent, symbolOne, "{")
+                setSymbol(fileContent, symbolTwo, "}")
+                setSymbol(fileContent, symbolThree, ":")
+                setSymbol(fileContent, symbolFour, ",")
+                setSymbol(fileContent, symbolFive, "#")
+                setSymbol(fileContent, symbolSix, ".")
+                setSymbol(fileContent, symbolSeven, ";")
+                setSymbol(fileContent, symbolEight, "-")
+            } else if (filename.endsWith(".js")) {
+                setSymbol(fileContent, symbolTab, "\t\t\t\t")
+                setSymbol(fileContent, symbolOne, "{")
+                setSymbol(fileContent, symbolTwo, "}")
+                setSymbol(fileContent, symbolThree, "(")
+                setSymbol(fileContent, symbolFour, ")")
+                setSymbol(fileContent, symbolFive, "!")
+                setSymbol(fileContent, symbolSix, "=")
+                setSymbol(fileContent, symbolSeven, ":")
+                setSymbol(fileContent, symbolEight, "?")
+            }
 
-        val contents = getContents(location!!)
-        fileContent.setTextHighlighted(contents)
-        val finalFile = file
-        fileContent.onTextChangedListener = object : Editor.OnTextChangedListener {
-            override fun onTextChanged(text: String) {
-                try {
-                    finalFile.writeText(fileContent.string())
-                } catch (e: IOException) {
-                    Timber.wtf(e)
+            val contents = getContents(location!!)
+            fileContent.setTextHighlighted(contents)
+            fileContent.onTextChangedListener = object : Editor.OnTextChangedListener {
+                override fun onTextChanged(text: String) {
+                    try {
+                        it.writeText(fileContent.string())
+                    } catch (e: IOException) {
+                        Timber.wtf(e)
+                    }
+
                 }
-
             }
         }
     }

@@ -21,9 +21,6 @@ import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -37,7 +34,7 @@ import io.geeteshk.hyper.util.project.ProjectManager
 import kotlinx.android.synthetic.main.item_project.view.*
 import java.util.*
 
-class ProjectAdapter(private val context: Context, private val projects: ArrayList<String>, private val layout: CoordinatorLayout, private val recyclerView: RecyclerView) : RecyclerView.Adapter<ProjectAdapter.MyViewHolder>() {
+class ProjectAdapter(private val mainContext: Context, private val projects: ArrayList<String>, private val layout: CoordinatorLayout, private val recyclerView: RecyclerView) : RecyclerView.Adapter<ProjectAdapter.ProjectHolder>() {
 
     fun insert(project: String) {
         projects.add(project)
@@ -51,58 +48,56 @@ class ProjectAdapter(private val context: Context, private val projects: ArrayLi
         notifyItemRemoved(position)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectHolder {
         projects.sort()
         val itemView = parent.inflate(R.layout.item_project)
-        return MyViewHolder(itemView)
+        return ProjectHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val properties = HtmlParser.getProperties(projects[holder.adapterPosition])
-        holder.title.text = properties[0]
-        holder.author.text = properties[1]
-        holder.description.text = properties[2]
-        holder.favicon.setImageBitmap(ProjectManager.getFavicon(context, projects[holder.adapterPosition]))
-
-        holder.layout.setOnClickListener {
-            with (context) {
-                (this as AppCompatActivity).startActivityForResult(
-                        Intent(this, ProjectActivity::class.java).apply {
-                            putExtra("project", projects[holder.adapterPosition])
-                            addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-                            }
-                        }, 0)
-            }
-        }
-
-        holder.layout.setOnLongClickListener {
-            AlertDialog.Builder(context)
-                    .setTitle(context.getString(R.string.delete) + " " + projects[holder.adapterPosition] + "?")
-                    .setMessage(R.string.change_undone)
-                    .setPositiveButton(R.string.delete) { _, _ ->
-                        val project = projects[holder.adapterPosition]
-                        ProjectManager.deleteProject(project)
-                        remove(holder.adapterPosition)
-                        layout.snack("Deleted $project.")
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-
-            true
-        }
-    }
+    override fun onBindViewHolder(holder: ProjectHolder, position: Int) =
+            holder.bind(projects[holder.adapterPosition], holder.adapterPosition)
 
     override fun getItemCount(): Int = projects.size
 
-    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ProjectHolder(var view: View) : RecyclerView.ViewHolder(view) {
 
-        var title: TextView = view.title
-        var description: TextView = view.desc
-        var author: TextView = view.author
-        var favicon: ImageView = view.favicon
-        var layout: LinearLayout = view.projectLayout
+        fun bind(project: String, position: Int) {
+            with (view) {
+                val properties = HtmlParser.getProperties(project)
+                title.text = properties[0]
+                author.text = properties[1]
+                desc.text = properties[2]
+                favicon.setImageBitmap(ProjectManager.getFavicon(context, project))
+
+                projectLayout.setOnClickListener {
+                    with (mainContext) {
+                        (this as AppCompatActivity).startActivityForResult(
+                                Intent(this, ProjectActivity::class.java).apply {
+                                    putExtra("project", project)
+                                    addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                                    }
+                                }, 0)
+                    }
+                }
+
+                projectLayout.setOnLongClickListener {
+                    AlertDialog.Builder(context)
+                            .setTitle("${context.getString(R.string.delete)} $project?")
+                            .setMessage(R.string.change_undone)
+                            .setPositiveButton(R.string.delete) { _, _ ->
+                                ProjectManager.deleteProject(project)
+                                remove(position)
+                                layout.snack("Deleted $project.")
+                            }
+                            .setNegativeButton(R.string.cancel, null)
+                            .show()
+
+                    true
+                }
+            }
+        }
     }
 }

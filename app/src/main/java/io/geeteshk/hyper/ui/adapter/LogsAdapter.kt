@@ -20,7 +20,6 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
@@ -34,44 +33,38 @@ class LogsAdapter(private val localWithoutIndex: String, private val jsLogs: Lis
         return ViewHolder(rootView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val consoleMessage = jsLogs[position]
-        val newId = consoleMessage.sourceId().replace(localWithoutIndex, "") + ":" + consoleMessage.lineNumber()
-        val msg = consoleMessage.message()
-        val level = consoleMessage.messageLevel().name.substring(0, 1)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(jsLogs[position])
 
-        holder.level.text = level
-        holder.level.setTextColor(getLogColor(consoleMessage.messageLevel()))
-        holder.message.text = msg
-        if (darkTheme) {
-            holder.message.setTextColor(Color.WHITE)
-        } else {
-            holder.message.setTextColor(Color.BLACK)
+    override fun getItemCount(): Int = jsLogs.size
+
+    inner class ViewHolder(private var v: View) : RecyclerView.ViewHolder(v) {
+
+        fun bind(consoleMessage: ConsoleMessage) {
+            with (v) {
+                val newId = consoleMessage.sourceId().replace(localWithoutIndex, "") + ":" + consoleMessage.lineNumber()
+                val msg = consoleMessage.message()
+                val msgLevel = consoleMessage.messageLevel().name.substring(0, 1)
+
+                logLevel.text = msgLevel
+                logLevel.setTextColor(getLogColor(consoleMessage.messageLevel()))
+                logMessage.text = msg
+                logMessage.setTextColor(if (darkTheme) { Color.WHITE } else { Color.BLACK })
+                logDetails.text = newId
+            }
         }
 
-        holder.details.text = newId
-    }
-
-    @ColorInt
-    private fun getLogColor(messageLevel: ConsoleMessage.MessageLevel): Int = when (messageLevel) {
-        ConsoleMessage.MessageLevel.LOG ->
-            if (darkTheme) {
+        @ColorInt
+        private fun getLogColor(messageLevel: ConsoleMessage.MessageLevel): Int = when (messageLevel) {
+            ConsoleMessage.MessageLevel.LOG -> if (darkTheme) {
                 Color.WHITE
             } else {
                 -0x79000000
             }
-        ConsoleMessage.MessageLevel.TIP -> -0x83b201
-        ConsoleMessage.MessageLevel.DEBUG -> -0xff198a
-        ConsoleMessage.MessageLevel.ERROR -> -0xadae
-        ConsoleMessage.MessageLevel.WARNING -> -0x3c00
-    }
 
-    override fun getItemCount(): Int = jsLogs.size
-
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-
-        var level: TextView = v.logLevel
-        var message: TextView = v.logMessage
-        var details: TextView = v.logDetails
+            ConsoleMessage.MessageLevel.TIP -> -0x83b201
+            ConsoleMessage.MessageLevel.DEBUG -> -0xff198a
+            ConsoleMessage.MessageLevel.ERROR -> -0xadae
+            ConsoleMessage.MessageLevel.WARNING -> -0x3c00
+        }
     }
 }

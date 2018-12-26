@@ -58,4 +58,9 @@
         android:title="Rename"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_delete"
+        android:title="Delete"
+        app:showAsAction="never" />
+
 </menu>

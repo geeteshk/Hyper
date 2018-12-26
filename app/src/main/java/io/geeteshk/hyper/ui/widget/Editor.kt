@@ -17,7 +17,6 @@
 package io.geeteshk.hyper.ui.widget
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
@@ -73,7 +72,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
     private var hasLineNumbers = false
     private var darkTheme = false
 
-    private var prefs: SharedPreferences? = null
+    private var prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val lines: List<CharSequence>
         get() {
@@ -109,8 +108,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
         }
 
     init {
-        darkTheme = prefs!!.getBoolean("dark_theme_editor", false)
-        prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        darkTheme = prefs.getBoolean("dark_theme_editor", false)
         colors = context.resources.getIntArray(if (darkTheme) {
             R.array.code_dark
         } else {
@@ -118,7 +116,7 @@ class Editor constructor(context: Context, attrs: AttributeSet? = null)
         })
 
         lineRect = Rect()
-        hasLineNumbers = prefs!!.getBoolean("show_line_numbers", true)
+        hasLineNumbers = prefs.getBoolean("show_line_numbers", true)
 
         lineShadowPaint = Paint().apply {
             style = Paint.Style.FILL

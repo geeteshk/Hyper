@@ -65,9 +65,7 @@ import kotlinx.android.synthetic.main.item_git_status.view.*
 import kotlinx.android.synthetic.main.sheet_about.view.*
 import kotlinx.android.synthetic.main.sheet_logs.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.*
-import timber.log.Timber
 import java.io.File
-import java.io.IOException
 
 class ProjectActivity : ThemedActivity() {
 
@@ -134,7 +132,7 @@ class ProjectActivity : ThemedActivity() {
 
         fileBrowser.layoutManager = LinearLayoutManager(this)
         fileBrowser.itemAnimator = DefaultItemAnimator()
-        adapter = FileBrowserAdapter(this, projectName, drawerLayout, {
+        adapter = FileBrowserAdapter(this, projectName, drawerLayout, projectViewModel) {
             if (it.isFile) {
                 if (projectViewModel.openFiles.value!!.contains(it.path)) {
                     setFragment(it.path, false)
@@ -148,64 +146,37 @@ class ProjectActivity : ThemedActivity() {
                     }
                 }
             }
-        }) { deleteFile(it) }
+        }
+
         fileBrowser.adapter = adapter
 
-        headerIcon.setImageBitmap(ProjectManager.getFavicon(this@ProjectActivity, projectName))
+        headerIcon.setImageBitmap(ProjectManager.getFavicon(this, projectName))
         headerTitle.text = props[0]
         headerDesc.text = props[1]
 
         if (Build.VERSION.SDK_INT >= 21) {
             window.statusBarColor = 0x00000000
-            val description = ActivityManager.TaskDescription(projectName, ProjectManager.getFavicon(this@ProjectActivity, projectName))
+            val description = ActivityManager.TaskDescription(projectName, ProjectManager.getFavicon(this, projectName))
             this.setTaskDescription(description)
         }
     }
 
-    private fun deleteFile(file: File) {
-        AlertDialog.Builder(this)
-                .setTitle("${getString(R.string.delete)} ${file.name}?")
-                .setPositiveButton(R.string.delete) { _, _ ->
-                    var deleteFlag = true
-                    projectViewModel.removeOpenFile(file.path)
+    private fun setFragment(filePath: String, add: Boolean) {
+        if (add) projectViewModel.addOpenFile(filePath)
 
-                    drawerLayout.snack("Deleted $file.") {
-                        action("UNDO") {
-                            deleteFlag = false
-                            dismiss()
-                        }
-
-                        callback {
-                            if (deleteFlag) {
-                                try {
-                                    file.deleteRecursively()
-                                } catch (e: IOException) {
-                                    Timber.e(e)
-                                }
-                            }
-                        }
-                    }
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
-
-    private fun setFragment(file: String, add: Boolean) {
-        if (add) projectViewModel.addOpenFile(file)
-
-        fileSpinner.setSelection(fileAdapter.getPosition(file), true)
+        fileSpinner.setSelection(fileAdapter.getPosition(filePath), true)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.editorFragment, getFragment(file))
+                .replace(R.id.editorFragment, getFragment(filePath))
                 .commit()
     }
 
-    private fun getFragment(title: String): Fragment {
+    private fun getFragment(filePath: String): Fragment {
         val bundle = Bundle().apply {
             putInt("position", fileAdapter.count)
-            putString("location", title)
+            putString("location", filePath)
         }
 
-        return if (ProjectManager.isImageFile(File(title))) {
+        return if (ProjectManager.isImageFile(File(filePath))) {
             ImageFragment.newInstance(bundle)
         } else {
             EditorFragment.newInstance(bundle)
@@ -250,7 +221,7 @@ class ProjectActivity : ThemedActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_run -> startActivity(Intent().apply {
+            R.id.action_run -> startActivity(Intent(this, WebActivity::class.java).apply {
                 putExtra("url", "file:///${indexFile.path}")
                 putExtra("name", projectName)
             })
@@ -263,13 +234,13 @@ class ProjectActivity : ThemedActivity() {
             }
 
             R.id.action_about -> showAbout()
-            R.id.action_git_init -> GitWrapper.init(this@ProjectActivity, projectDir, drawerLayout)
+            R.id.action_git_init -> GitWrapper.init(this, projectDir, drawerLayout)
             R.id.action_git_add ->  GitWrapper.add(drawerLayout, projectDir)
             R.id.action_git_commit -> {
-                val view = View.inflate(this@ProjectActivity, R.layout.dialog_input_single, null)
+                val view = View.inflate(this, R.layout.dialog_input_single, null)
                 view.inputText.setHint(R.string.commit_message)
 
-                val commitDialog = AlertDialog.Builder(this@ProjectActivity)
+                val commitDialog = AlertDialog.Builder(this)
                         .setTitle(R.string.git_commit)
                         .setView(view)
                         .setCancelable(false)
@@ -280,7 +251,7 @@ class ProjectActivity : ThemedActivity() {
                 commitDialog.show()
                 commitDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                     if (!view.inputText.string().isEmpty()) {
-                        GitWrapper.commit(this@ProjectActivity, drawerLayout, projectDir, view.inputText.string())
+                        GitWrapper.commit(this, drawerLayout, projectDir, view.inputText.string())
                         commitDialog.dismiss()
                     } else {
                         view.inputText.error = getString(R.string.commit_message_empty)
@@ -289,28 +260,28 @@ class ProjectActivity : ThemedActivity() {
             }
 
             R.id.action_git_push -> {
-                val pushView = View.inflate(this@ProjectActivity, R.layout.dialog_push, null)
-                pushView.pushSpinner.adapter = ArrayAdapter(this@ProjectActivity, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
-                AlertDialog.Builder(this@ProjectActivity)
+                val pushView = View.inflate(this, R.layout.dialog_push, null)
+                pushView.pushSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
+                AlertDialog.Builder(this)
                         .setTitle("Push changes")
                         .setView(pushView)
                         .setPositiveButton("PUSH") { dialogInterface, _ ->
                             dialogInterface.dismiss()
-                            GitWrapper.push(this@ProjectActivity, drawerLayout, projectDir, pushView.pushSpinner.selectedItem as String, booleanArrayOf(pushView.dryRun.isChecked, pushView.force.isChecked, pushView.thin.isChecked, pushView.tags.isChecked), pushView.pushUsername.string(), pushView.pushPassword.string())
+                            GitWrapper.push(this, drawerLayout, projectDir, pushView.pushSpinner.selectedItem as String, booleanArrayOf(pushView.dryRun.isChecked, pushView.force.isChecked, pushView.thin.isChecked, pushView.tags.isChecked), pushView.pushUsername.string(), pushView.pushPassword.string())
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .show()
             }
 
             R.id.action_git_pull -> {
-                val pullView = View.inflate(this@ProjectActivity, R.layout.dialog_pull, null)
-                pullView.remotesSpinner.adapter = ArrayAdapter(this@ProjectActivity, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
-                AlertDialog.Builder(this@ProjectActivity)
+                val pullView = View.inflate(this, R.layout.dialog_pull, null)
+                pullView.remotesSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, GitWrapper.getRemotes(drawerLayout, projectDir)!!)
+                AlertDialog.Builder(this)
                         .setTitle("Push changes")
                         .setView(pullView)
                         .setPositiveButton("PULL") { dialogInterface, _ ->
                             dialogInterface.dismiss()
-                            GitWrapper.pull(this@ProjectActivity, drawerLayout, projectDir, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.string(), pullView.pullPassword.string())
+                            GitWrapper.pull(this, drawerLayout, projectDir, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.string(), pullView.pullPassword.string())
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .show()
@@ -324,7 +295,7 @@ class ProjectActivity : ThemedActivity() {
                 }
 
                 val manager = LinearLayoutManager(this)
-                val adapter = GitLogsAdapter(this@ProjectActivity, commits)
+                val adapter = GitLogsAdapter(commits)
 
                 layoutLog.logsList.layoutManager = manager
                 layoutLog.logsList.adapter = adapter
@@ -342,21 +313,21 @@ class ProjectActivity : ThemedActivity() {
                     commitNames[i] = commitsToDiff[i].shortMessage
                 }
 
-                AlertDialog.Builder(this@ProjectActivity)
+                AlertDialog.Builder(this)
                         .setTitle("Choose first commit")
                         .setSingleChoiceItems(commitNames, -1) { dialogInterface, i ->
                             dialogInterface.cancel()
                             chosen[0] = i
-                            AlertDialog.Builder(this@ProjectActivity)
+                            AlertDialog.Builder(this)
                                     .setTitle("Choose second commit")
                                     .setSingleChoiceItems(commitNames, -1) { dialogIface, i2 ->
                                         dialogIface.cancel()
                                         chosen[1] = i2
                                         val string = GitWrapper.diff(drawerLayout, projectDir, commitsToDiff[chosen[0]].id, commitsToDiff[chosen[1]].id)
-                                        val rootView = View.inflate(this@ProjectActivity, R.layout.dialog_diff, null)
+                                        val rootView = View.inflate(this, R.layout.dialog_diff, null)
                                         rootView.diffView.setDiffText(string!!)
 
-                                        AlertDialog.Builder(this@ProjectActivity)
+                                        AlertDialog.Builder(this)
                                                 .setView(rootView)
                                                 .show()
                                     }
@@ -378,10 +349,10 @@ class ProjectActivity : ThemedActivity() {
             }
 
             R.id.action_git_branch_new -> {
-                val branchView = View.inflate(this@ProjectActivity, R.layout.dialog_git_branch, null)
+                val branchView = View.inflate(this, R.layout.dialog_git_branch, null)
                 branchView.checkout.setText(R.string.checkout)
 
-                val branchDialog = AlertDialog.Builder(this@ProjectActivity)
+                val branchDialog = AlertDialog.Builder(this)
                         .setTitle("New branch")
                         .setView(branchView)
                         .setPositiveButton(R.string.create, null)
@@ -391,7 +362,7 @@ class ProjectActivity : ThemedActivity() {
                 branchDialog.show()
                 branchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                     if (!branchView.branchName.string().isEmpty()) {
-                        GitWrapper.createBranch(this@ProjectActivity, drawerLayout, projectDir, branchView.branchName.string(), branchView.checkout.isChecked)
+                        GitWrapper.createBranch(this, drawerLayout, projectDir, branchView.branchName.string(), branchView.checkout.isChecked)
                         branchDialog.dismiss()
                     } else {
                         branchView.branchName.error = getString(R.string.branch_name_empty)
@@ -446,7 +417,7 @@ class ProjectActivity : ThemedActivity() {
                 AlertDialog.Builder(this)
                         .setSingleChoiceItems(items, checkedItem) { dialogInterface, i ->
                             dialogInterface.dismiss()
-                            GitWrapper.checkout(this@ProjectActivity, drawerLayout, projectDir, branches[i].name)
+                            GitWrapper.checkout(this, drawerLayout, projectDir, branches[i].name)
                         }
                         .setNegativeButton(R.string.close, null)
                         .setTitle("Checkout branch")
@@ -467,7 +438,7 @@ class ProjectActivity : ThemedActivity() {
         when (requestCode) {
             IMPORT_FILE -> if (resultCode == Activity.RESULT_OK) {
                 val fileUri = data!!.data
-                val view = View.inflate(this@ProjectActivity, R.layout.dialog_input_single, null)
+                val view = View.inflate(this, R.layout.dialog_input_single, null)
                 view.inputText.setHint(R.string.file_name)
 
                 val dialog = AlertDialog.Builder(this)

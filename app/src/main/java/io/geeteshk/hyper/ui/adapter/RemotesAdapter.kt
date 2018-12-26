@@ -20,7 +20,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
@@ -31,7 +30,7 @@ import kotlinx.android.synthetic.main.item_remote.view.*
 import java.io.File
 import java.util.*
 
-class RemotesAdapter(private val context: Context, private val remotesView: View, private val repo: File) : RecyclerView.Adapter<RemotesAdapter.RemotesHolder>() {
+class RemotesAdapter(private val mainContext: Context, private val remotesView: View, private val repo: File) : RecyclerView.Adapter<RemotesAdapter.RemotesHolder>() {
 
     private val remotesList: ArrayList<String>? = GitWrapper.getRemotes(remotesView, repo)
 
@@ -40,39 +39,7 @@ class RemotesAdapter(private val context: Context, private val remotesView: View
         return RemotesHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RemotesHolder, position: Int) {
-        holder.name.text = remotesList!![position]
-        holder.url.text = GitWrapper.getRemoteUrl(remotesView, repo, remotesList[position])
-        holder.rootView.setOnClickListener {
-            val pullView = View.inflate(context, R.layout.dialog_pull, null)
-            pullView.remotesSpinner.adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, remotesList)
-            AlertDialog.Builder(context)
-                    .setTitle("Fetch from remote")
-                    .setView(pullView)
-                    .setPositiveButton("FETCH") { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                        GitWrapper.fetch(context, remotesView, repo, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.text.toString(), pullView.pullPassword.text.toString())
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-        }
-
-        holder.rootView.setOnLongClickListener {
-            val newPos = holder.adapterPosition
-            AlertDialog.Builder(context)
-                    .setTitle("Remove " + remotesList[newPos] + "?")
-                    .setMessage("This remote will be removed permanently.")
-                    .setPositiveButton(R.string.remove) { _, _ ->
-                        GitWrapper.removeRemote(remotesView, repo, remotesList[newPos])
-                        remotesList.remove(remotesList[newPos])
-                        notifyDataSetChanged()
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-
-            true
-        }
-    }
+    override fun onBindViewHolder(holder: RemotesHolder, position: Int)  = holder.bind(remotesList!![position])
 
     override fun getItemCount(): Int = remotesList!!.size
 
@@ -84,7 +51,40 @@ class RemotesAdapter(private val context: Context, private val remotesView: View
 
     inner class RemotesHolder(var rootView: View) : RecyclerView.ViewHolder(rootView) {
 
-        var name: TextView = rootView.remoteName
-        var url: TextView = rootView.remoteUrl
+        fun bind(remote: String) {
+            with (rootView) {
+                remoteName.text = remote
+                remoteUrl.text = GitWrapper.getRemoteUrl(remotesView, repo, remote)
+
+                setOnClickListener {
+                    val pullView = View.inflate(context, R.layout.dialog_pull, null)
+                    pullView.remotesSpinner.adapter = ArrayAdapter(mainContext, android.R.layout.simple_list_item_1, remotesList!!)
+                    AlertDialog.Builder(mainContext)
+                            .setTitle("Fetch from remote")
+                            .setView(pullView)
+                            .setPositiveButton("FETCH") { dialogInterface, _ ->
+                                dialogInterface.dismiss()
+                                GitWrapper.fetch(context, remotesView, repo, pullView.remotesSpinner.selectedItem as String, pullView.pullUsername.text.toString(), pullView.pullPassword.text.toString())
+                            }
+                            .setNegativeButton(R.string.cancel, null)
+                            .show()
+                }
+
+                setOnLongClickListener {
+                    AlertDialog.Builder(mainContext)
+                            .setTitle("Remove $remote?")
+                            .setMessage("This remote will be removed permanently.")
+                            .setPositiveButton(R.string.remove) { _, _ ->
+                                GitWrapper.removeRemote(remotesView, repo, remote)
+                                remotesList?.remove(remote)
+                                notifyDataSetChanged()
+                            }
+                            .setNegativeButton(R.string.cancel, null)
+                            .show()
+
+                    true
+                }
+            }
+        }
     }
 }

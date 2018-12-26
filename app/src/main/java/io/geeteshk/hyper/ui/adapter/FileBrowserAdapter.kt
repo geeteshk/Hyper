@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.extensions.*
+import io.geeteshk.hyper.ui.viewmodel.ProjectViewModel
 import io.geeteshk.hyper.util.Constants
 import io.geeteshk.hyper.util.editor.Clipboard
 import io.geeteshk.hyper.util.editor.ResourceHelper
@@ -18,14 +19,14 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-class FileBrowserAdapter(private val context: Context, private val projectName: String, private val mainView: View, private val listener: (File) -> Unit, private val longListener: (File) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FileBrowserAdapter(private val context: Context, private val projectName: String, private val mainView: View, private val projectViewModel: ProjectViewModel, private val listener: (File) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var currentDir = File(Constants.HYPER_ROOT, projectName)
 
     private var fileList: Array<File> = currentDir.listFiles()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        TYPE_UP -> RootHolder(parent.inflate(R.layout.item_file_browser))
+        TYPE_UP -> RootHolder(parent.inflate(R.layout.item_file_root))
         else -> ViewHolder(parent.inflate(R.layout.item_file_browser))
     }
 
@@ -151,11 +152,37 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
         }
     }
 
+    private fun deleteFile(file: File) {
+        AlertDialog.Builder(context)
+                .setTitle("${context.getString(R.string.delete)} ${file.name}?")
+                .setPositiveButton(R.string.delete) { _, _ ->
+                    var deleteFlag = true
+                    projectViewModel.removeOpenFile(file.path)
+
+                    mainView.snack("Deleted $file.") {
+                        action("UNDO") {
+                            deleteFlag = false
+                            dismiss()
+                        }
+
+                        callback {
+                            if (deleteFlag) {
+                                try {
+                                    file.deleteRecursively()
+                                } catch (e: IOException) {
+                                    Timber.e(e)
+                                }
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
     inner class RootHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind() = with (itemView) {
-            fileBrowserIcon.visibility = View.GONE
-            fileBrowserName.text = ".."
 
             setOnClickListener {
                 if (currentDir.name != projectName) {
@@ -164,12 +191,13 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
                 }
             }
 
-            fileBrowserOptions.setOnClickListener {
-                val menu = PopupMenu(context, fileBrowserOptions)
+            setOnLongClickListener {
+                val menu = PopupMenu(context, it)
                 menu.menuInflater.inflate(R.menu.menu_file_options, menu.menu)
                 menu.menu.findItem(R.id.action_copy).isVisible = false
                 menu.menu.findItem(R.id.action_cut).isVisible = false
                 menu.menu.findItem(R.id.action_rename).isVisible = false
+                menu.menu.findItem(R.id.action_delete).isVisible = false
                 menu.menu.findItem(R.id.action_paste).isEnabled = Clipboard.currentFile != null
 
                 menu.setOnMenuItemClickListener { item ->
@@ -182,6 +210,9 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
                     updateFiles()
                     true
                 }
+
+                menu.show()
+                true
             }
         }
     }
@@ -203,13 +234,7 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
             }
 
             setOnLongClickListener {
-                longListener(file)
-                updateFiles()
-                true
-            }
-
-            fileBrowserOptions.setOnClickListener {
-                val menu = PopupMenu(context, fileBrowserOptions)
+                val menu = PopupMenu(context, it)
                 menu.menuInflater.inflate(R.menu.menu_file_options, menu.menu)
 
                 menu.menu.findItem(R.id.action_new).isVisible = false
@@ -217,6 +242,7 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
 
                 if (file.isFile && file.name == "index.html") {
                     menu.menu.findItem(R.id.action_rename).isVisible = false
+                    menu.menu.findItem(R.id.action_delete).isVisible = false
                 }
 
                 menu.setOnMenuItemClickListener { menuItem ->
@@ -225,6 +251,7 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
                         R.id.action_copy -> Clipboard.update(file, Clipboard.Type.COPY, mainView)
                         R.id.action_cut -> Clipboard.update(file, Clipboard.Type.CUT, mainView)
                         R.id.action_paste -> paste()
+                        R.id.action_delete -> deleteFile(file)
                     }
 
                     updateFiles()
@@ -232,6 +259,7 @@ class FileBrowserAdapter(private val context: Context, private val projectName: 
                 }
 
                 menu.show()
+                true
             }
         }
     }

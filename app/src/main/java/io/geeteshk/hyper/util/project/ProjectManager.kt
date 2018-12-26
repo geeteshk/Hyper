@@ -132,7 +132,7 @@ object ProjectManager {
 
     fun getIndexFile(project: String) =
             File("${Constants.HYPER_ROOT}/$project").walkTopDown()
-                    .filter { it.name == "index" }.firstOrNull()
+                    .filter { it.name == "index.html" }.firstOrNull()
 
     fun getRelativePath(file: File, projectName: String) = file.path.replace(File("${Constants.HYPER_ROOT}/$projectName").path, "")
 
