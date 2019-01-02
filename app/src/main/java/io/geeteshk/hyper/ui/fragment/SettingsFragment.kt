@@ -16,7 +16,6 @@
 
 package io.geeteshk.hyper.ui.fragment
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -29,6 +28,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.intentFor
+import io.geeteshk.hyper.extensions.startActivity
 import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.ui.activity.SettingsActivity
 import io.geeteshk.hyper.util.Constants
@@ -51,7 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         darkTheme.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, o ->
             prefs["dark_theme"] = o
-            activity?.let { it.startAndFinish(Intent(it, SettingsActivity::class.java)) }
+            activity?.let { with (it) { startAndFinish(intentFor<SettingsActivity>() ) }}
             true
         }
 
@@ -90,7 +91,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val notices = preferenceManager.findPreference<Preference>("notices")
         notices!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            startActivity(Intent(activity, OssLicensesMenuActivity::class.java))
+            context!!.startActivity<OssLicensesMenuActivity>()
             true
         }
 

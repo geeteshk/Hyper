@@ -221,10 +221,9 @@ class ProjectActivity : ThemedActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_run -> startActivity(Intent(this, WebActivity::class.java).apply {
-                putExtra("url", "file:///${indexFile.path}")
-                putExtra("name", projectName)
-            })
+            R.id.action_run -> startActivity<WebActivity>(
+                    "url" to "file:///${indexFile.path}",
+                    "name" to projectName)
 
             R.id.action_import_file -> with (Intent(Intent.ACTION_GET_CONTENT)) {
                 type = "file/*"
@@ -424,8 +423,8 @@ class ProjectActivity : ThemedActivity() {
                         .show()
             }
 
-            R.id.action_git_remote -> startActivity(Intent(this, RemotesActivity::class.java).apply { putExtra("project_file", projectDir.path) })
-            R.id.action_analyze -> startActivity(Intent(this, AnalyzeActivity::class.java).apply { putExtra("project_file", projectDir.path) })
+            R.id.action_git_remote -> startActivity<RemotesActivity>("project_file" to projectDir.path)
+            R.id.action_analyze -> startActivity<AnalyzeActivity>("project_file" to projectDir.path)
 
             else -> return false
         }

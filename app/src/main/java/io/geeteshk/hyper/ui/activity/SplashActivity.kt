@@ -26,10 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import io.geeteshk.hyper.R
-import io.geeteshk.hyper.extensions.action
-import io.geeteshk.hyper.extensions.onAnimationStop
-import io.geeteshk.hyper.extensions.snack
-import io.geeteshk.hyper.extensions.startAndFinish
+import io.geeteshk.hyper.extensions.*
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.get
 import io.geeteshk.hyper.util.ui.FontsOverride
@@ -58,9 +55,7 @@ class SplashActivity : ThemedActivity() {
             IntroActivity::class.java
         }
 
-        startAndFinish(Intent(this, classTo).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        })
+        startAndFinish(Intent(this, classTo).withFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
     }
 
     private fun showPermissionSnack() {

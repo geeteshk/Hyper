@@ -32,6 +32,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.intentFor
+import io.geeteshk.hyper.extensions.startActivityForResult
 import io.geeteshk.hyper.extensions.startAndFinish
 import io.geeteshk.hyper.git.GitWrapper
 import io.geeteshk.hyper.ui.adapter.ProjectAdapter
@@ -228,7 +230,7 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> startActivityForResult(Intent(this, SettingsActivity::class.java), SETTINGS_CODE)
+            R.id.action_settings -> startActivityForResult<SettingsActivity>(SETTINGS_CODE)
             else -> return super.onOptionsItemSelected(item)
         }
 
@@ -250,7 +252,7 @@ class MainActivity : ThemedActivity(), SearchView.OnQueryTextListener, SearchVie
                 }
             }
 
-            SETTINGS_CODE -> startAndFinish(Intent(this, MainActivity::class.java))
+            SETTINGS_CODE -> startAndFinish(intentFor<MainActivity>())
 
             IMPORT_PROJECT -> if (resultCode == Activity.RESULT_OK) {
                 val fileUri = data!!.data!!

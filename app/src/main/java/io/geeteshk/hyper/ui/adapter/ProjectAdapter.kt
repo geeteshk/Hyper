@@ -27,7 +27,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
 import io.geeteshk.hyper.R
 import io.geeteshk.hyper.extensions.inflate
+import io.geeteshk.hyper.extensions.intentFor
 import io.geeteshk.hyper.extensions.snack
+import io.geeteshk.hyper.extensions.withFlags
 import io.geeteshk.hyper.ui.activity.ProjectActivity
 import io.geeteshk.hyper.util.net.HtmlParser
 import io.geeteshk.hyper.util.project.ProjectManager
@@ -72,14 +74,12 @@ class ProjectAdapter(private val mainContext: Context, private val projects: Arr
                 projectLayout.setOnClickListener {
                     with (mainContext) {
                         (this as AppCompatActivity).startActivityForResult(
-                                Intent(this, ProjectActivity::class.java).apply {
-                                    putExtra("project", project)
-                                    addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-                                    }
-                                }, 0)
+                                intentFor<ProjectActivity>("project" to project)
+                                    .withFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK).apply {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                                        }
+                                    }, 0)
                     }
                 }
 

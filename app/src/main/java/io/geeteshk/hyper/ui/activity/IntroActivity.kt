@@ -26,7 +26,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import io.geeteshk.hyper.R
+import io.geeteshk.hyper.extensions.intentFor
 import io.geeteshk.hyper.extensions.startAndFinish
+import io.geeteshk.hyper.extensions.withFlags
 import io.geeteshk.hyper.ui.adapter.IntroAdapter
 import io.geeteshk.hyper.util.Prefs.defaultPrefs
 import io.geeteshk.hyper.util.Prefs.set
@@ -91,9 +93,7 @@ class IntroActivity : AppCompatActivity() {
 
     private fun endIntro() {
         defaultPrefs(this)["intro_done"] = true
-        startAndFinish(Intent(this@IntroActivity, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        })
+        startAndFinish(intentFor<MainActivity>().withFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
     }
 
     private fun addBottomDots(currentPage: Int) {
